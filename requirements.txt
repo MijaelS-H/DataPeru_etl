@@ -1,0 +1,7 @@
+dw-bamboo-cli
+bamboo-lib
+xlrd
+sklearn
+simpledbf
+unidecode
+beautifulsoup4
