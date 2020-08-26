@@ -5,7 +5,7 @@
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/observatory-economic-complexity/oec-etl
+git clone https://github.com/dataperu/dataperu-etl.git
 cd oec-etl
 ```
 
@@ -29,7 +29,7 @@ pip install -r requirements.txt
 
 ### 4. Add environment variables
 
-Refer to [this wiki](https://github.com/Datawheel/company/wiki/OEC-Environment-Variables#etl) for environment variables.
+Please contact admin to set up env vars.
 
 ### 5. Run a pipeline to test your setup
 
