@@ -33,11 +33,7 @@ Please contact admin to set up env vars.
 
 ### 5. Run a pipeline to test your setup
 
-The countries dimension pipeline is super fast to run and a great way to test that your setup works.
-
-```bash
-python etl/ene/ene_pipeline.py
-```
+A testing pipeline will be upload to test your setup.
 
 ## Data Quality Assurance
 
