@@ -6,7 +6,7 @@
 
 ```bash
 git clone https://github.com/dataperu/dataperu-etl.git
-cd oec-etl
+cd dataperu-etl
 ```
 
 ### 2. Set up a local Python environment
@@ -36,7 +36,7 @@ Please contact admin to set up env vars.
 The countries dimension pipeline is super fast to run and a great way to test that your setup works.
 
 ```bash
-python etl/dim_countries_pipeline.py
+python etl/ene/ene_pipeline.py
 ```
 
 ## Data Quality Assurance
