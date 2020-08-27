@@ -61,6 +61,9 @@ class TransformStep(PipelineStep):
       df.rename(columns=columns, inplace=True)
       df = df[list(columns.values())].copy()
       df['company_id'] = df['company_id'].astype(int)
+      df['anio_inicio_actividades'] = df['anio_inicio_actividades'].astype(pd.Int16Dtype())
+      df['tipo_sociedad'] = df['tipo_sociedad'].astype(pd.Int8Dtype())
+      df['rango_ventas_2014'] = df['rango_ventas_2014'].astype(pd.Int8Dtype())
 
       # 02_MÓDULO_I_II_III_1
       mod2_1 = mod2_1[['iruc',
@@ -177,6 +180,7 @@ class TransformStep(PipelineStep):
 
       mod2_1.rename(columns=columns, inplace=True)
       mod2_1['company_id'] = mod2_1['company_id'].astype(int)
+
 
       # 02_MÓDULO_I_II_III_2
       mod2_2 = mod2_2[[
@@ -576,11 +580,8 @@ class JoinStep(PipelineStep):
       for dataset in [mod2_1, mod2_2, mod4_1, mod4_2, mod5_1, mod5_2, mod6]:
          df = df.join(dataset, on='company_id', rsuffix='_joined')
          df.drop(columns=['company_id_joined'], inplace=True)
-         print(df.shape)
 
       df['year'] = 2015
-
-      print(list(df.columns))
 
       return df
 
@@ -590,26 +591,192 @@ class EncuestaEmpresasPipeline(EasyPipeline):
 
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
-        """dtypes = {
-            'time_id':         'UInt32',
-            'country_id':      'String',
-            'trade_flow_id':   'UInt8',
-            'department_id':   'UInt8',
-            'hs_master_id':    'UInt32',
-            'hs_original_id':  'String',
-            'hs_revision':     'String',
-            'company_id':      'UInt32',
-            'municipality_id': 'UInt32',
-            'value':           'UInt64',
-        }"""
+        dtypes = {
+          # 01_EMPRESA_IDENTIFICA
+          'company_id':                'UInt32', 
+          'district_id':               'String', 
+          'ruc':                       'Float32', 
+          'razon_social':              'Float32', 
+          'nombre_comercial':          'Float32',
+          'anio_inicio_actividades':   'UInt32', 
+          'ciiu_rev4':                 'String', 
+          'ciiu_rev4_a':               'String', 
+          'ciiu_rev4_b':               'String',
+          'ciiu_rev4_c':               'String', 
+          'ciiu_rev4_d':               'String', 
+          'tipo_sociedad':             'UInt8', 
+          'tipo_sociedad_text':        'String',
+          'rango_ventas_2014':         'UInt8', 
+          'factor_expansion':          'Float64',
+
+          # 02_MÓDULO_I_II_III_1
+          'plan_negocios':                                        'UInt8', 
+          'credito_inicio_operaciones':                           'UInt8',
+          'institucion_credito':                                  'UInt8', 
+          'areas_funcionales_identificar':                        'UInt8',
+          'recursos_humanos':                                     'UInt8', 
+          'logistica_aprovisionamiento':                          'UInt8', 
+          'comercializacion':                                     'UInt8',
+          'contabilidad':                                         'UInt8', 
+          'produccion':                                           'UInt8', 
+          'direccion_gerencia':                                   'UInt8', 
+          'area_legal':                                           'UInt8',
+          'soporte_informatico':                                  'UInt8', 
+          'otro':                                                 'UInt8', 
+          'participa_mercado_internacional':                      'UInt8',
+          'participa_mercado_nacional':                           'UInt8', 
+          'participa_mercado_local':                              'UInt8',
+          'mercado_principal':                                    'UInt8', 
+          'considera_competencia_existe':                         'UInt8',
+          'competencia_informal_precio':                          'UInt8', 
+          'competencia_informal_calidad':                         'UInt8',
+          'competencia_informal_grado_diferenciacion':            'UInt8',
+          'competencia_informal_tiempo_entrega':                  'UInt8',
+          'competencia_informal_promociones_descuentos':          'UInt8',
+          'competencia_informal_servicio_cliente':                'UInt8', 
+          'competencia_informal_otro':                            'UInt8',
+          'pertenece_organizacion_fin_empresarial':               'UInt8',
+          'anio_incorporacion_organizacion_fin_empresarial':      'UInt32',
+          'tipo_organizacion_fin_empresarial':                    'UInt8', 
+          'acceso_info_negociar_proveedores':                     'UInt8',
+          'acceso_info_servicios_financieros':                    'UInt8', 
+          'acceso_info_acceso_mercados':                          'UInt8',
+          'acceso_info_empresarial':                              'UInt8', 
+          'acceso_capacitacion_asis_tecnica':                     'UInt8',
+          'acceso_info_vigilancia_limpieza':                      'UInt8', 
+          'acceso_info_infraestructura':                          'UInt8',
+          'acceso_info_otro':                                     'UInt8', 
+          'utilidad_relacion_asociatividad_2014':                 'UInt8',
+          'no_pertenece_organizacion_agrupacion':                 'UInt8', 
+          'local_electricidad_publica':                           'UInt8',
+          'interrupciones_electricas_programadas':                'UInt8',
+          'interrupciones_electricas_no_programadas':             'UInt8',
+          'dispo_servicio_electrico_horas_dias':                  'UInt8',
+          'demora_no_atienden_reclamos_servicio_electrico':       'UInt8',
+          'costo_elevado_servicio_electrico':                     'UInt8',
+          'intensidad_corriente_electrica_variable':              'UInt8',
+          'errores_facturacion_servicio_electrico':               'UInt8',
+          'otro_problema_servicio_electrico':                     'UInt8',
+          'otro_problema_servicio_electrico_nombre':              'String',
+          'no_problema_servicio_electrico':                       'UInt8', 
+          'cuenta_agua_red_publica':                              'UInt8',
+          'interrupciones_suministro_agua_programadas':           'UInt8',
+          'interrupciones_suministro_agua_no_programadas':        'UInt8',
+          'dispo_suministro_agua_horas_dias':                     'UInt8',
+          'demora_no_atienden_reclamos_suministro_agua':          'UInt8',
+          'costo_elevado_suministro_agua':                        'UInt8', 
+          'intensidad_suministro_agua_variable':                  'UInt8',
+          'errores_facturacion_servicio_agua':                    'UInt8', 
+          'mala_calidad_agua':                                    'UInt8',
+          'otro_problema_servicio_suministro_agua':               'UInt8', 
+          'tiene_ejecutivos':                                     'UInt8',
+          'n_ejecutivos_total':                                   'UInt16', 
+          'n_ejecutivos_hombres':                                 'UInt16', 
+          'n_ejecutivos_mujeres':                                 'UInt16',
+          'ejecutivos_remuneracion_promedio_mensual':             'Float32',
+          'tiene_empleados_permanentes':                          'UInt8', 
+          'n_empleados_permanentes_total':                        'UInt16',
+          'n_empleados_permanentes_hombres':                      'UInt16', 
+          'n_empleados_permanentes_mujeres':                      'UInt16',
+          'empleados_permanentes_remuneracion_promedio_mensual':  'Float32',
+          'tiene_obreros_permanentes':                            'UInt8', 
+          'n_obreros_permanentes_total':                          'UInt16',
+          'n_obreros_permanentes_hombres':                        'UInt16', 
+          'n_obreros_permanentes_mujeres':                        'UInt16',
+          'obreros_permanentes_remuneracion_promedio_mensual':    'Float32',
+          'tiene_empleados_eventuales':                           'UInt8', 
+          'n_empleados_eventuales_total':                         'UInt16',
+          'n_empleados_eventuales_hombres':                       'UInt16', 
+          'n_empleados_eventuales_mujeres':                       'UInt16',
+          'empleados_eventuales_remuneracion_promedio_mensual':   'Float32',
+          'tiene_obreros_eventuales':                             'UInt8', 
+          'n_obreros_eventuales_total':                           'UInt16',
+          'n_obreros_eventuales_hombres':                         'UInt16', 
+          'n_obreros_eventuales_mujeres':                         'UInt16',
+          'obreros_eventuales_remuneracion_promedio_mensual':     'Float32',
+          'tiene_total_1_2_3_4_5':                                'UInt8', 
+          'n_total_1_2_3_4_5_total':                              'UInt16',
+          'n_total_1_2_3_4_5_hombres':                            'UInt16', 
+          'n_total_1_2_3_4_5_mujeres':                            'UInt16',
+          'tiene_propietarios':                                   'UInt8', 
+          'n_propietarios_total':                                 'UInt16', 
+          'n_propietarios_hombres':                               'UInt16',
+          'n_propietarios_mujeres':                               'UInt16',
+
+
+        }
 
         read_step = ReadStep()
         transform_step = TransformStep()
         join_step = JoinStep()
         load_step = LoadStep(
           'encuesta_empresas', connector=db_connector, if_exists='drop',
-          pk=['district_id', 'company_id', 'year'] #, dtype=dtypes
-          , nullable_list=['ciiu_rev4', 'ciiu_rev4_a', 'ciiu_rev_b']
+          pk=['district_id', 'company_id', 'year'], dtype=dtypes, nullable_list=[
+            # 01_EMPRESA_IDENTIFICA
+            'ruc', 'razon_social', 'nombre_comercial',
+            'anio_inicio_actividades', 'ciiu_rev4', 'ciiu_rev4_a', 'ciiu_rev4_b',
+            'ciiu_rev4_c', 'ciiu_rev4_d', 'tipo_sociedad', 'tipo_sociedad_text',
+            'rango_ventas_2014', 'factor_expansion',
+
+            # 02_MÓDULO_I_II_III_1
+            'plan_negocios', 'credito_inicio_operaciones',
+            'institucion_credito', 'areas_funcionales_identificar',
+            'recursos_humanos', 'logistica_aprovisionamiento', 'comercializacion',
+            'contabilidad', 'produccion', 'direccion_gerencia', 'area_legal',
+            'soporte_informatico', 'otro', 'participa_mercado_internacional',
+            'participa_mercado_nacional', 'participa_mercado_local',
+            'mercado_principal', 'considera_competencia_existe',
+            'competencia_informal_precio', 'competencia_informal_calidad',
+            'competencia_informal_grado_diferenciacion',
+            'competencia_informal_tiempo_entrega',
+            'competencia_informal_promociones_descuentos',
+            'competencia_informal_servicio_cliente', 'competencia_informal_otro',
+            'pertenece_organizacion_fin_empresarial',
+            'anio_incorporacion_organizacion_fin_empresarial',
+            'tipo_organizacion_fin_empresarial', 'acceso_info_negociar_proveedores',
+            'acceso_info_servicios_financieros', 'acceso_info_acceso_mercados',
+            'acceso_info_empresarial', 'acceso_capacitacion_asis_tecnica',
+            'acceso_info_vigilancia_limpieza', 'acceso_info_infraestructura',
+            'acceso_info_otro', 'utilidad_relacion_asociatividad_2014',
+            'no_pertenece_organizacion_agrupacion', 'local_electricidad_publica',
+            'interrupciones_electricas_programadas',
+            'interrupciones_electricas_no_programadas',
+            'dispo_servicio_electrico_horas_dias',
+            'demora_no_atienden_reclamos_servicio_electrico',
+            'costo_elevado_servicio_electrico',
+            'intensidad_corriente_electrica_variable',
+            'errores_facturacion_servicio_electrico',
+            'otro_problema_servicio_electrico',
+            'otro_problema_servicio_electrico_nombre',
+            'no_problema_servicio_electrico', 'cuenta_agua_red_publica',
+            'interrupciones_suministro_agua_programadas',
+            'interrupciones_suministro_agua_no_programadas',
+            'dispo_suministro_agua_horas_dias',
+            'demora_no_atienden_reclamos_suministro_agua',
+            'costo_elevado_suministro_agua', 'intensidad_suministro_agua_variable',
+            'errores_facturacion_servicio_agua', 'mala_calidad_agua',
+            'otro_problema_servicio_suministro_agua', 'tiene_ejecutivos',
+            'n_ejecutivos_total', 'n_ejecutivos_hombres', 'n_ejecutivos_mujeres',
+            'ejecutivos_remuneracion_promedio_mensual',
+            'tiene_empleados_permanentes', 'n_empleados_permanentes_total',
+            'n_empleados_permanentes_hombres', 'n_empleados_permanentes_mujeres',
+            'empleados_permanentes_remuneracion_promedio_mensual',
+            'tiene_obreros_permanentes', 'n_obreros_permanentes_total',
+            'n_obreros_permanentes_hombres', 'n_obreros_permanentes_mujeres',
+            'obreros_permanentes_remuneracion_promedio_mensual',
+            'tiene_empleados_eventuales', 'n_empleados_eventuales_total',
+            'n_empleados_eventuales_hombres', 'n_empleados_eventuales_mujeres',
+            'empleados_eventuales_remuneracion_promedio_mensual',
+            'tiene_obreros_eventuales', 'n_obreros_eventuales_total',
+            'n_obreros_eventuales_hombres', 'n_obreros_eventuales_mujeres',
+            'obreros_eventuales_remuneracion_promedio_mensual',
+            'tiene_total_1_2_3_4_5', 'n_total_1_2_3_4_5_total',
+            'n_total_1_2_3_4_5_hombres', 'n_total_1_2_3_4_5_mujeres',
+            'tiene_propietarios', 'n_propietarios_total', 'n_propietarios_hombres',
+            'n_propietarios_mujeres',
+
+            
+            ]
         )
 
         return [read_step, transform_step, join_step, load_step]
