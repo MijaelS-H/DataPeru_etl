@@ -61,9 +61,9 @@ class TransformStep(PipelineStep):
       df.rename(columns=columns, inplace=True)
       df = df[list(columns.values())].copy()
       df['company_id'] = df['company_id'].astype(int)
-      df['anio_inicio_actividades'] = df['anio_inicio_actividades'].astype(pd.Int16Dtype())
-      df['tipo_sociedad'] = df['tipo_sociedad'].astype(pd.Int8Dtype())
-      df['rango_ventas_2014'] = df['rango_ventas_2014'].astype(pd.Int8Dtype())
+      df['anio_inicio_actividades'] = df['anio_inicio_actividades'].astype(pd.Int32Dtype())
+      df['tipo_sociedad'] = df['tipo_sociedad'].astype(pd.Int16Dtype())
+      df['rango_ventas_2014'] = df['rango_ventas_2014'].astype(pd.Int16Dtype())
 
       # 02_MÓDULO_I_II_III_1
       mod2_1 = mod2_1[['iruc',
@@ -180,7 +180,91 @@ class TransformStep(PipelineStep):
 
       mod2_1.rename(columns=columns, inplace=True)
       mod2_1['company_id'] = mod2_1['company_id'].astype(int)
-
+      mod2_1['plan_negocios'] = mod2_1['plan_negocios'].astype(pd.Int16Dtype())
+      mod2_1['credito_inicio_operaciones'] = mod2_1['credito_inicio_operaciones'].astype(pd.Int16Dtype())                           
+      mod2_1['institucion_credito'] = mod2_1['institucion_credito'].astype(pd.Int16Dtype())                                   
+      mod2_1['areas_funcionales_identificar'] = mod2_1['areas_funcionales_identificar'].astype(pd.Int16Dtype())                        
+      mod2_1['recursos_humanos'] = mod2_1['recursos_humanos'].astype(pd.Int16Dtype())                                      
+      mod2_1['logistica_aprovisionamiento'] = mod2_1['logistica_aprovisionamiento'].astype(pd.Int16Dtype())                           
+      mod2_1['comercializacion'] = mod2_1['comercializacion'].astype(pd.Int16Dtype())                                     
+      mod2_1['contabilidad'] = mod2_1['contabilidad'].astype(pd.Int16Dtype())                                          
+      mod2_1['produccion'] = mod2_1['produccion'].astype(pd.Int16Dtype())                                            
+      mod2_1['direccion_gerencia'] = mod2_1['direccion_gerencia'].astype(pd.Int16Dtype())                                    
+      mod2_1['area_legal'] = mod2_1['area_legal'].astype(pd.Int16Dtype())                                           
+      mod2_1['soporte_informatico'] = mod2_1['soporte_informatico'].astype(pd.Int16Dtype())                                   
+      mod2_1['otro'] = mod2_1['otro'].astype(pd.Int16Dtype())                                                  
+      mod2_1['participa_mercado_internacional'] = mod2_1['participa_mercado_internacional'].astype(pd.Int16Dtype())                      
+      mod2_1['participa_mercado_nacional'] = mod2_1['participa_mercado_nacional'].astype(pd.Int16Dtype())                            
+      mod2_1['participa_mercado_local'] = mod2_1['participa_mercado_local'].astype(pd.Int16Dtype())                              
+      mod2_1['mercado_principal'] = mod2_1['mercado_principal'].astype(pd.Int16Dtype())                                     
+      mod2_1['considera_competencia_existe'] = mod2_1['considera_competencia_existe'].astype(pd.Int16Dtype())                         
+      mod2_1['competencia_informal_precio'] = mod2_1['competencia_informal_precio'].astype(pd.Int16Dtype())                           
+      mod2_1['competencia_informal_calidad'] = mod2_1['competencia_informal_calidad'].astype(pd.Int16Dtype())                         
+      mod2_1['competencia_informal_grado_diferenciacion'] = mod2_1['competencia_informal_grado_diferenciacion'].astype(pd.Int16Dtype())            
+      mod2_1['competencia_informal_tiempo_entrega'] = mod2_1['competencia_informal_tiempo_entrega'].astype(pd.Int16Dtype())                  
+      mod2_1['competencia_informal_promociones_descuentos'] = mod2_1['competencia_informal_promociones_descuentos'].astype(pd.Int16Dtype())          
+      mod2_1['competencia_informal_servicio_cliente'] = mod2_1['competencia_informal_servicio_cliente'].astype(pd.Int16Dtype())                 
+      mod2_1['competencia_informal_otro'] = mod2_1['competencia_informal_otro'].astype(pd.Int16Dtype())                            
+      mod2_1['pertenece_organizacion_fin_empresarial'] = mod2_1['pertenece_organizacion_fin_empresarial'].astype(pd.Int16Dtype())               
+      mod2_1['anio_incorporacion_organizacion_fin_empresarial'] = mod2_1['anio_incorporacion_organizacion_fin_empresarial'].astype(pd.Int6Dtype())
+      mod2_1['tipo_organizacion_fin_empresarial'] = mod2_1['tipo_organizacion_fin_empresarial'].astype(pd.Int16Dtype())                     
+      mod2_1['acceso_info_negociar_proveedores'] = mod2_1['acceso_info_negociar_proveedores'].astype(pd.Int16Dtype())                       
+      mod2_1['acceso_info_servicios_financieros'] = mod2_1['acceso_info_servicios_financieros'].astype(pd.Int16Dtype())                     
+      mod2_1['acceso_info_acceso_mercados'] = mod2_1['acceso_info_acceso_mercados'].astype(pd.Int16Dtype())                          
+      mod2_1['acceso_info_empresarial'] = mod2_1['acceso_info_empresarial'].astype(pd.Int16Dtype())                               
+      mod2_1['acceso_capacitacion_asis_tecnica'] = mod2_1['acceso_capacitacion_asis_tecnica'].astype(pd.Int16Dtype())                     
+      mod2_1['acceso_info_vigilancia_limpieza'] = mod2_1['acceso_info_vigilancia_limpieza'].astype(pd.Int16Dtype())                       
+      mod2_1['acceso_info_infraestructura'] = mod2_1['acceso_info_infraestructura'].astype(pd.Int16Dtype())                          
+      mod2_1['acceso_info_otro'] = mod2_1['acceso_info_otro'].astype(pd.Int16Dtype())                                      
+      mod2_1['utilidad_relacion_asociatividad_2014'] = mod2_1['utilidad_relacion_asociatividad_2014'].astype(pd.Int16Dtype())                 
+      mod2_1['no_pertenece_organizacion_agrupacion'] = mod2_1['no_pertenece_organizacion_agrupacion'].astype(pd.Int16Dtype())                  
+      mod2_1['local_electricidad_publica'] = mod2_1['local_electricidad_publica'].astype(pd.Int16Dtype())                           
+      mod2_1['interrupciones_electricas_programadas'] = mod2_1['interrupciones_electricas_programadas'].astype(pd.Int16Dtype())                
+      mod2_1['interrupciones_electricas_no_programadas'] = mod2_1['interrupciones_electricas_no_programadas'].astype(pd.Int16Dtype())             
+      mod2_1['dispo_servicio_electrico_horas_dias'] = mod2_1['dispo_servicio_electrico_horas_dias'].astype(pd.Int16Dtype())                  
+      mod2_1['demora_no_atienden_reclamos_servicio_electrico'] = mod2_1['demora_no_atienden_reclamos_servicio_electrico'].astype(pd.Int16Dtype())       
+      mod2_1['costo_elevado_servicio_electrico'] = mod2_1['costo_elevado_servicio_electrico'].astype(pd.Int16Dtype())                     
+      mod2_1['intensidad_corriente_electrica_variable'] = mod2_1['intensidad_corriente_electrica_variable'].astype(pd.Int16Dtype())              
+      mod2_1['errores_facturacion_servicio_electrico'] = mod2_1['errores_facturacion_servicio_electrico'].astype(pd.Int16Dtype())               
+      mod2_1['otro_problema_servicio_electrico'] = mod2_1['otro_problema_servicio_electrico'].astype(pd.Int16Dtype())                     
+      mod2_1['no_problema_servicio_electrico'] = mod2_1['no_problema_servicio_electrico'].astype(pd.Int16Dtype())                        
+      mod2_1['cuenta_agua_red_publica'] = mod2_1['cuenta_agua_red_publica'].astype(pd.Int16Dtype())                              
+      mod2_1['interrupciones_suministro_agua_programadas'] = mod2_1['interrupciones_suministro_agua_programadas'].astype(pd.Int16Dtype())           
+      mod2_1['interrupciones_suministro_agua_no_programadas'] = mod2_1['interrupciones_suministro_agua_no_programadas'].astype(pd.Int16Dtype())        
+      mod2_1['dispo_suministro_agua_horas_dias'] = mod2_1['dispo_suministro_agua_horas_dias'].astype(pd.Int16Dtype())                     
+      mod2_1['demora_no_atienden_reclamos_suministro_agua'] = mod2_1['demora_no_atienden_reclamos_suministro_agua'].astype(pd.Int16Dtype())          
+      mod2_1['costo_elevado_suministro_agua'] = mod2_1['costo_elevado_suministro_agua'].astype(pd.Int16Dtype())                         
+      mod2_1['intensidad_suministro_agua_variable'] = mod2_1['intensidad_suministro_agua_variable'].astype(pd.Int16Dtype())                  
+      mod2_1['errores_facturacion_servicio_agua'] = mod2_1['errores_facturacion_servicio_agua'].astype(pd.Int16Dtype())                     
+      mod2_1['mala_calidad_agua'] = mod2_1['mala_calidad_agua'].astype(pd.Int16Dtype())                                    
+      mod2_1['otro_problema_servicio_suministro_agua'] = mod2_1['otro_problema_servicio_suministro_agua'].astype(pd.Int16Dtype())                
+      mod2_1['tiene_ejecutivos'] = mod2_1['tiene_ejecutivos'].astype(pd.Int16Dtype())                                     
+      mod2_1['n_ejecutivos_total'] = mod2_1['n_ejecutivos_total'].astype(pd.Int32Dtype())                                    
+      mod2_1['n_ejecutivos_hombres'] = mod2_1['n_ejecutivos_hombres'].astype(pd.Int32Dtype())                                  
+      mod2_1['n_ejecutivos_mujeres'] = mod2_1['n_ejecutivos_mujeres'].astype(pd.Int32Dtype())                                 
+      mod2_1['tiene_empleados_permanentes'] = mod2_1['tiene_empleados_permanentes'].astype(pd.Int16Dtype())                          
+      mod2_1['n_empleados_permanentes_total'] = mod2_1['n_empleados_permanentes_total'].astype(pd.Int32Dtype())                        
+      mod2_1['n_empleados_permanentes_hombres'] = mod2_1['n_empleados_permanentes_hombres'].astype(pd.Int32Dtype())                       
+      mod2_1['n_empleados_permanentes_mujeres'] = mod2_1['n_empleados_permanentes_mujeres'].astype(pd.Int32Dtype())                      
+      mod2_1['tiene_obreros_permanentes'] = mod2_1['tiene_obreros_permanentes'].astype(pd.Int16Dtype())                            
+      mod2_1['n_obreros_permanentes_total'] = mod2_1['n_obreros_permanentes_total'].astype(pd.Int32Dtype())                          
+      mod2_1['n_obreros_permanentes_hombres'] = mod2_1['n_obreros_permanentes_hombres'].astype(pd.Int32Dtype())                         
+      mod2_1['n_obreros_permanentes_mujeres'] = mod2_1['n_obreros_permanentes_mujeres'].astype(pd.Int32Dtype())                        
+      mod2_1['tiene_empleados_eventuales'] = mod2_1['tiene_empleados_eventuales'].astype(pd.Int16Dtype())                           
+      mod2_1['n_empleados_eventuales_total'] = mod2_1['n_empleados_eventuales_total'].astype(pd.Int32Dtype())                         
+      mod2_1['n_empleados_eventuales_hombres'] = mod2_1['n_empleados_eventuales_hombres'].astype(pd.Int32Dtype())                        
+      mod2_1['n_empleados_eventuales_mujeres'] = mod2_1['n_empleados_eventuales_mujeres'].astype(pd.Int32Dtype())                       
+      mod2_1['tiene_obreros_eventuales'] = mod2_1['tiene_obreros_eventuales'].astype(pd.Int16Dtype())                             
+      mod2_1['n_obreros_eventuales_total'] = mod2_1['n_obreros_eventuales_total'].astype(pd.Int32Dtype())                           
+      mod2_1['n_obreros_eventuales_hombres'] = mod2_1['n_obreros_eventuales_hombres'].astype(pd.Int32Dtype())                          
+      mod2_1['n_obreros_eventuales_mujeres'] = mod2_1['n_obreros_eventuales_mujeres'].astype(pd.Int32Dtype())                         
+      mod2_1['tiene_total_1_2_3_4_5'] = mod2_1['tiene_total_1_2_3_4_5'].astype(pd.Int16Dtype())                                                             
+      mod2_1['n_total_1_2_3_4_5_hombres'] = mod2_1['n_total_1_2_3_4_5_hombres'].astype(pd.Int32Dtype())                             
+      mod2_1['n_total_1_2_3_4_5_mujeres'] = mod2_1['n_total_1_2_3_4_5_mujeres'].astype(pd.Int32Dtype())                            
+      mod2_1['tiene_propietarios'] = mod2_1['tiene_propietarios'].astype(pd.Int16Dtype())                                   
+      mod2_1['n_propietarios_total'] = mod2_1['n_propietarios_total'].astype(pd.Int32Dtype())                                  
+      mod2_1['n_propietarios_hombres'] = mod2_1['n_propietarios_hombres'].astype(pd.Int32Dtype())                               
+      mod2_1['n_propietarios_mujeres'] = mod2_1['n_propietarios_mujeres'].astype(pd.Int32Dtype())
 
       # 02_MÓDULO_I_II_III_2
       mod2_2 = mod2_2[[
@@ -560,7 +644,7 @@ class TransformStep(PipelineStep):
         'm8p53_22': 'factor_limita_crecimiento_empresa_ninguno' # 1,0 
       }
 
-      # transform ranking options to 0, 1, nan, 0 does not appear as a valid option
+      # Transform ranking options to 0, 1, nan, 0 does not appear as a valid option
       for col in [
         'm8p53_1', 'm8p53_2', 'm8p53_3', 'm8p53_4', 'm8p53_5', 'm8p53_6', 'm8p53_7', 'm8p53_8',
         'm8p53_9', 'm8p53_10','m8p53_11', 'm8p53_12', 'm8p53_13', 'm8p53_14', 'm8p53_15', 'm8p53_16',
@@ -695,7 +779,7 @@ class EncuestaEmpresasPipeline(EasyPipeline):
           'n_obreros_eventuales_mujeres':                         'UInt16',
           'obreros_eventuales_remuneracion_promedio_mensual':     'Float32',
           'tiene_total_1_2_3_4_5':                                'UInt8', 
-          'n_total_1_2_3_4_5_total':                              'UInt16',
+          'n_total_1_2_3_4_5_total':                              'Float32',
           'n_total_1_2_3_4_5_hombres':                            'UInt16', 
           'n_total_1_2_3_4_5_mujeres':                            'UInt16',
           'tiene_propietarios':                                   'UInt8', 
@@ -703,7 +787,94 @@ class EncuestaEmpresasPipeline(EasyPipeline):
           'n_propietarios_hombres':                               'UInt16',
           'n_propietarios_mujeres':                               'UInt16',
 
-
+          # 02_MÓDULO_I_II_III_2
+          'tiene_familiares_no_remunerados':                              'UInt8',
+          'n_familiares_no_remunerados_total':                            'UInt16',
+          'n_familiares_no_remunerados_hombres':                          'UInt16',
+          'n_familiares_no_remunerados_mujeres':                          'UInt16', 
+          'tiene_practicantes':                                           'UInt8',
+          'n_practicantes_total':                                         'UInt16', 
+          'n_practicantes_hombres':                                       'UInt16',
+          'n_practicantes_mujeres':                                       'UInt16', 
+          'tiene_personal_servicios_honorarios':                          'UInt8',
+          'n_personal_servicios_honorarios_total':                        'UInt16',
+          'n_personal_servicios_honorarios_hombres':                      'UInt16',
+          'n_personal_servicios_honorarios_mujeres':                      'UInt16', 
+          'tiene_comisionistas':                                          'UInt8',
+          'n_comisionistas_total':                                        'UInt16', 
+          'n_comisionistas_hombres':                                      'UInt16',
+          'n_comisionistas_mujeres':                                      'UInt16', 
+          'tiene_total_7_8_9_10_11':                                      'UInt8',
+          'n_total_7_8_9_10_11_total':                                    'UInt16', 
+          'n_total_7_8_9_10_11_hombres':                                  'UInt16',
+          'n_total_7_8_9_10_11_mujeres':                                  'UInt16',
+          'tiene_personal_servicios_intermediacion':                      'UInt8',
+          'n_personal_servicios_intermediacion_total':                    'UInt16',
+          'n_personal_servicios_intermediacion_hombres':                  'UInt16',
+          'n_personal_servicios_intermediacion_mujeres':                  'UInt16',
+          'n_trabajadores_postgrado':                                     'UInt16', 
+          'n_trabajadores_universitaria_completa':                        'UInt16',
+          'n_trabajadores_universitaria_incompleta':                      'UInt16',
+          'n_trabajadores_tecnico_completa':                              'UInt16', 
+          'n_trabajadores_tecnico_incompleta':                            'UInt16',
+          'n_trabajadores_secundaria_primaria':                           'UInt16',
+          'n_trabajadores_inicial_sin_nivel':                             'UInt16', 
+          'n_nivel_estudios_total':                                       'UInt16',
+          'conoce_modalidad_teletrabajo':                                 'UInt8', 
+          'teletrabajo_adecuado_empresa':                                 'UInt8',
+          'entrega_incentivos_trabajadores_buenos_resultados':            'UInt8',
+          'entrega_incentivos_economicos':                                'UInt8', 
+          'otorga_ascensos':                                              'UInt8',
+          'otorga_capacitaciones':                                        'UInt8', 
+          'otorga_viajes':                                                'UInt8', 
+          'otorga_otro_incentivo':                                        'UInt8',
+          'requiere_contratar_personal_2014':                             'UInt8',
+          'contratar_personal_innovacion_teconologica':                   'UInt8',
+          'contratar_personal_estacionalidad':                            'UInt8',
+          'contratar_personal_renuncia_personal':                         'UInt8',
+          'contratar_personal_nueva_linea_negocio':                       'UInt8',
+          'contratar_personal_expansion_empresa':                         'UInt8', 
+          'contratar_personal_jubilacion':                                'UInt8',
+          'contratar_personal_otro':                                      'UInt8', 
+          'dificultad_contratar_trabajadores_2014':                       'UInt8',
+          'dificultad_contratar_escasez_postulante':                      'UInt8',
+          'dificultad_contratar_formacion_academica':                     'UInt8',
+          'dificultad_contratar_experiencia':                             'UInt8',
+          'dificultad_contratar_habilidades_personales_deseadas':         'UInt8',
+          'dificultad_contratar_informacion_confiable_postulante':        'UInt8',
+          'dificultad_contratar_periodo_contrato':                        'UInt8',
+          'dificultad_contratar_remuneraciones':                          'UInt8',
+          'dificultad_contratar_destino_geografico':                      'UInt8',
+          'dificultad_contratar_jornada_laboral':                         'UInt8',
+          'dificultad_contratar_busqueda_postulantes':                    'UInt8',
+          'dificultad_contratar_otro':                                    'UInt8', 
+          'dificil_conseguir_directivo_general':                          'UInt8',
+          'dificil_conseguir_profesionales':                              'UInt8', 
+          'dificil_conseguir_tecnicos':                                   'UInt8',
+          'dificil_conseguir_operarios_calificados':                      'UInt8',
+          'dificil_conseguir_operarios_no_calificados':                   'UInt8',
+          'trabajadores_capacitacion_2014':                               'UInt8',
+          'brinda_capacitacion_centros_formacion_sectoriales':            'UInt8',
+          'brinda_capacitacion_universidad_instituto_publico':            'UInt8',
+          'brinda_capacitacion_universidad_instituto_privado':            'UInt8',
+          'brinda_capacitacion_institucion_publica':                      'UInt8',
+          'brinda_capacitacion_centro_innovacion_tecnologica':            'UInt8',
+          'brinda_capacitacion_camara_comercio':                          'UInt8',
+          'brinda_capacitacion_proveedores_empresa':                      'UInt8',
+          'brinda_capacitacion_propia_empresa_casa_matriz':               'UInt8',
+          'brinda_capacitacion_instructor_externo':                       'UInt8', 
+          'brinda_capacitacion_otro':                                     'UInt8',
+          'n_trabajadores_capacitaciones_idiomas':                        'UInt16',
+          'n_trabajadores_capacitaciones_gestion_empresarial':            'UInt16',
+          'n_trabajadores_capacitaciones_seguridad_salud_ocupacional':    'UInt16',
+          'n_trabajadores_capacitaciones_tic':                            'UInt16',
+          'n_trabajadores_capacitaciones_habilidades_socio_emocionales':  'UInt16',
+          'n_trabajadores_capacitaciones_temas_tecnicos_productivos':     'UInt16',
+          'n_trabajadores_capacitaciones_marketing':                      'UInt16',
+          'n_trabajadores_capacitaciones_otro':                           'UInt16', 
+          'razon_no_realiza_capacitaciones':                              'UInt8',
+          'conoce_credito_beneficio_tributario_gastos_capacitacion':      'UInt8',
+          'utiliza_utilizaria_dicho_credito':                             'UInt8',          
         }
 
         read_step = ReadStep()
@@ -774,6 +945,75 @@ class EncuestaEmpresasPipeline(EasyPipeline):
             'n_total_1_2_3_4_5_hombres', 'n_total_1_2_3_4_5_mujeres',
             'tiene_propietarios', 'n_propietarios_total', 'n_propietarios_hombres',
             'n_propietarios_mujeres',
+
+            # 02_MÓDULO_I_II_III_2
+            'tiene_familiares_no_remunerados',
+            'n_familiares_no_remunerados_total',
+            'n_familiares_no_remunerados_hombres',
+            'n_familiares_no_remunerados_mujeres', 'tiene_practicantes',
+            'n_practicantes_total', 'n_practicantes_hombres',
+            'n_practicantes_mujeres', 'tiene_personal_servicios_honorarios',
+            'n_personal_servicios_honorarios_total',
+            'n_personal_servicios_honorarios_hombres',
+            'n_personal_servicios_honorarios_mujeres', 'tiene_comisionistas',
+            'n_comisionistas_total', 'n_comisionistas_hombres',
+            'n_comisionistas_mujeres', 'tiene_total_7_8_9_10_11',
+            'n_total_7_8_9_10_11_total', 'n_total_7_8_9_10_11_hombres',
+            'n_total_7_8_9_10_11_mujeres',
+            'tiene_personal_servicios_intermediacion',
+            'n_personal_servicios_intermediacion_total',
+            'n_personal_servicios_intermediacion_hombres',
+            'n_personal_servicios_intermediacion_mujeres',
+            'n_trabajadores_postgrado', 'n_trabajadores_universitaria_completa',
+            'n_trabajadores_universitaria_incompleta',
+            'n_trabajadores_tecnico_completa', 'n_trabajadores_tecnico_incompleta',
+            'n_trabajadores_secundaria_primaria',
+            'n_trabajadores_inicial_sin_nivel', 'n_nivel_estudios_total',
+            'conoce_modalidad_teletrabajo', 'teletrabajo_adecuado_empresa',
+            'entrega_incentivos_trabajadores_buenos_resultados',
+            'entrega_incentivos_economicos', 'otorga_ascensos',
+            'otorga_capacitaciones', 'otorga_viajes', 'otorga_otro_incentivo',
+            'requiere_contratar_personal_2014',
+            'contratar_personal_innovacion_teconologica',
+            'contratar_personal_estacionalidad',
+            'contratar_personal_renuncia_personal',
+            'contratar_personal_nueva_linea_negocio',
+            'contratar_personal_expansion_empresa', 'contratar_personal_jubilacion',
+            'contratar_personal_otro', 'dificultad_contratar_trabajadores_2014',
+            'dificultad_contratar_escasez_postulante',
+            'dificultad_contratar_formacion_academica',
+            'dificultad_contratar_experiencia',
+            'dificultad_contratar_habilidades_personales_deseadas',
+            'dificultad_contratar_informacion_confiable_postulante',
+            'dificultad_contratar_periodo_contrato',
+            'dificultad_contratar_remuneraciones',
+            'dificultad_contratar_destino_geografico',
+            'dificultad_contratar_jornada_laboral',
+            'dificultad_contratar_busqueda_postulantes',
+            'dificultad_contratar_otro', 'dificil_conseguir_directivo_general',
+            'dificil_conseguir_profesionales', 'dificil_conseguir_tecnicos',
+            'dificil_conseguir_operarios_calificados',
+            'dificil_conseguir_operarios_no_calificados',
+            'trabajadores_capacitacion_2014',
+            'brinda_capacitacion_centros_formacion_sectoriales',
+            'brinda_capacitacion_universidad_instituto_publico',
+            'brinda_capacitacion_universidad_instituto_privado',
+            'brinda_capacitacion_institucion_publica',
+            'brinda_capacitacion_centro_innovacion_tecnologica',
+            'brinda_capacitacion_camara_comercio',
+            'brinda_capacitacion_proveedores_empresa',
+            'brinda_capacitacion_propia_empresa_casa_matriz',
+            'brinda_capacitacion_instructor_externo', 'brinda_capacitacion_otro',
+            'n_trabajadores_capacitaciones_idiomas',
+            'n_trabajadores_capacitaciones_gestion_empresarial',
+            'n_trabajadores_capacitaciones_seguridad_salud_ocupacional',
+            'n_trabajadores_capacitaciones_tic',
+            'n_trabajadores_capacitaciones_habilidades_socio_emocionales',
+            'n_trabajadores_capacitaciones_temas_tecnicos_productivos',
+            'n_trabajadores_capacitaciones_marketing',
+            'n_trabajadores_capacitaciones_otro', 'razon_no_realiza_capacitaciones',
+            'conoce_credito_beneficio_tributario_gastos_capacitacion',
+            'utiliza_utilizaria_dicho_credito',
 
             
             ]
