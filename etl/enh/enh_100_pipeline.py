@@ -211,7 +211,7 @@ class TransformStep(PipelineStep):
             "d106": "monthly_you_be_paid_rent",
             "d107d1": "credit_buying_house_apartment",
             "d107d2": "credit_ground_house",
-            "d107d3": "credit_house-improvements",
+            "d107d3": "credit_house_improvements",
             "d107d4": "credit_build_new_house",
 
             # Values
@@ -300,7 +300,7 @@ class ENHPipeline(EasyPipeline):
 
             "credit_buying_house_apartment": "UInt16",
             "credit_ground_house": "UInt16",
-            "credit_house-improvements": "UInt16",
+            "credit_house_improvements": "UInt16",
             "credit_build_new_house": "UInt16",
 
             "last_month_total_paid_water": "UInt32",
@@ -476,7 +476,7 @@ class ENHPipeline(EasyPipeline):
         load_step = LoadStep(
             "housing_survey_100", db_connector, if_exists="append", pk=["ubigeo", "year"], dtype=dtype, 
             nullable_list=[
-              "monthly_rent_household", "monthly_you_be_paid_rent", "credit_buying_house_apartment", "credit_ground_house", "credit_house-improvements",
+              "monthly_rent_household", "monthly_you_be_paid_rent", "credit_buying_house_apartment", "credit_ground_house", "credit_house_improvements",
               "credit_build_new_house", "last_month_total_paid_water", "last_month_total_paid_electricity", "last_month_total_paid_gas_glp",
               "last_month_total_paid_natural_gas", "last_month_total_paid_candle", "last_month_total_paid_coal", "last_month_total_paid_wood",
               "last_month_total_paid_petroleum", "last_month_total_paid_gasoline", "last_month_total_paid_landline", "last_month_total_paid_cellphone",
@@ -530,8 +530,8 @@ if __name__ == "__main__":
     data = glob.glob('../../data/enh/*.dta')
 
     pp = ENHPipeline()
-
-    for year in range(2014, 2018 + 1):
+    # for year in range(2014, 2018 + 1):
+    for year in range(2018, 2018 + 1):
         pp.run({
             'url': '../../data/enh/enaho01-{}-100.dta'.format(year),
             'year': year
