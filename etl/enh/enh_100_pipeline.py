@@ -11,9 +11,13 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
+    # Selected columns from enaho01-200 module to add gender/age/civil status data to dataframe
+    batch_pop = ['conglome', 'vivienda', 'hogar', 'codperso', 'ubigeo', 'dominio', 'estrato', 'p207', 'p208a', 'p208b', 'p209']
+
     # Selected columns from dataset for available years
-        batch_2018 = ['ubigeo', 'dominio','estrato', 'p101', 'p102',  'p103', 'p103a', 'p105a', 'p106a', 'p106b', 'p110', 'p110a1', 'p110c',
-                'p110f', 'p110g', 'p111a', 'p1121', 'p1123', 'p1124', 'p1125', 'p1126', 'p1127', 'p112a', 'p1131', 'p1132', 
+        batch_2018 = [
+                'conglome', 'vivienda', 'hogar', 'ubigeo', 'dominio','estrato', 'p101', 'p102',  'p103', 'p103a', 'p105a', 'p106a', 'p106b', 'p110', 'p110a1', 'p110c',
+                'p110f', 'p110g', 'p111a', 'p1121', 'p1123', 'p1124', 'p1125', 'p1126', 'p1127', 'p112a', 'p1131', 'p1132',
                 'p1133', 'p1135', 'p1136', 'p1137', 'p1138', 'p113a', 'p1141', 'p1142', 'p1143', 'p1144', 'p1145', 'p1171_01',
                 'p1171_02', 'p1171_04', 'p1171_05', 'p1171_06', 'p1171_07', 'p1171_08', 'p1171_09', 'p1171_10',
                 'p1171_11', 'p1171_12', 'p1171_13', 'p1171_14', 'p1171_15', 'p1171_16',
@@ -25,8 +29,8 @@ class TransformStep(PipelineStep):
                 'p1174_11', 'p1174_12', 'p1174_13', 'p1174_14', 'p1174_15', 'p1174_16',
                 'p1175_01', 'p1175_02', 'p1175_04', 'p1175_05', 'p1175_06', 'p1175_07', 'p1175_08', 'p1175_09', 'p1175_10',
                 'p1175_11', 'p1175_12', 'p1175_13', 'p1175_14', 'p1175_15', 'p1175_16', 'p117t3', 'p117t4',
-                'd105b', 'd106', 'd107d1', 'd107d2', 'd107d3', 'd107d4',   
-                'd1172_01', 'd1172_02', 'd1172_04', 'd1172_05', 'd1172_06', 'd1172_07', 'd1172_08', 'd1172_09', 'd1172_10',          
+                'd105b', 'd106', 'd107d1', 'd107d2', 'd107d3', 'd107d4',
+                'd1172_01', 'd1172_02', 'd1172_04', 'd1172_05', 'd1172_06', 'd1172_07', 'd1172_08', 'd1172_09', 'd1172_10',
                 'd1172_11', 'd1172_12', 'd1172_13', 'd1172_14', 'd1172_15', 'd1172_16', 
                 'd1173_01', 'd1173_02', 'd1173_04', 'd1173_05', 'd1173_06', 'd1173_07', 'd1173_08', 'd1173_09', 'd1173_10',
                 'd1173_11', 'd1173_12', 'd1173_13', 'd1173_14', 'd1173_15', 'd1173_16',           
@@ -34,7 +38,8 @@ class TransformStep(PipelineStep):
                 'd1174_11', 'd1174_12', 'd1174_13', 'd1174_14', 'd1174_15', 'd1174_16',
                 'nbi1', 'nbi2', 'nbi3', 'nbi4', 'nbi5', 'factor07']
 
-        batch_2017 = ['ubigeo', 'dominio','estrato', 'p101', 'p102',  'p103', 'p103a', 'p106a', 'p106b', 'p110', 'p110a1', 'p110c',
+        batch_2017 = [
+                'conglome', 'vivienda', 'hogar', 'ubigeo', 'dominio','estrato', 'p101', 'p102',  'p103', 'p103a', 'p106a', 'p106b', 'p110', 'p110a1', 'p110c',
                 'p111a', 'p1121', 'p1123', 'p1124', 'p1125', 'p1126', 'p1127', 'p112a', 'p1131', 'p1132', 
                 'p1133', 'p1135', 'p1136', 'p1137', 'p1138', 'p113a', 'p1141', 'p1142', 'p1143', 'p1144', 'p1145', 'p1171_01',
                 'p1171_02', 'p1171_04', 'p1171_05', 'p1171_06', 'p1171_07', 'p1171_08', 'p1171_09', 'p1171_10',
@@ -55,7 +60,8 @@ class TransformStep(PipelineStep):
                 'd1174_11', 'd1174_12', 'd1174_13', 'd1174_14', 'd1174_15',
                 'nbi1', 'nbi2', 'nbi3', 'nbi4', 'nbi5', 'factor07']
 
-        batch_2016 = ['ubigeo', 'dominio','estrato', 'p101', 'p102',  'p103', 'p103a', 'p106a', 'p106b', 'p110', 'p110a1',
+        batch_2016 = [
+                'conglome', 'vivienda', 'hogar', 'ubigeo', 'dominio','estrato', 'p101', 'p102',  'p103', 'p103a', 'p106a', 'p106b', 'p110', 'p110a1',
                 'p111a', 'p1121', 'p1123', 'p1124', 'p1125', 'p1126', 'p1127', 'p112a', 'p1131', 'p1132', 
                 'p1133', 'p1135', 'p1136', 'p1137', 'p1138', 'p113a', 'p1141', 'p1142', 'p1143', 'p1144', 'p1145', 'p1171_01',
                 'p1171_02', 'p1171_04', 'p1171_05', 'p1171_06', 'p1171_07', 'p1171_08', 'p1171_09', 'p1171_10',
@@ -78,12 +84,14 @@ class TransformStep(PipelineStep):
 
         # Loading dataframe stata step
         try: 
-            df = pd.read_stata(params.get('url'), columns = batch_2018)
+            df_100 = pd.read_stata(params.get('url1'), columns = batch_2018)
         except:
             try:
-                df = pd.read_stata(params.get('url'), columns = batch_2017)
+                df_100 = pd.read_stata(params.get('url1'), columns = batch_2017)
             except: 
-                df = pd.read_stata(params.get('url'), columns = batch_2016)
+                df_100 = pd.read_stata(params.get('url1'), columns = batch_2016)
+
+        df_200 = pd.read_stata(params.get('url2'), columns = batch_pop)
 
         # Excel spreadsheet for replace text to id step
         df_labels = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJrA-7Hctfv0VmbY8B0UoPNseTRBZ3DWSsHDFhFVlC2w-Efz_8RpxooAxcNLIxK5djVMy3rCAyQOuD/pub?output=xlsx"
@@ -91,12 +99,37 @@ class TransformStep(PipelineStep):
         # Getting values of year for the survey
         df["year"] = int(params.get('year'))
 
-        # Correction step to certain years dataset
+        # Creating unique code column for the merge method
+        df["code"] = df["conglome"].astype("str").str.zfill(6) + df["vivienda"].astype("str").str.zfill(3) + df["hogar"].astype("str").str.zfill(3)
+        df_population["code"] = df_population["conglome"].astype("str").str.zfill(6) + df_population["vivienda"].astype("str").str.zfill(3) + df_population["hogar"].astype("str").str.zfill(2)
+
+        # Merge method to add gendes, age and civil status data
+        df = pd.merge(df, df_population[["code", "codperso", "p207", "p208a", "p208b", "p209"]], on="code", how="left")
+
+        # Correction step to certain years dataset _100
         df["p113a"].replace({9.0 :  9}, inplace= True)
         df["estrato"].replace({"." : ""}, inplace= True)
         df["estrato"] = df["estrato"].str.lstrip()
 
-        # Correction for certain misspelling for a column
+        # Correction step to certain years dataset _200
+        df["p207"].replace({"hombre": 1, "mujer": 2}, inplace= True)
+        df["p209"].replace({"conviviente" : 1,
+                            "casado(a)" : 2,
+                            "viudo(a)" : 3,
+                            "divorciado(a)" : 4,
+                            "separado(a)" : 5,
+                            "soltero(a)" : 6}, inplace= True)
+
+        # Adding missing columns between years dataset
+        missing_col = ["d1172_16", "p110f", "d1173_16", "p1171_16","p1173_16", "p1174_16","p110g", "d1174_16", "p1175_16", "p1172_16"]
+        for item in missing_col:
+            if item not in df:
+                df[item] = pd.np.nan
+
+        # Droping used columns for merge step
+        df.drop(["conglome", "vivienda", "code"], axis=1, inplace=True)
+
+        # Correction for certain misspelling for "nbi3" column
         try:
             df["nbi3"].replace({"hogares con vivienda sin servicios hogienicos" : "hogares con vivienda sin servicios higienicos"}, inplace= True)
         except:
@@ -266,8 +299,13 @@ class TransformStep(PipelineStep):
             # Binary
             "nbi1": "basic_needs_inadequate_house", "nbi2": "basic_needs_overcrowd_house",
             "nbi3": "basic_needs_no_higienic_services", "nbi4": "basic_needs_kids_without_school",
-            "nbi5": "basic_needs_high_economic_dependency"
-            })
+            "nbi5": "basic_needs_high_economic_dependency".
+
+            # _200 dataset columns
+            "p207": "gender",
+            "p208a": "age_years",
+            "p208b": "age_months",
+            "p209": "civil_status"})
 
         # Excel spreadsheet automatized replace step 
         for i in df.columns:
@@ -283,7 +321,8 @@ class ENHPipeline(EasyPipeline):
     def parameter_list():
         return [
             Parameter(label="Year", name="year", dtype=str),
-            Parameter(label="Url", name="url", dtype=str),
+            Parameter(label="Url1", name="url1", dtype=str),
+            Parameter(label="Url2", name="url2", dtype=str),
         ]
 
     @staticmethod
@@ -291,9 +330,13 @@ class ENHPipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
 
         dtype = {
-            "ubigeo":       "UInt32",
-            "dominio":       "UInt8",
-            "estrato":       "UInt8",
+            "ubigeo":           "UInt32",
+            "dominio":          "UInt8",
+            "estrato":          "UInt8",
+            "gender":           "UInt8",
+            "age_years":        "UInt8",
+            "age_months":       "UInt16"
+            "civil_status":     "UInt8",
 
             "monthly_rent_household": "UInt32",
             "monthly_you_be_paid_rent": "UInt32",
@@ -476,6 +519,7 @@ class ENHPipeline(EasyPipeline):
         load_step = LoadStep(
             "housing_survey_100", db_connector, if_exists="append", pk=["ubigeo", "year"], dtype=dtype, 
             nullable_list=[
+              "gender", "age_years", "age_months", "civil_status",
               "monthly_rent_household", "monthly_you_be_paid_rent", "credit_buying_house_apartment", "credit_ground_house", "credit_house_improvements",
               "credit_build_new_house", "last_month_total_paid_water", "last_month_total_paid_electricity", "last_month_total_paid_gas_glp",
               "last_month_total_paid_natural_gas", "last_month_total_paid_candle", "last_month_total_paid_coal", "last_month_total_paid_wood",
@@ -533,6 +577,7 @@ if __name__ == "__main__":
     # for year in range(2014, 2018 + 1):
     for year in range(2018, 2018 + 1):
         pp.run({
-            'url': '../../data/enh/enaho01-{}-100.dta'.format(year),
+            'url1': '../../data/enh/enaho01-{}-100.dta'.format(year),
+            'url2': '../../data/enh/enaho01-{}-200.dta'.format(year),
             'year': year
         })
