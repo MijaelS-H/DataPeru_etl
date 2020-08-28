@@ -11,10 +11,10 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-    # Selected columns from enaho01-200 module to add gender/age/civil status data to dataframe
-    batch_pop = ['conglome', 'vivienda', 'hogar', 'codperso', 'ubigeo', 'dominio', 'estrato', 'p207', 'p208a', 'p208b', 'p209']
+        # Selected columns from enaho01-200 module to add gender/age/civil status data to dataframe
+        batch_pop = ['conglome', 'vivienda', 'hogar', 'codperso', 'ubigeo', 'dominio', 'estrato', 'p207', 'p208a', 'p208b', 'p209']
 
-    # Selected columns from dataset for available years
+        # Selected columns from dataset for available years
         batch_2018 = [
                 'conglome', 'vivienda', 'hogar', 'ubigeo', 'dominio','estrato', 'p101', 'p102',  'p103', 'p103a', 'p105a', 'p106a', 'p106b', 'p110', 'p110a1', 'p110c',
                 'p110f', 'p110g', 'p111a', 'p1121', 'p1123', 'p1124', 'p1125', 'p1126', 'p1127', 'p112a', 'p1131', 'p1132',
@@ -84,14 +84,14 @@ class TransformStep(PipelineStep):
 
         # Loading dataframe stata step
         try: 
-            df_100 = pd.read_stata(params.get('url1'), columns = batch_2018)
+            df = pd.read_stata(params.get('url1'), columns = batch_2018)
         except:
             try:
-                df_100 = pd.read_stata(params.get('url1'), columns = batch_2017)
+                df = pd.read_stata(params.get('url1'), columns = batch_2017)
             except: 
-                df_100 = pd.read_stata(params.get('url1'), columns = batch_2016)
+                df = pd.read_stata(params.get('url1'), columns = batch_2016)
 
-        df_200 = pd.read_stata(params.get('url2'), columns = batch_pop)
+        df_population = pd.read_stata(params.get('url2'), columns = batch_pop)
 
         # Excel spreadsheet for replace text to id step
         df_labels = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJrA-7Hctfv0VmbY8B0UoPNseTRBZ3DWSsHDFhFVlC2w-Efz_8RpxooAxcNLIxK5djVMy3rCAyQOuD/pub?output=xlsx"
@@ -299,7 +299,7 @@ class TransformStep(PipelineStep):
             # Binary
             "nbi1": "basic_needs_inadequate_house", "nbi2": "basic_needs_overcrowd_house",
             "nbi3": "basic_needs_no_higienic_services", "nbi4": "basic_needs_kids_without_school",
-            "nbi5": "basic_needs_high_economic_dependency".
+            "nbi5": "basic_needs_high_economic_dependency",
 
             # _200 dataset columns
             "p207": "gender",
@@ -335,7 +335,7 @@ class ENHPipeline(EasyPipeline):
             "estrato":          "UInt8",
             "gender":           "UInt8",
             "age_years":        "UInt8",
-            "age_months":       "UInt16"
+            "age_months":       "UInt16",
             "civil_status":     "UInt8",
 
             "monthly_rent_household": "UInt32",
@@ -574,8 +574,8 @@ if __name__ == "__main__":
     data = glob.glob('../../data/enh/*.dta')
 
     pp = ENHPipeline()
-    # for year in range(2014, 2018 + 1):
-    for year in range(2018, 2018 + 1):
+    for year in range(2014, 2018 + 1):
+    #for year in range(2018, 2018 + 1):
         pp.run({
             'url1': '../../data/enh/enaho01-{}-100.dta'.format(year),
             'url2': '../../data/enh/enaho01-{}-200.dta'.format(year),
