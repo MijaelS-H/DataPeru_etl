@@ -213,7 +213,7 @@ class TransformStep(PipelineStep):
             "p1174_15": "self_supply_other",
             "p1174_16": "self_supply_manure",
 
-            # Alternatives    
+            # Alternatives
             "p1175_01": "payment_situation_water",
             "p1175_02": "payment_situation_electricity",
             "p1175_04": "payment_situation_gas_glp",
