@@ -13,21 +13,19 @@ class TransformStep(PipelineStep):
 
         # Selected columns from dataset for available years
 
-        batch_2018 = ['ubigeo', 'dominio', 'estrato',
-                      'p606n',
-                      'p606d', 'p606e1', 'p606e2', 'p606e3', 'p606e4', 'p606e5', 'p606e6', 'p606e7', 'p606e8', 'p606ee',
-                      'p606f', 'p606g', 
-                      'p606g2', 'p606g3', 'p606g4', 'p606g5', 'p606g6', 'p606g7',
-                      'd606f', 'd606g',
-                      'd606g2', 'd606g3', 'd606g4', 'd606g5', 'd606g6', 'd606g7',
+        batch_2018 = ['ubigeo', 'dominio', 'estrato', 'p607n',
+                      'p607', 'p607a1','p607a2', 'p607a3', 'p607a4',
+                      'p607a5', 'p607a6', 'p607a7', 'p607a8', 'p607aa', 'p607b', 'p607c',
+                      'p607c2', 'p607c3', 'p607c4', 'p607c5', 'p607c6', 'p607c7',
+                      'd607b', 'd607c',
+                      'd607c2', 'd607c3', 'd607c4', 'd607c5', 'd607c6', 'd607c7', 
                       'factor07']
 
-        batch_2015 = ['ubigeo', 'dominio', 'estrato',
-                      'p606n', 
-                      'p606d', 'p606e1', 'p606e2', 'p606e3', 'p606e4', 'p606e5', 'p606e6', 'p606e7', 'p606e8', 'p606ee',
-                      'p606f', 'p606g',
+        batch_2015 = ['ubigeo', 'dominio', 'estrato', 'p607n',
+                      'p607', 'p607a1','p607a2', 'p607a3', 'p607a4',
+                      'p607a5', 'p607a6', 'p607a7', 'p607a8', 'p607aa', 'p607b', 'p607c', 
 
-                      'd606f', 'd606g', 
+                      'd607b', 'd607c',
 
                       'factor07']
 
@@ -38,14 +36,14 @@ class TransformStep(PipelineStep):
             df = pd.read_stata(params.get('url'), columns = batch_2015)
 
         # Adding missing columns between years dataset
-        missing_col = ['p606g2', 'p606g3', 'p606g4', 'p606g5', 'p606g6', 'p606g7',
-                       'd606g2', 'd606g3', 'd606g4', 'd606g5', 'd606g6', 'd606g7']
+        missing_col = ['p607c2', 'p607c3', 'p607c4', 'p607c5', 'p607c6', 'p607c7',
+                       'd607c2', 'd607c3', 'd607c4', 'd607c5', 'd607c6', 'd607c7']
         for item in missing_col:
             if item not in df:
                 df[item] = pd.np.nan
 
         # Excel spreadsheet for replace text to id step
-        df_labels = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS6Gpv6iTJPdbm2oHn8Z0VhaRfD9QwCY4eGaZ5Ws4m8kmVdrgds-XMbpUOvAn_03eWFMO3TbMI8oQgO/pub?output=xlsx"
+        df_labels = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS1jXemsL6QjdyTRO2Qq7_XtZV8ri1nwe9lz0OTwTLCRLhXk7rD81LIi9F7B_CtllYq1hpVyDAJ-3sg/pub?output=xlsx"
 
         # Getting values of year for the survey
         df["year"] = int(params.get('year'))

@@ -14,20 +14,22 @@ class TransformStep(PipelineStep):
         # Selected columns from dataset for available years
 
         batch_2018 = ['ubigeo', 'dominio', 'estrato',
-                    'p606n',
-                    'p606', 'p606a1', 'p606a2', 'p606a3', 'p606a4', 'p606a5', 'p606a6', 'p606a7', 'p606a8','p606aa',
-                    'p606b', 'p606c', 
-                    'p606c2', 'p606c3', 'p606c4', 'p606c5', 'p606c6', 'p606c7',
-                    #Variables deflectadas/anualizadas
-                    'd606b', 'd606c', 'd606c2', 'd606c3', 'd606c4', 'd606c5', 'd606c6', 'd606c7','factor07']
+                      'p606n',
+                      'p606', 'p606a1', 'p606a2', 'p606a3', 'p606a4', 'p606a5', 'p606a6', 'p606a7', 'p606a8','p606aa',
+                      'p606b', 'p606c', 
+                      'p606c2', 'p606c3', 'p606c4', 'p606c5', 'p606c6', 'p606c7',
+                      'd606b', 'd606c',
+                      'd606c2', 'd606c3', 'd606c4', 'd606c5', 'd606c6', 'd606c7',
+                      'factor07']
 
         batch_2015 = ['ubigeo', 'dominio', 'estrato',
-                    'p606n',
-                    'p606', 'p606a1', 'p606a2', 'p606a3', 'p606a4', 'p606a5', 'p606a6', 'p606a7', 'p606a8','p606aa',
-                    'p606b', 'p606c', 
-                    # 'p606c2', 'p606c3', 'p606c4', 'p606c5', 'p606c6', 'p606c7',
-                    #Variables deflectadas/anualizadas
-                    'd606b', 'd606c', 'factor07']
+                      'p606n',
+                      'p606', 'p606a1', 'p606a2', 'p606a3', 'p606a4', 'p606a5', 'p606a6', 'p606a7', 'p606a8','p606aa',
+                      'p606b', 'p606c', 
+
+                      'd606b', 'd606c',
+
+                      'factor07']
 
         # Loading dataframe stata step
         try: 
