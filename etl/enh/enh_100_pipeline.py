@@ -11,9 +11,6 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        # Selected columns from enaho01-200 module to add gender/age/civil status data to dataframe
-        batch_pop = ['conglome', 'vivienda', 'hogar', 'codperso', 'ubigeo', 'dominio', 'estrato', 'p207', 'p208a', 'p208b', 'p209']
-
         # Selected columns from dataset for available years
         batch_2018 = [
                 'conglome', 'vivienda', 'hogar', 'ubigeo', 'dominio','estrato', 'p101', 'p102',  'p103', 'p103a', 'p105a', 'p106a', 'p106b', 'p110', 'p110a1', 'p110c',
@@ -86,14 +83,12 @@ class TransformStep(PipelineStep):
 
         # Loading dataframe stata step
         try: 
-            df = pd.read_stata(params.get('url1'), columns = batch_2018)
+            df = pd.read_stata(params.get('url'), columns = batch_2018)
         except:
             try:
-                df = pd.read_stata(params.get('url1'), columns = batch_2017)
+                df = pd.read_stata(params.get('url'), columns = batch_2017)
             except: 
-                df = pd.read_stata(params.get('url1'), columns = batch_2016)
-
-        df_population = pd.read_stata(params.get('url2'), columns = batch_pop)
+                df = pd.read_stata(params.get('url'), columns = batch_2016)
 
         # Excel spreadsheet for replace text to id step
         df_labels = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJrA-7Hctfv0VmbY8B0UoPNseTRBZ3DWSsHDFhFVlC2w-Efz_8RpxooAxcNLIxK5djVMy3rCAyQOuD/pub?output=xlsx"
@@ -101,26 +96,10 @@ class TransformStep(PipelineStep):
         # Getting values of year for the survey
         df["year"] = int(params.get('year'))
 
-        # Creating unique code column for the merge method
-        df["code"] = df["conglome"].astype("str").str.zfill(6) + df["vivienda"].astype("str").str.zfill(3) + df["hogar"].astype("str").str.zfill(3)
-        df_population["code"] = df_population["conglome"].astype("str").str.zfill(6) + df_population["vivienda"].astype("str").str.zfill(3) + df_population["hogar"].astype("str").str.zfill(2)
-
-        # Merge method to add gendes, age and civil status data
-        df = pd.merge(df, df_population[["code", "codperso", "p207", "p208a", "p208b", "p209"]], on="code", how="left")
-
         # Correction step to certain years dataset _100
         df["p113a"].replace({9.0 :  9}, inplace= True)
         df["estrato"].replace({"." : ""}, inplace= True)
         df["estrato"] = df["estrato"].str.lstrip()
-
-        # Correction step to certain years dataset _200
-        df["p207"].replace({"hombre": 1, "mujer": 2}, inplace= True)
-        df["p209"].replace({"conviviente" : 1,
-                            "casado(a)" : 2,
-                            "viudo(a)" : 3,
-                            "divorciado(a)" : 4,
-                            "separado(a)" : 5,
-                            "soltero(a)" : 6}, inplace= True)
 
         # Adding missing columns between years dataset
         missing_col = ["p110c", "d1172_16", "p110f", "d1173_16", "p1171_16", "p1173_16", "p1174_16","p110g", "d1174_16", "p1175_16", "p1172_16"]
@@ -129,7 +108,7 @@ class TransformStep(PipelineStep):
                 df[item] = pd.np.nan
 
         # Droping used columns for merge step
-        df.drop(["conglome", "vivienda", "code"], axis=1, inplace=True)
+        df.drop(["conglome", "vivienda"], axis=1, inplace=True)
 
         # Excel spreadsheet automatized replace step 
         for i in df.columns:
@@ -226,7 +205,7 @@ class TransformStep(PipelineStep):
             "p1175_09": "payment_situation_petroleum",
             "p1175_10": "payment_situation_gasoline",
             "p1175_11": "payment_situation_landline",
-            "p1175_12": "payment_situation_cellphone",
+            "p1175_12": "payment_situation_cellphone"
             "p1175_13": "payment_situation_tv_cable",
             "p1175_14": "payment_situation_internet",
             "p1175_15": "payment_situation_other",
@@ -296,12 +275,7 @@ class TransformStep(PipelineStep):
             "nbi1": "basic_needs_inadequate_house", "nbi2": "basic_needs_overcrowd_house",
             "nbi3": "basic_needs_no_higienic_services", "nbi4": "basic_needs_kids_without_school",
             "nbi5": "basic_needs_high_economic_dependency",
-
-            # _200 dataset columns
-            "p207": "gender",
-            "p208a": "age_years",
-            "p208b": "age_months",
-            "p209": "civil_status"})
+            })
 
         # Excel spreadsheet automatized replace step 
         for i in df.columns:
@@ -318,7 +292,6 @@ class ENHPipeline(EasyPipeline):
         return [
             Parameter(label="Year", name="year", dtype=str),
             Parameter(label="Url1", name="url1", dtype=str),
-            Parameter(label="Url2", name="url2", dtype=str),
         ]
 
     @staticmethod
@@ -329,10 +302,6 @@ class ENHPipeline(EasyPipeline):
             "ubigeo":           "UInt32",
             "dominio":          "UInt8",
             "estrato":          "UInt8",
-            "gender":           "UInt8",
-            "age_years":        "UInt8",
-            "age_months":       "UInt16",
-            "civil_status":     "UInt8",
 
             "monthly_rent_household": "UInt32",
             "monthly_you_be_paid_rent": "UInt32",
@@ -515,7 +484,6 @@ class ENHPipeline(EasyPipeline):
         load_step = LoadStep(
             "housing_survey_100", db_connector, if_exists="append", pk=["ubigeo", "year"], dtype=dtype, 
             nullable_list=[
-              "gender", "age_years", "age_months", "civil_status",
               "monthly_rent_household", "monthly_you_be_paid_rent", "credit_buying_house_apartment", "credit_ground_house", "credit_house_improvements",
               "credit_build_new_house", "last_month_total_paid_water", "last_month_total_paid_electricity", "last_month_total_paid_gas_glp",
               "last_month_total_paid_natural_gas", "last_month_total_paid_candle", "last_month_total_paid_coal", "last_month_total_paid_wood",
@@ -573,7 +541,6 @@ if __name__ == "__main__":
     for year in range(2014, 2018 + 1):
     #for year in range(2018, 2018 + 1):
         pp.run({
-            'url1': '../../data/enh/enaho01-{}-100.dta'.format(year),
-            'url2': '../../data/enh/enaho01-{}-200.dta'.format(year),
+            'url': '../../data/enh/enaho01-{}-100.dta'.format(year),
             'year': year
         })
