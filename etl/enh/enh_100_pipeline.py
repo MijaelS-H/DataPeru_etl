@@ -121,7 +121,7 @@ class TransformStep(PipelineStep):
                             "soltero(a)" : 6}, inplace= True)
 
         # Adding missing columns between years dataset
-        missing_col = ["d1172_16", "p110f", "d1173_16", "p1171_16","p1173_16", "p1174_16","p110g", "d1174_16", "p1175_16", "p1172_16"]
+        missing_col = ["p110c", "d1172_16", "p110f", "d1173_16", "p1171_16","p1173_16", "p1174_16","p110g", "d1174_16", "p1175_16", "p1172_16"]
         for item in missing_col:
             if item not in df:
                 df[item] = pd.np.nan
