@@ -205,7 +205,7 @@ class TransformStep(PipelineStep):
             "p1175_09": "payment_situation_petroleum",
             "p1175_10": "payment_situation_gasoline",
             "p1175_11": "payment_situation_landline",
-            "p1175_12": "payment_situation_cellphone"
+            "p1175_12": "payment_situation_cellphone",
             "p1175_13": "payment_situation_tv_cable",
             "p1175_14": "payment_situation_internet",
             "p1175_15": "payment_situation_other",
