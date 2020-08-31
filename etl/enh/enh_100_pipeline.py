@@ -291,7 +291,7 @@ class ENHPipeline(EasyPipeline):
     def parameter_list():
         return [
             Parameter(label="Year", name="year", dtype=str),
-            Parameter(label="Url1", name="url1", dtype=str),
+            Parameter(label="Url", name="url", dtype=str)
         ]
 
     @staticmethod
