@@ -14,20 +14,22 @@ class TransformStep(PipelineStep):
         # Selected columns from dataset for available years
 
         batch_2018 = ['ubigeo', 'dominio', 'estrato',
-                    'p606n',
-                    'p606', 'p606a1', 'p606a2', 'p606a3', 'p606a4', 'p606a5', 'p606a6', 'p606a7', 'p606a8','p606aa',
-                    'p606b', 'p606c', 
-                    'p606c2', 'p606c3', 'p606c4', 'p606c5', 'p606c6', 'p606c7',
-                    #Variables deflectadas/anualizadas
-                    'd606b', 'd606c', 'd606c2', 'd606c3', 'd606c4', 'd606c5', 'd606c6', 'd606c7','factor07']
+                      'p606n',
+                      'p606d', 'p606e1', 'p606e2', 'p606e3', 'p606e4', 'p606e5', 'p606e6', 'p606e7', 'p606e8', 'p606ee',
+                      'p606f', 'p606g', 
+                      'p606g2', 'p606g3', 'p606g4', 'p606g5', 'p606g6', 'p606g7',
+                      #Variables deflectadas/anualizadas
+                      'd606f', 'd606g',
+                      'd606g2', 'd606g3', 'd606g4', 'd606g5', 'd606g6', 'd606g7',
+                      'factor07']
 
         batch_2015 = ['ubigeo', 'dominio', 'estrato',
-                    'p606n',
-                    'p606', 'p606a1', 'p606a2', 'p606a3', 'p606a4', 'p606a5', 'p606a6', 'p606a7', 'p606a8','p606aa',
-                    'p606b', 'p606c', 
-                    # 'p606c2', 'p606c3', 'p606c4', 'p606c5', 'p606c6', 'p606c7',
-                    #Variables deflectadas/anualizadas
-                    'd606b', 'd606c', 'factor07']
+                      'p606n', 
+                      'p606d', 'p606e1', 'p606e2', 'p606e3', 'p606e4', 'p606e5', 'p606e6', 'p606e7', 'p606e8', 'p606ee',
+                      'p606f', 'p606g',
+                      #Variables deflectadas/anualizadas
+                      'd606f', 'd606g', 
+                      'factor07']
 
         # Loading dataframe stata step
         try: 
@@ -36,21 +38,22 @@ class TransformStep(PipelineStep):
             df = pd.read_stata(params.get('url'), columns = batch_2015)
 
         # Adding missing columns between years dataset
-        missing_col = ['p606c2', 'p606c3', 'p606c4', 'p606c5', 'p606c6', 'p606c7',]
+        missing_col = ['p606g2', 'p606g3', 'p606g4', 'p606g5', 'p606g6', 'p606g7',
+                       'd606g2', 'd606g3', 'd606g4', 'd606g5', 'd606g6', 'd606g7']
         for item in missing_col:
             if item not in df:
                 df[item] = pd.np.nan
 
         # Excel spreadsheet for replace text to id step
-        df_labels = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT8L6oIDYq9rwHAvV08b_yts6zW0OZTB0FCblskoy6AYJ39ERz8sfjBQWgWvk9zRqgVSthDMYGxlEda/pub?output=xlsx"
+        df_labels = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS6Gpv6iTJPdbm2oHn8Z0VhaRfD9QwCY4eGaZ5Ws4m8kmVdrgds-XMbpUOvAn_03eWFMO3TbMI8oQgO/pub?output=xlsx"
 
         # Getting values of year for the survey
         df["year"] = int(params.get('year'))
 
         # Deleting empty spaces
         df["estrato"] = df["estrato"].str.strip()
-        df["p606n"] = df["p606n"].str.strip() 
-        df["p606a6"] = df["p606a6"].str.strip() 
+        df["p606n"] = df["p606n"].str.strip()
+        df["p606ee"] = df["p606ee"].str.strip()
 
         # Excel spreadsheet automatized replace step 
         for i in df.columns:
@@ -63,34 +66,34 @@ class TransformStep(PipelineStep):
         # Renaming columns to an understandable name
         df = df.rename(columns={
                 #Variables deflectadas
-                "d606b": "total_amount_paid_annualized",
-                "d606c": "how_much_think_cost_annualized",
-                "d606c2": "how_much_think_cost_self_consumption_annualized",
-                "d606c3": "how_much_think_cost_self_supply_annualized",
-                "d606c4": "how_much_think_cost_family_member_annualized",
-                "d606c5": "how_much_think_cost_from_third_home_annualized",
-                "d606c6": "how_much_think_cost_donated_annualized",
-                "d606c7": "how_much_think_cost_other_annualized",
+                "d606f": "total_amount_paid_annualized",
+                "d606g": "how_much_think_cost_annualized",
+                "d606g2": "how_much_think_cost_self_consumption_annualized",
+                "d606g3": "how_much_think_cost_self_supply_annualized",
+                "d606g4": "how_much_think_cost_family_member_annualized",
+                "d606g5": "how_much_think_cost_from_third_home_annualized",
+                "d606g6": "how_much_think_cost_donated_annualized",
+                "d606g7": "how_much_think_cost_other_annualized",
 
                 #Consumption
-                "p606": "did_home_get_product_service",
-                "p606a1": "get_product_service_buy",
-                "p606a2": "get_product_service_self_consumption",
-                "p606a3": "get_product_service_self_supply",
-                "p606a4": "get_product_service_family_member",
-                "p606a5": "get_product_service_from_third_home",
-                "p606a6": "get_product_service_donated",
-                "p606a7": "get_product_service_other",
-                "p606a8": "get_product_service_does_not_know",
-                "p606aa": "where_get_product_service",
-                "p606b": "total_amount_paid",
-                "p606c": "how_much_think_cost",
-                "p606c2": "how_much_think_cost_self_consumption",
-                "p606c3": "how_much_think_cost_self_supply",
-                "p606c4": "how_much_think_cost_family_member",
-                "p606c5": "how_much_think_cost_from_third_home",
-                "p606c6": "how_much_think_cost_donated",
-                "p606c7": "how_much_think_cost_other",
+                "p606d": "did_home_get_product_service",
+                "p606e1": "get_product_service_buy",
+                "p606e2": "get_product_service_self_consumption",
+                "p606e3": "get_product_service_self_supply",
+                "p606e4": "get_product_service_family_member",
+                "p606e5": "get_product_service_from_third_home",
+                "p606e6": "get_product_service_donated",
+                "p606e7": "get_product_service_other",
+                "p606e8": "get_product_service_does_not_know",
+                "p606ee": "where_get_product_service",
+                "p606f": "total_amount_paid",
+                "p606g": "how_much_think_cost",
+                "p606g2": "how_much_think_cost_self_consumption",
+                "p606g3": "how_much_think_cost_self_supply",
+                "p606g4": "how_much_think_cost_family_member",
+                "p606g5": "how_much_think_cost_from_third_home",
+                "p606g6": "how_much_think_cost_donated",
+                "p606g7": "how_much_think_cost_other",
                 "p606n": "product_service_id"
         })
 
@@ -152,7 +155,7 @@ class ENHPipeline(EasyPipeline):
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "housing_survey_606", db_connector, if_exists="append", pk=["ubigeo", "year", "product_service_id"], dtype=dtype, 
+            "housing_survey_606d", db_connector, if_exists="append", pk=["ubigeo", "year", "product_service_id"], dtype=dtype, 
             nullable_list=[
               "total_amount_paid_annualized", "how_much_think_cost_annualized", "how_much_think_cost_self_consumption_annualized",
               "how_much_think_cost_self_supply_annualized", "how_much_think_cost_family_member_annualized",
@@ -176,6 +179,6 @@ if __name__ == "__main__":
     for year in range(2014, 2018 + 1):
     #for year in range(2018, 2018 + 1):
         pp.run({
-            'url': '../../data/enh/enaho01-{}-606.dta'.format(year),
+            'url': '../../data/enh/enaho01-{}-606d.dta'.format(year),
             'year': year
         })
