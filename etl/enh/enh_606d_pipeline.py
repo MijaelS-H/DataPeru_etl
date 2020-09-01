@@ -122,6 +122,7 @@ class ENHPipeline(EasyPipeline):
             "ubigeo":                                             "String",
             "dominio":                                            "UInt8",
             "estrato":                                            "UInt8",
+            "product_service_id":                                 "UInt8",
             "total_amount_paid_annualized":                       "UInt32",
             "how_much_think_cost_annualized":                     "UInt32",
             "how_much_think_cost_self_consumption_annualized":    "UInt32",
@@ -166,7 +167,7 @@ class ENHPipeline(EasyPipeline):
                 "get_product_service_does_not_know", "where_get_product_service", "total_amount_paid", "how_much_think_cost",
                 "how_much_think_cost_self_consumption", "how_much_think_cost_self_supply", "how_much_think_cost_family_member",
                 "how_much_think_cost_from_third_home", "how_much_think_cost_donated", "how_much_think_cost_other", "product_service_id"
-              ]
+            ]
         )
 
         return [transform_step, load_step]

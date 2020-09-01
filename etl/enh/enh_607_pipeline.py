@@ -122,6 +122,7 @@ class ENHPipeline(EasyPipeline):
             "ubigeo":                                             "String",
             "dominio":                                            "UInt8",
             "estrato":                                            "UInt8",
+            "product_service_id":                                 "UInt8",
             "total_amount_paid_annualized":                       "UInt32",
             "how_much_think_cost_annualized":                     "UInt32",
             "how_much_think_cost_self_consumption_annualized":    "UInt32",
@@ -179,6 +180,6 @@ if __name__ == "__main__":
     for year in range(2014, 2018 + 1):
     #for year in range(2018, 2018 + 1):
         pp.run({
-            'url': '../../data/enh/enaho01-{}-606d.dta'.format(year),
+            'url': '../../data/enh/enaho01-{}-607.dta'.format(year),
             'year': year
         })
