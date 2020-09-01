@@ -90,6 +90,7 @@ class TransformStep(PipelineStep):
             "p208a": "age_years",
             "p208b": "age_months",
             "p209": "civil_status",
+            "facpob07": "factor07"
         })
 
         # Excel spreadsheet automatized replace step 

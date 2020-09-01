@@ -118,7 +118,7 @@ class ENHPipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
 
         dtype = {
-            "ubigeo":                                             "UInt32",
+            "ubigeo":                                             "String",
             "dominio":                                            "UInt8",
             "estrato":                                            "UInt8",
             "total_amount_paid_annualized":                       "UInt32",
@@ -133,7 +133,7 @@ class ENHPipeline(EasyPipeline):
             "get_product_service_buy":                            "UInt8",
             "get_product_service_self_consumption":               "UInt8",
             "get_product_service_self_supply":                    "UInt8",
-            "get_product_service_family_member":                  "UInt8",  
+            "get_product_service_family_member":                  "UInt8",
             "get_product_service_from_third_home":                "UInt8",
             "get_product_service_donated":                        "UInt8",
             "get_product_service_other":                          "UInt8",
@@ -154,17 +154,17 @@ class ENHPipeline(EasyPipeline):
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "housing_survey_606", db_connector, if_exists="append", pk=["ubigeo", "year", "product_service_id"], dtype=dtype, 
+            "housing_survey_recreation_services", db_connector, if_exists="append", pk=["ubigeo", "year", "product_service_id"], dtype=dtype,
             nullable_list=[
-              "total_amount_paid_annualized", "how_much_think_cost_annualized", "how_much_think_cost_self_consumption_annualized",
-              "how_much_think_cost_self_supply_annualized", "how_much_think_cost_family_member_annualized",
-              "how_much_think_cost_from_third_home_annualized", "how_much_think_cost_donated_annualized",
-              "how_much_think_cost_other_annualized", "did_home_get_product_service", "get_product_service_buy",
-              "get_product_service_self_consumption", "get_product_service_self_supply", "get_product_service_family_member",
-              "get_product_service_from_third_home", "get_product_service_donated", "get_product_service_other",
-              "get_product_service_does_not_know", "where_get_product_service", "total_amount_paid", "how_much_think_cost",
-              "how_much_think_cost_self_consumption", "how_much_think_cost_self_supply", "how_much_think_cost_family_member",
-              "how_much_think_cost_from_third_home", "how_much_think_cost_donated", "how_much_think_cost_other", "product_service_id" 
+                "total_amount_paid_annualized", "how_much_think_cost_annualized", "how_much_think_cost_self_consumption_annualized",
+                "how_much_think_cost_self_supply_annualized", "how_much_think_cost_family_member_annualized",
+                "how_much_think_cost_from_third_home_annualized", "how_much_think_cost_donated_annualized",
+                "how_much_think_cost_other_annualized", "did_home_get_product_service", "get_product_service_buy",
+                "get_product_service_self_consumption", "get_product_service_self_supply", "get_product_service_family_member",
+                "get_product_service_from_third_home", "get_product_service_donated", "get_product_service_other",
+                "get_product_service_does_not_know", "where_get_product_service", "total_amount_paid", "how_much_think_cost",
+                "how_much_think_cost_self_consumption", "how_much_think_cost_self_supply", "how_much_think_cost_family_member",
+                "how_much_think_cost_from_third_home", "how_much_think_cost_donated", "how_much_think_cost_other", "product_service_id"
               ]
         )
 
