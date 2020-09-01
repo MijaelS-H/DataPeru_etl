@@ -119,7 +119,7 @@ class ENHPipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
 
         dtype = {
-            "ubigeo":                                             "UInt32",
+            "ubigeo":                                             "String",
             "dominio":                                            "UInt8",
             "estrato":                                            "UInt8",
             "total_amount_paid_annualized":                       "UInt32",
