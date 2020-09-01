@@ -51,8 +51,6 @@ class TransformStep(PipelineStep):
 
         # Deleting empty spaces
         df["estrato"] = df["estrato"].str.strip()
-        df["p606n"] = df["p606n"].str.strip()
-        df["p606ee"] = df["p606ee"].str.strip()
 
         # Excel spreadsheet automatized replace step 
         for i in df.columns:
