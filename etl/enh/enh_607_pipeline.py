@@ -62,6 +62,7 @@ class TransformStep(PipelineStep):
 
         # Renaming columns to an understandable name
         df = df.rename(columns={
+            "p607": "did_home_get_product_service",
             "p607n": "product_service_id",
             # Product Origin
             "p607a1": "get_product_service_buy",
@@ -129,7 +130,7 @@ class ENHPipeline(EasyPipeline):
             "how_much_think_cost_from_third_home_annualized":     "UInt32",
             "how_much_think_cost_donated_annualized":             "UInt32",
             "how_much_think_cost_other_annualized":               "UInt32",
-            "did_home_get_product_service":                       "UInt32",
+            "did_home_get_product_service":                       "UInt8",
             "get_product_service_buy":                            "UInt8",
             "get_product_service_self_consumption":               "UInt8",
             "get_product_service_self_supply":                    "UInt8",
