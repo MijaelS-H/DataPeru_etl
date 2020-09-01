@@ -122,6 +122,7 @@ class ENHPipeline(EasyPipeline):
             "ubigeo":                                             "String",
             "dominio":                                            "UInt8",
             "estrato":                                            "UInt8",
+            "product_service_id":                                 "UInt8",
             "total_amount_paid_annualized":                       "UInt32",
             "how_much_think_cost_annualized":                     "UInt32",
             "how_much_think_cost_self_consumption_annualized":    "UInt32",
