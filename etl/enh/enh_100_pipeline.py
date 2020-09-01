@@ -299,7 +299,7 @@ class ENHPipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
 
         dtype = {
-            "ubigeo":           "UInt32",
+            "ubigeo":           "String",
             "dominio":          "UInt8",
             "estrato":          "UInt8",
 
@@ -482,7 +482,7 @@ class ENHPipeline(EasyPipeline):
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "housing_survey_100", db_connector, if_exists="append", pk=["ubigeo", "year"], dtype=dtype, 
+            "housing_survey_home", db_connector, if_exists="append", pk=["ubigeo", "year"], dtype=dtype, 
             nullable_list=[
               "monthly_rent_household", "monthly_you_be_paid_rent", "credit_buying_house_apartment", "credit_ground_house", "credit_house_improvements",
               "credit_build_new_house", "last_month_total_paid_water", "last_month_total_paid_electricity", "last_month_total_paid_gas_glp",
@@ -496,7 +496,7 @@ class ENHPipeline(EasyPipeline):
               "last_month_total_self_supply_electricity", "last_month_total_self_supply_gas_glp", "last_month_total_self_supply_natural_gas", "last_month_total_self_supply_candle",
               "last_month_total_self_supply_coal", "last_month_total_self_supply_wood", "last_month_total_self_supply_petroleum", "last_month_total_self_supply_gasoline",
               "last_month_total_self_supply_landline", "last_month_total_self_supply_cellphone", "last_month_total_self_supply_tv_cable", "last_month_total_self_supply_internet",
-              "last_month_total_self_supply_other", "last_month_total_self_supply_manure", 
+              "last_month_total_self_supply_other", "last_month_total_self_supply_manure",
               "basic_needs_inadequate_house", "basic_needs_overcrowd_house",
               "basic_needs_no_higienic_services", "basic_needs_kids_without_school", "basic_needs_high_economic_dependency", "type_household",
               "walls_material", "floor_material", "ceiling_material", "type_home",
