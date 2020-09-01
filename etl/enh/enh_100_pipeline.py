@@ -280,7 +280,7 @@ class TransformStep(PipelineStep):
         # Excel spreadsheet automatized replace step 
         for i in df.columns:
             try:
-                df[i] = df[i].astype(pd.Int8Dtype())
+                df[i] = df[i].astype(float)
             except:
                 pass
 
