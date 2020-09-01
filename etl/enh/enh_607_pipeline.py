@@ -77,23 +77,23 @@ class TransformStep(PipelineStep):
             
             # Consumption
             "p607b": "total_amount_paid",
-            "p606c": "how_much_think_cost",
-            "p606c2": "how_much_think_cost_self_consumption",
-            "p606c3": "how_much_think_cost_self_supply",
-            "p606c4": "how_much_think_cost_family_member",
-            "p606c5": "how_much_think_cost_from_third_home",
-            "p606c6": "how_much_think_cost_donated",
-            "p606c7": "how_much_think_cost_other",
+            "p607c": "how_much_think_cost",
+            "p607c2": "how_much_think_cost_self_consumption",
+            "p607c3": "how_much_think_cost_self_supply",
+            "p607c4": "how_much_think_cost_family_member",
+            "p607c5": "how_much_think_cost_from_third_home",
+            "p607c6": "how_much_think_cost_donated",
+            "p607c7": "how_much_think_cost_other",
             
             #Variables deflectadas
             "d607b": "total_amount_paid_annualized",
-            "d606c": "how_much_think_cost_annualized",
-            "d606c2": "how_much_think_cost_self_consumption_annualized",
-            "d606c3": "how_much_think_cost_self_supply_annualized",
-            "d606c4": "how_much_think_cost_family_member_annualized",
-            "d606c5": "how_much_think_cost_from_third_home_annualized",
-            "d606c6": "how_much_think_cost_donated_annualized",
-            "d606c7": "how_much_think_cost_other_annualized",
+            "d607c": "how_much_think_cost_annualized",
+            "d607c2": "how_much_think_cost_self_consumption_annualized",
+            "d607c3": "how_much_think_cost_self_supply_annualized",
+            "d607c4": "how_much_think_cost_family_member_annualized",
+            "d607c5": "how_much_think_cost_from_third_home_annualized",
+            "d607c6": "how_much_think_cost_donated_annualized",
+            "d607c7": "how_much_think_cost_other_annualized",
                 })
 
         # Excel spreadsheet automatized replace step 
