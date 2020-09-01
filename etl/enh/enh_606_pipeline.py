@@ -38,7 +38,8 @@ class TransformStep(PipelineStep):
             df = pd.read_stata(params.get('url'), columns = batch_2015)
 
         # Adding missing columns between years dataset
-        missing_col = ['p606c2', 'p606c3', 'p606c4', 'p606c5', 'p606c6', 'p606c7',]
+        missing_col = ['p606c2', 'p606c3', 'p606c4', 'p606c5', 'p606c6', 'p606c7',
+                       'd606c2', 'd606c3', 'd606c4', 'd606c5', 'd606c6', 'd606c7']
         for item in missing_col:
             if item not in df:
                 df[item] = pd.np.nan
@@ -99,7 +100,7 @@ class TransformStep(PipelineStep):
         # Excel spreadsheet automatized replace step 
         for i in df.columns:
             try:
-                df[i] = df[i].astype(pd.Int8Dtype())
+                df[i] = df[i].astype(float)
             except:
                 pass
 
