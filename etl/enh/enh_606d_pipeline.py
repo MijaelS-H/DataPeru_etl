@@ -155,7 +155,7 @@ class ENHPipeline(EasyPipeline):
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "housing_survey_606d", db_connector, if_exists="append", pk=["ubigeo", "year", "product_service_id"], dtype=dtype, 
+            "housing_survey_606d", db_connector, if_exists="append", pk=["ubigeo", "year"], dtype=dtype, 
             nullable_list=[
               "total_amount_paid_annualized", "how_much_think_cost_annualized", "how_much_think_cost_self_consumption_annualized",
               "how_much_think_cost_self_supply_annualized", "how_much_think_cost_family_member_annualized",
