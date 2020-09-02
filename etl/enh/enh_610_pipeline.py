@@ -97,7 +97,7 @@ class TransformStep(PipelineStep):
             "d610c7": "how_much_think_cost_other_annualized",
         })
 
-        # Excel spreadsheet automatized replace step 
+        # Changing type columns step
         for i in df.columns:
             try:
                 df[i] = df[i].astype(pd.Int8Dtype())

@@ -93,7 +93,7 @@ class TransformStep(PipelineStep):
             "facpob07": "factor07"
         })
 
-        # Excel spreadsheet automatized replace step 
+        # Changing type columns step
         for i in df.columns:
             try:
                 df[i] = df[i].astype(pd.Int8Dtype())

@@ -97,7 +97,7 @@ class TransformStep(PipelineStep):
                 "p606n": "product_service_id"
         })
 
-        # Excel spreadsheet automatized replace step 
+        # Changing type columns step
         for i in df.columns:
             try:
                 df[i] = df[i].astype(pd.Int8Dtype())
