@@ -98,7 +98,11 @@ class TransformStep(PipelineStep):
         # Getting values of year for the survey
         df["year"] = int(params.get('year'))
 
-
+        # Adding missing columns between years dataset
+        missing_col = ["nconglome", "gashog21", "gashog22", "gashog23", "gashog24", "gashog25", "gashog26"]
+        for item in missing_col:
+            if item not in df:
+                df[item] = pd.np.nan
 
         # Replace step 
         df["estrsocial"].replace({
