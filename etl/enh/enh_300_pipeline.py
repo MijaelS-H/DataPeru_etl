@@ -498,7 +498,7 @@ class ENHPipeline(EasyPipeline):
             "estimated_cost_social_program_all": "Float64",
             "estimated_cost_other_all": "Float64",
             "main_reason_no_actual_studies": "UInt8",
-            "last_month_use_UInternet": "UInt8",
+            "last_month_use_internet": "UInt8",
             "use_internet_from_home": "UInt8",
             "use_internet_from_work": "UInt8",
             "use_internet_from_education_facility": "UInt8",
