@@ -601,8 +601,8 @@ class ENHPipeline(EasyPipeline):
             "deflected_estimated_cost_another_home_internet": "UInt64",
             "deflected_estimated_cost_social_program_internet": "UInt64",
             "deflected_estimated_cost_other_internet": "UInt64",
-            "factor07": "int32",
-            "factora07": "int32",
+            "factor07": "UInt32",
+            "factora07": "UInt32",
             "year": "UInt16",
         }
 
