@@ -48,4 +48,10 @@ class Module1Step(PipelineStep):
       df['tipo_sociedad'] = df['tipo_sociedad'].astype(pd.Int16Dtype())
       df['rango_ventas_2014'] = df['rango_ventas_2014'].astype(pd.Int16Dtype())
 
+      df['ciiu_rev4'].fillna('0000', inplace=True)
+      df['ciiu_rev4_a'].fillna('0000', inplace=True)
+      df['ciiu_rev4_b'].fillna('0000', inplace=True)
+      df['ciiu_rev4_c'].fillna('0000', inplace=True)
+      df['ciiu_rev4_d'].fillna('0000', inplace=True)
+
       return df
