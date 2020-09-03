@@ -298,10 +298,10 @@ class ENHPipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
 
         dtype = {
-            "ubigeo": "object",
+            "ubigeo": "String",
             "dominio": "UInt8",
             "estrato": "UInt8",
-            "codinfor": "object",
+            "codinfor": "String",
             "childhood_learned_lenguage": "UInt8",
             "actual_last_academic_degree": "UInt8",
             "last_year_academic_degree": "Float64",
