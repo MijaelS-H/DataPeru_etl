@@ -222,18 +222,18 @@ class TransformStep(PipelineStep):
 
         # Loading dataframe stata step
         try: 
-            df = pd.read_stata(params.get('url'), columns = batch_2018)
+            df = pd.read_stata(params.get('url'), convert_categoricals = False, columns = batch_2018)
         except:
             try:
-                df = pd.read_stata(params.get('url'), columns = batch_2017)
+                df = pd.read_stata(params.get('url'), convert_categoricals = False, columns = batch_2017)
             except: 
                 try:
-                    df = pd.read_stata(params.get('url'), columns = batch_2016)
+                    df = pd.read_stata(params.get('url'), convert_categoricals = False, columns = batch_2016)
                 except: 
                     try:
-                        df = pd.read_stata(params.get('url'), columns = batch_2015)
+                        df = pd.read_stata(params.get('url'), convert_categoricals = False, columns = batch_2015)
                     except: 
-                        df = pd.read_stata(params.get('url'), columns = batch_2014)
+                        df = pd.read_stata(params.get('url'), convert_categoricals = False, columns = batch_2014)
 
         # Excel spreadsheet for renaming columns
         df_labels = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTATtANn3dUv0nucHaGqKXl_hpMjnAHhVHXweIki65R2zS4z00IWOaasm0ZjBCZNwXT2C8ADUhOuyCr/pub?output=xlsx"
@@ -311,7 +311,8 @@ class ENHPipeline(EasyPipeline):
     def parameter_list():
         return [
             Parameter(label="Year", name="year", dtype=str),
-            Parameter(label="Url", name="url", dtype=str)
+            Parameter(label="Url", name="url", dtype=str),
+            Parameter(label="ingest", dtype=bool)
         ]
 
     @staticmethod
@@ -335,16 +336,16 @@ class ENHPipeline(EasyPipeline):
             "has_college_faculty_id": "UInt8",
             "qa_reading_writing": "UInt8",
             "test_reading_writing": "UInt8",
-            "12m_alphabetization": "UInt8",
-            "12m_alphabetization_source": "UInt8",
-            "12m_school_uniform": "UInt8",
-            "12m_school_shoes": "UInt8",
-            "12m_school_text_books": "UInt8",
-            "12m_school_school_supplies": "UInt8",
-            "12m_school_enrollment": "UInt8",
-            "12m_school_APAFA": "UInt8",
-            "12m_school_others": "UInt8",
-            "12m_school_laptop_by_child_program": "UInt8",
+            "m12_alphabetization": "UInt8",
+            "m12_alphabetization_source": "UInt8",
+            "m12_school_uniform": "UInt8",
+            "m12_school_shoes": "UInt8",
+            "m12_school_text_books": "UInt8",
+            "m12_school_school_supplies": "UInt8",
+            "m12_school_enrollment": "UInt8",
+            "m12_school_APAFA": "UInt8",
+            "m12_school_others": "UInt8",
+            "m12_school_laptop_by_child_program": "UInt8",
             "bought_uniform": "UInt8",
             "bought_shoes": "UInt8",
             "bought_text_books": "UInt8",
@@ -635,8 +636,8 @@ class ENHPipeline(EasyPipeline):
                 "childhood_learned_lenguage", "actual_last_academic_degree", "last_year_academic_degree", "last_grade_academic_degree", "study_facility_academic_degree", 
                 "has_college_career", "has_college_career_id", "has_college_name", "has_college_id", "has_college_faculty_id", 
                 "qa_reading_writing", "test_reading_writing", 
-                "12m_alphabetization", "12m_alphabetization_source", "12m_school_uniform", "12m_school_shoes", "12m_school_text_books", 
-                "12m_school_school_supplies", "12m_school_enrollment", "12m_school_APAFA", "12m_school_others", "12m_school_laptop_by_child_program", 
+                "m12_alphabetization", "m12_alphabetization_source", "m12_school_uniform", "m12_school_shoes", "m12_school_text_books", 
+                "m12_school_school_supplies", "m12_school_enrollment", "m12_school_APAFA", "m12_school_others", "m12_school_laptop_by_child_program", 
                 "bought_uniform", "bought_shoes", "bought_text_books", "bought_school_supplies", 
                 "bought_enrollment", "bought_APAFA", "bought_others", 
                 "self_consumption_uniform", "self_consumption_shoes", "self_consumption_text_books", "self_consumption_school_supplies", 
@@ -714,12 +715,12 @@ class ENHPipeline(EasyPipeline):
                 "deflected_how_much_cost_particular_transportation", "deflected_estimated_cost_total_particular_transportation", "deflected_estimated_cost_self_supply_particular_transportation", "deflected_estimated_cost_barter_particular_transportation", 
                 "deflected_estimated_cost_another_home_particular_transportation", "deflected_estimated_cost_social_program_particular_transportation", "deflected_estimated_cost_other_particular_transportation", 
                 "deflected_how_much_cost_internet", "deflected_estimated_total_amount_internet", "deflected_estimated_cost_self_supply_internet", "deflected_estimated_cost_barter_internet", 
-                "deflected_estimated_cost_another_home_internet", "deflected_estimated_cost_social_program_internet", "deflected_estimated_cost_other_internet", 
-                "factor07", "factora07"
+                "deflected_estimated_cost_another_home_internet", "deflected_estimated_cost_social_program_internet", "deflected_estimated_cost_other_internet"
               ]
         )
-
-        return [transform_step, load_step]
+        steps = [transform_step, load_step] if params.get("ingest") else [transform_step]
+        return steps
+        # return [transform_step, load_step]
 
 if __name__ == "__main__":
     
@@ -730,5 +731,6 @@ if __name__ == "__main__":
     #for year in range(2018, 2018 + 1):
         pp.run({
             'url': '../../data/enh/enaho01a-{}-300.dta'.format(year),
-            'year': year
+            'year': year,
+            'ingest': True
         })
