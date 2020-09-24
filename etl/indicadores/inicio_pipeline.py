@@ -70,6 +70,7 @@ class OpenStep(PipelineStep):
         df[16] = pd.read_excel("../../data/indicadores_itp/DATASETS_01/Data sets DSE/10. Presupuesto e inversion/chart4.xlsx")
         df[17] = pd.read_excel("../../data/indicadores_itp/DATASETS_01/Data sets DSE/10. Presupuesto e inversion/chart8.xlsx")
         
+        
         return df
 
 class TidyStep(PipelineStep):
@@ -102,71 +103,73 @@ class TidyStep(PipelineStep):
         df_list = [df[i] for i in range(1,18)]
         df = pd.concat(df_list, ignore_index=True)
         df = df[['region','year','data_origin','variable','value']]
-        df.to_csv("../../data_temp/inicio_tidy_file.csv", index=False, quoting=csv.QUOTE_NONNUMERIC)
-        return 0
+        
+        return df
 
 class RegionDimensionStep(PipelineStep):
     def run_step(self, prev, params):
         logger.info("Creating Region Dimension...")
 
-        df = pd.read_csv("../../data_temp/inicio_tidy_file.csv")
+        df = prev
 
         region_list = list(df["region"].unique())
         df_region = pd.DataFrame({"region_id": list(range(len(region_list))), "region_name": sorted(region_list)})
-        df_region.to_csv("../../data_output/inicio_dim_region.csv", index=False, quoting=csv.QUOTE_NONNUMERIC)
+        
 
-        return df_region
+        return df, df_region
 
 class VariableDimensionStep(PipelineStep):
     def run_step(self, prev, params):
         logger.info("Creating Variable Dimension...")
 
-        df = pd.read_csv("../../data_temp/inicio_tidy_file.csv")
+        df, df_region = prev
+        
 
         df_var = df["variable"].copy()
         df_var = df_var.drop_duplicates().reset_index(drop=True)
         df_var = pd.DataFrame(df_var)
         df_var["variable_id"] = df_var.index
-        df_var.to_csv("../../data_output/inicio_dim_variable.csv", index=False, quoting=csv.QUOTE_NONNUMERIC)
+        
 
-        return df_var
+        return  df, df_region, df_var
 
 class OriginDimensionStep(PipelineStep):
     def run_step(self, prev, params):
         logger.info("Creating Origin Dimension...")
 
-        df = pd.read_csv("../../data_temp/inicio_tidy_file.csv")
+        df, df_region, df_var = prev
 
         df_origin = df["data_origin"].copy()
         df_origin = df_origin.drop_duplicates().reset_index(drop=True)
         df_origin = pd.DataFrame(df_origin)
         df_origin["data_origin_id"] = df_origin.index
-        df_origin.to_csv("../../data_output/inicio_dim_origin.csv", index=False, quoting=csv.QUOTE_NONNUMERIC)
-        return df_origin
+        
+        return df, df_region, df_var, df_origin
 
 
 class FactTableStep(PipelineStep):
     def run_step(self, prev, params):
         logger.info("Creating Fact Table...")
 
-        df = pd.read_csv("../../data_temp/inicio_tidy_file.csv")
+        df, df_region, df_var, df_origin = prev
         
-        df_reg = pd.read_csv("../../data_output/inicio_dim_region.csv")
-        region_map = {k:v for (k,v) in zip(df_reg["region_name"], df_reg["region_id"])}
+        
+        region_map = {k:v for (k,v) in zip(df_region["region_name"], df_region["region_id"])}
         df["region_id"] = df["region"].map(region_map)
         
-        df_origin = pd.read_csv("../../data_output/inicio_dim_origin.csv")
+        
         
         origin_map = {k:v for (k,v) in zip(df_origin["data_origin"], df_origin["data_origin_id"])}
         df["data_origin_id"] = df["data_origin"].map(origin_map)
         
-        df_var = pd.read_csv("../../data_output/inicio_dim_variable.csv")
+        
         variable_map = {k:v for (k,v) in zip(df_var["variable"], df_var["variable_id"])}
                 
         df["variable_id"] = df["variable"].map(variable_map)
         
         df = df[["region_id", "year", "data_origin_id", "variable_id",  "value"]]
-
+        
+        
         return df
 
 
