@@ -17,26 +17,37 @@ class Module1Step(PipelineStep):
         str) + df['ccpp'].astype(str) + df['ccdi'].astype(str)
 
       df = df[[
-          'iruc', 'district_id', 'latitud', 'longitud',
-          'c1', 'c2', 'c3', 'c4', 'c14_cod', 'c15a_cod',
-          'c15b_cod', 'c15c_cod', 'c15d_cod', 'c16', 'c16_o',
-          'c20', 'factor_exp'
+          'iruc', 
+          'district_id', 
+          # 'c1', 
+          # 'c2', 
+           #'c3', 
+          'c4', 
+          'c14_cod', 
+          'c15a_cod',
+          'c15b_cod', 
+          # 'c15c_cod', 
+          # 'c15d_cod', 
+          'c16', 
+          # 'c16_o',
+          'c20', 
+          'factor_exp'
       ]].copy()
 
       columns = {
           'iruc': 'company_id',
           'district_id': 'district_id',
-          'c1': 'ruc',
-          'c2': 'razon_social',
-          'c3': 'nombre_comercial',
+          # 'c1': 'ruc',
+          # 'c2': 'razon_social',
+          # 'c3': 'nombre_comercial',
           'c4': 'anio_inicio_actividades',
           'c14_cod': 'ciiu_rev4',
           'c15a_cod': 'ciiu_rev4_a',
           'c15b_cod': 'ciiu_rev4_b',
-          'c15c_cod': 'ciiu_rev4_c',
-          'c15d_cod': 'ciiu_rev4_d',
+          # 'c15c_cod': 'ciiu_rev4_c',
+          # 'c15d_cod': 'ciiu_rev4_d',
           'c16': 'tipo_sociedad',
-          'c16_o': 'tipo_sociedad_text',
+          # 'c16_o': 'tipo_sociedad_text',
           'c20': 'rango_ventas_2014',
           'factor_exp': 'factor_expansion'
       }
@@ -51,7 +62,7 @@ class Module1Step(PipelineStep):
       df['ciiu_rev4'].fillna('0000', inplace=True)
       df['ciiu_rev4_a'].fillna('0000', inplace=True)
       df['ciiu_rev4_b'].fillna('0000', inplace=True)
-      df['ciiu_rev4_c'].fillna('0000', inplace=True)
-      df['ciiu_rev4_d'].fillna('0000', inplace=True)
+      # df['ciiu_rev4_c'].fillna('0000', inplace=True)
+      # df['ciiu_rev4_d'].fillna('0000', inplace=True)
 
       return df
