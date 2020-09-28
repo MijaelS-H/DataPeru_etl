@@ -100,7 +100,7 @@ class Module5Step(PipelineStep):
         'm7p6_5': 'criterio_elegir_credito_prestamo_recomendacion_terceros', # 1,0
         'm7p6_6': 'criterio_elegir_credito_prestamo_beneficios_entidad', # 1,0
         'm7p6_7': 'criterio_elegir_credito_prestamo_rapidez_otorgamiento', # 1,0
-        'm7p6_8': 'criterio_elegir_credito_prestamo_periodio_gracia', # 1,0
+        'm7p6_8': 'criterio_elegir_credito_prestamo_periodo_gracia', # 1,0
         'm7p6_9': 'criterio_elegir_credito_prestamo_otro', # 1,0
         # 'm8p1': 'duracion_contrato_trabajadores_2014', # options 
         # 'm8p2': 'califica_requisitos_mtpe_contratacion_trabajadores_plazo_fijo', # options
@@ -183,7 +183,7 @@ class Module5Step(PipelineStep):
       mod6['criterio_elegir_credito_prestamo_recomendacion_terceros'] = mod6['criterio_elegir_credito_prestamo_recomendacion_terceros'].astype(pd.Int16Dtype())
       mod6['criterio_elegir_credito_prestamo_beneficios_entidad'] = mod6['criterio_elegir_credito_prestamo_beneficios_entidad'].astype(pd.Int16Dtype())
       mod6['criterio_elegir_credito_prestamo_rapidez_otorgamiento'] = mod6['criterio_elegir_credito_prestamo_rapidez_otorgamiento'].astype(pd.Int16Dtype())
-      mod6['criterio_elegir_credito_prestamo_periodio_gracia'] = mod6['criterio_elegir_credito_prestamo_periodio_gracia'].astype(pd.Int16Dtype())
+      mod6['criterio_elegir_credito_prestamo_periodio_gracia'] = mod6['criterio_elegir_credito_prestamo_periodo_gracia'].astype(pd.Int16Dtype())
       mod6['criterio_elegir_credito_prestamo_otro'] = mod6['criterio_elegir_credito_prestamo_otro'].astype(pd.Int16Dtype())
       # mod6['duracion_contrato_trabajadores_2014'] = mod6['duracion_contrato_trabajadores_2014'].astype(pd.Int16Dtype())
       # mod6['califica_requisitos_mtpe_contratacion_trabajadores_plazo_fijo'] = mod6['califica_requisitos_mtpe_contratacion_trabajadores_plazo_fijo'].astype(pd.Int16Dtype())
