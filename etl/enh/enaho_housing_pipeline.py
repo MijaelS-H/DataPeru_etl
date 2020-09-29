@@ -169,7 +169,7 @@ class ENHPipeline(EasyPipeline):
             "poverty_line_total":                                 "UInt32",
             "poverty_type":                                       "UInt32",
             "socioeconomic_stratum":                              "UInt8",
-            "factor07":                                           "UInt8",
+            "factor07":                                           "Float",
             "year":                                               "UInt16"
         }
 
