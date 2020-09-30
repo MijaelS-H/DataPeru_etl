@@ -20,7 +20,7 @@ class Module21Step(PipelineStep):
         # 'm1p2', 
         # 'm1p3', 
         'm1p4', 
-        # 'm1p5', 
+        'm1p5', 
         'm1p6_1', 
         'm1p6_2', 
         'm1p6_3', 
@@ -107,8 +107,8 @@ class Module21Step(PipelineStep):
         # 'm3p1_6c', 
         # 'm3p1_7', 
         # 'm3p1_7a', 
-        # 'm3p1_7b', 
-        # 'm3p1_7c'
+        'm3p1_7b', 
+        'm3p1_7c'
         ]].copy()
 
       columns = {
@@ -116,7 +116,7 @@ class Module21Step(PipelineStep):
         # 'm1p2': 'plan_negocios',
         # 'm1p3': 'credito_inicio_operaciones',
         'm1p4': 'institucion_credito',
-        # 'm1p5': 'areas_funcionales_identificar',
+        'm1p5': 'areas_funcionales_identificar',
         'm1p6_1': 'recursos_humanos', 
         'm1p6_2': 'logistica_aprovisionamiento', 
         'm1p6_3': 'comercializacion', 
@@ -203,8 +203,8 @@ class Module21Step(PipelineStep):
         # 'm3p1_6c': 'n_total_1_2_3_4_5_mujeres',
         # 'm3p1_7': 'tiene_propietarios', 
         # 'm3p1_7a': 'n_propietarios_total', 
-        # 'm3p1_7b': 'n_propietarios_hombres', 
-        # 'm3p1_7c': 'n_propietarios_mujeres'
+        'm3p1_7b': 'n_propietarios_hombres', 
+        'm3p1_7c': 'n_propietarios_mujeres'
         }
 
       mod2_1.rename(columns=columns, inplace=True)
@@ -212,7 +212,7 @@ class Module21Step(PipelineStep):
       # mod2_1['plan_negocios'] = mod2_1['plan_negocios'].astype(pd.Int16Dtype())
       # mod2_1['credito_inicio_operaciones'] = mod2_1['credito_inicio_operaciones'].astype(pd.Int16Dtype())                           
       mod2_1['institucion_credito'] = mod2_1['institucion_credito'].astype(pd.Int16Dtype())                                   
-      # mod2_1['areas_funcionales_identificar'] = mod2_1['areas_funcionales_identificar'].astype(pd.Int16Dtype())                        
+      mod2_1['areas_funcionales_identificar'] = mod2_1['areas_funcionales_identificar'].astype(pd.Int16Dtype())                        
       mod2_1['recursos_humanos'] = mod2_1['recursos_humanos'].astype(pd.Int16Dtype())                                      
       mod2_1['logistica_aprovisionamiento'] = mod2_1['logistica_aprovisionamiento'].astype(pd.Int16Dtype())                           
       mod2_1['comercializacion'] = mod2_1['comercializacion'].astype(pd.Int16Dtype())                                     
@@ -292,7 +292,7 @@ class Module21Step(PipelineStep):
       # mod2_1['n_total_1_2_3_4_5_mujeres'] = mod2_1['n_total_1_2_3_4_5_mujeres'].astype(pd.Int32Dtype())                            
       # mod2_1['tiene_propietarios'] = mod2_1['tiene_propietarios'].astype(pd.Int16Dtype())                                   
       # mod2_1['n_propietarios_total'] = mod2_1['n_propietarios_total'].astype(pd.Int32Dtype())                                  
-      # mod2_1['n_propietarios_hombres'] = mod2_1['n_propietarios_hombres'].astype(pd.Int32Dtype())                               
-      # mod2_1['n_propietarios_mujeres'] = mod2_1['n_propietarios_mujeres'].astype(pd.Int32Dtype())
+      mod2_1['n_propietarios_hombres'] = mod2_1['n_propietarios_hombres'].astype(pd.Int32Dtype())                               
+      mod2_1['n_propietarios_mujeres'] = mod2_1['n_propietarios_mujeres'].astype(pd.Int32Dtype())
 
       return df, mod2_1

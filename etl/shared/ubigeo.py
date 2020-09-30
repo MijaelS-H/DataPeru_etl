@@ -30,6 +30,8 @@ class TransformStep(PipelineStep):
 
         df['province_id'] = df['department_id'] + df['province_id']
         df['district_id'] = df['province_id'] + df['district_id']
+        df['nation_id'] = 'peru'
+        df['nation_name'] = 'Perú'
 
         return df
 
@@ -39,6 +41,8 @@ class UbigeoPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtype = {
+            'nation_id': 'String',
+            'nation_name': 'String',
             'department_id': 'String',
             'department_name': 'String',
             'province_id': 'String',

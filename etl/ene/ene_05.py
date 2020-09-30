@@ -183,7 +183,7 @@ class Module5Step(PipelineStep):
       mod6['criterio_elegir_credito_prestamo_recomendacion_terceros'] = mod6['criterio_elegir_credito_prestamo_recomendacion_terceros'].astype(pd.Int16Dtype())
       mod6['criterio_elegir_credito_prestamo_beneficios_entidad'] = mod6['criterio_elegir_credito_prestamo_beneficios_entidad'].astype(pd.Int16Dtype())
       mod6['criterio_elegir_credito_prestamo_rapidez_otorgamiento'] = mod6['criterio_elegir_credito_prestamo_rapidez_otorgamiento'].astype(pd.Int16Dtype())
-      mod6['criterio_elegir_credito_prestamo_periodio_gracia'] = mod6['criterio_elegir_credito_prestamo_periodo_gracia'].astype(pd.Int16Dtype())
+      mod6['criterio_elegir_credito_prestamo_periodo_gracia'] = mod6['criterio_elegir_credito_prestamo_periodo_gracia'].astype(pd.Int16Dtype())
       mod6['criterio_elegir_credito_prestamo_otro'] = mod6['criterio_elegir_credito_prestamo_otro'].astype(pd.Int16Dtype())
       # mod6['duracion_contrato_trabajadores_2014'] = mod6['duracion_contrato_trabajadores_2014'].astype(pd.Int16Dtype())
       # mod6['califica_requisitos_mtpe_contratacion_trabajadores_plazo_fijo'] = mod6['califica_requisitos_mtpe_contratacion_trabajadores_plazo_fijo'].astype(pd.Int16Dtype())
