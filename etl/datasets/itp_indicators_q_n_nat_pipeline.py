@@ -130,7 +130,7 @@ class itp_ind_quarter_n_nat_pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         load_step = LoadStep(
-            "itp_indicators_y_act_dept", db_connector, if_exists="drop", pk=["quarter_id"], dtype=dtype, 
+            "itp_indicators_q_n_nat", db_connector, if_exists="drop", pk=["quarter_id"], dtype=dtype, 
             nullable_list=["poblacion_anual"]
         )
 
