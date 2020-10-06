@@ -56,9 +56,6 @@ class TransformStep(PipelineStep):
         # Creating inicial empty dataframe
         df = pd.DataFrame(columns=['ubigeo', 'year', 'act_economica', 'valor_agregado_bruto_2007', 'valor_agregado_bruto_cte'])
 
-        # For cycle to read 2 sheets by file in data_objectist of 11 economic acctivities)
-        #for i in range(0, len(data_object
-        #    print(data_object       
         left = pd.read_excel(io = '{}/{}/{}'.format(path, data_object['path'], data_object['filename']),
                         sheet_name = data_object['sheet_name_1'],
                         usecols = data_object['cols'],
@@ -111,17 +108,13 @@ class itp_ind_year_Pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
 
         dtype = {
-            "ubigeo":                          "String",
+            "ubigeo":                                 "String",
             "act_economica":                          "UInt8",
-            "year":                                    "UInt16",
+            "year":                                   "UInt16",
             "valor_agregado_bruto_2007":              "UInt32",
             "valor_agregado_bruto_cte":               "UInt32",
         }
 
-        #download_step = DownloadStep(
-        #    connector=[],
-        #    connector_path="conns.yaml"
-        #)
         transform_step = TransformStep()
         load_step = LoadStep(
             "itp_indicators_y_act_dept", db_connector, if_exists="append", pk=["ubigeo"], dtype=dtype, 
