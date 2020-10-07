@@ -6,6 +6,7 @@ dw-bamboo-cli
 h5py
 numexpr
 numpy
+pyreadstat
 simpledbf
 sklearn
 tables
