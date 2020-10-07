@@ -37,7 +37,6 @@ class TransformStep(PipelineStep):
 
         # For cycle to clean unused elements an NaN values + creating quarter_id code for merge step
         for item in [df1, df2, df3, df4, df5]:
-            print(pd.__version__)
             item["year"].replace("Trimestre", pd.np.nan, inplace = True)
             item["year"].fillna(method="ffill", inplace = True)
             item["year"].fillna(2007, inplace = True)

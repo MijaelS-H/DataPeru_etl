@@ -13,7 +13,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -30,7 +30,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -47,7 +47,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -64,7 +64,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -81,7 +81,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -98,7 +98,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -115,7 +115,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -132,7 +132,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -149,7 +149,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -166,7 +166,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
@@ -183,7 +183,7 @@ data_object = [
         'var_name_1' : 'valor_agregado_bruto_2007',
         'var_name_2' : 'valor_agregado_bruto_cte',
         'rename_columns': {
-            'Departamentos': 'departamentos',
+            'Departamentos': 'ubigeo',
             '2016P/': 2016,
             '2017P/': 2017,
             '2018E/': 2018
