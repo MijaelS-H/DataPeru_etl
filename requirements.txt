@@ -6,6 +6,7 @@ dw-bamboo-cli
 h5py
 numexpr
 numpy
+pandas==0.25
 pyreadstat
 simpledbf
 sklearn
