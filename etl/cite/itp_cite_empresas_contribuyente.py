@@ -20,23 +20,9 @@ CARPETAS_DICT = {
     7: "07 PARTIDAS ARANCELARIAS",
 }
 
-MONTHS_DICT = {
-    'mes_01' :'1', 
-    'mes_02' :'2', 
-    'mes_03' :'3', 
-    'mes_04' :'4',
-    'mes_05' :'5', 
-    'mes_06' :'6', 
-    'mes_07' :'7', 
-    'mes_08' :'8', 
-    'mes_09' :'9', 
-    'mes_10' :'10', 
-    'mes_11' :'11',
-    'mes_12':'12'}
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        
+
         k = 1
         df = {}
         for i in range(2,2 +1):
@@ -44,37 +30,26 @@ class TransformStep(PipelineStep):
             file_count = len(files)
 
 
-            for j in range(1, 1 + 1 ):
+            for j in range(5, 5 + 1 ):
                 file_dir = "../../data/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
 
                 df = pd.read_csv(file_dir)
-                k = k + 1
         
-        empresas_list = list(df["tipo"].unique())
-        empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(len(empresas_list))))}
-
+        contribuyente_list = list(df["tipo_contribuyente"].unique())
+        contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(len(contribuyente_list))))}
+        
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
 
-        df = df.drop(columns=['fuente','fecha'])
-        df = pd.melt(df, id_vars=['cite','anio','tipo'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
-               'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
-               'mes_12'])
-        df = df.rename(columns={'variable':'month_id','anio':'year','value':'empresas','tipo':'empresa_name'})
-
-        df['month_id'] = df['month_id'].map(MONTHS_DICT)
-
-        df['time_id'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
-
-        df['tipo_empresa_id'] = df['empresa_name'].map(empresas_map)
         df['cite_id'] = df['cite'].map(cite_map)
+        df['contribuyente_id'] = df['tipo_contribuyente'].map(contribuyente_map)
+       
+        df = df[['cite_id', 'contribuyente_id', 'anio', 'empresas']]
 
-        df = df[['cite_id', 'tipo_empresa_id', 'time_id', 'empresas']]
-
-        
+    
         return df
 
-class CiteEmpresasPipeline(EasyPipeline):
+class CiteContribuyentePipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return [
@@ -87,15 +62,15 @@ class CiteEmpresasPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtypes = {
-            'cite_id':               'UInt8',
-            'tipo_empresa_id':       'UInt8',
-            'time_id':               'UInt32',
-            'empresas':              'UInt32',
+            'cite_id':                'UInt8',
+            'contribuyente_id':       'UInt8',
+            'anio':                   'UInt8',
+            'empresas':               'UInt32',
          }
 
         transform_step = TransformStep()  
         load_step = LoadStep(
-          'cite_empresas', connector=db_connector, if_exists='drop',
+          'itp_cite_empresas_contribuyente', connector=db_connector, if_exists='drop',
           pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
 
         if params.get("ingest")==True:
@@ -106,8 +81,8 @@ class CiteEmpresasPipeline(EasyPipeline):
         return steps
 
 if __name__ == "__main__":
-    cite_empresas_pipeline = CiteEmpresasPipeline()
-    cite_empresas_pipeline.run(
+    cite_contribuyente_pipeline = CiteContribuyentePipeline()
+    cite_contribuyente_pipeline.run(
         {
             "output-db": "clickhouse-local",
             "ingest": False

@@ -20,39 +20,36 @@ CARPETAS_DICT = {
     7: "07 PARTIDAS ARANCELARIAS",
 }
 
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         k = 1
         df = {}
-        for i in range(4,4 +1):
+        for i in range(2,2 +1):
             path, dirs, files = next(os.walk("../../data/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
             file_count = len(files)
 
 
-            for j in range(1, file_count):
+            for j in range(3, 3 + 1 ):
                 file_dir = "../../data/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
 
-                df[k] = pd.read_csv(file_dir)
+                df = pd.read_csv(file_dir)
                 k = k + 1
-
-        df_list = [df[i] for i in range(1,3)]
-        df = reduce(lambda df1,df2: pd.merge(df1,df2,on=['cite'],how='outer'), df_list)
-
-        aspecto_list = list(df["aspecto"].unique())
-        aspecto_map = {k:v for (k,v) in zip(sorted(aspecto_list), list(range(len(aspecto_list))))}
-
+        
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
 
         df['cite_id'] = df['cite'].map(cite_map)
-        df['aspecto_id'] = df['aspecto'].map(aspecto_map)
-        df = df[['cite_id','aspecto_id','estado']]
+        df = df[['cite_id','cod_ciiu','anio','empresas']]
+        df = df.rename(columns={'cod_ciiu' :'class_id'})
 
+        df['class_id'] = df['class_id'].replace({"No determinados" :"0000"})
+    
        
-        return df   
+        return df
 
-class CiteAspectoPipeline(EasyPipeline):
+class CiteEmpresas2Pipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return [
@@ -65,15 +62,15 @@ class CiteAspectoPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtypes = {
-            'cite_id':                'UInt8',
-            'aspecto_id':             'UInt8',
-            'time_id':                'UInt32',
-            'empresas':               'UInt32',
+            'cite_id':               'UInt8',
+            'class_id':              'UInt8',
+            'anio':                  'UInt8',
+            'empresas':              'UInt32',
          }
 
         transform_step = TransformStep()  
         load_step = LoadStep(
-          'cite_clientes_aspecto', connector=db_connector, if_exists='drop',
+          'itp_cite_empresas_ciiu', connector=db_connector, if_exists='drop',
           pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
 
         if params.get("ingest")==True:
@@ -84,8 +81,8 @@ class CiteAspectoPipeline(EasyPipeline):
         return steps
 
 if __name__ == "__main__":
-    cite_aspecto_pipeline = CiteAspectoPipeline()
-    cite_aspecto_pipeline.run(
+    cite_empresas2_pipeline = CiteEmpresas2Pipeline()
+    cite_empresas2_pipeline.run(
         {
             "output-db": "clickhouse-local",
             "ingest": False

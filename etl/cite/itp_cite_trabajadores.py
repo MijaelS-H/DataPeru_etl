@@ -20,50 +20,48 @@ CARPETAS_DICT = {
     7: "07 PARTIDAS ARANCELARIAS",
 }
 
-MONTHS_DICT = {
-    'mes_01' :'1', 
-    'mes_02' :'2', 
-    'mes_03' :'3', 
-    'mes_04' :'4',
-    'mes_05' :'5', 
-    'mes_06' :'6', 
-    'mes_07' :'7', 
-    'mes_08' :'8', 
-    'mes_09' :'9', 
-    'mes_10' :'10', 
-    'mes_11' :'11',
-    'mes_12':'12'}
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         k = 1
         df = {}
-        for i in range(2,2 +1):
+        for i in range(6,6 +1):
             path, dirs, files = next(os.walk("../../data/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
             file_count = len(files)
 
 
-            for j in range(5, 5 + 1 ):
+            for j in range(1, 1 + 1 ):
                 file_dir = "../../data/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
 
                 df = pd.read_csv(file_dir)
+                k = k + 1
         
-        contribuyente_list = list(df["tipo_contribuyente"].unique())
-        contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(len(contribuyente_list))))}
-        
+        df = pd.melt(df, id_vars=['cite','anio','modalidad'], value_vars=['directivo', 'tecnico', 'operativo', 'administrativo',
+               'practicante'])
+        df = df.rename(columns={'variable':'tipo_trabajador','anio':'year','value':'cantidad'})
+
+        ## cite dim
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map)
-        df['contribuyente_id'] = df['tipo_contribuyente'].map(contribuyente_map)
-       
-        df = df[['cite_id', 'contribuyente_id', 'anio', 'empresas']]
+        ## modalidad dim
+        modalidad_list = list(df["modalidad"].unique())
+        modalidad_map = {k:v for (k,v) in zip(sorted(modalidad_list), list(range(1, len(modalidad_list) +1)))}
 
-    
+        ## contratos
+        tipo_trabajador_list = list(df["tipo_trabajador"].unique())
+        tipo_trabajador_map = {k:v for (k,v) in zip(sorted(tipo_trabajador_list), list(range(1, len(tipo_trabajador_list) +1)))}
+
+        df['cite_id'] = df['cite'].map(cite_map)
+        df['modalidad_id'] = df['modalidad'].map(modalidad_map)
+        df['tipo_trabajador_id'] = df['tipo_trabajador'].map(tipo_trabajador_map)
+
+        df = df[['cite_id','modalidad_id','tipo_trabajador_id','cantidad']]
+
+        
         return df
 
-class CiteContribuyentePipeline(EasyPipeline):
+class CiteContratosPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return [
@@ -76,16 +74,17 @@ class CiteContribuyentePipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtypes = {
-            'cite_id':                'UInt8',
-            'contribuyente_id':       'UInt8',
-            'anio':                   'UInt8',
-            'empresas':               'UInt32',
+            'cite_id':                                 'UInt8',
+            'modalidad_id':                            'UInt8',
+            'tipo_trabajador_id':                      'UInt8',
+            'cantidad':                                'UInt16',
+
          }
 
         transform_step = TransformStep()  
         load_step = LoadStep(
-          'cite_clientes_contribuyente', connector=db_connector, if_exists='drop',
-          pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
+          'itp_cite_trabajadores', connector=db_connector, if_exists='drop',
+          pk=['cite_id'], dtype=dtypes, nullable_list=['cantidad'])
 
         if params.get("ingest")==True:
             steps = [transform_step, load_step]
@@ -95,8 +94,8 @@ class CiteContribuyentePipeline(EasyPipeline):
         return steps
 
 if __name__ == "__main__":
-    cite_contribuyente_pipeline = CiteContribuyentePipeline()
-    cite_contribuyente_pipeline.run(
+    cite_contratos_pipeline = CiteContratosPipeline()
+    cite_contratos_pipeline.run(
         {
             "output-db": "clickhouse-local",
             "ingest": False

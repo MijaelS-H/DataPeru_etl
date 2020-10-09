@@ -10,6 +10,7 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 
+
 CARPETAS_DICT = {
     1: "01 INFORMACIÓN INSTITUCIONAL",
     2: "02 CLIENTES ATENDIDOS",
@@ -20,48 +21,60 @@ CARPETAS_DICT = {
     7: "07 PARTIDAS ARANCELARIAS",
 }
 
+MONTHS_DICT = {
+    'mes_01' :'1', 
+    'mes_02' :'2', 
+    'mes_03' :'3', 
+    'mes_04' :'4',
+    'mes_05' :'5', 
+    'mes_06' :'6', 
+    'mes_07' :'7', 
+    'mes_08' :'8', 
+    'mes_09' :'9', 
+    'mes_10' :'10', 
+    'mes_11' :'11',
+    'mes_12':'12'}
+
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         k = 1
         df = {}
-        for i in range(6,6 +1):
+        for i in range(5,5 +1):
             path, dirs, files = next(os.walk("../../data/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
             file_count = len(files)
 
 
-            for j in range(1, 1 + 1 ):
+            for j in range(2, 2 + 1 ):
                 file_dir = "../../data/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
 
-                df = pd.read_csv(file_dir)
+                df= pd.read_csv(file_dir)
                 k = k + 1
         
-        df = pd.melt(df, id_vars=['cite','anio','modalidad'], value_vars=['directivo', 'tecnico', 'operativo', 'administrativo',
-               'practicante'])
-        df = df.rename(columns={'variable':'tipo_trabajador','anio':'year','value':'cantidad'})
+        ## rows 78 and foward are only ",,,,,,"
+        df = df[0:77]
 
-        ## cite dim
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
 
-        ## modalidad dim
-        modalidad_list = list(df["modalidad"].unique())
-        modalidad_map = {k:v for (k,v) in zip(sorted(modalidad_list), list(range(1, len(modalidad_list) +1)))}
+        df = df.drop(columns=['fuente','fecha'])
+        df = pd.melt(df, id_vars=['cite','anio'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
+               'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
+               'mes_12'])
+        df = df.rename(columns={'variable':'month_id','anio':'year','value':'ejecucion_presupuestal'})
 
-        ## contratos
-        tipo_trabajador_list = list(df["tipo_trabajador"].unique())
-        tipo_trabajador_map = {k:v for (k,v) in zip(sorted(tipo_trabajador_list), list(range(1, len(tipo_trabajador_list) +1)))}
-
+        df['month_id'] = df['month_id'].map(MONTHS_DICT)
+        df['time_id'] = df['year'].astype(int).astype(str) + df['month_id'].str.zfill(2)
+        df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].str[:-3].replace(',','', regex=True)
         df['cite_id'] = df['cite'].map(cite_map)
-        df['modalidad_id'] = df['modalidad'].map(modalidad_map)
-        df['tipo_trabajador_id'] = df['tipo_trabajador'].map(tipo_trabajador_map)
 
-        df = df[['cite_id','modalidad_id','tipo_trabajador_id','cantidad']]
+        df = df[['cite_id', 'time_id', 'ejecucion_presupuestal']]
 
         
         return df
 
-class CiteContratosPipeline(EasyPipeline):
+class CitePimPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return [
@@ -75,16 +88,15 @@ class CiteContratosPipeline(EasyPipeline):
 
         dtypes = {
             'cite_id':                                 'UInt8',
-            'modalidad_id':                            'UInt8',
-            'tipo_trabajador_id':                      'UInt8',
-            'cantidad':                                'UInt16',
+            'time_id':                                 'UInt32',
+            'ejecucion_presupuestal':                  'UInt64',
 
          }
 
         transform_step = TransformStep()  
         load_step = LoadStep(
-          'cite_ejecucion_presupuestal', connector=db_connector, if_exists='drop',
-          pk=['cite_id'], dtype=dtypes, nullable_list=['cantidad'])
+          'itp_cite_ejecucion_presupuestal', connector=db_connector, if_exists='drop',
+          pk=['cite_id'], dtype=dtypes, nullable_list=['ejecucion_presupuestal'])
 
         if params.get("ingest")==True:
             steps = [transform_step, load_step]
@@ -94,8 +106,8 @@ class CiteContratosPipeline(EasyPipeline):
         return steps
 
 if __name__ == "__main__":
-    cite_contratos_pipeline = CiteContratosPipeline()
-    cite_contratos_pipeline.run(
+    cite_pim_pipeline = CitePimPipeline()
+    cite_pim_pipeline.run(
         {
             "output-db": "clickhouse-local",
             "ingest": False

@@ -36,7 +36,7 @@ MONTHS_DICT = {
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-
+        
         k = 1
         df = {}
         for i in range(2,2 +1):
@@ -44,25 +44,37 @@ class TransformStep(PipelineStep):
             file_count = len(files)
 
 
-            for j in range(3, 3 + 1 ):
+            for j in range(1, 1 + 1 ):
                 file_dir = "../../data/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
 
                 df = pd.read_csv(file_dir)
                 k = k + 1
         
+        empresas_list = list(df["tipo"].unique())
+        empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(len(empresas_list))))}
+
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map)
-        df = df[['cite_id','cod_ciiu','anio','empresas']]
-        df = df.rename(columns={'cod_ciiu' :'class_id'})
+        df = df.drop(columns=['fuente','fecha'])
+        df = pd.melt(df, id_vars=['cite','anio','tipo'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
+               'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
+               'mes_12'])
+        df = df.rename(columns={'variable':'month_id','anio':'year','value':'empresas','tipo':'empresa_name'})
 
-        df['class_id'] = df['class_id'].replace({"No determinados" :"0000"})
-    
-       
+        df['month_id'] = df['month_id'].map(MONTHS_DICT)
+
+        df['time_id'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
+
+        df['tipo_empresa_id'] = df['empresa_name'].map(empresas_map)
+        df['cite_id'] = df['cite'].map(cite_map)
+
+        df = df[['cite_id', 'tipo_empresa_id', 'time_id', 'empresas']]
+
+        
         return df
 
-class CiteEmpresas2Pipeline(EasyPipeline):
+class CiteEmpresasPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return [
@@ -76,14 +88,14 @@ class CiteEmpresas2Pipeline(EasyPipeline):
 
         dtypes = {
             'cite_id':               'UInt8',
-            'class_id':              'UInt8',
-            'anio':                  'UInt8',
+            'tipo_empresa_id':       'UInt8',
+            'time_id':               'UInt32',
             'empresas':              'UInt32',
          }
 
         transform_step = TransformStep()  
         load_step = LoadStep(
-          'cite_empresas_2', connector=db_connector, if_exists='drop',
+          'itp_cite_tipo_empresas', connector=db_connector, if_exists='drop',
           pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
 
         if params.get("ingest")==True:
@@ -94,8 +106,8 @@ class CiteEmpresas2Pipeline(EasyPipeline):
         return steps
 
 if __name__ == "__main__":
-    cite_empresas2_pipeline = CiteEmpresas2Pipeline()
-    cite_empresas2_pipeline.run(
+    cite_empresas_pipeline = CiteEmpresasPipeline()
+    cite_empresas_pipeline.run(
         {
             "output-db": "clickhouse-local",
             "ingest": False
