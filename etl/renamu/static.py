@@ -6,7 +6,8 @@
 ## VARIABLES_DICT: Static dictionary to replace text-based variables
 
 DTYPES = {
-    'ubigeo':                                                                               'String',
+    'ubigeo':                                                                               'String',    
+    'n_autos_operativos':                                                                   'Float32', 
     'n_motocicletas_operativos':                                                            'Float32',
     'n_ambulancias_operativos':                                                             'Float32',
     'n_volquetes_operativos':                                                               'Float32',
@@ -105,6 +106,8 @@ DTYPES = {
     'personal_hombre_dl_728_vigilancia':                                                    'UInt16',
     'personal_mujer_cas_vigilancia':                                                        'UInt16',
     'personal_hombre_cas_vigilancia':                                                       'UInt16',
+    'personal_mujer_locacion_servicios_vigilancia':                                         'UInt16',
+    'personal_hombre_locacion_servicios_vigilancia':                                        'UInt16',
     'personal_mujer_discapacidad':                                                          'Float32',
     'personal_hombre_discapacidad':                                                         'Float32',
     'pensionistas_mujer_dl_19990':                                                          'Float32',
@@ -422,7 +425,7 @@ DTYPES = {
 }
 
 NULLABLE_LIST = [
-    'n_motocicletas_operativos', 'n_ambulancias_operativos', 'n_volquetes_operativos', 'n_camiones_basura_operativos', 'n_cisternas_operativos', 
+    'n_autos_operativos', 'n_motocicletas_operativos', 'n_ambulancias_operativos', 'n_volquetes_operativos', 'n_camiones_basura_operativos', 'n_cisternas_operativos', 
     'n_camiones_operativos', 'n_grupos_electrogenos_operativos', 'n_paneles_solares_operativos', 'n_otros_vehiculos_operativos', 'n_excavadoras_operativos', 
     'n_retroexcavadoras_operativos', 'n_motoniveladoras_operativos', 'n_cargadores_frontales_operativos', 'n_tractores_oruga_operativos', 'n_tractores_agricola_operativos', 
     'n_compatadora_suelo_operativos', 'n_otra_maquinaria_pesada_operativo', 'tiene_telefonia_fija', 'tiene_telefonia_movil', 'n_computadores_acceso_internet', 
@@ -984,26 +987,26 @@ RENAME_COLUMNS = {
 }
 
 SELECTED_COLUMNS = [
-    'idmunici', 'year'
-    # Módulo I
+    'idmunici', 'year',
+    # Módulo II
     'P12A_1_1', 'P12A_2_1', 'P12A_3_1', 'P12A_4_1', 'P12A_5_1', 'P12A_6_1', 'P12A_7_1', 'P12A_8_1', 'P12A_9_1', 'P12A_10_1', 'P12B_11_1', 'P12B_12_1',
     'P12B_13_1', 'P12B_14_1', 'P12B_15_1', 'P12B_16_1', 'P12B_17_1', 'P12B_18_1', 'P13_1', 'P13_2', 'P15A_1', 'P17_1', 'P17_2', 'P17_3', 'P17_4', 
     'P17_5', 'P17_6', 'P17_7', 'P17_8', 'P17_9', 'P19',
-    # Módulo II
+    # Módulo III
     'P20_1_NM', 'P20_1_NH', 'P20_1_CM', 
     'P20_1_CH', 'P20_1_LM', 'P20_1_LH', 'P20_1_VM', 'P20_1_VH', 'P20_1_SM', 'P20_1_SH', 'P20_2_NM', 'P20_2_NH', 'P20_2_CM', 'P20_2_CH', 'P20_2_LM', 
     'P20_2_LH', 'P20_2_VM', 'P20_2_VH', 'P20_2_SM', 'P20_2_SH', 'P20_3_NM', 'P20_3_NH', 'P20_3_CM', 'P20_3_CH', 'P20_3_LM', 'P20_3_LH', 'P20_3_VM', 'P20_3_VH', 
     'P20_3_SM', 'P20_3_SH', 'P20_4_NM', 'P20_4_NH', 'P20_4_CM', 'P20_4_CH', 'P20_4_LM', 'P20_4_LH', 'P20_4_VM', 'P20_4_VH', 'P20_4_SM', 'P20_4_SH', 
     'P20_5_NM', 'P20_5_NH', 'P20_5_CM', 'P20_5_CH', 'P20_5_LM', 'P20_5_LH', 'P20_5_VM', 'P20_5_VH', 'P20_5_SM', 'P20_5_SH', 'P20_6_NM', 'P20_6_NH', 
     'P20_6_CM', 'P20_6_CH', 'P20_6_LM', 'P20_6_LH', 'P20_6_VM', 'P20_6_VH', 'P20_6_SM', 'P20_6_SH', 'P20_7_NM', 'P20_7_NH', 'P20_7_CM', 'P20_7_CH', 
-    'P20_7_LM', 'P20_7_LH', 'P20_7_VM', 'P20_7_VH', 'P20A_1_M', 'P20A_1_H', 'P21_1_M', 'P21_1_H', 'P21_2_M', 'P21_2_H', 'P22_AT1', 'P22_AT2', 
+    'P20_7_LM', 'P20_7_LH', 'P20_7_VM', 'P20_7_VH', 'P20_7_SM', 'P20_7_SH', 'P20A_1_M', 'P20A_1_H', 'P21_1_M', 'P21_1_H', 'P21_2_M', 'P21_2_H', 'P22_AT1', 'P22_AT2', 
     'P22_AT3', 'P22_AT4', 'P22_AT5', 'P22_AT6', 'P22_AT7', 'P22_AT8', 'P22_AT9', 'P22_AT10', 'P22_AT11', 'P22_AT12', 'P22_AT13', 'P22_AT14', 'P22_AT15', 
     'P22_AT16', 'P22_AT17', 'P22_AT18', 'P22_AT19', 'P22_AT20', 'P22_AT21', 'P22_AT22', 'P22_AT23', 'P22_AT24', 'P22_C1', 'P22_C2', 'P22_C3', 'P22_C4', 'P22_C5', 
     'P22_C6', 'P22_C7', 'P22_C8', 'P22_C9', 'P22_C10', 'P22_C11', 'P22_C12', 'P22_C13', 'P22_C14', 'P22_C15', 'P22_C16', 'P22_C17', 'P22_C18', 'P22_C19', 
     'P22_C20', 'P22_C21', 'P22_C22', 'P22_C23', 'P22_C24', 'C100_1_1', 'C100_1_2', 'C100_1_3', 'C100_1_4', 'C100_1_5', 'C100_1_6', 'C100_2_1', 
     'C100_2_2', 'C100_3_1', 'C100_3_2', 'C100_3_3', 'C100_3_4', 'C100_3_5', 'C100_4_1', 'C100_4_2', 'C101_1_1', 'C101_1_2', 'C101_1_3', 'C101_1_4', 
     'C101_1_5', 'C101_2_1', 'C101_2_2', 'C101_2_3', 'C101_3',
-    # Módulo I
+    # Módulo IV
     'P23_1_1', 'P23_1_3', 'P23_2_1', 'P23_2_3', 'P23_3_1', 'P23_3_2', 'P23_4_1', 'P23_4_3', 'P23_5_1', 'P23_5_3', 'P23_6_1', 'P23_6_3', 'P23_7_1', 'P23_7_3', 
     'P23_8_1', 'P23_8_3', 'P23_9_1', 'P23_9_3', 'P23_10_1', 'P23_10_3', 'P23_11_1', 'P23_11_2', 'P23_12_1', 'P23_12_2', 'P23_13_1', 'P23_13_2', 
     'P29_1_2', 'P29_1_3', 'P29_1_4', 'P29_2_2', 'P29_2_3', 
@@ -1014,7 +1017,7 @@ SELECTED_COLUMNS = [
     'P37A_3', 'P37A_4', 'P37A_5', 'P38_2', 'P40A_A_1_1', 'P40A_A_1_2', 'P40A_A_2_1', 'P40A_A_2_2', 'P40A_A_3_1', 'P40A_A_3_2', 'P40A_A_4_1', 'P40A_A_4_2', 
     'P40A_A_5_1', 'P40A_A_5_2', 'P40A_A_6_1', 'P40A_A_6_2', 'P40B_A_1_1', 'P40B_A_1_2', 'P40B_A_2_1', 'P40B_A_2_2', 'P40B_A_3_1', 'P40B_A_3_2', 'P40B_A_4_1', 
     'P40B_A_4_2',
-    # Módulo 
+    # Módulo V
     'P44_1', 'P44_2', 'P44_3', 'P44_4', 'P44_5', 'P44_6', 'P44_7', 'P46_1', 'P46_2', 'P46_3', 'P49A_1', 'P49A_2', 'P49A_3', 'P49A_4', 'P49A_5', 'P49A_6', 
     'P49A_7', 'P49A_8', 'P49A_9', 'P49A_10', 'P49A_11', 'P49A_12', 'P60A_1_2', 'P60A_2_2', 'P60A_3_2', 'P60A_4_2', 'P60A_5_2', 'P60B_1_1', 'P60B_2_1', 
     'P60B_3_1', 'P60B_4_1', 'P60B_5_1', 'P60B_6_1', 'P60B_7_1', 'P60B_8_1', 'P61_2', 'P62_1', 'P64_1_1', 'P64_2_1', 'P64_3_1', 'P64_4_1', 'P64_5_1', 
