@@ -30,7 +30,7 @@ class TransformStep(PipelineStep):
 
         df['province_id'] = df['department_id'] + df['province_id']
         df['district_id'] = df['province_id'] + df['district_id']
-        df['nation_id'] = 'peru'
+        df['nation_id'] = 'per'
         df['nation_name'] = 'Perú'
 
         return df
