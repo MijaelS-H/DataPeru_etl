@@ -39,7 +39,7 @@ class FormatStep(PipelineStep):
         df.rename(columns=COLUMNS_RENAME, inplace=True)
 
         # column types
-        df['nation_id'].replace({'Nacional': 'pe'}, inplace=True)
+        df['nation_id'].replace({'Nacional': 'per'}, inplace=True)
         df['nation_id'] = df['nation_id'].astype(str)
 
         df[['industry_id', 'nation_id']] = df[['industry_id', 'nation_id']].fillna(0)
