@@ -6,12 +6,12 @@ COLUMNS_RENAME = {
 }
 
 INDUSTRY_REPLACE = {
-    'Pesca y acuicultura': 2,
-    'Explotación de minas y canteras': 3,
-    'Industrias manufactureras': 4,
-    'Suministro de electricidad, gas y agua': 5,
-    'Construcción': 6,
-    'Comercio': 7,
-    'Transporte y almacenamiento': 8,
-    'Servicios': 9
+    'Pesca y acuicultura': 1,
+    'Explotación de minas y canteras': 2,
+    'Industrias manufactureras': 3,
+    'Suministro de electricidad, gas y agua': 4,
+    'Construcción': 5,
+    'Comercio': 6,
+    'Transporte y almacenamiento': 7,
+    'Servicios': 8
 }
