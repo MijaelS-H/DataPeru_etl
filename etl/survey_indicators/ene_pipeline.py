@@ -11,7 +11,7 @@ from shared import ReplaceStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        data = pd.ExcelFile('071020 ENE_Indicadores.xlsx')
+        data = pd.ExcelFile('../../../datasets/20201007/03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))/05 Encuestas Nacional de Empresas (ENE) (07-10-2020)/071020 ENE_Indicadores.xlsx')
 
         # sheet names
         geo = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
@@ -69,7 +69,7 @@ class ENEPipeline(EasyPipeline):
         transform_step = TransformStep()
         replace_step = ReplaceStep()
         format_step = FormatStep()
-        load_step = LoadStep('ene', db_connector, if_exists='drop', 
+        load_step = LoadStep('inei_ene', db_connector, if_exists='drop', 
                              pk=['nation_id', 'industry_id', 'year'], dtype=dtype,
                              nullable_list=['coef_var'])
 
