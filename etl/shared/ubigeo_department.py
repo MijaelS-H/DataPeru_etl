@@ -29,7 +29,7 @@ class TransformStep(PipelineStep):
         df['nation_id'] = 'per'
         df['nation_name'] = 'Perú'
 
-        df.drop_duplicates(inplace = True)
+        df.drop_duplicates(subset=['department_id'], inplace = True)
 
         return df
 
