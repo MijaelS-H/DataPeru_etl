@@ -76,8 +76,8 @@ class ENAHOPipeline(EasyPipeline):
         replace_step = ReplaceStep(connector=db_connector)
         format_step = FormatStep()
         load_step = LoadStep('inei_enaho', db_connector, if_exists='drop', 
-                             pk=['nation_id', 'region_id', 'geo_id', 'department_id', 'year'], dtype=dtype,
-                             nullable_list=['coef_var'])
+                             pk=['nation_id', 'department_id', 'year'], dtype=dtype,
+                             nullable_list=['coef_var', 'category_id', 'geo_id', 'region_id'])
 
         return [transform_step, replace_step, format_step, load_step]
 

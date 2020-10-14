@@ -14,6 +14,7 @@ class ProcessingStep(PipelineStep):
         if params.get('pk') == 'category_id':
             df = pd.DataFrame.from_dict(category_dim, orient='index').reset_index()
             df.columns = ['category_name', 'category_id']
+            df.dropna(inplace=True)
             return df
         elif params.get('pk') == 'indicator_id':
             df = pd.DataFrame.from_dict(indicator_dim, orient='index').reset_index()
@@ -22,10 +23,12 @@ class ProcessingStep(PipelineStep):
         elif params.get('pk') == 'region_id':
             df = pd.DataFrame.from_dict(region_dim, orient='index').reset_index()
             df.columns = ['region_name', 'region_id']
+            df.dropna(inplace=True)
             return df
         else:
             df = pd.DataFrame.from_dict(geo_dim, orient='index').reset_index()
             df.columns = ['geo_name', 'geo_id']
+            df.dropna(inplace=True)
             return df
 
 class DimsPipeline(EasyPipeline):

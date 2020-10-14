@@ -12,9 +12,6 @@ class ReplaceStep(PipelineStep):
         dim_geo = query_to_df(self.connector, raw_query=dim_geo_query)
         df['department_id'].replace(dict(zip(dim_geo['department_name'], dim_geo['department_id'])), inplace=True)
 
-        for col in ['categoría', 'geo_id', 'region_id']:
-            df[col].fillna('No especificado', inplace=True)
-
         category_dim = dict(zip(df['categoría'].unique(), range(1, len(df['categoría'].unique()) + 1 )))
         df['categoría'].replace(category_dim, inplace=True)
 
