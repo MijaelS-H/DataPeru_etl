@@ -21,10 +21,6 @@ CARPETAS_DICT = {
     7: "07 PARTIDAS ARANCELARIAS",
 }
 
-TIPO_DICT = {
-    "CITE": 1,
-    "UT" : 2
-}
 
 CADENAS_DICT = {
     'Tilapia, paiche, paco, gamitana y doncella': 10217,
@@ -105,8 +101,9 @@ class TransformStep(PipelineStep):
         df['cite_slug'] = df['cite_slug'].apply(unidecode)
         df['cite_slug'] = df['cite_slug'].str.replace(" ", "_")
 
+        df['tipo_id'] = df['tipo'].map({"CITE": 1, "UT" : 2})
 
-        df = df[['cite_id','cite','cite_slug', 'tipo', 'cadena_atencion','cadena_atencion_id',
+        df = df[['cite_id','cite','cite_slug', 'tipo','tipo_id', 'cadena_atencion','cadena_atencion_id',
        'ubigeo', 'latitud', 'longitud', 'descriptivo']]
 
         print(df)
@@ -128,7 +125,8 @@ class CiteInfoPipeline(EasyPipeline):
             'cite_id':               'UInt8',
             'cite':                  'String',
             'cite_slug':             'String',   
-            'tipo':                  'UInt8',
+            'tipo':                  'String',
+            'tipo_id':               'UInt8',
             'cadena_atencion':       'String',   
             'cadena_atencion_id':    'UInt8',  
             'ubigeo':                'String',  

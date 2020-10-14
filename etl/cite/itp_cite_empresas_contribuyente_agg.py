@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import os
-from unidecode import unidecode
 from functools import reduce
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
@@ -9,7 +8,7 @@ from bamboo_lib.models import Parameter
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
-
+from bamboo_lib.helpers import grab_connector
 
 CARPETAS_DICT = {
     1: "01 INFORMACIÓN INSTITUCIONAL",
@@ -21,7 +20,6 @@ CARPETAS_DICT = {
     7: "07 PARTIDAS ARANCELARIAS",
 }
 
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
@@ -32,42 +30,44 @@ class TransformStep(PipelineStep):
             file_count = len(files)
 
 
-            for j in range(1, 1 + 1 ):
+            for j in range(6, 6 + 1 ):
                 file_dir = "../../data/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
 
                 df = pd.read_csv(file_dir)
-                k = k + 1
         
-        empresas_list = list(df["tipo"].unique())
-        empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(len(empresas_list))))}
+        contribuyente_list = list(df["tipo_contribuyente"].unique())
+        contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(len(contribuyente_list))))}
+        
 
-        df = pd.DataFrame({ "tipo_empresa_id": list(range(len(empresas_list))),"tipo_empresa": sorted(empresas_list)})
+        df['contribuyente_id'] = df['tipo_contribuyente'].map(contribuyente_map)
+       
+        df = df[['contribuyente_id', 'anio', 'empresas']]
 
     
         return df
 
-class EmpresasCitePipeline(EasyPipeline):
+class CiteContribuyentePipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return [
             Parameter("output-db", dtype=str),
             Parameter("ingest", dtype=bool)
         ]
-    
-    
+
     @staticmethod
     def steps(params):
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
-        dtype = {
-            'tipo_empresa_id':              'UInt8',
-            'tipo_empresa':                 'String',
-        }
+        dtypes = {
+            'contribuyente_id':       'UInt8',
+            'anio':                   'UInt8',
+            'empresas':               'UInt32',
+         }
 
-        transform_step = TransformStep()
-
+        transform_step = TransformStep()  
         load_step = LoadStep(
-            "dim_shared_cite_empresas", db_connector, if_exists="drop", pk=["tipo_empresa_id"], dtype=dtype)
+          'itp_cite_empresas_contribuyente_agg', connector=db_connector, if_exists='drop',
+          pk=['contribuyente_id'], dtype=dtypes, nullable_list=['empresas'])
 
         if params.get("ingest")==True:
             steps = [transform_step, load_step]
@@ -77,9 +77,8 @@ class EmpresasCitePipeline(EasyPipeline):
         return steps
 
 if __name__ == "__main__":
-
-    empresas_cite_pipeline = EmpresasCitePipeline()
-    empresas_cite_pipeline.run(
+    cite_contribuyente_pipeline = CiteContribuyentePipeline()
+    cite_contribuyente_pipeline.run(
         {
             "output-db": "clickhouse-local",
             "ingest": False

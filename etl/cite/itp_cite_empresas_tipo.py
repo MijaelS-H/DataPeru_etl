@@ -95,7 +95,7 @@ class CiteEmpresasPipeline(EasyPipeline):
 
         transform_step = TransformStep()  
         load_step = LoadStep(
-          'itp_cite_tipo_empresas', connector=db_connector, if_exists='drop',
+          'itp_cite_empresas_tipo', connector=db_connector, if_exists='drop',
           pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
 
         if params.get("ingest")==True:
