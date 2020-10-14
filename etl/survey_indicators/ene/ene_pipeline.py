@@ -4,7 +4,7 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from helpers import join_files
+from etl.survey_indicators.helpers import join_files
 from static import COLUMNS_RENAME
 from shared import ReplaceStep
 
