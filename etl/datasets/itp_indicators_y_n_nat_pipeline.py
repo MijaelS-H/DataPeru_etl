@@ -31,9 +31,7 @@ class TransformStep(PipelineStep):
         df1["year"].replace({"2016P/": 2016, "2017P/": 2017, "2018E/": 2018}, inplace = True)
 
         #df2
-        print(df2)
         df2 = df2.T
-        print(df2)
         new_header = df2.iloc[0]
         df2 = df2[1:]
         df2.columns = new_header

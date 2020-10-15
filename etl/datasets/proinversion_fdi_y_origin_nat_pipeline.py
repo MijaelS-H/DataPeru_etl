@@ -31,7 +31,13 @@ class TransformStep(PipelineStep):
 
         # Correcting minor typos
         df_1['year'].replace({"2018 P/": 2018}, inplace = True)
-        df_1['country_name_es'].replace({"Otros 1/": "Otros"}, inplace = True)
+        df_1['country_name_es'].replace({"Estados Unidos de América" : "Estados Unidos",
+                                        "Islas Bermudas " : "Bermuda",
+                                        "Islas Bahamas " : "Las Bahamas",
+                                        "Corea" : "Corea del Sur",
+                                        "Gran Bretaña" : "Reino Unido",
+                                        "U.E.A. (United Arab Emirates)" : "Emiratos Árabes Unidos",
+                                        "Otros 1/": "Otros"}, inplace = True)
 
         # Adding countries columns to dataframe
         df = pd.merge(df_1, countries[["iso3", "continent_id", "continent_es", "country_name_es"]], on = 'country_name_es', how = 'left')
