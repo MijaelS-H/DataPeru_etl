@@ -1,5 +1,5 @@
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
+from bamboo_lib.helpers import grab_parent_dir, query_to_df
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
@@ -17,7 +17,11 @@ class TransformStep(PipelineStep):
 
         # Loading data
         df1 = pd.read_excel(io = '{}/{}/{}'.format(path1, 'A. Economía', "A.188.xlsx"), skiprows = (0,1,2,4))[0:41]
-        countries = pd.read_csv(grab_parent_dir('../../') + "/datasets/anexos/countries.csv")
+
+        dim_country_query = 'SELECT * FROM dim_shared_country'
+        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        countries = query_to_df(db_connector, raw_query=dim_country_query)
+        #countries = pd.read_csv(grab_parent_dir('../../') + "/datasets/anexos/countries.csv")
 
         # Transpose dataframe, adding new header and year column from index
         df1 = df1.T

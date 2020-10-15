@@ -213,7 +213,7 @@ class TransformStep(PipelineStep):
         df['country_name_es'].replace(dict(zip(translations['origin_id'], translations['name'])), inplace=True)
 
         df = df.append(COUNTRIES, ignore_index=True)
-        df.to_csv("countries.csv", index=False)
+
         return df
 
 class CountryPipeline(EasyPipeline):
