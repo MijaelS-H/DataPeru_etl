@@ -9,7 +9,7 @@ from shared import ReplaceStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        data = pd.ExcelFile('../../../../datasets/20201007/03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))/02 Encuesta Nacional de Innovación en las Empresas Manufactureras (06-10-2020)/061020 ENIMA_Indicadores.xlsx')
+        data = pd.ExcelFile('../../../datasets/20201007/03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))/02 Encuesta Nacional de Innovación en las Empresas Manufactureras (06-10-2020)/061020 ENIMA_Indicadores.xlsx')
 
         # sheet names
         geo = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
@@ -38,12 +38,13 @@ class FormatStep(PipelineStep):
         df['nation_id'] = df['nation_id'].astype(str)
 
         df[['industry_id', 'nation_id']] = df[['industry_id', 'nation_id']].fillna(0)
+        df['industry_id'] = df['industry_id'].astype(str)
 
         df['year_start'] = df['year'].str[0:4]
         df['year_end'] = df['year'].str[7::]
         df = df.drop(columns = ['year'])
 
-        df[['year_start', 'year_end', 'indicator_id', 'industry_id', 'category_id', 'estimate', 'coef_var', 'popul_size']] = df[['year_start', 'year_end', 'indicator_id', 'industry_id', 'category_id', 'estimate', 'coef_var', 'popul_size']].astype(float)
+        df[['year_start', 'year_end', 'indicator_id', 'category_id', 'estimate', 'coef_var', 'popul_size']] = df[['year_start', 'year_end', 'indicator_id', 'category_id', 'estimate', 'coef_var', 'popul_size']].astype(float)
         
         return df
 
@@ -51,11 +52,11 @@ class ENIMAPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtype = {
             'nation_id':    'String',
-            'industry_id':  'UInt8',
+            'industry_id':  'String',
             'indicator_id': 'UInt8',
             'year_start':   'UInt16',
             'year_end':     'UInt16',
