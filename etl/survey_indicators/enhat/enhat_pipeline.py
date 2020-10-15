@@ -10,7 +10,7 @@ from shared import ReplaceStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        data = pd.ExcelFile('../../../../datasets/20201007/03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))/felipe/061020 ENHAT_Indicadores.xlsx')
+        data = pd.ExcelFile('../../../../datasets/20201007/03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))/01 Encuesta Nacional de Habilidades al Trabajo (ENHAT) (06-10-2020)/061020 ENHAT_Indicadores.xlsx')
 
         nation = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
         nation.remove('IND_66_A')
