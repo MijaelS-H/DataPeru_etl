@@ -6,28 +6,14 @@ from bamboo_lib.steps import LoadStep
 from enhat_pipeline import TransformStep
 from shared import ReplaceStep
 
-
-
 class ProcessingStep(PipelineStep):
     def run_step(self, prev, params):
-        df, category_dim, indicator_dim, size_dim, workforce_dim = prev
+        df, category_dim, indicator_dim = prev
 
         if params.get('pk') == 'category_id':
             df = pd.DataFrame.from_dict(category_dim, orient='index').reset_index()
             df.columns = ['category_name', 'category_id']
         
-            return df
-        
-        elif params.get('pk') == 'size_id':
-            df = pd.DataFrame.from_dict(size_dim, orient='index').reset_index()
-            df.columns = ['size_name', 'size_id']
-            
-            return df
-        
-        elif params.get('pk') == 'workforce_id':
-            df = pd.DataFrame.from_dict(workforce_dim, orient='index').reset_index()
-            df.columns = ['workforce_name', 'workforce_id']
-         
             return df
         
         else:
@@ -47,7 +33,7 @@ class DimIndustryPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtype = {
             params.get('pk'): 'UInt8'
@@ -61,12 +47,9 @@ class DimIndustryPipeline(EasyPipeline):
 
         return [transform_step, replace_step, processing_step, load_step]
     
-
 if __name__ == "__main__":
     pp = DimIndustryPipeline()
     for k, v in {'category_id':  'dim_category_enhat',
-                 'size_id':      'dim_size_enhat',
-                 'workforce_id': 'dim_workforce_enhat',
                  'indicator_id': 'dim_indicator_enhat'}.items():
         pp.run({'pk': k,
                 'table_name': v})

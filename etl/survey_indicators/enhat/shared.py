@@ -1,6 +1,7 @@
 
+from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import PipelineStep
-from static import INDUSTRY_REPLACE
+from bamboo_lib.helpers import query_to_df
 
 class ReplaceStep(PipelineStep):
     def run_step(self, prev, params):
@@ -20,7 +21,13 @@ class ReplaceStep(PipelineStep):
         workforce_dim = dict(zip(df['workforce_id'].dropna().unique(), range(1, len(df['workforce_id'].unique()) + 1 )))
         df['workforce_id'].replace(workforce_dim, inplace=True)
         
-        
-        df['industry_id'].replace(INDUSTRY_REPLACE, inplace=True)
+        dim_industry_query = 'SELECT section_id, section_name FROM dim_shared_ciiu'
 
-        return df, category_dim, indicator_dim, size_dim, workforce_dim
+        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+
+        dim_industry = query_to_df(db_connector, raw_query=dim_industry_query)
+        dim_industry.drop_duplicates(subset=['section_id', 'section_name'], inplace=True)
+
+        df['industry_id'].replace(dict(zip(dim_industry['section_name'], dim_industry['section_id'])), inplace=True)
+
+        return df, category_dim, indicator_dim

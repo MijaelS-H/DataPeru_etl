@@ -4,13 +4,13 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
 from etl.survey_indicators.helpers import join_files
-from static import COLUMNS_RENAME, REPLACE_DICT, INDUSTRY_REPLACE
+from static import COLUMNS_RENAME, REPLACE_DICT
 from shared import ReplaceStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        data = pd.ExcelFile('../../../../datasets/20201007/03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))/01 Encuesta Nacional de Habilidades al Trabajo (ENHAT) (06-10-2020)/061020 ENHAT_Indicadores.xlsx')
+        data = pd.ExcelFile('../../../datasets/20201007/03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))/01 Encuesta Nacional de Habilidades al Trabajo (ENHAT) (06-10-2020)/061020 ENHAT_Indicadores.xlsx')
 
         nation = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
         nation.remove('IND_66_A')
@@ -38,7 +38,8 @@ class FormatStep(PipelineStep):
         df['nation_id'].replace({'Nacional': 'per'}, inplace=True)
         df['nation_id'] = df['nation_id'].astype(str)
 
-        df[['industry_id', 'nation_id', 'size_id', 'category_id','workforce_id']] = df[['industry_id', 'nation_id', 'size_id', 'category_id','workforce_id']].fillna(0)
+        df[['nation_id', 'size_id', 'category_id','workforce_id']] = df[['nation_id', 'size_id', 'category_id','workforce_id']].fillna(0)
+        df['industry_id'] = df['industry_id'].astype(str)
 
         df[['year', 'indicator_id',  'size_id', 'category_id','workforce_id', 'estimate', 'coef_var', 'popul_size']] = df[['year', 'indicator_id',  'size_id', 'category_id','workforce_id',  'estimate', 'coef_var', 'popul_size']].astype(float)
         
@@ -50,11 +51,11 @@ class ENHATPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtype = {
             'nation_id':        'String',
-            'industry_id':      'UInt8',
+            'industry_id':      'String',
             'indicator_id':     'UInt8',
             'workforce_id':     'UInt8',
             'year':             'UInt16',
@@ -69,7 +70,7 @@ class ENHATPipeline(EasyPipeline):
         replace_step = ReplaceStep()
         format_step = FormatStep()
         load_step = LoadStep('inei_enhat', db_connector, if_exists='drop', 
-                             pk=['nation_id','industry_id', 'size_id', 'year'], dtype=dtype,
+                             pk=['nation_id', 'industry_id', 'size_id', 'workforce_id', 'year'], dtype=dtype,
                              nullable_list=['coef_var'])
 
         return [transform_step, replace_step, format_step, load_step]
