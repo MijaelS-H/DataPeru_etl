@@ -24,3 +24,7 @@ bamboo-cli --folder enima/ --entry dimensions_pipeline --pk="indicator_id" --tab
 bamboo-cli --folder enhat/ --entry enhat_pipeline
 bamboo-cli --folder enhat/ --entry dimensions_pipeline --pk="category_id" --table_name="dim_category_enhat" 
 bamboo-cli --folder enhat/ --entry dimensions_pipeline --pk="indicator_id" --table_name="dim_indicator_enhat"
+
+# eea
+bamboo-cli --folder eea/ --entry eea_pipeline
+bamboo-cli --folder eea/ --entry dimensions_pipeline --pk="indicator_id" --table_name="dim_indicator_eea"
