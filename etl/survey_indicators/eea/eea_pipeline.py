@@ -41,8 +41,10 @@ class FormatStep(PipelineStep):
 
         df[['industry_id', 'nation_id']] = df[['industry_id', 'nation_id']].fillna(0)
 
-        df[['year', 'indicator_id', 'industry_id', 'estimate', 'coef_var', 'popul_size']] \
-            = df[['year', 'indicator_id', 'industry_id', 'estimate', 'coef_var', 'popul_size']].astype(float)
+        df[['year', 'indicator_id', 'estimate', 'coef_var', 'popul_size']] \
+            = df[['year', 'indicator_id', 'estimate', 'coef_var', 'popul_size']].astype(float)
+
+        df['industry_id'] = df['industry_id'].astype(int).astype(str)
 
         return df
 
@@ -54,7 +56,7 @@ class EEAPipeline(EasyPipeline):
 
         dtype = {
             'nation_id':    'String',
-            'industry_id':  'UInt8',
+            'industry_id':  'String',
             'indicator_id': 'UInt8',
             'year':         'UInt16',
             'estimate':     'Float32',
