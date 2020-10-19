@@ -25,7 +25,7 @@ class TransformStep(PipelineStep):
 
         # pre-processing
         df["department_id"] = df["department_id"].replace(DEPARTMENT_EXCEPTIONS)
-        df = df.drop(df[df["categoría"]== '6'].index)
+        df = df[df["categoría"] != '6']
 
         return df
 
