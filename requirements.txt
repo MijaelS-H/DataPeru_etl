@@ -4,6 +4,7 @@ blosc
 Cython
 dw-bamboo-cli
 h5py
+nltk
 numexpr
 numpy
 pandas==0.25

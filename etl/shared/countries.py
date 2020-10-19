@@ -7,10 +7,10 @@ COUNTRIES = [
     {"iso2": "xx",
     "iso3": "xxa",
     "country_name": "Unknown",
-    "country_name_es": "S/N",
+    "country_name_es": "Otros",
     "continent_id": "x",
     "continent": "Unknown",
-    "continent_es": "S/N",
+    "continent_es": "Otros",
     "id_num": "899",
     "oecd": 0},
 
@@ -152,7 +152,37 @@ COUNTRIES = [
     "continent": None,
     "continent_es": None,
     "id_num": None,
-    "oecd": 0}
+    "oecd": 0},
+
+    {"iso2": "1d",
+    "iso3": "1dx",
+    "country_name": "International Waters",
+    "country_name_es": "Aguas Internacionales",
+    "continent_id": "xx",
+    "continent": "Unknown",
+    "continent_es": "Otros",
+    "id_num": None,
+    "oecd": 0},
+
+    {"iso2": "1b",
+    "iso3": "1bx",
+    "country_name": "Perú's Free Zone",
+    "country_name_es": "Zona Franca del Perú",
+    "continent_id": "sa",
+    "continent": "South America",
+    "continent_es": "América del Sur",
+    "id_num": None,
+    "oecd": 0},
+
+    {"iso2": "aq",
+    "iso3": "ata",
+    "country_name": "Antarctica",
+    "country_name_es": "Antártida",
+    "continent_id": "an",
+    "continent": "Antarctica",
+    "continent_es": "Antártida",
+    "id_num": None,
+    "oecd": 0},
 ]
 
 class TransformStep(PipelineStep):
