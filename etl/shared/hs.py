@@ -15,6 +15,7 @@ class TransformStep(PipelineStep):
         hs_codes = pd.read_excel('../../../datasets/anexos/DataExport_11_2_2019__2_56_41.xlsx', sheet_name="Aplicados_NMF", header=4, usecols="B,C,E,R", names=["year", "hs_level", "id", "hs_name"], dtype={"hs_level": "int", "id": "str", "hs_name": "str"})
         chapter = pd.read_csv('../../../datasets/anexos/hs_2017.csv', dtype={"Parent.1": "str", "Code.1": "str"})
         chapter_names = pd.read_excel('../../../datasets/anexos/hs6_2012.xlsx', sheet_name="chapter", usecols="A,D", names=["chapter_id", "chapter_name"], dtype={"chapter_id": "str"})
+        hs_2012 = pd.read_excel('../../../datasets/anexos/hs6_2012.xlsx', sheet_name="hs6", usecols="A,D,E", names=["id", "hs6_name_large", "hs6_name"], dtype={"id": "str"})
 
         # Rename columns
         chapter = chapter[chapter["Level"] == 2][["Parent.1", "Code.1"]].rename(columns={"Parent.1": "chapter_id", "Code.1": "hs2_id"})
@@ -53,6 +54,35 @@ class TransformStep(PipelineStep):
 
         # Change HS2 column type
         chapter["hs2_id"] = chapter["hs2_id"].str.zfill(2)
+
+        # Add HS 2012 missing product
+        hs_2012['id'] = hs_2012['id'].str[-6:]
+        hs_2012['hs_level'] = 6
+        hs_2012['hs6_name'] = hs_2012.apply(lambda x: x['hs6_name'] if pd.notnull(x['hs6_name']) else x['hs6_name_large'], axis=1)
+        hs_2012 = hs_2012[['hs_level', 'id', 'hs6_name']].copy()
+        hs6_list = list(hs6.id.unique())
+        hs_2012 = hs_2012[~hs_2012['id'].isin(hs6_list)]
+        hs6 = hs6.append(hs_2012)
+
+        missing_products = [
+            {
+                'hs_level': 6,
+                'id': '690890',
+                'hs6_name': 'Las demás losas y baldosas de cerámica vidriada para pavimentos, hogares o revestimientos; cubos de mosaicos de cerámica vidriada y artículos similares, incluso con soporte'
+            },
+            {
+                'hs_level': 6,
+                'id': '690810',
+                'hs6_name': 'Baldosas, cubos y artículos similares, rectangulares o no, cuya mayor superficie pueda encerrarse en un cuadrado cuyo lado sea inferior a 7 cm'
+            },
+            {
+                'hs_level': 6,
+                'id': '846900',
+                'hs6_name': 'Máquinas de escribir, excepto las impresoras de la partida 8443; maquinas procesadoras de textos'
+            }
+        ]
+
+        hs6 = hs6.append(missing_products)
 
         hs2["hs2_id"] = hs2.apply(lambda x: x["id"][0:2], axis=1)
         hs4["hs2_id"] = hs4.apply(lambda x: x["id"][0:2], axis=1)
@@ -132,6 +162,18 @@ class TransformStep(PipelineStep):
                 "id": "9620",
                 "hs4_name": "Monopies, Bipods, Trípodes y Artículos Similares",
                 "chapter_id": 20
+            },
+            {
+                "hs_level": 4,
+                "id": "6908",
+                "hs4_name": "Baldosas y baldosas de cerámica esmaltada para pavimentos, hogares o revestimientos cubos de mosaicos de cerámica vidriada y artículos similares, incluso con soporte",
+                "chapter_id": 13
+            },
+            {
+                "hs_level": 4,
+                "id": "8469",
+                "hs4_name": "Máquinas de escribir, excepto las impresoras de la partida 8443; maquinas procesadoras de textos",
+                "chapter_id": 16
             }
         ]).reset_index(drop=True)
 
