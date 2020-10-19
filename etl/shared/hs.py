@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
         chapter = chapter[chapter["Level"] == 2][["Parent.1", "Code.1"]].rename(columns={"Parent.1": "chapter_id", "Code.1": "hs2_id"})
         hs2 = hs_codes[(hs_codes["hs_level"] == 2) & (hs_codes["year"] == 2017)].rename(columns={"hs_name": "hs2_name"}).copy()
         hs4 = hs_codes[(hs_codes["hs_level"] == 4) & (hs_codes["year"] == 2017)].rename(columns={"hs_name": "hs4_name"}).copy()
-        hs6 = hs_codes[(hs_codes["hs_level"] == 6) & (hs_codes["year"] == 2017)].rename(columns={"hs_name": "hs6_name"}).copy()
+        hs6 = hs_codes[(hs_codes["hs_level"] == 6) & (hs_codes["year"] == 2017)].rename(columns={"hs_name": "hs6_name"}).copy() 
 
         hs2.drop(columns=["year"], inplace=True)
         hs4.drop(columns=["year"], inplace=True)
@@ -52,11 +52,11 @@ class TransformStep(PipelineStep):
         }, inplace=True)
 
         # Change HS2 column type
-        chapter["hs2_id"] = chapter["hs2_id"].astype('int')
+        chapter["hs2_id"] = chapter["hs2_id"].str.zfill(2)
 
-        hs2["hs2_id"] = hs2.apply(lambda x: int(x["id"][0:2]), axis=1)
-        hs4["hs2_id"] = hs4.apply(lambda x: int(x["id"][0:2]), axis=1)
-        hs6["hs2_id"] = hs6.apply(lambda x: int(x["id"][0:2]), axis=1)
+        hs2["hs2_id"] = hs2.apply(lambda x: x["id"][0:2], axis=1)
+        hs4["hs2_id"] = hs4.apply(lambda x: x["id"][0:2], axis=1)
+        hs6["hs2_id"] = hs6.apply(lambda x: x["id"][0:2], axis=1)
 
         # Join Chapter dataframe to lower categories dataframes
         hs2 = hs2.set_index("hs2_id").join(chapter.set_index("hs2_id")).reset_index()
@@ -67,76 +67,71 @@ class TransformStep(PipelineStep):
         hs2.drop(columns=["hs2_id"], inplace=True)
         hs4.drop(columns=["hs2_id"], inplace=True)
         hs6.drop(columns=["hs2_id"], inplace=True)
-
-        hs2["id"] = hs2["chapter_id"].astype("str") + hs2["id"]
-        hs4["id"] = hs4["chapter_id"].astype("str") + hs4["id"]
-        hs6["id"] = hs6["chapter_id"].astype("str") + hs6["id"]
         
         # Add internal categories
-
         hs2 = hs2.append([
             {
                 "hs_level": 2,
-                "id": "9998",
+                "id": "98",
                 "hs2_name": "Mercancías con tratamiento especial",
-                "chapter_id": "99"
+                "chapter_id": 99
             }
         ]).reset_index(drop=True)
 
         hs4 = hs4.append([
             {
                 "hs_level": 4,
-                "id": "999801",
+                "id": "9801",
                 "hs4_name": "Equipaje y menaje de casa",
-                "chapter_id": "99"
+                "chapter_id": 99
             },
             {
                 "hs_level": 4,
-                "id": "999802",
+                "id": "9802",
                 "hs4_name": "Bienes de uso personal o exclusivo del destinatario",
-                "chapter_id": "99"
+                "chapter_id": 99
             },
             {
                 "hs_level": 4,
-                "id": "999803",
+                "id": "9803",
                 "hs4_name": "Muestras comerciales de valor insignificante y materiales de publicidad impresos",
-                "chapter_id": "99"
+                "chapter_id": 99
             },
             {
                 "hs_level": 4,
-                "id": "999804",
+                "id": "9804",
                 "hs4_name": "Mercancías que cuentan con Resolución Liberatoria o Nota Protocolar, excepto vehículos automóviles",
-                "chapter_id": "99"
+                "chapter_id": 99
             },
             {
                 "hs_level": 4,
-                "id": "999805",
+                "id": "9805",
                 "hs4_name": "Mercancías para atender las necesidades de las zonas afectadas por desastres naturales, declaradas en estado de emergencia",
-                "chapter_id": "99"
+                "chapter_id": 99
             },
             {
                 "hs_level": 4,
-                "id": "999806",
+                "id": "9806",
                 "hs4_name": "Mercancías de ayuda humanitaria que ingresen al amparo del artículo 2º de la Ley Nº 29081",
-                "chapter_id": "99"
+                "chapter_id": 99
             },
             {
                 "hs_level": 4,
-                "id": "999810",
+                "id": "9810",
                 "hs4_name": "Envíos postales",
-                "chapter_id": "99"
+                "chapter_id": 99
             },
             {
                 "hs_level": 4,
-                "id": "999809",
+                "id": "9809",
                 "hs4_name": "Envíos de entrega rápida",
-                "chapter_id": "99"
+                "chapter_id": 99
             },
             {
                 "hs_level": 4,
-                "id": "209620",
+                "id": "9620",
                 "hs4_name": "Monopies, Bipods, Trípodes y Artículos Similares",
-                "chapter_id": "20"
+                "chapter_id": 20
             }
         ]).reset_index(drop=True)
 
@@ -144,61 +139,60 @@ class TransformStep(PipelineStep):
             {
                 "chapter_id": 99,
                 "hs_level": 6,
-                "id": "99980100",
+                "id": "980100",
                 "hs6_name": "Equipaje y menaje de casa"
             },
             {
                 "chapter_id": 99,
                 "hs_level": 6,
-                "id": "99980200",
+                "id": "980200",
                 "hs6_name": "Bienes de uso personal o exclusivo del destinatario"
             },
             {
                 "chapter_id": 99,
                 "hs_level": 6,
-                "id": "99980300",
+                "id": "980300",
                 "hs6_name": "Muestras comerciales de valor insignificante y materiales de publicidad impresos"
             },
             {
                 "chapter_id": 99,
                 "hs_level": 6,
-                "id": "99980400",
+                "id": "980400",
                 "hs6_name": "Mercancías que cuentan con Resolución Liberatoria o Nota Protocolar, excepto vehículos automóviles"
             },
             {
                 "chapter_id": 99,
                 "hs_level": 6,
-                "id": "99980500",
+                "id": "980500",
                 "hs6_name": "Mercancías para atender las necesidades de las zonas afectadas por desastres naturales, declaradas en estado de emergencia"
             },
             {
                 "chapter_id": 99,
                 "hs_level": 6,
-                "id": "99980600",
+                "id": "980600",
                 "hs6_name": "Mercancías de ayuda humanitaria que ingresen al amparo del artículo 2º de la Ley Nº 29081"
             },
             {
                 "chapter_id": 99,
                 "hs_level": 6,
-                "id": "99981000",
+                "id": "981000",
                 "hs6_name": "Envíos postales"
             },
             {
                 "chapter_id": 99,
                 "hs_level": 6,
-                "id": "99980900",
+                "id": "980900",
                 "hs6_name": "Envíos de entrega rápida"
             }
         ]).reset_index(drop=True)
 
         ran = {
-            "hs2": 4, 
-            "hs4": 6, 
-            "chapter": 2
+            "hs2": 2, 
+            "hs4": 4
         }
 
         for k, v in ran.items():
-            ids = hs6["id"].astype("str").str.zfill(8).str[:v].astype("int")
+            ids = hs6["id"].astype("str").str[:v].astype("str")
             hs6["{}_id".format(k)] = ids
 
         chapter.drop(columns=["hs2_id"], inplace=True)
@@ -210,7 +204,7 @@ class TransformStep(PipelineStep):
 
         chapter = chapter.append([
             {
-                "chapter_id": "99",
+                "chapter_id": 99,
                 "chapter_name": "Complementario Nacional"
             }
         ]).reset_index(drop=True)
@@ -218,10 +212,6 @@ class TransformStep(PipelineStep):
         hs2.drop(columns=["hs_level", "chapter_id"], inplace=True)
         hs4.drop(columns=["hs_level", "chapter_id"], inplace=True)
         hs6.drop(columns=["hs_level"], inplace=True)
-
-        chapter["chapter_id"] = chapter["chapter_id"].astype("int")
-        hs2["id"] = hs2["id"].astype("int")
-        hs4["id"] = hs4["id"].astype("int")
 
         hs2.rename(columns={"id": "hs2_id"}, inplace=True)
         hs4.rename(columns={"id": "hs4_id"}, inplace=True)
@@ -235,14 +225,11 @@ class TransformStep(PipelineStep):
         }
 
         for k, v in ran.items():
-            base = "{}_name".format(k)
-            hs6[base] = hs6.set_index("{}_id".format(k)).join(v.set_index("{}_id".format(k))).reset_index()["{}_name".format(k)]
+            hs6 = pd.merge(hs6, v, on='{}_id'.format(k))
 
         hs6.rename(columns={'id': 'hs6_id'}, inplace=True)
         
         hs6 = hs6[["chapter_id", "chapter_name", "hs2_id", "hs2_name", "hs4_id", "hs4_name", "hs6_id", "hs6_name"]].copy()
-
-        hs6.drop_duplicates(subset=["hs6_id"], inplace=True)
 
         text_cols = ["chapter_name", "hs2_name", "hs4_name", "hs6_name"]
 
@@ -265,17 +252,17 @@ class HSPipeline(EasyPipeline):
         dtype = {
             'chapter_id':       'UInt8',
             'chapter_name':     'String',    
-            'hs2_id':           'UInt16',          
+            'hs2_id':           'String',          
             'hs2_name':         'String',        
-            'hs4_id':           'UInt32',          
+            'hs4_id':           'String',          
             'hs4_name':         'String',        
-            'hs6_id':           'UInt32',          
+            'hs6_id':           'String',          
             'hs6_name':         'String'        
         }
 
         transform_step = TransformStep()
         load_step = LoadStep('dim_shared_hs', db_connector, if_exists='drop', pk=['hs6_id'], 
-            dtype=dtype, engine='ReplacingMergeTree', 
+            dtype=dtype, 
             nullable_list=[]
         )
 
