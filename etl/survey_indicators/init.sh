@@ -28,3 +28,8 @@ bamboo-cli --folder enhat/ --entry dimensions_pipeline --pk="indicator_id" --tab
 # eea
 bamboo-cli --folder eea/ --entry eea_pipeline
 bamboo-cli --folder eea/ --entry dimensions_pipeline --pk="indicator_id" --table_name="dim_indicator_eea"
+
+# enapres
+bamboo-cli --folder enapres/ --entry enapres_pipeline
+bamboo-cli --folder enapres/ --entry dimensions_pipeline --pk="category_id" --table_name="dim_category_enapres" 
+bamboo-cli --folder enapres/ --entry dimensions_pipeline --pk="indicator_id" --table_name="dim_indicator_enapres"
