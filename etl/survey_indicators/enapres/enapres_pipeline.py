@@ -44,6 +44,8 @@ class FormatStep(PipelineStep):
         df['nation_id'].replace({'Nacional': 'per'}, inplace=True)
         df['nation_id'] = df['nation_id'].astype(str)
 
+        df['department_id'] = df['department_id'].astype(str)
+
         df[['year', 'location_type_id', 'sector_type_id', 'indicator_id', 'category_id', 'estimate', 'coef_var', 'popul_size']] = df[['year', 'location_type_id', 'sector_type_id', 'indicator_id', 'category_id', 'estimate', 'coef_var', 'popul_size']].astype(float)
         
         return df
@@ -71,7 +73,7 @@ class ENAPRESPipeline(EasyPipeline):
         replace_step = ReplaceStep()
         format_step = FormatStep()
         load_step = LoadStep('inei_enapres', db_connector, if_exists='drop', 
-                             pk=['nation_id', 'department_id', 'nation_id', 
+                             pk=['nation_id', 'department_id', 
                              'sector_type_id', 'location_type_id', 'year'], dtype=dtype,
                              nullable_list=['coef_var'])
 
