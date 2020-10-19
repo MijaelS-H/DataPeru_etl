@@ -59,7 +59,7 @@ class EEAPipeline(EasyPipeline):
             'industry_id':  'String',
             'indicator_id': 'UInt8',
             'year':         'UInt16',
-            'estimate':     'Float32',
+            'estimate':     'Float64',
             'coef_var':     'Float32',
             'popul_size':   'Float32'
         }
