@@ -43,6 +43,7 @@ class TransformStep(PipelineStep):
 
         df = df[['cite_id','sector_id','cad_prod_id','partida_id','tipo_exp_id','cantidad_cite']]
 
+
         return df
 
 class CitePartidasPipeline(EasyPipeline):
@@ -68,7 +69,7 @@ class CitePartidasPipeline(EasyPipeline):
 
         transform_step = TransformStep()  
         load_step = LoadStep(
-          'itp_cite_clientes_partidas', connector=db_connector, if_exists='drop',
+          'itp_cite_partidas', connector=db_connector, if_exists='drop',
           pk=['cite_id'], dtype=dtypes, nullable_list=[])
 
         if params.get("ingest")==True:

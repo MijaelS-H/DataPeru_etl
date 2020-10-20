@@ -37,7 +37,7 @@ class TransformStep(PipelineStep):
         
         df["tipo_contribuyente"] = df["tipo_contribuyente"].str.capitalize() 
         contribuyente_list = list(df["tipo_contribuyente"].unique())
-        contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(len(contribuyente_list))))}
+        contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(1, len(contribuyente_list) +1)))}
         
         df = pd.DataFrame({ "contribuyente_id": list(range(len(contribuyente_list))),"contribuyente": sorted(contribuyente_list)})
 

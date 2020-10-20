@@ -52,9 +52,9 @@ class TransformStep(PipelineStep):
         df = pd.melt(df, id_vars=['cite','anio','subcategoria'], value_vars=['mes_01','mes_02', 'mes_03', 'mes_04',
                 'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
                 'mes_12'])
-
+        df['subcategoria'] = df['subcategoria'].str.strip()
         subcategory_list = list(df["subcategoria"].unique())
-        subcategory_map = {k:v for (k,v) in zip(sorted(subcategory_list), list(range(len(subcategory_list))))}
+        subcategory_map = {k:v for (k,v) in zip(sorted(subcategory_list), list(range(1, len(subcategory_list) + 1)))}
 
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
@@ -63,12 +63,13 @@ class TransformStep(PipelineStep):
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
         df['time_id'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
 
+        
         df['cite_id'] = df['cite'].map(cite_map)
         df['subcategoria_id'] = df['subcategory'].map(subcategory_map)
 
         df = df[['cite_id', 'subcategoria_id', 'time_id', 'empresas']]
 
-     
+
         return df
 
 class CiteSubcategoryPipeline(EasyPipeline):

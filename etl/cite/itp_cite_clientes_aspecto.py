@@ -39,8 +39,10 @@ class TransformStep(PipelineStep):
         df_list = [df[i] for i in range(1,3)]
         df = reduce(lambda df1,df2: pd.merge(df1,df2,on=['cite'],how='outer'), df_list)
 
+
+        df["aspecto"] = df["aspecto"].str.strip()        
         aspecto_list = list(df["aspecto"].unique())
-        aspecto_map = {k:v for (k,v) in zip(sorted(aspecto_list), list(range(len(aspecto_list))))}
+        aspecto_map = {k:v for (k,v) in zip(sorted(aspecto_list), list(range(1, len(aspecto_list) + 1)))}
 
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
@@ -49,7 +51,7 @@ class TransformStep(PipelineStep):
         df['aspecto_id'] = df['aspecto'].map(aspecto_map)
         df = df[['cite_id','aspecto_id','estado']]
 
-       
+
         return df   
 
 class CiteAspectoPipeline(EasyPipeline):
@@ -67,14 +69,13 @@ class CiteAspectoPipeline(EasyPipeline):
         dtypes = {
             'cite_id':                'UInt8',
             'aspecto_id':             'UInt8',
-            'time_id':                'UInt32',
-            'empresas':               'UInt32',
+            'estado':                 'String',
          }
 
         transform_step = TransformStep()  
         load_step = LoadStep(
           'itp_cite_clientes_aspecto', connector=db_connector, if_exists='drop',
-          pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
+          pk=['cite_id'], dtype=dtypes, nullable_list=['estado'])
 
         if params.get("ingest")==True:
             steps = [transform_step, load_step]

@@ -51,7 +51,7 @@ class TransformStep(PipelineStep):
         
         df = df[['cite_id', 'componente_id', 'inversion', 'ejecucion']]
         
-      
+
         return df
 
 class CiteEjecucionPipeline(EasyPipeline):

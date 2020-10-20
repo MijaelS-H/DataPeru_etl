@@ -51,7 +51,7 @@ class TransformStep(PipelineStep):
                 k = k + 1
         
         empresas_list = list(df["tipo"].unique())
-        empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(len(empresas_list))))}
+        empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(1, len(empresas_list) +1)))}
 
         df = pd.melt(df, id_vars=['anio','tipo'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
                'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
@@ -63,7 +63,7 @@ class TransformStep(PipelineStep):
         df['empresa_id'] = df['empresa_tipo'].map(empresas_map)
         df = df[['time_id','empresa_id','empresas']]
 
-    
+
         return df
 
 class CiteEmpresasPipeline(EasyPipeline):

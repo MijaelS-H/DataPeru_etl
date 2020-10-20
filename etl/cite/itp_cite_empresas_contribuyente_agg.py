@@ -36,14 +36,14 @@ class TransformStep(PipelineStep):
                 df = pd.read_csv(file_dir)
         
         contribuyente_list = list(df["tipo_contribuyente"].unique())
-        contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(len(contribuyente_list))))}
+        contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(1, len(contribuyente_list) +1)))}
         
 
         df['contribuyente_id'] = df['tipo_contribuyente'].map(contribuyente_map)
        
         df = df[['contribuyente_id', 'anio', 'empresas']]
 
-    
+        print(contribuyente_map)
         return df
 
 class CiteContribuyentePipeline(EasyPipeline):

@@ -51,7 +51,7 @@ class TransformStep(PipelineStep):
                 k = k + 1
         
         empresas_list = list(df["tipo"].unique())
-        empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(len(empresas_list))))}
+        empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(1, len(empresas_list) +1)))}
 
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
