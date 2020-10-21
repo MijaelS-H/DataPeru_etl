@@ -63,7 +63,7 @@ class inei_population_y_age_nat_travel_Pipeline(EasyPipeline):
         dtype = {
             "ubigeo":                        "String",
             "year":                          "UInt16",
-            "continente":                    "UInt8",
+            "continente":                    "String",
             "inmigration_flow":              "UInt8",
             "age_group":                     "String",
             "poblacion":                     "UInt32"
