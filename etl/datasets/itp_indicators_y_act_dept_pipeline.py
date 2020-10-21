@@ -117,7 +117,7 @@ class itp_ind_year_Pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         load_step = LoadStep(
-            "itp_indicators_y_act_dept", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+            "itp_indicators_y_act_dept", db_connector, if_exists="append", pk=["ubigeo"], dtype=dtype, 
             nullable_list=[]
         )
 
