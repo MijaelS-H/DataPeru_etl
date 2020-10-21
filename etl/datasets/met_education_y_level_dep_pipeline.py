@@ -6,7 +6,7 @@ from bamboo_lib.models import Parameter
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
-path = grab_parent_dir('../../') + "/datasets/20200318"
+path = grab_parent_dir("../../") + "/datasets/20200318"
 
 depto_dict = {
     "Amazonas  ": "01",
@@ -39,9 +39,9 @@ depto_dict = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = '{}/{}/{}'.format(path, 'D. Sociales', "D.37.xlsx"), skiprows = (0,1,2))[4:117]
-        df2 = pd.read_excel(io = '{}/{}/{}'.format(path, 'D. Sociales', "D.38.xlsx"), skiprows = (0,1,2))[1:114]
-        df3 = pd.read_excel(io = '{}/{}/{}'.format(path, 'D. Sociales', "D.39.xlsx"), skiprows = (0,1,2))[1:88]
+        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.37.xlsx"), skiprows = (0,1,2))[4:117]
+        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.38.xlsx"), skiprows = (0,1,2))[1:114]
+        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.39.xlsx"), skiprows = (0,1,2))[1:88]
 
         dframes_ = [df1, df2, df3]
         np_rows_ = [{0:59, 1:64}, {0:59, 1:64}, {0:45, 1:51}]
@@ -70,9 +70,9 @@ class TransformStep(PipelineStep):
         df1["ubigeo"].fillna(method="ffill", inplace = True)
         df2["ubigeo"].fillna(method="ffill", inplace = True)
         df3["ubigeo"].fillna(method="ffill", inplace = True)
-        df1.dropna(axis=0, how='any', inplace = True)
-        df2.dropna(axis=0, how='any', inplace = True)
-        df3.dropna(axis=0, how='any', inplace = True)
+        df1.dropna(axis=0, how="any", inplace = True)
+        df2.dropna(axis=0, how="any", inplace = True)
+        df3.dropna(axis=0, how="any", inplace = True)
 
         # Melt of the dataframes to append later
         df1 = pd.melt(df1, id_vars = ["ubigeo", "nivel_educativo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "estudiantes") 
@@ -87,7 +87,7 @@ class TransformStep(PipelineStep):
         df["estudiantes"].replace({"…": 0}, inplace = True)
         df = df.groupby(["ubigeo", "year", "nivel_educativo"]).sum().reset_index()
 
-        # Creating ubigeo id's
+        # Creating ubigeo id"s
         df["ubigeo"].replace(depto_dict, inplace = True)
 
         return df
@@ -110,7 +110,7 @@ class met_education_y_level_dep_Pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         load_step = LoadStep(
-            "met_education_y_level_dep", db_connector, if_exists="drop", pk=["ubigeo","year"], dtype=dtype,
+            "met_education_y_level_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype,
         )
 
         return [transform_step, load_step]

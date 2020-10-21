@@ -57,7 +57,7 @@ class TransformStep(PipelineStep):
         df_3 = pd.DataFrame(columns = ["ubigeo", "inmigrantes", "emigrantes", "year"])
         for i in list(range(0,7)):
             pivote = df3[columns_[i]]
-            pivote.rename(columns = {columns_[i][0] : 'ubigeo', columns_[i][1] : 'inmigrantes', columns_[i][2]: 'emigrantes'}, inplace = True)
+            pivote.rename(columns = {columns_[i][0] : "ubigeo", columns_[i][1] : "inmigrantes", columns_[i][2]: "emigrantes"}, inplace = True)
             pivote["year"] = years_migration[i]
             pivote["ubigeo"].replace(depto_dict, inplace = True)
             df_3 = df_3.append(pivote)
@@ -123,9 +123,6 @@ class TransformStep(PipelineStep):
 
         # Correction to the scale to thousands of people
         df_4["peao_afiliada_pensiones"] = df_4["peao_afiliada_pensiones"] * 1000
-        #df_5["nbi_1_o_mas_perc_pob"] = df_5["nbi_1_o_mas_perc_pob"] / 100
-        #df_6["mbpa_1_o_mas_members_perc_hog"] = df_6["mbpa_1_o_mas_members_perc_hog"] / 100
-        #df_7["mbpa_1_o_mas_members_perc_hog_pob"] = df_7["mbpa_1_o_mas_members_perc_hog_pob"] / 100
 
         # Creating standard code to merge the 32 tables
         for item in [df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8, df_9, df_10, df_11, df_12, df_13, df_14, df_15, df_16, df_17, df_18, df_19, df_20, df_21, df_22, df_23, df_24, df_25, df_26, df_27, df_28, df_29, df_30, df_31, df_32]:
@@ -177,55 +174,53 @@ class inei_population_y_n_dep(EasyPipeline):
   
     @staticmethod
     def parameter_list():
-        return [
-        ]
+        return []
 
     @staticmethod
     def steps(params):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
 
         dtype = {
-            "ubigeo":                                      "String",
-            "year":                                        "UInt16",
-            "nacimientos":                                  "UInt32",
-            "defunciones":                                  "UInt32",
-            "inmigrantes":                                  "UInt32",
-            "emigrantes":                                  "UInt32",
-            "peao_afiliada_pensiones":                      "UInt32",
-            "nbi_1_o_mas_perc_pob":                        "Float64",
-            "mbpa_1_o_mas_members_perc_hog":                "Float64",
-            "mbpa_1_o_mas_members_perc_hog_pob":            "Float64",
-            "n_medicos_colegiados":                        "UInt16",
-            "n_habitantes_por_medico":                      "Float64",
-            "n_enfermeras_os_colegiados":                  "UInt16",
-            "n_habitantes_por_enfermera_os":                "Float64",
-            "desnutricion_5yrs_perc":                      "Float64",
-            "enfermedades_ra_5yrs_perc":                    "UInt32",
-            "estudios_prom_15yrs":                          "Float64",
-            "superficie_agricola_hect":                    "Float64",
-            "superficie_no_agricola_hect":                  "Float64",
-            "sup_agr_cultivos_hect":                        "Float64",
-            "sup_agr_en_barbencho_hect":                    "Float64",
-            "sup_agr_no_trabajadas_hect":                  "Float64",
-            "sup_agr_en_descanso_hect":                    "Float64",
-            "sup_bosque_humedo_amazonico_hect":            "Float64",
-            "hogares_tecn_informacion_perc":                "Float64",
-            "hogares_television_perc":                      "Float64",
-            "hogares_cable_perc":                          "Float64",
-            "hogares_telefono_fijo_perc":                  "Float64",
-            "hogares_telefono_movil_perc":                  "Float64",
-            "hogares_computadora_perc":                    "Float64",
-            "hogares_internet_perc":                        "Float64",
-            "n_faltas_registradas":                        "UInt32",
-            "n_comision_delitos":                          "UInt32",
-            "n_personas_detenidas_delitos":                "UInt32",
-            "n_bandas_delictuales_desarticuladas":          "UInt32",
-            "n_victimas_femicidios":                        "UInt32",
-            "n_denuncias_violencia_familiar_fisica":        "UInt32",
-            "n_denuncias_violencia_familiar_sicolo":        "UInt32",
-            "n_denuncias_robo_vehiculos":                  "UInt32"
+            "ubigeo":                                              "String",
+            "year":                                                "UInt16",
+            "nacimientos":                                         "UInt32",
+            "defunciones":                                         "UInt32",
+            "inmigrantes":                                         "UInt32",
+            "emigrantes":                                          "UInt32",
+            "peao_afiliada_pensiones":                             "UInt32",
+            "nbi_1_o_mas_perc_pob":                                "Float64",
+            "mbpa_1_o_mas_members_perc_hog":                       "Float64",
+            "mbpa_1_o_mas_members_perc_hog_pob":                   "Float64",
+            "n_medicos_colegiados":                                "UInt16",
+            "n_habitantes_por_medico":                             "Float64",
+            "n_enfermeras_os_colegiados":                          "UInt16",
+            "n_habitantes_por_enfermera_os":                       "Float64",
+            "desnutricion_5yrs_perc":                              "Float64",
+            "enfermedades_ra_5yrs_perc":                           "UInt32",
+            "estudios_prom_15yrs":                                 "Float64",
+            "superficie_agricola_hect":                            "Float64",
+            "superficie_no_agricola_hect":                         "Float64",
+            "sup_agr_cultivos_hect":                               "Float64",
+            "sup_agr_en_barbencho_hect":                           "Float64",
+            "sup_agr_no_trabajadas_hect":                          "Float64",
+            "sup_agr_en_descanso_hect":                            "Float64",
+            "sup_bosque_humedo_amazonico_hect":                    "Float64",
+            "hogares_tecn_informacion_perc":                       "Float64",
+            "hogares_television_perc":                             "Float64",
+            "hogares_cable_perc":                                  "Float64",
+            "hogares_telefono_fijo_perc":                          "Float64",
+            "hogares_telefono_movil_perc":                         "Float64",
+            "hogares_computadora_perc":                            "Float64",
+            "hogares_internet_perc":                               "Float64",
+            "n_faltas_registradas":                                "UInt32",
+            "n_comision_delitos":                                  "UInt32",
+            "n_personas_detenidas_delitos":                        "UInt32",
+            "n_bandas_delictuales_desarticuladas":                 "UInt32",
+            "n_victimas_femicidios":                               "UInt32",
+            "n_denuncias_violencia_familiar_fisica":               "UInt32",
+            "n_denuncias_violencia_familiar_sicolo":               "UInt32",
+            "n_denuncias_robo_vehiculos":                          "UInt32"
             }
-
         transform_step = TransformStep()
         load_step = LoadStep(
             "inei_population_y_n_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
