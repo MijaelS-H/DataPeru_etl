@@ -48,7 +48,6 @@ class TransformStep(PipelineStep):
         df["year"] = df["year"].astype(int)
         df.drop(df.loc[df["continente"] == "América"].index, inplace = True)
 
-        df["age_group"].replace({"0 - 9": 1, "10 - 19": 2, "20 - 29": 3, "30 - 39": 4, "40 - 49": 5, "50 - 59": 6, "60 - 69": 7, "70 - 79": 8, "80 y más": 9}, inplace = True)
         df["ubigeo"] = "per"
         return df
 

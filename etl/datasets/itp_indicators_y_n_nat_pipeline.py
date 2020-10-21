@@ -135,6 +135,8 @@ class TransformStep(PipelineStep):
         for col in df.columns:
             df[col] = df[col].astype(float)
 
+        df["ubigeo"] = "per"
+
         return df
 
 class itp_indicators_y_n_nat_pipeline(EasyPipeline):
