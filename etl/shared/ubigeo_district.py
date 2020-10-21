@@ -7,6 +7,49 @@ from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 
+MISSING_UBIGEO = [
+    {
+        'department_name': 'Loreto',
+        'province_name': 'Alto Amazonas',
+        'district_name': 'Barranca',
+        'department_id': '16',
+        'province_id': '1602',
+        'district_id': '160203'
+    },
+    {
+        'department_name': 'Loreto',
+        'province_name': 'Alto Amazonas',
+        'district_name': 'Manseriche',
+        'department_id': '16',
+        'province_id': '1602',
+        'district_id': '160207'
+    },
+    {
+        'department_name': 'Loreto',
+        'province_name': 'Alto Amazonas',
+        'district_name': 'Morona',
+        'department_id': '16',
+        'province_id': '1602',
+        'district_id': '160208'
+    },
+    {
+        'department_name': 'Loreto',
+        'province_name': 'Alto Amazonas',
+        'district_name': 'Pastaza',
+        'department_id': '16',
+        'province_id': '1602',
+        'district_id': '160209'
+    },
+    {
+        'department_name': 'Otro',
+        'province_name': 'Otro',
+        'district_name': 'Otro',
+        'department_id': '99',
+        'province_id': '9999',
+        'district_id': '999999'
+    }
+]
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
@@ -30,6 +73,30 @@ class TransformStep(PipelineStep):
 
         df['province_id'] = df['department_id'] + df['province_id']
         df['district_id'] = df['province_id'] + df['district_id']
+
+        df['department_name'] = df['department_name'].str.strip()
+        df['province_name'] = df['province_name'].str.strip()
+        df['district_name'] = df['district_name'].str.strip()
+
+        df = df.append(MISSING_UBIGEO)
+
+        provinces = df[['department_name', 'province_name', 'department_id', 'province_id']].copy()
+        provinces = provinces.drop_duplicates()
+        provinces['district_name'] = provinces.apply(lambda x: 'Otros distritos de la provincia de {}'.format(x['province_name']), axis=1)
+        provinces['district_id'] = provinces['province_id'] + '00'
+        provinces = provinces[['department_name', 'province_name', 'district_name', 'department_id', 'province_id', 'district_id']].copy()
+        
+        departments = df[['department_name', 'department_id']].copy()
+        departments = departments.drop_duplicates()
+        departments['province_name'] = departments.apply(lambda x: 'Otras provincias del departamento de {}'.format(x['department_name']), axis=1)
+        departments['district_name'] = departments.apply(lambda x: 'Otros distritos del departamento de {}'.format(x['department_name']), axis=1)
+        departments['province_id'] = departments['department_id'] + '00'
+        departments['district_id'] = departments['province_id'] + '00'
+        departments = departments[['department_name', 'province_name', 'district_name', 'department_id', 'province_id', 'district_id']].copy()
+        
+        df = df.append(provinces)
+        df = df.append(departments)
+
         df['nation_id'] = 'per'
         df['nation_name'] = 'Perú'
 
