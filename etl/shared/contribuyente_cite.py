@@ -80,6 +80,6 @@ if __name__ == "__main__":
     contribuyente_pipeline.run(
         {
             "output-db": "clickhouse-local",
-            "ingest": False
+            "ingest": True
         }
     )

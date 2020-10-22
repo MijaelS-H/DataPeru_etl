@@ -108,6 +108,6 @@ if __name__ == "__main__":
     cite_subcategory_pipeline.run(
         {
             "output-db": "clickhouse-local",
-            "ingest": False
+            "ingest": True
         }
     )

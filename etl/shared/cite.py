@@ -87,6 +87,6 @@ if __name__ == "__main__":
     pp.run(
         {
             "output-db": "clickhouse-local",
-            "ingest": False
+            "ingest": True
         }
     )
