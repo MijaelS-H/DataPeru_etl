@@ -21,8 +21,6 @@ CARPETAS_DICT = {
     7: "07 PARTIDAS ARANCELARIAS",
 }
 
-
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
@@ -43,12 +41,9 @@ class TransformStep(PipelineStep):
         df['cite'] = df['cite'].str.replace("CITE","")
         df['cite'] = df['cite'].str.replace("UT","")
         df['cite'] = df['cite'].str.capitalize()
-        df['cite'] = df['cite'].apply(unidecode)
-        
- 
+        df['cite_name'] = df['cite'].apply(unidecode)
 
-        df = df[['cite_id','cite_name']]
-
+        df = df[['cite_id','cite_name']].copy()
 
         return df
 
@@ -67,7 +62,6 @@ class CiteDimPipeline(EasyPipeline):
         dtypes = {
             'cite_id':               'UInt8',
             'cite_name':              'String',
-
          }
 
         transform_step = TransformStep()  
