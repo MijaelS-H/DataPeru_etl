@@ -29,11 +29,11 @@ class TransformStep(PipelineStep):
         k = 1
         df = {}
         for i in range(1,1 +1):
-            path, dirs, files = next(os.walk("../../data/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
+            path, dirs, files = next(os.walk("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
             file_count = len(files)
     
             for j in [1]:
-                file_dir = "../../data/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
+                file_dir = "../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/01 INFORMACIÓN INSTITUCIONAL/TABLA_01_N01.csv".format(CARPETAS_DICT[i],i,j)
 
                 df = pd.read_csv(file_dir)
                 k = k + 1

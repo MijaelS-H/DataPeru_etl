@@ -13,7 +13,7 @@ from bamboo_lib.helpers import grab_connector
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_excel('../../data/01. Información ITP red CITE  (01-10-2020)/07 PARTIDAS ARANCELARIAS/TABLA_08_N01 (18-10-2020).xlsx')
+        df = pd.read_excel('../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/07 PARTIDAS ARANCELARIAS/TABLA_08_N01 (18-10-2020).xlsx')
 
         df = df[df['cite'].notna()]
         df = df.rename(columns={'descripcion_partida ' : 'descripcion_partida','partida_arancelaria' : 'partida_id','tipo_exportación' : 'tipo_exportacion'})
@@ -43,7 +43,7 @@ class TransformStep(PipelineStep):
 
         df = df[['cite_id','sector_id','cad_prod_id','partida_id','tipo_exp_id','cantidad_cite']]
 
-
+       
         return df
 
 class CitePartidasPipeline(EasyPipeline):
