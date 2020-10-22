@@ -16,7 +16,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
 
-        df = pd.read_excel('../../data/01. Información ITP red CITE  (01-10-2020)/07 PARTIDAS ARANCELARIAS/TABLA_08_N01 (18-10-2020).xlsx')
+        df = pd.read_excel('../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/07 PARTIDAS ARANCELARIAS/TABLA_08_N01 (18-10-2020).xlsx')
 
         df = df[df['cite'].notna()]
         df['sector'] = df['sector'].str.capitalize()
@@ -70,6 +70,6 @@ if __name__ == "__main__":
     pp.run(
         {
             "output-db": "clickhouse-local",
-            "ingest": False
+            "ingest": True
         }
     )

@@ -88,7 +88,7 @@ class CiteSubcategoryPipeline(EasyPipeline):
             'cite_id':                'UInt8',
             'subcategoria_id':        'UInt8',
             'time_id':                'UInt32',
-            'empresas':               'UInt32',
+            'empresas':               'Float32',
          }
 
         transform_step = TransformStep()  
