@@ -2,10 +2,10 @@ import numpy as np
 import os
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.helpers import grab_parent_dir
+from bamboo_lib.helpers import grab_parent_dir, query_to_df
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from static import COLUMNS_DICT, DTYPES, SELECTED_COLUMNS, VARIABLES_DICT
+from static import COLUMNS_DICT, DTYPES, NULLABLE_LISTS, PRIMARY_KEYS, SELECTED_COLUMNS, VARIABLES_DICT
 
 path = grab_parent_dir('../../../') + "/datasets/20201001/02. Información Censos (01-10-2020)/02  RENAMU - CENTROS POBLADOS/"
 
@@ -18,42 +18,42 @@ class TransformStep(PipelineStep):
         renamu_versions = {}
 
         for folder in os.listdir(path):
-            if int(folder[-4:]) >= 2015: 
-                _df = pd.DataFrame()
-                for subfolder in os.listdir('{}{}'.format(path, folder)):
-                    for filename in os.listdir('{}{}/{}'.format(path, folder, subfolder)):
-                        if filename.endswith('.sav'):
-                            temp = pd.read_spss('{}{}/{}/{}'.format(path, folder, subfolder, filename))
-                            temp = temp.replace('', np.nan).dropna(how='all')
-                            temp.rename(
-                                columns = {
-                                    'Codigo_MCP': 'populated_center_id',
-                                    'Ubigeo': 'populated_center_id',
-                                    'idimunici': 'populated_center_id',
-                                    'idmunici': 'populated_center_id'
-                                },
-                                inplace = True
-                            )
+            _df = pd.DataFrame()
+            for subfolder in os.listdir('{}{}'.format(path, folder)):
+                for filename in os.listdir('{}{}/{}'.format(path, folder, subfolder)):
+                     if filename.endswith('.sav'):
+                        temp = pd.read_spss('{}{}/{}/{}'.format(path, folder, subfolder, filename))
+                        temp = temp.replace('', np.nan).dropna(how='all')
+                        temp.rename(
+                            columns = {
+                                'DesCenPob': 'populated_center_name',
+                                'Codigo_MCP': 'populated_center_id',
+                                'Ubigeo': 'populated_center_id',
+                                'idimunici': 'populated_center_id',
+                                'idmunici': 'populated_center_id'
+                            },
+                            inplace = True
+                        )
 
-                            temp = temp.loc[:, temp.columns.isin(SELECTED_COLUMNS[int(folder[-4:])])].copy()
-                            temp.drop_duplicates(inplace = True)
+                        temp = temp.loc[:, temp.columns.isin(SELECTED_COLUMNS[int(folder[-4:])])].copy()
+                        temp.drop_duplicates(inplace = True)
 
-                            if _df.shape[0] != 0:
-                                _df = pd.merge(_df, temp, on = 'populated_center_id', suffixes = ('', '_drop'))
-                                _df = _df.iloc[:, ~_df.columns.str.contains('_drop')]
-                            else:
-                                _df = temp
+                        if _df.shape[0] != 0:
+                            _df = pd.merge(_df, temp, on = 'populated_center_id', suffixes = ('', '_drop'))
+                            _df = _df.iloc[:, ~_df.columns.str.contains('_drop')]
+                        else:
+                            _df = temp
 
-                _df['year'] = int(folder[-4:])
+            _df['year'] = int(folder[-4:])
 
-                if int(folder[-4:]) < 2018:
-                    _df.rename(columns=COLUMNS_DICT, inplace=True)
-                    _df['P18_T'] = _df['P18A_01'] + _df['P18A_02'] + _df['P18A_03'] + _df['P18A_04']
+            if int(folder[-4:]) < 2018:
+                _df.rename(columns=COLUMNS_DICT, inplace=True)
+                _df['P18_T'] = _df['P18A_01'] + _df['P18A_02'] + _df['P18A_03'] + _df['P18A_04']
 
-                for item in VARIABLES_DICT[int(folder[-4:])]:
-                    _df[item] = _df[item].replace(VARIABLES_DICT[int(folder[-4:])][item])
+            for item in VARIABLES_DICT[int(folder[-4:])]:
+                _df[item] = _df[item].replace(VARIABLES_DICT[int(folder[-4:])][item])
 
-                renamu_versions[int(folder[-4:])] = _df
+            renamu_versions[int(folder[-4:])] = _df
 
         for item in renamu_versions:
             df = df.append(renamu_versions[item], sort=False)
@@ -63,6 +63,19 @@ class TransformStep(PipelineStep):
         df['nation_id'] = 'per'
         df['department_id'] = df['populated_center_id'].str[0:2]
         df['province_id'] = df['populated_center_id'].str[0:4]
+
+        if params.get('level') == 'dimension_table':
+
+            df = df[['province_id', 'populated_center_id', 'populated_center_name']].copy()
+            df = df.drop_duplicates()
+
+            dim_geo_query = 'SELECT * FROM dim_shared_ubigeo_province'
+            db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+            dim_geo = query_to_df(db_connector, raw_query=dim_geo_query)
+
+            df = pd.merge(df, dim_geo, on='province_id')
+
+            return df
 
         # Generates count column to aggregate values
         df['count'] = 1
@@ -480,12 +493,20 @@ class RENAMUCCPPPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         transform_step = TransformStep()
-        load_step = LoadStep('inei_renamu_populated_centers', db_connector, if_exists='drop', 
-                             pk=['nation_id', 'department_id', 'province_id', 'populated_center_id', 'year'], dtype=DTYPES,
-                             nullable_list=[])
+        load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
+                             pk=PRIMARY_KEYS[params.get('level')], dtype=DTYPES[params.get('level')],
+                             nullable_list=NULLABLE_LISTS[params.get('level')])
 
         return [transform_step, load_step]
 
 if __name__ == "__main__":
     pp = RENAMUCCPPPipeline()
-    pp.run({})
+
+    for k, v in {
+        'dimension_table':  'dim_shared_populated_centers',
+        'fact_table': 'inei_renamu_populated_centers'
+            }.items():
+        pp.run({
+            'level': k,
+            'table_name': v
+        })
