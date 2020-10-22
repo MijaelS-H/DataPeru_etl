@@ -31,6 +31,8 @@ class TransformStep(PipelineStep):
 
         df.drop_duplicates(subset=['department_id'], inplace = True)
 
+        df.drop(columns=['PROVINCIA', 'PROVINCIA_id', 'DISTRITO', 'DISTRITO_id'], inplace=True)
+
         return df
 
 class UbigeoPipeline(EasyPipeline):
