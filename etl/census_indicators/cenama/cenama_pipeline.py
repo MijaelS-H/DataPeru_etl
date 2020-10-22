@@ -101,7 +101,7 @@ class CENAMAPipeline(EasyPipeline):
 
         transform_step = TransformStep()
     
-        load_step = LoadStep('census_cenama', db_connector, if_exists='drop', 
+        load_step = LoadStep('inei_cenama', db_connector, if_exists='drop', 
                              pk=['district_id', 'province_id', 'department_id',
                                  'nation_id', 'market_id', 'year'], dtype=DTYPE,
                              nullable_list=LIST_NULL)
