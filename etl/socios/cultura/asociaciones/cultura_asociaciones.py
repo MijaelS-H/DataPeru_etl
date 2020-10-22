@@ -1,0 +1,93 @@
+import re
+import pandas as pd
+from bamboo_lib.connectors.models import Connector
+from bamboo_lib.models import EasyPipeline, PipelineStep
+from bamboo_lib.steps import LoadStep
+from shared import ReplaceStep
+
+
+class TransformStep(PipelineStep):
+    def run_step(self, prev, params):
+        
+        data = pd.ExcelFile("../../../../../datasets/20201018/05. Socios Estratégicos - Ministerio de Cultura (18-10-2020)/01. Puntos de Cultura_2020_DataPeru.xlsx")
+        sheet = data.sheet_names[1]
+        df = pd.read_excel(data, data.sheet_names[1])
+
+        df = df[['Código','Nombre','Distrito','¿La organización está inscrita en SUNARP?','Actividad realizada N° 1',
+       'Actividad realizada N° 2', 'Manifestación artística cultural N° 1',
+       'Manifestación artística cultural N° 2',
+       'Manifestación artística cultural N° 3']]
+
+        for column in df.columns:
+
+            df[column] = df[column].str.strip()
+    
+        df  = df.rename(columns = {"Código" : "codigo_asociacion", "¿La organización está inscrita en SUNARP?" : "inscrita_sunarp_id", 
+        "Actividad realizada N° 1" : "actividad_n_1_id",  "Actividad realizada N° 2" : "actividad_n_2_id", "Manifestación artística cultural N° 1": "manifestacion_n_1_id", 
+        "Manifestación artística cultural N° 2": "manifestacion_n_2_id", "Manifestación artística cultural N° 3": "manifestacion_n_3_id","Distrito" : 
+        "district_name","Nombre" : "asociacion_name"})
+
+        for column in ['manifestacion_n_1_id','manifestacion_n_2_id', 'manifestacion_n_3_id']:
+            df[column] = df[column].str.replace('Otro:', '' )
+            df[column] = df[column].str.replace('Otros:', '').str.strip()
+        
+        df['inscrita_sunarp_id'] = df['inscrita_sunarp_id'].str.title()
+        df['cantidad_asociacion'] = 1
+        #print(df)
+        return df
+
+class FormatStep(PipelineStep):
+    def run_step(self, prev, params):
+        # df subset
+        df = prev[0]
+
+        df = df[['codigo_asociacion', 'district_name',
+       'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
+       'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',
+       'cantidad_asociacion']].copy()
+
+        # column types
+
+        df[['inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
+       'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',]] = df[[   'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
+       'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',]].fillna(0)
+
+        df[[
+       'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
+       'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',
+       'cantidad_asociacion']] = df[[
+       'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
+       'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',
+       'cantidad_asociacion']].astype(int).astype(str)
+
+       
+        return df
+
+class AsociacionPipeline(EasyPipeline):
+    @staticmethod
+    def steps(params):
+
+        db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
+
+        dtype = {
+            'codigo_asociacion':                    'String',
+            'district_name':                        'String',
+            'inscrita_sunarp_id':                   'UInt8',
+            'actividad_n_1_id':                     'UInt8',
+            'actividad_n_2_id':                     'UInt8',
+            'manifestacion_n_1_id':                 'UInt8',
+            'manifestacion_n_2_id':                 'UInt8',
+            'cantidad_asociacion':                  'UInt8',
+        }
+
+        transform_step = TransformStep()
+        replace_step = ReplaceStep()
+        format_step = FormatStep()
+        load_step = LoadStep('cultura_asociaciones', db_connector, if_exists='drop', 
+                             pk=['codigo_cine', 'district_name'], dtype=dtype)
+
+        return [transform_step, replace_step, format_step, load_step]
+
+if __name__ == "__main__":
+    pp = AsociacionPipeline()
+    pp.run({})
