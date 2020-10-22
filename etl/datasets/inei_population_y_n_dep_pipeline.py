@@ -56,29 +56,29 @@ class TransformStep(PipelineStep):
         # Special steps for some datasets: census survey migration data (20017-2017)
         df_3 = pd.DataFrame(columns = ["ubigeo", "inmigrantes", "emigrantes", "year"])
         for i in list(range(0,7)):
-            pivote = df3[columns_[i]]
+            pivote = df3[columns_[i]].copy()
             pivote.rename(columns = {columns_[i][0] : "ubigeo", columns_[i][1] : "inmigrantes", columns_[i][2]: "emigrantes"}, inplace = True)
             pivote["year"] = years_migration[i]
             pivote["ubigeo"].replace(depto_dict, inplace = True)
             df_3 = df_3.append(pivote)
 
         # Special steps for some datasets: agriculture area available by surfice type
-        df_1 = df15[["Unnamed: 0", "Superficie\nagrícola", "Superficie\nno agrícola"]]
-        df_2 = df15[["Unnamed: 0", "Superficie\nagrícola.1", "Superficie\nno agrícola.1"]]
+        df_1 = df15[["Unnamed: 0", "Superficie\nagrícola", "Superficie\nno agrícola"]].copy()
+        df_2 = df15[["Unnamed: 0", "Superficie\nagrícola.1", "Superficie\nno agrícola.1"]].copy()
         df_1.rename(columns = {"Unnamed: 0": "ubigeo", "Superficie\nagrícola": "superficie_agricola_hect", "Superficie\nno agrícola": "superficie_no_agricola_hect", "Superficie\nagrícola.1": "superficie_agricola_hect", "Superficie\nno agrícola.1": "superficie_no_agricola_hect"}, inplace = True)
         df_2.rename(columns = {"Unnamed: 0": "ubigeo", "Superficie\nagrícola": "superficie_agricola_hect", "Superficie\nno agrícola": "superficie_no_agricola_hect", "Superficie\nagrícola.1": "superficie_agricola_hect", "Superficie\nno agrícola.1": "superficie_no_agricola_hect"}, inplace = True)
         df_1["year"] = 2017
         df_2["year"] = 2018
-        df_15 = df_1.append(df_2)
+        df_15 = df_1.append(df_2, sort = True)
 
         # Special steps for some datasets: agriculture area available by use
-        df_1 = df16[["Unnamed: 0", "Agrícola \ncon \ncultivos", "Tierras en \nbarbecho", "Tierras \nagrícolas \nno trabajadas", "Tierras en \ndescanso"]]
-        df_2 = df16[["Unnamed: 0", "Agrícola \ncon \ncultivos.1", "Tierras en \nbarbecho.1", "Tierras \nagrícolas \nno trabajadas.1", "Tierras en \ndescanso.1"]]
+        df_1 = df16[["Unnamed: 0", "Agrícola \ncon \ncultivos", "Tierras en \nbarbecho", "Tierras \nagrícolas \nno trabajadas", "Tierras en \ndescanso"]].copy()
+        df_2 = df16[["Unnamed: 0", "Agrícola \ncon \ncultivos.1", "Tierras en \nbarbecho.1", "Tierras \nagrícolas \nno trabajadas.1", "Tierras en \ndescanso.1"]].copy()
         df_1.rename(columns = {"Unnamed: 0": "ubigeo", "Agrícola \ncon \ncultivos": "sup_agr_cultivos_hect", "Tierras en \nbarbecho": "sup_agr_en_barbencho_hect", "Tierras \nagrícolas \nno trabajadas": "sup_agr_no_trabajadas_hect", "Tierras en \ndescanso": "sup_agr_en_descanso_hect", "Agrícola \ncon \ncultivos.1": "sup_agr_cultivos_hect", "Tierras en \nbarbecho.1": "sup_agr_en_barbencho_hect", "Tierras \nagrícolas \nno trabajadas.1": "sup_agr_no_trabajadas_hect", "Tierras en \ndescanso.1": "sup_agr_en_descanso_hect"}, inplace = True)
         df_2.rename(columns = {"Unnamed: 0": "ubigeo", "Agrícola \ncon \ncultivos": "sup_agr_cultivos_hect", "Tierras en \nbarbecho": "sup_agr_en_barbencho_hect", "Tierras \nagrícolas \nno trabajadas": "sup_agr_no_trabajadas_hect", "Tierras en \ndescanso": "sup_agr_en_descanso_hect", "Agrícola \ncon \ncultivos.1": "sup_agr_cultivos_hect", "Tierras en \nbarbecho.1": "sup_agr_en_barbencho_hect", "Tierras \nagrícolas \nno trabajadas.1": "sup_agr_no_trabajadas_hect", "Tierras en \ndescanso.1": "sup_agr_en_descanso_hect"}, inplace = True)
         df_1["year"] = 2017
         df_2["year"] = 2018
-        df_16 = df_1.append(df_2)
+        df_16 = df_1.append(df_2, sort = True)
 
         # Special steps for some datasets: agriculture area available by use
         #df8.drop(["2012.1"], axis =1, inplace = True)

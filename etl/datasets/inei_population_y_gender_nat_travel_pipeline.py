@@ -29,22 +29,22 @@ class TransformStep(PipelineStep):
 
         # Creating datasets by selecting specific columns related to gender, for both datasets, adding migration flow
         for i in range(0,8):
-            pivote = df_1[pivotes_[i]]
+            pivote = df_1[pivotes_[i]].copy()
             pivote.drop("Continente / Sexo", axis = 0, inplace = True)
             pivote["continente"] = continents_[i]
             pivote.rename(columns = {pivotes_[i][0]: "hombre", pivotes_[i][1]: "mujer"}, inplace = True)
             pivote["year"] = pivote.index
             pivote["inmigration_flow"] = 1
-            df = df.append(pivote)
+            df = df.append(pivote, sort=True)
 
         for i in range(0,8):
-            pivote = df_2[pivotes_[i]]
+            pivote = df_2[pivotes_[i]].copy()
             pivote.drop("Continente / Sexo", axis = 0, inplace = True)
             pivote["continente"] = continents_[i]
             pivote.rename(columns = {pivotes_[i][0]: "hombre", pivotes_[i][1]: "mujer"}, inplace = True)
             pivote["year"] = pivote.index
             pivote["inmigration_flow"] = 2
-            df = df.append(pivote)
+            df = df.append(pivote, sort=True)
 
         # Replacing typos in years
         df["year"].replace({"2010 R/": 2010, "2011 P/" : 2011}, inplace = True)

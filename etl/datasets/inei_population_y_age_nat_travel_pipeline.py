@@ -15,7 +15,7 @@ class TransformStep(PipelineStep):
         df1 = pd.read_excel(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.27.xls"), skiprows = (0,1,2))[2:171]
         df2 = pd.read_excel(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.28.xls"), skiprows = (0,1,2))[2:171]
 
-        # For each dataframe, 
+        # For each dataframe
         for item in [df1, df2]:
             item.dropna(thresh = 3, axis=0,  inplace = True)
             item.drop("Unnamed: 1", axis=1, inplace = True)

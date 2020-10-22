@@ -66,9 +66,9 @@ class TransformStep(PipelineStep):
         for i in list(range(0,6)):
             pivote = pd.read_excel(xls, sheets[i], dtype=str, skiprows = (0,1,2,4,5,6))[0:24]
             pivote.columns = pivote.columns.str.strip()
-            pivote_1 = pivote[["Unnamed: 0", "Hombre", "Mujer"]]
-            pivote_2 = pivote[["Unnamed: 0", "Hombre.1", "Mujer.1"]]
-            pivote_3 = pivote[["Unnamed: 0", "Hombre.2", "Mujer.2"]]
+            pivote_1 = pivote[["Unnamed: 0", "Hombre", "Mujer"]].copy()
+            pivote_2 = pivote[["Unnamed: 0", "Hombre.1", "Mujer.1"]].copy()
+            pivote_3 = pivote[["Unnamed: 0", "Hombre.2", "Mujer.2"]].copy()
             pivote_1["year"] = years[i][0]
             pivote_2["year"] = years[i][1]
             pivote_3["year"] = years[i][2]
