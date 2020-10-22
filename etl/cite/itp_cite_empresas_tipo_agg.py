@@ -61,9 +61,9 @@ class TransformStep(PipelineStep):
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
         df['time_id'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
         df['empresa_id'] = df['empresa_tipo'].map(empresas_map)
-        df = df[['time_id','empresa_id','empresas']]
-
-
+        df['empresas'] = df.apply(lambda x: int(x.empresas.replace(',', '')) if type(x.empresas) is str else x.empresas, axis=1)
+        df = df[['time_id','empresa_id','empresas']].astype(float)
+        
         return df
 
 class CiteEmpresasPipeline(EasyPipeline):

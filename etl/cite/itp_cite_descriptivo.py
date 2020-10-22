@@ -54,7 +54,7 @@ class TransformStep(PipelineStep):
         k = 1
         df = {}
         for i in range(1,1 +1):
-            path, dirs, files = next(os.walk("../../../datasets/20201001/data/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
+            path, dirs, files = next(os.walk("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
             file_count = len(files)
     
             for j in [1,5,6,7]:
@@ -75,15 +75,13 @@ class TransformStep(PipelineStep):
         df_list = [df[i] for i in range(1,5)]
         df = reduce(lambda df1,df2: pd.merge(df1,df2,on=['cite'],how='outer'), df_list)
 
-        
-        for cite in df['cite'].unique():
-            df['descriptivo'] = df['descriptivo'].str.replace("UT",'')
-            df['descriptivo'] = df['descriptivo'].str.replace('El ','')
-            df['descriptivo'] = df['descriptivo'].str.replace('CITE','')
-            df['descriptivo'] = df['descriptivo'].str.replace('La ','')
-            df['descriptivo'] = df['descriptivo'].str.lstrip()
-            df['descriptivo'] = df['descriptivo'].str.capitalize()
-        
+        df['descriptivo'] = df['descriptivo'].str.replace("UT",'')
+        df['descriptivo'] = df['descriptivo'].str.replace('El ','')
+        df['descriptivo'] = df['descriptivo'].str.replace('CITE','')
+        df['descriptivo'] = df['descriptivo'].str.replace('La ','')
+        df['descriptivo'] = df['descriptivo'].str.lstrip()
+        df['descriptivo'] = df['descriptivo'].str.capitalize()
+    
         df['ubigeo'] = df['ubigeo'].astype(str).str.zfill(6)
         df['cite_id'] = df['cite'].index + 1
         
@@ -104,8 +102,7 @@ class TransformStep(PipelineStep):
         df['tipo_id'] = df['tipo'].map({"CITE": 1, "UT" : 2})
 
         df = df[['cite_id','cite_slug','tipo_id','cadena_atencion_id',
-       'ubigeo', 'latitud', 'longitud', 'descriptivo']]
-
+       'ubigeo', 'latitud', 'longitud', 'descriptivo']].copy()
         
         return df
 

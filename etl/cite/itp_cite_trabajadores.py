@@ -38,7 +38,7 @@ class TransformStep(PipelineStep):
         
         df = pd.melt(df, id_vars=['cite','anio','modalidad'], value_vars=['directivo', 'tecnico', 'operativo', 'administrativo',
                'practicante'])
-        df = df.rename(columns={'variable':'tipo_trabajador','anio':'year','value':'cantidad'})
+        df = df.rename(columns={'variable':'tipo_trabajador','value':'cantidad'})
         df["tipo_trabajador"] = df["tipo_trabajador"].str.capitalize()
         ## cite dim
         cite_list = list(df["cite"].unique())
@@ -56,7 +56,7 @@ class TransformStep(PipelineStep):
         df['modalidad_id'] = df['modalidad'].map(modalidad_map)
         df['tipo_trabajador_id'] = df['tipo_trabajador'].map(tipo_trabajador_map)
 
-        df = df[['cite_id','modalidad_id','tipo_trabajador_id','cantidad']]
+        df = df[['cite_id', 'anio', 'modalidad_id','tipo_trabajador_id','cantidad']]
 
 
         return df
@@ -75,6 +75,7 @@ class CiteContratosPipeline(EasyPipeline):
 
         dtypes = {
             'cite_id':                                 'UInt8',
+            'anio':                                    'UInt16',
             'modalidad_id':                            'UInt8',
             'tipo_trabajador_id':                      'UInt8',
             'cantidad':                                'UInt16',
