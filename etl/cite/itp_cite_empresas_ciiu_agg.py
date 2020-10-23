@@ -43,8 +43,8 @@ class TransformStep(PipelineStep):
         df = df.rename(columns={'cod_ciiu' :'class_id'})
 
         df['class_id'] = df['class_id'].replace({"No determinados" :"0000"})
-    
-       
+        df[['empresas']] = df[['empresas']].astype(float)
+  
         return df
 
 class CiteEmpresas2Pipeline(EasyPipeline):
@@ -61,9 +61,9 @@ class CiteEmpresas2Pipeline(EasyPipeline):
 
         dtypes = {
 
-            'class_id':              'UInt8',
-            'anio':                  'UInt8',
-            'empresas':              'UInt32',
+            'class_id':              'String',
+            'anio':                  'UInt16',
+            'empresas':              'Float32',
          }
 
         transform_step = TransformStep()  

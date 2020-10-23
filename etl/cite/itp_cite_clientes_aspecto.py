@@ -47,9 +47,12 @@ class TransformStep(PipelineStep):
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map)
-        df['aspecto_id'] = df['aspecto'].map(aspecto_map)
-        df = df[['cite_id','aspecto_id','estado']]
+        df['cite_id'] = df['cite'].map(cite_map).astype(int)
+        df['aspecto_id'] = df['aspecto'].map(aspecto_map).astype(int)
+        
+        df['estado'] = df['estado'].astype(str)
+        df['cantidad_cite'] = 1
+        df = df[['cite_id','aspecto_id','estado','cantidad_cite']]
 
 
         return df   
@@ -70,6 +73,7 @@ class CiteAspectoPipeline(EasyPipeline):
             'cite_id':                'UInt8',
             'aspecto_id':             'UInt8',
             'estado':                 'String',
+            'cantidad_cite':            'UInt8',
          }
 
         transform_step = TransformStep()  

@@ -41,12 +41,12 @@ class TransformStep(PipelineStep):
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map)
-        df['contribuyente_id'] = df['tipo_contribuyente'].map(contribuyente_map)
-       
+        df['cite_id'] = df['cite'].map(cite_map).astype(int)
+        df['contribuyente_id'] = df['tipo_contribuyente'].map(contribuyente_map).astype(int)
+        df['anio'] = df['anio'].astype(int)
+        df['empresas'] = df['empresas'].astype(float)
         df = df[['cite_id', 'contribuyente_id', 'anio', 'empresas']]
 
-    
         return df
 
 class CiteContribuyentePipeline(EasyPipeline):
@@ -64,8 +64,8 @@ class CiteContribuyentePipeline(EasyPipeline):
         dtypes = {
             'cite_id':                'UInt8',
             'contribuyente_id':       'UInt8',
-            'anio':                   'UInt8',
-            'empresas':               'UInt32',
+            'anio':                   'UInt16',
+            'empresas':               'Float32',
          }
 
         transform_step = TransformStep()  

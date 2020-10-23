@@ -42,12 +42,13 @@ class TransformStep(PipelineStep):
 
         df = df[['cite','anio','pim']]
    
-        df['cite_id'] = df['cite'].map(cite_map)
-        df['pim'] = df['pim'].str[:-3].replace(',','', regex=True)
+        df['cite_id'] = df['cite'].map(cite_map).astype(int)
+        df['anio'] = df['anio'].astype(int)
+        df['pim'] = df['pim'].str[:-3].replace(',','', regex=True).astype(float)
+        df['numero_cite'] = 1
+        df = df[['cite_id','anio','pim','numero_cite']]
 
-        df = df[['cite_id','anio','pim']]
-
-      
+    
         return df
 
 class CitePimPipeline(EasyPipeline):
@@ -64,8 +65,9 @@ class CitePimPipeline(EasyPipeline):
 
         dtypes = {
             'cite_id':              'UInt8',
-            'anio':                 'UInt8',
-            'pim':                  'UInt32',
+            'anio':                 'UInt16',
+            'pim':                  'Float32',
+            'numero_cite':           'UInt8'
 
          }
 

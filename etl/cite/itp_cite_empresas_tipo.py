@@ -64,14 +64,18 @@ class TransformStep(PipelineStep):
 
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
 
-        df['time_id'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
+        df['time'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
 
-        df['tipo_empresa_id'] = df['empresa_name'].map(empresas_map)
+        df['empresa_id'] = df['empresa_name'].map(empresas_map)
         df['cite_id'] = df['cite'].map(cite_map)
 
-        df = df[['cite_id', 'tipo_empresa_id', 'time_id', 'empresas']]
-
         
+        df[['cite_id','time','empresa_id']] = df[['cite_id','time','empresa_id']].astype(int)
+        df[['empresas']] = df[['empresas']].astype(float)
+        
+        
+        df = df[['cite_id', 'empresa_id', 'time', 'empresas']]
+
         return df
 
 class CiteEmpresasPipeline(EasyPipeline):
@@ -88,9 +92,9 @@ class CiteEmpresasPipeline(EasyPipeline):
 
         dtypes = {
             'cite_id':               'UInt8',
-            'tipo_empresa_id':       'UInt8',
-            'time_id':               'UInt32',
-            'empresas':              'UInt32',
+            'empresa_id':            'UInt8',
+            'time':                  'UInt16',
+            'empresas':              'Float32',
          }
 
         transform_step = TransformStep()  

@@ -22,32 +22,6 @@ CARPETAS_DICT = {
 }
 
 
-CADENAS_DICT = {
-    'Tilapia, paiche, paco, gamitana y doncella': 10217,
-    'Frutas y hortalizas, derivados lácteos': 21010,
-    'Café, cacao y frutas de la zona': 50503,
-    'Uva, espárrago, cebolla,  manzana, higo, plátano, cacao': 21319,
-    'Uva, hongos comestibles, derivados lácteos, maíz morado, olivo, granos andinos y hierbas aromáticas': 21120,
-    'Uva, palta y orégano': 21821,
-    'Café, cacao, aguaymanto, granadilla, quito quito, piña, plátano, berries, naranja y carambola': 21404,
-    'Café y cacao': 40402,
-    'Cuero y calzado': 90808,
-    'Madera y forestal': 121513,
-    'Madera e industrias conexas': 110112,
-    'Tilapia, paiche, trucha': 131618,
-    'Paiche, paco, gamitana, doncella, tilapia': 131614,
-    'Productos hidrobiológicos': 140115,
-    'Lorna, pota, jurel, bonito, anchoveta, macroalgas, choro, caballa, lenguado, corvina, lapa, macha, pulpo, chanque': 131711,
-    '• Agroindustrial: copoazú, cacao, ají charapita, castaña, naranja, plátano, sacha inchi, aguaymanto, aguaje\n• Pesquero: paco, gamitana, paiche, trucha, camarones\n• Madera: 1era y 2da transformación ': 31922,
-    'Camu camu, aguaje, gamitana y paiche de la zona': 61205,
-    'Cadena productiva de la alpaca': 70601,
-    'Textiles': 160616,
-    'Camélidos domésticos': 70606,
-    'Chirimoya, granada, guanábana, mandarina, guinda, miel de abeja y uva': 20707,
-    'Durazno, granadilla, rocoto, aguaymanto, yacón, carambola, papa, tocosh, yuca y plátano': 20309}
-    
-    
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
@@ -82,10 +56,12 @@ class TransformStep(PipelineStep):
         df['descriptivo'] = df['descriptivo'].str.lstrip()
         df['descriptivo'] = df['descriptivo'].str.capitalize()
     
-        df['ubigeo'] = df['ubigeo'].astype(str).str.zfill(6)
+        df['district_id'] = df['ubigeo'].astype(str).str.zfill(6)
         df['cite_id'] = df['cite'].index + 1
         
-        df['cadena_atencion_id'] = df['cadena_atencion'].map(CADENAS_DICT)  
+        cadena_atencion_list = list(df["cadena_atencion"].unique())
+        cadena_atencion_map = {k:v for (k,v) in zip(sorted(cadena_atencion_list), list(range(1, len(cadena_atencion_list) +1)))}
+        df['cadena_atencion_id'] = df["cadena_atencion"].map(cadena_atencion_map).astype(int)
         
         df['cite'] = df['cite'].str.replace("CITE","")
         df['cite_slug'] = df['cite'].str.replace("CITE","")
@@ -101,9 +77,14 @@ class TransformStep(PipelineStep):
 
         df['tipo_id'] = df['tipo'].map({"CITE": 1, "UT" : 2})
 
-        df = df[['cite_id','cite_slug','tipo_id','cadena_atencion_id',
-       'ubigeo', 'latitud', 'longitud', 'descriptivo']].copy()
+        df = df[['cite_id','cite_slug','tipo_id',
+       'district_id','cadena_atencion_id','latitud', 'longitud', 'descriptivo']].copy()
         
+        df['cantidad_cite'] = 1
+        df[['cite_id','tipo_id','cadena_atencion_id']] =  df[['cite_id','tipo_id','cadena_atencion_id']].astype(int) 
+        df[['district_id', 'latitud', 'longitud', 'descriptivo']] = df[['district_id', 'latitud', 'longitud', 'descriptivo']] .astype(str)
+
+      
         return df
 
 class CiteInfoPipeline(EasyPipeline):
@@ -119,14 +100,15 @@ class CiteInfoPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtypes = {
-            'cite_id':               'UInt8',
-            'cite_slug':             'String',   
+            'cite_id':               'UInt8',  
             'tipo_id':               'UInt8',
-            'cadena_atencion_id':    'UInt8',  
-            'ubigeo':                'String',  
-            'latitud':               'Float32',  
-            'longitud':              'Float32',  
-            'descriptivo':           'String', 
+            'cadena_atencion_id':    'UInt8',
+            'cite_slug' :            'String',
+            'district_id':           'String',  
+            'latitud':               'String',  
+            'longitud':              'String',  
+            'descriptivo':           'String',
+            'cantidad_cite':         'UInt8',  
          }
 
         transform_step = TransformStep()  

@@ -52,11 +52,13 @@ class TransformStep(PipelineStep):
         tipo_trabajador_list = list(df["tipo_trabajador"].unique())
         tipo_trabajador_map = {k:v for (k,v) in zip(sorted(tipo_trabajador_list), list(range(1, len(tipo_trabajador_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map)
-        df['modalidad_id'] = df['modalidad'].map(modalidad_map)
-        df['tipo_trabajador_id'] = df['tipo_trabajador'].map(tipo_trabajador_map)
-
+        df['cite_id'] = df['cite'].map(cite_map).astype(int)
+        df['modalidad_id'] = df['modalidad'].map(modalidad_map).astype(int)
+        df['tipo_trabajador_id'] = df['tipo_trabajador'].map(tipo_trabajador_map).astype(int)
+        df['anio'] = df['anio'].astype(int)
+        df['cantidad'] = df['cantidad'].astype(float)
         df = df[['cite_id', 'anio', 'modalidad_id','tipo_trabajador_id','cantidad']]
+
 
 
         return df
@@ -78,7 +80,7 @@ class CiteContratosPipeline(EasyPipeline):
             'anio':                                    'UInt16',
             'modalidad_id':                            'UInt8',
             'tipo_trabajador_id':                      'UInt8',
-            'cantidad':                                'UInt16',
+            'cantidad':                                'Float32',
 
          }
 

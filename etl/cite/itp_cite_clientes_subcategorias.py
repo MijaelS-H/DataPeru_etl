@@ -61,15 +61,16 @@ class TransformStep(PipelineStep):
 
         df = df.rename(columns={'variable':'month_id','anio':'year','subcategoria':'subcategory','value': "empresas"})
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
-        df['time_id'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
+        df['time'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
+        df['time'] = df['time'].astype(int)
+        
+        df['cite_id'] = df['cite'].map(cite_map).astype(int)
+        df['subcategoria_id'] = df['subcategory'].map(subcategory_map).astype(int)
+
+        df = df[['cite_id', 'subcategoria_id', 'time', 'empresas']]
+        df['empresas'] =  df['empresas'].astype(str)
 
         
-        df['cite_id'] = df['cite'].map(cite_map)
-        df['subcategoria_id'] = df['subcategory'].map(subcategory_map)
-
-        df = df[['cite_id', 'subcategoria_id', 'time_id', 'empresas']]
-
-
         return df
 
 class CiteSubcategoryPipeline(EasyPipeline):
@@ -87,7 +88,7 @@ class CiteSubcategoryPipeline(EasyPipeline):
         dtypes = {
             'cite_id':                'UInt8',
             'subcategoria_id':        'UInt8',
-            'time_id':                'UInt32',
+            'time':                   'UInt32',
             'empresas':               'Float32',
          }
 

@@ -44,14 +44,14 @@ class TransformStep(PipelineStep):
         componente_list = list(df["componente"].unique())
         componente_map = {k:v for (k,v) in zip(sorted(componente_list), list(range(1, len(componente_list) +1)))}
         
-        df['cite_id'] = df['cite'].map(cite_map)
-        df['componente_id'] = df['componente'].map(componente_map)
-        df['inversion'] = df['inversion'].str[:-3].replace(',','', regex=True)
-        df['ejecucion'] = df['ejecucion'].str[:-3].replace(',','', regex=True)
-        
-        df = df[['cite_id', 'componente_id', 'inversion', 'ejecucion']]
-        
+        df['cite_id'] = df['cite'].map(cite_map).astype(int)
+        df['componente_id'] = df['componente'].map(componente_map).astype(int)
+        df['inversion'] = df['inversion'].str[:-3].replace(',','', regex=True).astype(float)
+        df['ejecucion'] = df['ejecucion'].str[:-3].replace(',','', regex=True).astype(float)
+        df['numero_cites'] = 1
 
+        df = df[['cite_id', 'componente_id', 'inversion', 'ejecucion','numero_cites']]
+        
         return df
 
 class CiteEjecucionPipeline(EasyPipeline):
@@ -69,8 +69,9 @@ class CiteEjecucionPipeline(EasyPipeline):
         dtypes = {
             'cite_id':                 'UInt8',
             'componente_id':           'UInt8',
-            'inversion':               'UInt64',
-            'ejecucion':               'UInt64',
+            'inversion':               'Float32',
+            'ejecucion':               'Float32',
+            'numero_cites':            'UInt8'
          }
 
         transform_step = TransformStep()  

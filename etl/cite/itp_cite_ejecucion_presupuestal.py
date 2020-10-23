@@ -67,11 +67,12 @@ class TransformStep(PipelineStep):
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
         df['time_id'] = df['year'].astype(int).astype(str) + df['month_id'].str.zfill(2)
         df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].str[:-3].replace(',','', regex=True)
-        df['cite_id'] = df['cite'].map(cite_map)
+        df['cite_id'] = df['cite'].map(cite_map).astype(int)
+        df['time'] = df['time_id'].astype(int)
+        df['ejecucion_presupuestal'].astype(float)
+        df = df[['cite_id', 'time', 'ejecucion_presupuestal']]
 
-        df = df[['cite_id', 'time_id', 'ejecucion_presupuestal']]
-
-        
+  
         return df
 
 class CitePimPipeline(EasyPipeline):
@@ -87,9 +88,9 @@ class CitePimPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtypes = {
-            'cite_id':                                 'UInt8',
-            'time_id':                                 'UInt32',
-            'ejecucion_presupuestal':                  'UInt64',
+            'cite_id':                             'UInt8',
+            'time':                                'UInt16',
+            'ejecucion_presupuestal':              'Float32',
 
          }
 
