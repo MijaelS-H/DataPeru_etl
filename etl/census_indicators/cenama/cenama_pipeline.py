@@ -72,6 +72,9 @@ class TransformStep(PipelineStep):
         
         #indicators
         df_merge['nation_id'] = 'per'
+        df_merge['province_id'] = df_merge['department_id'] + df_merge['province_id']
+        df_merge['district_id'] = df_merge['province_id'] + df_merge['district_id']
+
         df_merge['indicator_formality'] = pd.cut(df_merge['p30_1'] + df_merge['p30_2'] + df_merge['p30_3'] + df_merge['p31_1'] + df_merge['p31_2'] + df_merge['p34a'], [0, 1, 3, 5, np.inf], labels=[0,1,2,3], right=False).astype(int)
         
         for i in range(4):
