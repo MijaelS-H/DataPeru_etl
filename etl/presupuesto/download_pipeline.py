@@ -40,3 +40,11 @@ for ele in df.to_dict(orient='records'):
         errors.append(ele['url'])
         print('ERROR:', ele['source'], ele['url'])
     time.sleep(5)
+
+urls = ['https://datosabiertos.mef.gob.pe/datasets/185602-comparacion-de-ingreso-del-gobierno-nacional-2014-2020.download',
+       'https://datosabiertos.mef.gob.pe/datasets/185603-comparacion-de-ingreso-de-los-gobiernos-regionales-2014-2020.download',
+       'https://datosabiertos.mef.gob.pe/datasets/185604-comparacion-de-ingreso-de-los-gobiernos-locales-2014-2020.download']
+
+for url in urls:
+    temp = pd.read_csv(url, encoding='latin-1')
+    temp.to_csv('{}/{}.csv'.format(DATA_FOLDER, url.split('/')[-1]), index=False)

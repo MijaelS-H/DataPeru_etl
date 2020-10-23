@@ -14,7 +14,6 @@ class ReadStep(PipelineStep):
         base = BASE[params.get('prefix')]
 
         temp = pd.DataFrame()
-        df_all_files =pd.DataFrame()
 
         for year in range(2014, 2020 + 1):
             df = pd.read_csv(params.get('data'), encoding='latin-1')
@@ -25,10 +24,8 @@ class ReadStep(PipelineStep):
 
             df.columns = base + ['pia', 'pim', 'devengado'] + ['year']
             temp = temp.append(df)
-        df_all_files = df_all_files.append(temp)
-        temp = pd.DataFrame()
 
-        return df
+        return temp
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
