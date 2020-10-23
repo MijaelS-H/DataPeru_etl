@@ -1,8 +1,8 @@
 def INDICATOR_GEO(df, geo_id):
     df['CENAMA_1'] = df['p36_1']
     df['CENAMA_2'] = df['p36_2']
-    df['CENAMA_3'] = df['p39_1'] + df['p39_2'] + df['p39_3'] + df['p39_4'] + df['p39_5'] + df['p39_6']
-    df['CENAMA_4'] = (df['CENAMA_2'] / df['p36_2']) * 100
+    df['CENAMA_3'] = df['p39_1'] + df['p39_2'] + df['p39_3'] + df['p39_4'] + df['p39_5'] + df['p39_6'] + df['p39_7'] + df['p39_8']
+    df['CENAMA_4'] = (df['CENAMA_3'] / df['p36_2']) * 100
     df['CENAMA_5'] = df['p36_3']
     df['CENAMA_6'] = df['p37']
     df['CENAMA_7'] = df['p38']
@@ -53,13 +53,10 @@ def INDICATOR_GEO(df, geo_id):
     df['CENAMA_67'] = (df['CENAMA_66'] / df['CENAMA_47']) * 100
     df['CENAMA_69'] = df['p61_1']
     df['CENAMA_70'] = (df['p61_1'] / df['count']) * 100
-    df['CENAMA_72'] = df['p61a1_4'] / df['count']
     df['CENAMA_74'] = df['p61_2']
     df['CENAMA_75'] = (df['p61_2'] / df['count']) * 100
-    df['CENAMA_77'] = df['p61a2_4'] / df['count']
     df['CENAMA_79'] = df['p61_3']
     df['CENAMA_80'] = (df['p61_3'] / df['count']) * 100
-    df['CENAMA_82'] = df['p61a3_4'] / df['count']
     df['CENAMA_84'] = df['p62']
     df['CENAMA_85'] = (df['p62'] / df['count']) * 100
     df['CENAMA_87'] = df['p63_1']
@@ -76,16 +73,6 @@ def INDICATOR_GEO(df, geo_id):
     df['CENAMA_103'] = (df['p63_6'] / df['count']) * 100
     df['CENAMA_105'] = df['p63_8']
     df['CENAMA_106'] = (df['p63_8'] / df['count']) * 100
-    df['CENAMA_108'] = df['p64_7a_total'] / df['count']
-    df['CENAMA_111'] = df['p64_1a'] / df['count']
-    df['CENAMA_114'] = df['p64_2a'] / df['count']
-    df['CENAMA_117'] = df['p64_3a'] / df['count']
-    df['CENAMA_120'] = df['p64_4a'] / df['count']
-    df['CENAMA_123'] = df['p64_5a'] / df['count']
-    df['CENAMA_125'] = df['p64_5b_total'] / df['count']
-    df['CENAMA_128'] = df['p64_1b'] / df['count']
-    df['CENAMA_131'] = df['p64_2b'] / df['count']
-    df['CENAMA_134'] = df['p64_3b'] / df['count']
     df['CENAMA_136'] = df['p40_2']
     df['CENAMA_139'] = df['p30_1']
     df['CENAMA_140'] = (df['p30_1'] / df['count']) * 100
@@ -152,10 +139,9 @@ def INDICATOR_GEO(df, geo_id):
          'CENAMA_27', 'CENAMA_28', 'CENAMA_30', 'CENAMA_31', 'CENAMA_33', 'CENAMA_34', 'CENAMA_36', 'CENAMA_37', 'CENAMA_39', 'CENAMA_40', 
          'CENAMA_44', 'CENAMA_45', 'CENAMA_47', 'CENAMA_48', 'CENAMA_49', 'CENAMA_50', 'CENAMA_51', 'CENAMA_52', 'CENAMA_53', 'CENAMA_54',
          'CENAMA_55', 'CENAMA_56', 'CENAMA_57', 'CENAMA_58', 'CENAMA_59', 'CENAMA_60', 'CENAMA_61', 'CENAMA_62', 'CENAMA_63', 'CENAMA_64', 
-         'CENAMA_65', 'CENAMA_66', 'CENAMA_67', 'CENAMA_69', 'CENAMA_70', 'CENAMA_72', 'CENAMA_74', 'CENAMA_75', 'CENAMA_77', 'CENAMA_79',
-         'CENAMA_80', 'CENAMA_82', 'CENAMA_84', 'CENAMA_85', 'CENAMA_87', 'CENAMA_88', 'CENAMA_90', 'CENAMA_91', 'CENAMA_93', 'CENAMA_94',
-         'CENAMA_96', 'CENAMA_97', 'CENAMA_99', 'CENAMA_100', 'CENAMA_102', 'CENAMA_103', 'CENAMA_105', 'CENAMA_106', 'CENAMA_108', 'CENAMA_111',
-         'CENAMA_114', 'CENAMA_117', 'CENAMA_120', 'CENAMA_123', 'CENAMA_125', 'CENAMA_128', 'CENAMA_131', 'CENAMA_134', 'CENAMA_136', 'CENAMA_139',
+         'CENAMA_65', 'CENAMA_66', 'CENAMA_67', 'CENAMA_69', 'CENAMA_70', 'CENAMA_74', 'CENAMA_75', 'CENAMA_79',
+         'CENAMA_80', 'CENAMA_84', 'CENAMA_85', 'CENAMA_87', 'CENAMA_88', 'CENAMA_90', 'CENAMA_91', 'CENAMA_93', 'CENAMA_94',
+         'CENAMA_96', 'CENAMA_97', 'CENAMA_99', 'CENAMA_100', 'CENAMA_102', 'CENAMA_103', 'CENAMA_105', 'CENAMA_106', 'CENAMA_136', 'CENAMA_139',
          'CENAMA_140', 'CENAMA_142', 'CENAMA_143', 'CENAMA_145', 'CENAMA_146', 'CENAMA_148', 'CENAMA_149', 'CENAMA_151', 'CENAMA_152', 'CENAMA_154',
          'CENAMA_155', 'CENAMA_157', 'CENAMA_158', 'CENAMA_159', 'CENAMA_160', 'CENAMA_161', 'CENAMA_162', 'CENAMA_163', 'CENAMA_164', 'CENAMA_166',
          'CENAMA_167', 'CENAMA_169', 'CENAMA_170', 'CENAMA_171', 'CENAMA_174', 'CENAMA_175', 'CENAMA_177', 'CENAMA_178', 'CENAMA_180', 'CENAMA_181', 
@@ -168,7 +154,7 @@ def INDICATOR_GEO(df, geo_id):
 def INDICATOR_MARKET(df, market_id):
     df['CENAMA_1'] = df['p36_1']
     df['CENAMA_2'] = df['p36_2']
-    df['CENAMA_3'] = df['p39_1'] + df['p39_2'] + df['p39_3'] + df['p39_4'] + df['p39_5'] + df['p39_6']
+    df['CENAMA_3'] = df['p39_1'] + df['p39_2'] + df['p39_3'] + df['p39_4'] + df['p39_5'] + df['p39_6'] + df['p39_7'] + df['p39_8']
     df['CENAMA_5'] = df['p36_3']
     df['CENAMA_6'] = df['p37']
     df['CENAMA_7'] = df['p38']
@@ -284,3 +270,24 @@ def INDICATOR_MARKET(df, market_id):
           'CENAMA_209', 'CENAMA_212', 'CENAMA_215', 'CENAMA_218', 'CENAMA_221']]
 
     return df
+
+def INDICATOR_EXCEPTION(df, geo_id):
+    list_indicator = ['CENAMA_72', 'CENAMA_77', 'CENAMA_82', 'CENAMA_108', 'CENAMA_111', 'CENAMA_114', 'CENAMA_117', 'CENAMA_120', 'CENAMA_123',
+                       'CENAMA_125', 'CENAMA_128', 'CENAMA_131', 'CENAMA_134']
+    
+    list_columns = ['p61a1_4', 'p61a2_4', 'p61a3_4', 'p64_7a_total', 'p64_1a', 'p64_2a', 'p64_3a', 'p64_4a', 'p64_5a', 'p64_5b_total', 
+                     'p64_1b', 'p64_2b', 'p64_3b']
+    
+    df_new = df.copy()
+    df_end = df.groupby([geo_id]).sum().reset_index()
+    
+    for col in range(len(list_indicator)):
+        df = df_new[~df_new[list_columns[col]].isna()]
+        df = df.groupby([geo_id]).sum().reset_index()
+        df[list_indicator[col]] = df[list_columns[col]] / df['count']
+        df_end = df_end.merge(df, on=geo_id, how='left')
+
+    df_end = df_end[[geo_id, 'CENAMA_72', 'CENAMA_77', 'CENAMA_82', 'CENAMA_108', 'CENAMA_111', 'CENAMA_114', 'CENAMA_117', 'CENAMA_120', 
+                     'CENAMA_123', 'CENAMA_125', 'CENAMA_128', 'CENAMA_131', 'CENAMA_134']]
+    
+    return df_end

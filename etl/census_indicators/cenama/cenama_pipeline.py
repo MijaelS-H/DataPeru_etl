@@ -3,8 +3,8 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from static import COLUMNS_RENAME, LIST_DICT, DTYPE, LIST_NULL
-from indicator import INDICATOR_MARKET, INDICATOR_GEO
+from static import COLUMNS_RENAME, LIST_DICT, DTYPE, LIST_NULL, DICT_GROUPBY
+from indicator import INDICATOR_MARKET, INDICATOR_GEO, INDICATOR_EXCEPTION
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -44,12 +44,12 @@ class TransformStep(PipelineStep):
 
         df_merge.rename(columns = COLUMNS_RENAME, inplace=True)
 
-        #change column type
-        list_int = ['p36_1', 'p36_2', 'p36_3', 'p37', 'p38','p39_1', 'p39_2', 'p39_3', 'p39_4', 'p39_5', 'p39_6', 'p49b_1', 'p56_1e_total', 'p56_2e_total', 
-                    'p56_3e_total', 'p56_4e_total', 'p56_5e_total', 'p56_6e_total', 'p56_7e_total', 'p56a_1b', 'p56a_1d', 'p56a_2b', 'p56a_2d', 'p56a_3b', 
-                    'p56a_3d', 'p56a_4b', 'p56a_4d', 'p56a_5b', 'p56a_5d', 'p56a_6b', 'p56a_6d', 'p56a_7b', 'p56a_7d', 'p56a_1a', 'p56a_1c', 'p56a_2a', 'p56a_2c', 
-                    'p56a_3a', 'p56a_3c', 'p56a_4a', 'p56a_4c', 'p56a_5a', 'p56a_5c', 'p56a_6a', 'p56a_6c', 'p56a_7a', 'p56a_7c', 'p61a1_4', 'p61a2_4', 'p61a3_4', 
-                    'p64_7a_total', 'p64_1a', 'p64_2a', 'p64_3a', 'p64_4a', 'p64_5a', 'p64_5b_total', 'p64_1b', 'p64_2b', 'p64_3b', 'p40_1', 'p40_2', 'p40_3', 'p50']
+        #change column type        
+        list_int = ['p36_1', 'p36_2', 'p36_3', 'p37', 'p38','p39_1', 'p39_2', 'p39_3', 'p39_4', 'p39_5', 'p39_6', 'p49b_1', 'p56_1e_total', 
+                    'p56_2e_total', 'p56_3e_total', 'p56_4e_total', 'p56_5e_total', 'p56_6e_total', 'p56_7e_total', 'p56a_1b', 'p56a_1d', 
+                    'p56a_2b', 'p56a_2d', 'p56a_3b', 'p56a_3d', 'p56a_4b', 'p56a_4d', 'p56a_5b', 'p56a_5d', 'p56a_6b', 'p56a_6d', 'p56a_7b', 
+                    'p56a_7d', 'p56a_1a', 'p56a_1c', 'p56a_2a', 'p56a_2c', 'p56a_3a', 'p56a_3c', 'p56a_4a', 'p56a_4c', 'p56a_5a', 'p56a_5c', 
+                    'p56a_6a', 'p56a_6c', 'p56a_7a', 'p56a_7c', 'p40_1', 'p40_2', 'p40_3', 'p50']
             
         df_merge[list_int] = df_merge[list_int].fillna(0)
         df_merge[list_int] = df_merge[list_int].replace('nan', 0)
@@ -87,25 +87,20 @@ class TransformStep(PipelineStep):
     
             df_indicator = df_merge.copy()
             df_indicator.drop(columns = list_geo, inplace=True)
-            df_indicator = df_indicator.groupby([i]).sum().reset_index()
+            df_indicator_aux = df_indicator.copy()
+            df_indicator = df_indicator.groupby([i]).agg(DICT_GROUPBY).reset_index()
     
             df_indicator = INDICATOR_GEO(df_indicator, i) if i != 'market_id' else INDICATOR_MARKET(df_indicator, i)
+            
+            if i != 'market_id':
+                df_exception = INDICATOR_EXCEPTION(df_indicator_aux, i)
+                df_indicator = df_indicator.merge(df_exception, on=i, how='left')
+            
             df_final = df_final.append(df_indicator, sort=False)
         
         df_final['year'] = 2016
-
-        df_final['district_id'] = df_final['district_id'].fillna(0)
-        df_final['province_id'] = df_final['province_id'].fillna(0)
-        df_final['department_id'] = df_final['department_id'].fillna(0)
-        df_final['nation_id'] = df_final['nation_id'].fillna(0)
-        df_final['market_id'] = df_final['market_id'].fillna(0)
-
-        df_final['district_id'] = df_final['district_id'].astype(str)
-        df_final['province_id'] = df_final['province_id'].astype(str)
-        df_final['department_id'] = df_final['department_id'].astype(str)
-        df_final['nation_id'] = df_final['nation_id'].astype(str)
-        df_final['market_id'] = df_final['market_id'].astype(str)
-
+        df_final[['district_id', 'province_id', 'department_id', 'nation_id', 'market_id']] = df_final[['district_id', 'province_id', 'department_id', 'nation_id', 'market_id']].fillna(0).astype(str)
+        
         return df_final
 
 class CENAMAPipeline(EasyPipeline):
