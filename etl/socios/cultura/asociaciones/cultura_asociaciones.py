@@ -25,7 +25,7 @@ class TransformStep(PipelineStep):
         df  = df.rename(columns = {"Código" : "codigo_asociacion", "¿La organización está inscrita en SUNARP?" : "inscrita_sunarp_id", 
         "Actividad realizada N° 1" : "actividad_n_1_id",  "Actividad realizada N° 2" : "actividad_n_2_id", "Manifestación artística cultural N° 1": "manifestacion_n_1_id", 
         "Manifestación artística cultural N° 2": "manifestacion_n_2_id", "Manifestación artística cultural N° 3": "manifestacion_n_3_id","Distrito" : 
-        "district_name","Nombre" : "asociacion_name"})
+        "district_id","Nombre" : "asociacion_name"})
 
         for column in ['manifestacion_n_1_id','manifestacion_n_2_id', 'manifestacion_n_3_id']:
             df[column] = df[column].str.replace('Otro:', '' )
@@ -33,7 +33,7 @@ class TransformStep(PipelineStep):
         
         df['inscrita_sunarp_id'] = df['inscrita_sunarp_id'].str.title()
         df['cantidad_asociacion'] = 1
-        #print(df)
+        
         return df
 
 class FormatStep(PipelineStep):
@@ -41,7 +41,7 @@ class FormatStep(PipelineStep):
         # df subset
         df = prev[0]
 
-        df = df[['codigo_asociacion', 'district_name',
+        df = df[['codigo_asociacion', 'district_id',
        'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
        'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',
        'cantidad_asociacion']].copy()
@@ -58,9 +58,9 @@ class FormatStep(PipelineStep):
        'cantidad_asociacion']] = df[[
        'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
        'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',
-       'cantidad_asociacion']].astype(int).astype(str)
+       'cantidad_asociacion']].astype(int)
 
-       
+
         return df
 
 class AsociacionPipeline(EasyPipeline):
@@ -71,7 +71,7 @@ class AsociacionPipeline(EasyPipeline):
 
         dtype = {
             'codigo_asociacion':                    'String',
-            'district_name':                        'String',
+            'district_id':                          'String',
             'inscrita_sunarp_id':                   'UInt8',
             'actividad_n_1_id':                     'UInt8',
             'actividad_n_2_id':                     'UInt8',
@@ -84,7 +84,7 @@ class AsociacionPipeline(EasyPipeline):
         replace_step = ReplaceStep()
         format_step = FormatStep()
         load_step = LoadStep('cultura_asociaciones', db_connector, if_exists='drop', 
-                             pk=['codigo_cine', 'district_name'], dtype=dtype)
+                             pk=['district_id'], dtype=dtype)
 
         return [transform_step, replace_step, format_step, load_step]
 

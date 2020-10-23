@@ -24,11 +24,11 @@ class TransformStep(PipelineStep):
     
         df = df.rename(columns={'AÑO INSCRIPCIÓN' : "anio_inscripcion","TIPO DE CONSTITUCIÓN" : "tipo_constitucion_id","RAZON SOCIAL " : "razon_social_id",
             "Actividad_1" : "actividad_1_id","Actividad_2":"actividad_2_id", "Actividad_3":"actividad_3_id",
-            "Actividad_4":"actividad_4_id","DISTRITO":"district_name"})
+            "Actividad_4":"actividad_4_id","DISTRITO":"district_id"})
 
 
         df['cantidad_org'] = 1
-        df = df[df['district_name'].notna()]
+        df = df[df['district_id'].notna()]
         df = df[df['anio_inscripcion'].notna()]
         df = df[df['anio_inscripcion'] != "ND"]
      
@@ -40,7 +40,7 @@ class FormatStep(PipelineStep):
         df = prev[0]
         
         df = df[['anio_inscripcion','tipo_constitucion_id','razon_social_id','actividad_1_id',	
-        'actividad_2_id','actividad_3_id','actividad_4_id',	'district_name', 'cantidad_org']].copy()
+        'actividad_2_id','actividad_3_id','actividad_4_id',	'district_id', 'cantidad_org']].copy()
 
         # column types
 
@@ -52,7 +52,7 @@ class FormatStep(PipelineStep):
         'actividad_2_id','actividad_3_id','actividad_4_id']] = df[['actividad_1_id',	
         'actividad_2_id','actividad_3_id','actividad_4_id']].astype(int).astype(str)
 
-   
+      
         return df
 
 class CinePipeline(EasyPipeline):
@@ -63,13 +63,13 @@ class CinePipeline(EasyPipeline):
 
         dtype = {
             'anio_inscripcion':               'UInt16',
-            'tipo_constitucion_id':           'String',
-            'razon_social_id':                'UInt8',
+            'tipo_constitucion_id':           'UInt8',
+            'razon_social_id':                'UInt16',
             'actividad_1_id':                 'UInt8',
             'actividad_2_id':                 'UInt8',
             'actividad_3_id':                 'UInt8',
             'actividad_4_id':                 'UInt8',
-            'district_name':                  'UInt8',
+            'district_id':                    'UInt8',
             'cantidad_org':                   'UInt8',
         }
 
@@ -77,7 +77,7 @@ class CinePipeline(EasyPipeline):
         replace_step = ReplaceStep()
         format_step = FormatStep()
         load_step = LoadStep('cultura_cine', db_connector, if_exists='drop', 
-                             pk=['anio_inscripcion', 'razon_social_id', 'district_name'], dtype=dtype)
+                             pk=['district_id'], dtype=dtype)
 
         return [transform_step, replace_step, format_step, load_step]
 

@@ -40,9 +40,9 @@ class FormatStep(PipelineStep):
 
         df[['razon_social_id', 'actividad_1_id',
        'actividad_2_id', 'actividad_3_id', 'actividad_4_id']] = df[['razon_social_id', 'actividad_1_id',
-       'actividad_2_id', 'actividad_3_id', 'actividad_4_id']].astype(int).astype(str)
+       'actividad_2_id', 'actividad_3_id', 'actividad_4_id']].astype(int)
 
-        print(df)
+
         return df
 
 class AgentesPipeline(EasyPipeline):
@@ -52,7 +52,7 @@ class AgentesPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
 
         dtype = {
-            'razon_social_id':                  'UInt8',
+            'razon_social_id':                  'UInt32',
             'actividad_1_id':                   'UInt8',
             'actividad_2_id':                   'UInt8',
             'actividad_3_id':                   'UInt8',
@@ -65,7 +65,7 @@ class AgentesPipeline(EasyPipeline):
         replace_step = ReplaceStep()
         format_step = FormatStep()
         load_step = LoadStep('cultura_agentes_libro', db_connector, if_exists='drop', 
-                             pk=['razon_social_id', 'district_id'], dtype=dtype)
+                            pk=['district_id'], dtype=dtype)
 
         return [transform_step, replace_step, format_step]
 

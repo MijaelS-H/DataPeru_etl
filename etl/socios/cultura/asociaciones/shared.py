@@ -7,7 +7,7 @@ class ReplaceStep(PipelineStep):
         df = prev
 
        # replace dims
-        df['district_name'].replace(DISTRICT_REPLACE_1, inplace=True)
+        df['district_id'].replace(DISTRICT_REPLACE_1, inplace=True)
 
         # replace
         asociacion_dim = dict(zip(df['codigo_asociacion'], df['asociacion_name']))

@@ -13,7 +13,7 @@ class ProcessingStep(PipelineStep):
         if params.get('pk') == 'razon_social_id':
             df = pd.DataFrame.from_dict(razon_social_dim, orient='index').reset_index()
             df.columns = ['razon_social_name', 'razon_social_id']
-            
+        
             return df
 
 
