@@ -34,7 +34,7 @@ class MarketPipeline(EasyPipeline):
 
         transform_step = TransformStep()
     
-        load_step = LoadStep('dimension_market', db_connector, if_exists='drop', 
+        load_step = LoadStep('dim_market', db_connector, if_exists='drop', 
                              pk=['market_id'], dtype=dtype,
                              nullable_list=[])
 
