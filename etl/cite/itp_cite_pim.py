@@ -67,7 +67,7 @@ class CitePimPipeline(EasyPipeline):
             'cite_id':              'UInt8',
             'anio':                 'UInt16',
             'pim':                  'Float32',
-            'numero_cite':           'UInt8'
+            'numero_cite':          'UInt8'
 
          }
 

@@ -68,7 +68,7 @@ class TransformStep(PipelineStep):
         df['subcategoria_id'] = df['subcategory'].map(subcategory_map).astype(int)
 
         df = df[['cite_id', 'subcategoria_id', 'time', 'empresas']]
-        df['empresas'] =  df['empresas'].astype(str)
+        df['empresas'] =  df['empresas'].astype(float)
 
         
         return df
