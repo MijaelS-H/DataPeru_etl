@@ -7,10 +7,10 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read dataframe
-        df = pd.read_spss('../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/02 MÓDULO 1117_ Identificación del Mercado e Informante/Capítulo_II_NACIONAL.sav')
+        df = pd.read_spss('../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/02 MÓDULO 1117_ Identificación del Mercado e Informante/Capítulo_II_NACIONAL.sav')
 
         df.columns = df.columns.str.lower()
-        df = df[['id', 'nombre_mercado']]
+        df = df[['id', 'nombre_mercado']].copy()
         
         df['nombre_mercado'] = df['nombre_mercado'].str.capitalize()
 

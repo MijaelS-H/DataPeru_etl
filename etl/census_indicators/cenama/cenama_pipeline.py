@@ -10,9 +10,9 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read modules
         list_name = [
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/03 MÓDULO 1118_ Características del Mercado/Capítulo_IV_NACIONAL.dta',
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/04 MÓDULO 1119_ Infraestructura, Instalaciones, Equipamiento y Otros/Capítulo_V_NACIONAL.sav',
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/05 MÓDULO 1120_ Gestión Administrativa y Financiera/Capítulo_VI_NACIONAL.sav'
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/03 MÓDULO 1118_ Características del Mercado/Capítulo_IV_NACIONAL.dta',
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/04 MÓDULO 1119_ Infraestructura, Instalaciones, Equipamiento y Otros/Capítulo_V_NACIONAL.sav',
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/05 MÓDULO 1120_ Gestión Administrativa y Financiera/Capítulo_VI_NACIONAL.sav'
             ]
         
         df = [pd.read_spss(x) if x != list_name[0] else pd.read_stata(x) for x in list_name]
@@ -90,6 +90,18 @@ class TransformStep(PipelineStep):
             df_final = df_final.append(df_indicator, sort=False)
         
         df_final['year'] = 2016
+
+        df_final['district_id'] = df_final['district_id'].fillna(0)
+        df_final['province_id'] = df_final['province_id'].fillna(0)
+        df_final['department_id'] = df_final['department_id'].fillna(0)
+        df_final['nation_id'] = df_final['nation_id'].fillna(0)
+        df_final['market_id'] = df_final['market_id'].fillna(0)
+
+        df_final['district_id'] = df_final['district_id'].astype(str)
+        df_final['province_id'] = df_final['province_id'].astype(str)
+        df_final['department_id'] = df_final['department_id'].astype(str)
+        df_final['nation_id'] = df_final['nation_id'].astype(str)
+        df_final['market_id'] = df_final['market_id'].astype(str)
 
         return df_final
 
