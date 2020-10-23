@@ -84,7 +84,7 @@ class TransformStep(PipelineStep):
         pivote["act_economica"] = data_object["name"]
         
         # Append files to df
-        df = df.append(pivote)
+        df = df.append(pivote, sort=False)
 
         # Replacing values with id"s and droping un used values
         df["ubigeo"].replace(depto_dict, inplace = True)
