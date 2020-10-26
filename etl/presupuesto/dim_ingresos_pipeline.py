@@ -41,7 +41,7 @@ class DimensionsPipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep('dim_mef_aggregate_{}'.format(params.get('dimension')), db_connector, if_exists='drop', 
+        load_step = LoadStep('dim_mef_ingresos_{}'.format(params.get('dimension')), db_connector, if_exists='drop', 
                              pk=[params.get('dimension')], dtype=dtype)
 
         return [transform_step, load_step]
