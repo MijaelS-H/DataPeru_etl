@@ -30,10 +30,10 @@ class TransformStep(PipelineStep):
         
         df = df.rename(columns={'cod_ciiu' : 'class_id'})
 
-        df['class_id'] = df['class_id'].replace({"No determinados" : "0000"})
+        df['class_id'] = df['class_id'].str[:-1].replace({"No determinado" : "0000"}).astype(str)
         
-        df[['empresas']] = df[['empresas']].astype(float)
-
+        df['empresas'] = df['empresas'].astype(float)
+       
         return df
 
 class CiteEmpresas2Pipeline(EasyPipeline):
