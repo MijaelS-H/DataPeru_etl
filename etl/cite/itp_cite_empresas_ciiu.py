@@ -16,7 +16,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         df = pd.read_csv("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/02 CLIENTES ATENDIDOS//TABLA_02_N03.csv")
-        
+        print(df)
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
 
@@ -26,11 +26,11 @@ class TransformStep(PipelineStep):
         
         df = df.rename(columns={'cod_ciiu' :'class_id'})
 
-
+        
         df['cite_id'] = df['cite_id'].astype(int)
         df['anio'] = df['anio'].astype(int)
         df['empresas'] = df['empresas'].astype(float)    
-        df['class_id'] = df['class_id'].replace({"No determinados" : "0000"}).astype(str)
+        df['class_id'] = df['class_id'].str[:-1].replace({"No determinado" : "0000"}).astype(str)
         
         return df
 
