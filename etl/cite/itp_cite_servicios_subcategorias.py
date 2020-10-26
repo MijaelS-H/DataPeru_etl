@@ -9,49 +9,18 @@ from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
+from static import CARPETAS_DICT, MONTHS_DICT
 
-CARPETAS_DICT = {
-    1: "01 INFORMACIÓN INSTITUCIONAL",
-    2: "02 CLIENTES ATENDIDOS",
-    3: "03 SERVICIOS BRINDADOS",
-    4: "04 PROYECTOS DE INVERSIÓN PÚBLICA",
-    5: "05 EJECUCIÓN PRESUPUESTAL",
-    6: "06 RECURSOS HUMANOS",
-    7: "07 PARTIDAS ARANCELARIAS",
-}
-
-MONTHS_DICT = {
-    'mes_01' :'1', 
-    'mes_02' :'2', 
-    'mes_03' :'3', 
-    'mes_04' :'4',
-    'mes_05' :'5', 
-    'mes_06' :'6', 
-    'mes_07' :'7', 
-    'mes_08' :'8', 
-    'mes_09' :'9', 
-    'mes_10' :'10', 
-    'mes_11' :'11',
-    'mes_12':'12'}
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        k = 1
-        df = {}
-        for i in range(3,3 +1):
-            path, dirs, files = next(os.walk("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
-            file_count = len(files)
-
-
-            for j in range(1, 1 + 1 ):
-                file_dir = "../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
-
-                df = pd.read_csv(file_dir)
+        df = pd.read_csv("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/03 SERVICIOS BRINDADOS/TABLA_03_N01.csv")
 
         df = pd.melt(df, id_vars=['cite','anio','subcategoria'], value_vars=['mes_01','mes_02', 'mes_03', 'mes_04',
                 'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
                 'mes_12'])
+                
         df['subcategoria'] = df['subcategoria'].str.strip()
         subcategory_list = list(df["subcategoria"].unique())
         subcategory_map = {k:v for (k,v) in zip(sorted(subcategory_list), list(range(1, len(subcategory_list) + 1)))}
@@ -59,16 +28,17 @@ class TransformStep(PipelineStep):
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
 
-        df = df.rename(columns={'variable':'month_id','anio':'year','subcategoria':'subcategory','value': "empresas"})
+        df = df.rename(columns={'variable':'month_id','value': "servicios"})
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
-        df['time'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
-        df['time'] = df['time'].astype(int)
+        df['time'] = df['anio'].astype(str) + df['month_id'].str.zfill(2)
         
-        df['cite_id'] = df['cite'].map(cite_map).astype(int)
-        df['subcategoria_id'] = df['subcategory'].map(subcategory_map).astype(int)
+        df['cite_id'] = df['cite'].map(cite_map)
+        df['subcategoria_id'] = df['subcategoria'].map(subcategory_map)
 
-        df = df[['cite_id', 'subcategoria_id', 'time', 'empresas']]
-        df['empresas'] =  df['empresas'].astype(str)
+        df[['cite_id', 'subcategoria_id', 'time']] = df[['cite_id', 'subcategoria_id', 'time']].astype(int)
+        df['servicios'] =  df['servicios'].astype(float)
+        
+        df = df[['cite_id', 'subcategoria_id', 'time', 'servicios']]
 
         
         return df
@@ -89,13 +59,13 @@ class CiteSubcategoryPipeline(EasyPipeline):
             'cite_id':                'UInt8',
             'subcategoria_id':        'UInt8',
             'time':                   'UInt32',
-            'empresas':               'Float32',
+            'servicios':               'Float32',
          }
 
         transform_step = TransformStep()  
         load_step = LoadStep(
-          'itp_cite_clientes_subcategorias', connector=db_connector, if_exists='drop',
-          pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
+          'itp_cite_servicios_subcategorias', connector=db_connector, if_exists='drop',
+          pk=['cite_id'], dtype=dtypes, nullable_list=['servicios'])
 
         if params.get("ingest")==True:
             steps = [transform_step, load_step]

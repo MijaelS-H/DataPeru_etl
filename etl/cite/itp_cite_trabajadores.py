@@ -10,36 +10,18 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 
-CARPETAS_DICT = {
-    1: "01 INFORMACIÓN INSTITUCIONAL",
-    2: "02 CLIENTES ATENDIDOS",
-    3: "03 SERVICIOS BRINDADOS",
-    4: "04 PROYECTOS DE INVERSIÓN PÚBLICA",
-    5: "05 EJECUCIÓN PRESUPUESTAL",
-    6: "06 RECURSOS HUMANOS",
-    7: "07 PARTIDAS ARANCELARIAS",
-}
+
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        k = 1
-        df = {}
-        for i in range(6,6 +1):
-            path, dirs, files = next(os.walk("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
-            file_count = len(files)
-
-
-            for j in range(1, 1 + 1 ):
-                file_dir = "../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
-
-                df = pd.read_csv(file_dir)
-                k = k + 1
+        df = pd.read_csv("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/06 RECURSOS HUMANOS/TABLA_06_N01.csv")
         
         df = pd.melt(df, id_vars=['cite','anio','modalidad'], value_vars=['directivo', 'tecnico', 'operativo', 'administrativo',
                'practicante'])
         df = df.rename(columns={'variable':'tipo_trabajador','value':'cantidad'})
         df["tipo_trabajador"] = df["tipo_trabajador"].str.capitalize()
+        
         ## cite dim
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
@@ -52,15 +34,15 @@ class TransformStep(PipelineStep):
         tipo_trabajador_list = list(df["tipo_trabajador"].unique())
         tipo_trabajador_map = {k:v for (k,v) in zip(sorted(tipo_trabajador_list), list(range(1, len(tipo_trabajador_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map).astype(int)
-        df['modalidad_id'] = df['modalidad'].map(modalidad_map).astype(int)
-        df['tipo_trabajador_id'] = df['tipo_trabajador'].map(tipo_trabajador_map).astype(int)
-        df['anio'] = df['anio'].astype(int)
+        df['cite_id'] = df['cite'].map(cite_map)
+        df['modalidad_id'] = df['modalidad'].map(modalidad_map)
+        df['tipo_trabajador_id'] = df['tipo_trabajador'].map(tipo_trabajador_map)
+        
+        df[['cite_id', 'anio', 'modalidad_id','tipo_trabajador_id']] = df[['cite_id', 'anio', 'modalidad_id','tipo_trabajador_id']].astype(int)
         df['cantidad'] = df['cantidad'].astype(float)
+        
         df = df[['cite_id', 'anio', 'modalidad_id','tipo_trabajador_id','cantidad']]
-
-
-
+        
         return df
 
 class CiteContratosPipeline(EasyPipeline):

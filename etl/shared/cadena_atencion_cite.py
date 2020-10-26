@@ -24,16 +24,8 @@ class TransformStep(PipelineStep):
         cadena_atencion_map = {k:v for (k,v) in zip(sorted(cadena_atencion_list), list(range(1, len(cadena_atencion_list) +1)))}
         df['cadena_atencion_id'] = df["cadena_atencion"].map(cadena_atencion_map).astype(int)
 
-        cadena_pip_list = list(df["cadena_pip"].unique())
-        cadena_pip_map = {k:v for (k,v) in zip(sorted(cadena_pip_list), list(range(1, len(cadena_pip_list) +1)))}
-        df['cadena_pip_id'] = df["cadena_pip"].map(cadena_pip_map).astype(int)
 
-        cadena_resolucion_list = list(df["cadena_resolucion"].unique())
-        cadena_resolucion_map = {k:v for (k,v) in zip(sorted(cadena_resolucion_list), list(range(1, len(cadena_resolucion_list) +1)))}
-        df['cadena_resolucion_id'] = df["cadena_resolucion"].map(cadena_resolucion_map).astype(int)
-
-
-        df = df[['cadena_atencion','cadena_atencion_id', 'cadena_pip', 'cadena_pip_id', 'cadena_resolucion', 'cadena_resolucion_id']]
+        df = df[['cadena_atencion','cadena_atencion_id']]
 
         return df
 
@@ -47,16 +39,11 @@ class CiteCadenaAtencionPipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtypes = {
             'cadena_atencion':                 'String',  
             'cadena_atencion_id':              'UInt8',
-            'cadena_pip' :                     'String',
-            'cadena_pip_id':                   'UInt8',  
-            'cadena_resolucion':               'String',  
-            'cadena_resolucion_id':            'UInt8',  
-
          }
 
         transform_step = TransformStep()  

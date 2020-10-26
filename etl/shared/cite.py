@@ -11,15 +11,8 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 
-CARPETAS_DICT = {
-    1: "01 INFORMACIÓN INSTITUCIONAL",
-    2: "02 CLIENTES ATENDIDOS",
-    3: "03 SERVICIOS BRINDADOS",
-    4: "04 PROYECTOS DE INVERSIÓN PÚBLICA",
-    5: "05 EJECUCIÓN PRESUPUESTAL",
-    6: "06 RECURSOS HUMANOS",
-    7: "07 PARTIDAS ARANCELARIAS",
-}
+TIPO_CITE_DICT = {'Centro de Innovación Productiva y Transferencia Tecnológica (CITE)' : 'CITE',
+                  'Unidad Técnica (UT)': 'UT'}
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -27,27 +20,72 @@ class TransformStep(PipelineStep):
         k = 1
         df = {}
         for i in range(1,1 +1):
-            path, dirs, files = next(os.walk("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/{}/".format(CARPETAS_DICT[i])))
+            path, dirs, files = next(os.walk("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/01 INFORMACIÓN INSTITUCIONAL/"))
             file_count = len(files)
     
-            for j in [1]:
-                file_dir = "../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/01 INFORMACIÓN INSTITUCIONAL/TABLA_01_N01.csv".format(CARPETAS_DICT[i],i,j)
-
-                df = pd.read_csv(file_dir)
+            for j in range(1, file_count + 1 ):
+                file_dir = "../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/01 INFORMACIÓN INSTITUCIONAL/TABLA_0{}_N0{}.csv".format(i,j)
+                df[k] = pd.read_csv(file_dir)
                 k = k + 1
 
-        df['cite_id'] = df['cite'].index + 1
+        df_list = [df[i] for i in range(1, file_count + 1)]
+        df = reduce(lambda df1,df2: pd.merge(df1,df2,on=['cite'],how='outer'), df_list)
 
+        df = df[['cite', 'tipo', 'director', 'coordinador_ut', 'lista_miembros','ambito',
+                  'ubigeo', 'direccion', 'latitud', 'longitud', 'descriptivo']]
+
+        df['tipo'] = df['tipo'].replace(TIPO_CITE_DICT)
+        df['coordinador_ut'] = df['coordinador_ut'].fillna("No disponible")
+        df['descriptivo'] = df['descriptivo'].str.replace("UT",'')
+        df['descriptivo'] = df['descriptivo'].str.replace('El ','')
+        df['descriptivo'] = df['descriptivo'].str.replace('CITE','')
+        df['descriptivo'] = df['descriptivo'].str.replace('La ','')
+        df['descriptivo'] = df['descriptivo'].str.lstrip()
+        df['descriptivo'] = df['descriptivo'].str.capitalize()
+    
         df['cite'] = df['cite'].str.replace("CITE","")
+        df['cite_slug'] = df['cite'].str.replace("CITE","")
+
         df['cite'] = df['cite'].str.replace("UT","")
         df['cite'] = df['cite'].str.capitalize()
-        df['cite_name'] = df['cite'].apply(unidecode)
+        df['cite'] = df['cite'].apply(unidecode)
+        df['cite_slug'] = df['cite_slug'].str.replace("UT","")
+        df['cite_slug'] = df['cite_slug'].str.lower()
+        df['cite_slug'] = df['cite_slug'].apply(unidecode)
+        df['cite_slug'] = df['cite_slug'].str.replace(" ", "_")
 
-        df = df[['cite_id','cite_name']].copy()
+        df['director'] = df['director'].str.title()
+        df['lista_miembros'] = df['lista_miembros'].str.replace('\n•',',')
+        df['lista_miembros'] = df['lista_miembros'].str.replace('• ','')
+
+        
+        df.rename(columns={'ubigeo' : 'district_id'}, inplace = True)
 
         return df
 
-class CiteDimPipeline(EasyPipeline):
+class ReplaceStep(PipelineStep):
+    def run_step(self, prev, params):
+
+        df = prev
+
+        cite_dim = dict(zip(df['cite'].dropna().unique(), range(1, len(df['cite'].dropna().unique()) + 1 )))
+        df['cite_id'] = df['cite'].replace(cite_dim)
+        
+        return df
+
+class FormatStep(PipelineStep):
+    def run_step(self, prev, params):
+       
+        df = prev
+
+        df['cite_id'] = df['cite_id'].astype(int)
+
+        df['district_id'] = df['district_id'].astype(str).str.zfill(6) 
+        
+        print(df.columns)
+        return df
+
+class CiteInfoPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return [
@@ -60,25 +98,38 @@ class CiteDimPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtypes = {
-            'cite_id':               'UInt8',
-            'cite_name':              'String',
+            'cite_id':               'UInt8',  
+            'tipo':                  'String',
+            'director':              'String',
+            'coordinador_ut':        'String',
+            'lista_miembros':        'String',
+            'ambito':                'String',          
+            'district_id' :          'String',
+            'direccion':             'String',  
+            'latitud':               'String',  
+            'longitud':              'String',  
+            'descriptivo':           'String',
+            'cite_slug':             'String',
          }
 
-        transform_step = TransformStep()  
+        transform_step = TransformStep()
+        replace_step = ReplaceStep()
+        format_step = FormatStep()
+
         load_step = LoadStep(
           'dim_shared_cite', connector=db_connector, if_exists='drop',
           pk=['cite_id'], dtype=dtypes, nullable_list=[])
 
         if params.get("ingest")==True:
-            steps = [transform_step, load_step]
+            steps = [transform_step, replace_step, format_step,  load_step]
         else:
-            steps = [transform_step]
+            steps = [transform_step, replace_step, format_step]
 
         return steps
 
 if __name__ == "__main__":
-    pp = CiteDimPipeline()
-    pp.run(
+    cite_info_pipeline = CiteInfoPipeline()
+    cite_info_pipeline.run(
         {
             "output-db": "clickhouse-local",
             "ingest": True
