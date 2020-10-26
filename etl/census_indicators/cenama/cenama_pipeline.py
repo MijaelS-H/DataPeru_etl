@@ -6,13 +6,21 @@ from bamboo_lib.steps import LoadStep
 from static import COLUMNS_RENAME, LIST_DICT, DTYPE, LIST_NULL, DICT_GROUPBY
 from indicator import INDICATOR_MARKET, INDICATOR_GEO, INDICATOR_EXCEPTION
 
+def convert_string(column):
+    new_data = pd.DataFrame()
+    new_data[['number', 'decimal']] = column.str.split(',', expand=True)
+    new_data['decimal'] = new_data['decimal'].fillna('0')
+    new_data['total'] = new_data['number'] + '.' + new_data['decimal']
+    return new_data['total']
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read modules
         list_name = [
             '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/03 MÓDULO 1118_ Características del Mercado/Capítulo_IV_NACIONAL.dta',
             '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/04 MÓDULO 1119_ Infraestructura, Instalaciones, Equipamiento y Otros/Capítulo_V_NACIONAL.sav',
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/05 MÓDULO 1120_ Gestión Administrativa y Financiera/Capítulo_VI_NACIONAL.sav'
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/05 MÓDULO 1120_ Gestión Administrativa y Financiera/Capítulo_VI_NACIONAL.sav',
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/01 MÓDULO 1116_ Localización del Mercado/Capítulo_I_NACIONAL.sav',
             ]
         
         df = [pd.read_spss(x) if x != list_name[0] else pd.read_stata(x) for x in list_name]
@@ -37,6 +45,11 @@ class TransformStep(PipelineStep):
                        'p59a_1', 'p59a_2', 'p59a_3', 'p59a_4', 'p59a_5', 'p59a_6', 'p59a_7', 'p59a_9', 'p60_1', 'p60_2',  'p60_3', 'p60_4', 'p60_5', 'p60_6']]
         
         df[2]['count'] = 1
+
+        df[3] = df[3][['id', 'gps_lon', 'gps_lat']]
+
+        for col in ['gps_lon',  'gps_lat']:
+            df[3][col] = convert_string(df[3][col]).astype(str)
 
         #merge modules
         df_merge = df[0].merge(df[1], on = ['id', 'ccdd', 'ccpp', 'ccdi'])
@@ -100,7 +113,11 @@ class TransformStep(PipelineStep):
         
         df_final['year'] = 2016
         df_final[['district_id', 'province_id', 'department_id', 'nation_id', 'market_id']] = df_final[['district_id', 'province_id', 'department_id', 'nation_id', 'market_id']].fillna(0).astype(str)
-        
+
+        #add latitude and longitude 
+        df_final = df_final.merge(df[3], left_on='market_id', right_on ='id', how='left')
+        df_final.drop(columns=['id'], inplace=True)
+    
         return df_final
 
 class CENAMAPipeline(EasyPipeline):

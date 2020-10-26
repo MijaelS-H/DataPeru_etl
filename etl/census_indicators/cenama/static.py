@@ -23,6 +23,8 @@ LIST_DICT = [
 ]
 
 DTYPE = {
+    'gps_lon':          'String',  
+    'gps_lat':          'String',
     'nation_id':        'String',
     'department_id':    'String',
     'province_id':      'String',
@@ -272,7 +274,7 @@ LIST_NULL = ['CENAMA_4', 'CENAMA_8', 'CENAMA_9', 'CENAMA_10', 'CENAMA_11', 'CENA
              'CENAMA_187', 'CENAMA_188', 'CENAMA_189', 'CENAMA_190', 'CENAMA_191', 'CENAMA_192', 'CENAMA_193', 'CENAMA_194', 'CENAMA_195', 'CENAMA_196', 
              'CENAMA_197', 'CENAMA_198', 'CENAMA_199', 'CENAMA_200', 'CENAMA_201', 'CENAMA_202', 'CENAMA_203', 'CENAMA_204', 'CENAMA_205', 'CENAMA_206', 
              'CENAMA_207', 'CENAMA_208', 'CENAMA_209', 'CENAMA_210', 'CENAMA_211', 'CENAMA_212', 'CENAMA_213', 'CENAMA_214', 'CENAMA_215', 'CENAMA_216', 
-             'CENAMA_217', 'CENAMA_218', 'CENAMA_219', 'CENAMA_220', 'CENAMA_221', 'CENAMA_222', 'CENAMA_223'
+             'CENAMA_217', 'CENAMA_218', 'CENAMA_219', 'CENAMA_220', 'CENAMA_221', 'CENAMA_222', 'CENAMA_223', 'gps_lon',  'gps_lat'
 ]
 
 DICT_GROUPBY = {
