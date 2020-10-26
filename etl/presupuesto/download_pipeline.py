@@ -10,9 +10,9 @@ os.makedirs('{}'.format(DATA_FOLDER), exist_ok=True)
 
 API_KEY = os.environ.get('API_KEY')
 
-queries = {'{}/gobierno_nacional.csv'.format(DATA_FOLDER) : 'http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/COMPA-DEL-GOBIE-NACIO-2016/data.json/?auth_key={}&limit=50'.format(API_KEY),
-           '{}/gobierno_regional.csv'.format(DATA_FOLDER): 'http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/COMPA-DE-GASTO-DEL-GOBIE/data.json/?auth_key={}&limit=50'.format(API_KEY),
-           '{}/gobierno_local.csv'.format(DATA_FOLDER): 'http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/COMPA-DEL-GOBIE-NACIO-53583/data.json/?auth_key={}&limit=50'.format(API_KEY)}
+queries = {'{}/gasto_gobierno_nacional_GN.csv'.format(DATA_FOLDER) : 'http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/COMPA-DEL-GOBIE-NACIO-2016/data.json/?auth_key={}&limit=50'.format(API_KEY),
+           '{}/gasto_gobierno_regional_GR.csv'.format(DATA_FOLDER): 'http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/COMPA-DE-GASTO-DEL-GOBIE/data.json/?auth_key={}&limit=50'.format(API_KEY),
+           '{}/gasto_gobierno_local_GL.csv'.format(DATA_FOLDER): 'http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/COMPA-DEL-GOBIE-NACIO-53583/data.json/?auth_key={}&limit=50'.format(API_KEY)}
 
 for file_name, query in queries.items():
     print('current:', file_name)
@@ -41,6 +41,7 @@ for ele in df.to_dict(orient='records'):
         print('ERROR:', ele['source'], ele['url'])
     time.sleep(5)
 
+# presupuesto ingresos
 urls = ['https://datosabiertos.mef.gob.pe/datasets/185602-comparacion-de-ingreso-del-gobierno-nacional-2014-2020.download',
        'https://datosabiertos.mef.gob.pe/datasets/185603-comparacion-de-ingreso-de-los-gobiernos-regionales-2014-2020.download',
        'https://datosabiertos.mef.gob.pe/datasets/185604-comparacion-de-ingreso-de-los-gobiernos-locales-2014-2020.download']

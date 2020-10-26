@@ -18,7 +18,10 @@ BASE = {
            'funcion', 'division_funcional', 'departamento_meta'],
     'GL': ['ubigeo', 'tipo_gobierno', 'ejecutora', 
            'sec_ejec', 'programa_ppto', 'producto_proyecto', 
-           'funcion', 'division_funcional', 'departamento_meta']
+           'funcion', 'division_funcional', 'departamento_meta'],
+    '185602': ['nivel_gobierno', 'sector', 'pliego', 'ubigeo', 'fuente_financiamiento', 'rubro'],
+    '185603': ['nivel_gobierno', 'pliego', 'fuente_financ', 'rubro'],
+    '185604': ['nivel_gobierno', 'fuente_financiamiento', 'rubro', 'ubigeo']
 }
 
 DIMENSIONS = {
@@ -79,7 +82,7 @@ DTYPE = {
         'pim':                  'Float32',
         'devengado':            'Float32',
         'year':                 'UInt16'
-        },
+    },
     'GL': {
         'tipo_gobierno':        'UInt8',
         'ubigeo':               'String',
@@ -94,5 +97,41 @@ DTYPE = {
         'pim':                  'Float32',
         'devengado':            'Float32',
         'year':                 'UInt16'
-        }
+    },
+    '185602': {
+        'nivel_gobierno':       'UInt8',
+        'sector':               'UInt8',
+        'pliego':               'UInt16',
+        'rubro':                'UInt8',
+        'ubigeo':               'String',
+        'fuente_financiamiento':'UInt8',
+        'pia':                  'Float32',
+        'pim':                  'Float32',
+        'monto_recaudado':      'Float32',
+        'year':                 'UInt16'
+    },
+    '185603': {
+        'nivel_gobierno':       'UInt8',
+        'sector':               'UInt8',
+        'pliego':               'UInt16',
+        'rubro':                'UInt8',
+        'ubigeo':               'String',
+        'fuente_financiamiento':'UInt8',
+        'pia':                  'Float32',
+        'pim':                  'Float32',
+        'monto_recaudado':      'Float32',
+        'year':                 'UInt16'
+    },
+    '185604': {
+        'nivel_gobierno':       'UInt8',
+        'sector':               'UInt8',
+        'pliego':               'UInt16',
+        'rubro':                'UInt8',
+        'ubigeo':               'String',
+        'fuente_financiamiento':'UInt8',
+        'pia':                  'Float32',
+        'pim':                  'Float32',
+        'monto_recaudado':      'Float32',
+        'year':                 'UInt16'
+    }
 }

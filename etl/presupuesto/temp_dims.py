@@ -51,3 +51,33 @@ for PREFIX in ['GN', 'GR', 'GL']:
 # exceptions
 process_exceptions('pliego', ['GN', 'GR'], folder=FOLDER)
 process_exceptions('ejecutora', ['GN', 'GR', 'GL'], folder=FOLDER)
+
+
+# dim gastos 2
+df = pd.DataFrame()
+for PREFIX in ['GN', 'GR', 'GL']:
+    data = glob.glob('{}/gasto_gobierno_*_{}.csv'.format(DATA_FOLDER, PREFIX))
+    for file in data:
+        print(file)
+        temp = pd.read_csv(file)
+        temp.columns = temp.columns.str.lower()
+        temp = temp[BASE[PREFIX]].copy()
+        df = df.append(temp, sort=False)
+
+for col in ['pliego', 'programa_ppto', 
+            'producto_proyecto', 'funcion', 'division_funcional']:
+    temp = df.copy()
+    temp.dropna(subset=[col], inplace=True)
+    temp[col] = temp[col].str.strip()
+    result = get_dimension(temp, col)
+    result.to_csv('{}/dim_gasto_gobierno_{}.csv'.format(FOLDER, col), index=False)
+
+col = 'ejecutora'
+df[col] = df[col].str.strip()
+df['name'] = df[col]
+temp = df[['name', col]].copy()
+temp.drop_duplicates(inplace=True)
+temp['name'] = temp['name'].str.split('. ', n=1, expand=True)[1].str.strip().str.title() \
+    .str.replace('ã', 'ñ').str.replace('ã', 'ó').str.replace('ã', 'á').str.title()
+temp['id'] = range(1, len(temp['name']) + 1)
+temp.to_csv('{}/dim_gasto_gobierno_{}.csv'.format(FOLDER, col), index=False)
