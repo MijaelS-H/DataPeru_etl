@@ -1,17 +1,60 @@
-# DataPerú ETL
+# Plataforma de datos ITP: ETL
 
-## Setup
+## Descripción
 
-### 1. Clone the repo
+El presente repositorio tiene como objetivo recopilar el proceso de extracción, transformación y carga de datos (ETL) desarrollado durante las etapas de construcción de API.
+Los componentes de el presente repositorio corresponden, en su mayoría, a pipelines de ingestión, los cuales corresponden a estructuras de código que permiten la replicación de la ingesta de datos en múltiples entornos de desarrollo y producción.
 
-```bash
+## Estructura del repositorio
+
+El repositorio actual se encuentra estructurado de la siguiente forma:
+
+### etl/
+
+Recopilación de pipelines de ingestión de múltiples bases de datos (ej: MINAGRI, MEF, ITP, entre otros). Su estructura responde a carpetas de archivos organizados según fuentes de datos o temáticas similares (ej: Indicadores de Censos o Encuestas). Cada archivo `.py` existente en el directorio `etl/` corresponde a un pipeline de ingestión, un set de variables necesarias para la ejecución de un pipeline de ingestión, o bien, un paso necesario para la ingestión de datos. Su estructura es variable y responde a la estructura de cada set de datos procesado por ellos.
+De forma adicional, es posible encontrar el archivo `conns.yaml`, el cual determina la dirección de la base de datos asociada hacia la cual se realizará el proceso de ingestión de datos.
+
+### init.sh
+
+Archivo de iniciación de repositorio. Su objetivo es facilitar la creación de un ambiente de trabajo con todas las dependencias necesarias para la correcta ejecución de cada pipeline generado.
+
+### requirements.txt
+
+Archivo de requisitos necesarios para la ejecución de múltiples comandos intermedios. Se recomienda, para su utilización, la utilización del archivo `init.sh`, o bien, la creación de un entorno virtual para evitar el conflicto de versiones preexistentes de los requisitos especificados. Un ejemplo de creación de entorno vitual es realizado mediante los siguientes comandos:
+
+```
+sudo apt-get install python3-pip
+sudo pip3 install virtualenv
+
+virtualenv -p python3.7 venv
+source venv/bin/activate
+```
+
+Una vez generado el entorno virtual, es necesaria la instalacción de las dependencias requeridas:
+
+```
+pip install -r requirements.txt
+```
+
+## Configuración
+
+Para realizar el proceso de ingestión de datos es necesario seguir los siguientes pasos:
+
+### 1. Clonar el repositorio
+
+Realizar un clon del repositorio en un directorio local que permita el desarrollo, pruebas e ingestión de datos en un servidor de desarrollo o producción. Lo anterior es posible mediante la ejecución de:
+
+```
+bash
 git clone https://github.com/dataperu/dataperu-etl.git
 cd dataperu-etl
 ```
 
-### 2. Set up a local Python environment
+En caso de ser un setup local, es necesaria la instalación de [git](https://git-scm.com/).
 
-There are many ways to do this, but here's one:
+### 2. Configurar un entorno virtual
+
+Para evitar conflictos entre versiones de dependencias instaladas en la máquina o entorno en el cual se llevará a cabo el proceso de ingestión, se recomienda la creación de un entorno virtual que permita una instalación de dependencias requeridas sin afectar las ya existentes en el entorno global. Lo anterior es posible de realizar mediante la ejecución del archivo `init.sh` detallado en la directorio raíz del presente repositorio, o bien mediante la ejecución de:
 
 ```bash
 sudo apt-get install python3-pip
@@ -21,133 +64,22 @@ virtualenv -p python3.7 venv
 source venv/bin/activate
 ```
 
-### 3. Install the project dependencies
+Una vez generado el entorno virtual, es necesaria la instalacción de las dependencias requeridas:
 
-```bash
+```
 pip install -r requirements.txt
 ```
 
-### 4. Add environment variables
+### 3. Agregar las variables de entorno
 
-Please contact admin to set up env vars.
+Un set de variables de entorno son requeridas para el desarrollo del proyecto. Por la seguridad de los datos, estas variables no se encuentran disponibles en el presente repositorio.
+Favor contactar al administrador del sitio para obtener acceso a las variables requeridas.
 
-### 5. Run a pipeline to test your setup
+### 4. Descargar dump de datos
 
-A testing pipeline will be upload to test your setup.
+Un set de datos son requeridos para el desarrollo del proyecto. Por su seguridad, estos no se encuentran disponibles en el presente repositorio.
+Favor contactar al administrador del sitio para obtener acceso a los datos requeridos.
 
-## Data Quality Assurance
+### 5. Ejecutar un pipeline de ingestión de prueba para probar la configuración
 
-After making changes to a fact table, take the time to validate that there are no issues with the new data added.
-
-The simplest way to start is by running the Tesseract diagnosis on the cube that has been changed like [this](https://api.oec.world/tesseract/diagnosis.jsonrecords?cube=trade_n_phl_m_hs). If you get the "Success" message, you are all done. Otherwise, check the list of errors and work on fixing them. These will often involve changes to either the fact table itself or the dimension tables that are used by this cube. Here's an example of an error:
-
-```json
-"error": [
-    {
-        "type":"MissingDimensionIDs",
-        "message":"The following IDs for [Transport Mode].[Transport Mode].[Transport Mode] are not present in its dimension table: 0, 3."
-    },
-    {
-        "type":"MissingDimensionIDs",
-        "message":"The following IDs for [Subnat Geography].[Subnat Geography].[Subnat Geography] are not present in its dimension table: 5106, 5108, 5505, 5507."
-    }
-]
-```
-
-Next, take the time to perform a few queries using the explorer to make sure that the new numbers look good. For instance, one common query for cubes that have been updated with new data is to check that the totals for the new time period look roughly similar to the previous time periods. Any large difference here should lead to a closer inspection of the ingestion process. Other queries that are helpful:
-
-- Comparing the breakdown of top products with what is live on the OEC or other sources. For example, if you're working on a subnational cube you can compare its top exports with the top exports listed on the OEC from the BACI dataset.
-- Similarly, compare the top trading partners.
-- Comparing the export and import totals for subnational cubes with the totals from BACI. Note that you might need to perform a currency conversion for this comparison as some of the subnational cubes are not in USD.
-- Making sure that the ratio of exports to imports to a given country makes sense.
-
-## General Comments
-
-- Recent subnational data is often provisional and may change. For this reason, for countries whose data is easy to download, it's a good idea to download not just the latest month but also a few months before then to ensure we have more accurate data.
-- For finding new subnational data to download, a good Google search query is "brazil foreign trade statistics", for example. Make sure to explore a few different sources before selecting one.
-- Take a look at the README file for each subnational country for download instructions or important tips and notes.
-- For ease of dealing with the large number of tables in the OEC, ALWAYS follow the naming conventions across tables. For example, in the fact table, always name the trade flow column `trade_flow_id` for consistency across tables. Check other pipelines if you're unsure how to name a column. Chances are we have included that type of data before. This makes it easier to manage all the tables and know what's in them.
-- Before removing a table from the database, make sure that the table is not used anywhere in the `schema.xml` file.
-
-## Naming Convention for Tables
-
-When adding a new pipeline script, please use the following naming convention (for more examples, look at the existing tables in the database):
-
-### Fact tables
-
-*Format*: `<type>_<depth>_<identifier>_<frequency>_<classification>`
-
-*Params*:
-
-`type`: What the fact table represents (trade, tariffs, services, etc.).
-`depth`: `i` for international, `s` subnational data, `n` for national.
-`identifier`: For subnational data, this should be the `iso3` for the reporter country. For international data, this should be the organization reporting the data.
-`depth`: `a` for annual, `m` for monthly, `q` for quarterly, `d` for daily.
-`classification`: The classification used by this table.
-
-*Examples*:
-
-`trade_s_bra_a_hs` for annual Brazilian subnational trade data using the HS classification
-
-`trade_i_comtrade_m_hs` for monthly international Comtrade trade data using the HS classification
-
-### Dimension tables
-
-*Format*: `dim_<identifier>_<dimension>`
-
-*Params*:
-
-`identifier`: For subnational data, this should be the `iso3` id for the reporter country. For international data, this should say `shared`.
-
-`dimension`: The name of the dimension held in this table.
-
-*Examples*:
-
-`dim_shared_countries` for a shared countries table
-
-`dim_rus_regions` for a Russia dimension table representing national regions
-
-## Frequently Asked Questions
-
-- [How do I deal with non-standard file encodings?](#how-do-i-deal-with-non-standard-file-encodings)
-- [How do I import a helper function from a higher level library?](#how-do-i-import-a-helper-function-from-a-higher-level-library)
-- [How to name columns in table?](#how-to-name-columns-in-table)
-- [How to format country ID?](#how-to-format-country-id)
-- [How do I access a specific sheet of an excel file via bamboo?](#how-do-i-access-a-specific-sheet-of-an-excel-file-via-bamboo)
-- [How do I convert my product codes?](#how-do-i-convert-my-product-codes)
-
-### How do I deal with non-standard file encodings?
-
-Try using a util to detect encoding and then pass to pandas `read_csv()`
-
-```python
-df = pd.read_csv("Germany.csv", sep=";", encoding="latin-1", skiprows=1)
-```
-
-Reference: https://stackoverflow.com/questions/30462807/encoding-error-in-panda-read-csv
-
-### How do I import a helper function from a higher level library?
-
-If you followed the setup above for a local Python virtual environment, all you need to is add an extra environment variable:
-
-```bash
-export PYTHONPATH="/path/to/oec-etl"
-```
-
-### How to name columns in table?
-
-Lower case with underscores.
-
-### How to format country ID?
-
-3 letter codes and lowercase, along with the 2 letter continent code. Refer to the `oec_id` column in [this spreadsheet](https://docs.google.com/spreadsheets/d/12ZL5CXZQRjtetiAg3vkcz1bU6Kjz3xJ1Z3eUDVfBc_c/edit#gid=845551346).
-
-### How do I access a specific sheet of an excel file via Pandas?
-
-```python
-pd.read_excel("filename.xls", sheetname="sheet_name")
-```
-
-### How do I convert my product codes?
-
-For converting 6 digit HS id to OEC ID, check out the `hs6_converter` function in the `util.py` file.
+Con el objetivo de probar el setup del entorno virtual necesario, se recomienda ejecutar el comando `python etl/shared/actividad_economica_54.py` en el directorio raíz del repositorio clonado, el cual realizará la ingestión de una tabla de dimensiones liviana, el cual permitirá reconocer errores en la configuración del repositorio, o bien, asegurar que la configuración fue un éxito.
