@@ -32,7 +32,7 @@ class TransformStep(PipelineStep):
         df = reduce(lambda df1,df2: pd.merge(df1,df2,on=['cite'],how='outer'), df_list)
 
         df = df[['cite', 'tipo', 'director', 'coordinador_ut', 'lista_miembros','ambito',
-                  'ubigeo', 'direccion', 'latitud', 'longitud', 'descriptivo']]
+                  'ubigeo', 'direccion', 'latitud', 'longitud', 'cadena_atencion','cadena_pip','cadena_resolucion','descriptivo']]
 
         df['tipo'] = df['tipo'].replace(TIPO_CITE_DICT)
         df['coordinador_ut'] = df['coordinador_ut'].fillna("No disponible")
@@ -82,7 +82,7 @@ class FormatStep(PipelineStep):
 
         df['district_id'] = df['district_id'].astype(str).str.zfill(6) 
         
-        print(df.columns)
+        
         return df
 
 class CiteInfoPipeline(EasyPipeline):
@@ -109,6 +109,9 @@ class CiteInfoPipeline(EasyPipeline):
             'latitud':               'String',  
             'longitud':              'String',  
             'descriptivo':           'String',
+            'cadena_atencion':       'String',
+            'cadena_pip':            'String',
+            'cadena_resolucion':     'String',
             'cite_slug':             'String',
          }
 
