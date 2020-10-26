@@ -17,10 +17,7 @@ class ReadStep(PipelineStep):
 
         for year in range(2014, 2020 + 1):
             # read files
-            if params.get('table') == 'mef_presupuesto_gastos':
-                df = pd.read_csv(params.get('data'), encoding='latin-1')
-            else:
-                df = pd.read_csv(params.get('data'))
+            df = pd.read_csv(params.get('data'), encoding='latin-1')
             df.columns = df.columns.str.lower()
 
             df = df[base + ['pia_{}'.format(year), 'pim_{}'.format(year), 'devengado_{}'.format(year)]].copy()
@@ -39,16 +36,9 @@ class ReplaceStep(PipelineStep):
         # dimensions replace
         dims = {}
         for column in list(DIMENSIONS[params.get('prefix')].values()):
-            if params.get('table') == 'mef_presupuesto_gastos':
-                dims[column] = return_dimension(params.get('prefix'), column)
-                df[column] = df[column].map(dict(zip(dims[column][column], dims[column]['id'])))
-            else:
-                if column != 'sector':
-                    dims = pd.read_csv('{}/dim_gasto_gobierno_{}.csv'.format(FOLDER, column))
-                    df[column] = df[column].str.strip().str.replace('ã', 'ñ').str.replace('ã', 'ó').str.replace('ã', 'á')
-                    df[column] = df[column].map(dict(zip(dims[column], dims['id'])))
-                else:
-                    df[column] = 0
+            dims[column] = return_dimension(params.get('prefix'), column)
+            df[column] = df[column].map(dict(zip(dims[column][column], dims[column]['id'])))
+
 
         return df
 
@@ -112,11 +102,3 @@ if __name__ == "__main__":
                 'table': 'mef_presupuesto_gastos'
             })
 
-        data = glob.glob('{}/gasto_gobierno_*_{}.csv'.format(DATA_FOLDER, PREFIX))
-        for file in data:
-            print(file)
-            pp.run({
-                'data': file,
-                'prefix': PREFIX,
-                'table': 'mef_presupuesto_gastos_agregado'
-            })

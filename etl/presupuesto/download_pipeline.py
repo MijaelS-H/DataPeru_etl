@@ -8,21 +8,6 @@ from static import DATA_FOLDER
 
 os.makedirs('{}'.format(DATA_FOLDER), exist_ok=True)
 
-API_KEY = os.environ.get('API_KEY')
-
-queries = {'{}/gasto_gobierno_nacional_GN.csv'.format(DATA_FOLDER) : 'http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/COMPA-DEL-GOBIE-NACIO-2016/data.json/?auth_key={}&limit=50'.format(API_KEY),
-           '{}/gasto_gobierno_regional_GR.csv'.format(DATA_FOLDER): 'http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/COMPA-DE-GASTO-DEL-GOBIE/data.json/?auth_key={}&limit=50'.format(API_KEY),
-           '{}/gasto_gobierno_local_GL.csv'.format(DATA_FOLDER): 'http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/COMPA-DEL-GOBIE-NACIO-53583/data.json/?auth_key={}&limit=50'.format(API_KEY)}
-
-for file_name, query in queries.items():
-    print('current:', file_name)
-    r = requests.get(query)
-    data= r.json()['endpoint']
-    df = pd.read_csv(data, encoding='latin-1')
-    df.to_csv(file_name, index=False)
-    time.sleep(5)
-
-
 # presupuesto gastos
 df = pd.read_excel('https://docs.google.com/spreadsheets/d/e/2PACX-1vQTPqvMRgIPRjVJs4CGMbjbrQYtfxNgFRpTDtsUMNJXieR1VYd6cJ-O9TcGCsj2Vg/pub?output=xlsx')
 df.dropna(how='all', inplace=True)
