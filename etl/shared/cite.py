@@ -58,6 +58,7 @@ class TransformStep(PipelineStep):
         df['lista_miembros'] = df['lista_miembros'].str.replace('\n•',',')
         df['lista_miembros'] = df['lista_miembros'].str.replace('• ','')
 
+
         
         df.rename(columns={'ubigeo' : 'district_id'}, inplace = True)
 
@@ -79,10 +80,10 @@ class FormatStep(PipelineStep):
         df = prev
 
         df['cite_id'] = df['cite_id'].astype(int)
-
         df['district_id'] = df['district_id'].astype(str).str.zfill(6) 
-        
-        
+        df['latitud'] = df['latitud'].astype(str)
+        df['longitud'] = df['longitud'].astype(str)
+
         return df
 
 class CiteInfoPipeline(EasyPipeline):

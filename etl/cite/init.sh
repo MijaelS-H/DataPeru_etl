@@ -1,12 +1,6 @@
 # itp_cite_clientes_aspecto
 python itp_cite_clientes_aspecto.py
 
-# itp_cite_clientes_subcategorias
-python itp_cite_clientes_subcategorias.py
-
-# itp_cite_descriptivo
-python itp_cite_descriptivo.py
-
 # itp_cite_ejecucion_presupuestal
 python itp_cite_ejecucion_presupuestal.py
 
@@ -36,6 +30,12 @@ python itp_cite_partidas.py
 
 # itp_cite_pim
 python itp_cite_pim.py
+
+# itp_cite_servicios_subcategorias_agg
+python itp_cite_servicios_subcategorias_agg.py
+
+# itp_cite_servicios_subcategorias
+python itp_cite_servicios_subcategorias.py
 
 # itp_cite_trabajadores
 python itp_cite_trabajadores.py
