@@ -50,7 +50,7 @@ class CiteEmpresasPipeline(EasyPipeline):
         dtypes = {
 
             'empresa_id':            'UInt8',
-            'time':                  'UInt16',
+            'time':                  'UInt32',
             'empresas':              'Float32',
          }
 

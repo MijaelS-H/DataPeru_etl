@@ -34,7 +34,7 @@ class TransformStep(PipelineStep):
         df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].str[:-3].replace(',','', regex=True)
         df['cite_id'] = df['cite'].map(cite_map).astype(int)
         df['time'] = df['time_id'].astype(int)
-        df['ejecucion_presupuestal'].astype(float)
+        df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].astype(float)
         df = df[['cite_id', 'time', 'ejecucion_presupuestal']]
         
         return df
@@ -53,7 +53,7 @@ class CitePimPipeline(EasyPipeline):
 
         dtypes = {
             'cite_id':                             'UInt8',
-            'time':                                'UInt16',
+            'time':                                'UInt32',
             'ejecucion_presupuestal':              'Float32',
 
          }
