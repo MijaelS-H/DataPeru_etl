@@ -28,8 +28,8 @@ class TransformStep(PipelineStep):
         
         df['cite_id'] = df['cite'].map(cite_map).astype(int)
         df['componente_id'] = df['componente'].map(componente_map).astype(int)
-        df['inversion'] = df['inversion'].str[:-3].replace(',','', regex=True).astype(float)
-        df['ejecucion'] = df['ejecucion'].str[:-3].replace(',','', regex=True).astype(float)
+        df['inversion'] = df['inversion'].replace(',','', regex=True).astype(float)
+        df['ejecucion'] = df['ejecucion'].replace(',','', regex=True).astype(float)
  
 
         df = df[['cite_id', 'componente_id', 'inversion', 'ejecucion']]

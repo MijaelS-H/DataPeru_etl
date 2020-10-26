@@ -62,7 +62,7 @@ class CitePartidasPipeline(EasyPipeline):
         dtypes = {
             'cite_id':                'UInt8',
             'sector_id':              'UInt8',
-            'cad_prod_id':            'UInt16',
+            'cad_prod_id':            'UInt8',
             'hs6_id':                 'String',
             'tipo_exp_id':            'UInt8',
             'cantidad_cite':          'UInt8',
