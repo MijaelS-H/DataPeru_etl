@@ -31,7 +31,7 @@ class TransformStep(PipelineStep):
 
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
         df['time_id'] = df['anio'].astype(int).astype(str) + df['month_id'].str.zfill(2)
-        df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].str[:-3].replace(',','', regex=True)
+        df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].replace(',','', regex=True)
         df['cite_id'] = df['cite'].map(cite_map).astype(int)
         df['time'] = df['time_id'].astype(int)
         df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].astype(float)

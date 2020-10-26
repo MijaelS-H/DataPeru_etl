@@ -58,7 +58,7 @@ class CiteSubcategoryPipeline(EasyPipeline):
 
         transform_step = TransformStep()  
         load_step = LoadStep(
-          'itp_cite_servcios_subcategorias_agg', connector=db_connector, if_exists='drop',
+          'itp_cite_servicios_subcategorias_agg', connector=db_connector, if_exists='drop',
           pk=['subcategoria_id'], dtype=dtypes, nullable_list=['servicios'])
 
         if params.get("ingest")==True:
