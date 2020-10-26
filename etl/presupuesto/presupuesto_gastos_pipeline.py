@@ -41,7 +41,6 @@ class ReplaceStep(PipelineStep):
         for column in list(DIMENSIONS[params.get('prefix')].values()):
             if params.get('table') == 'mef_presupuesto_gastos':
                 dims[column] = return_dimension(params.get('prefix'), column)
-                df[column] = df[column].str.strip()
                 df[column] = df[column].map(dict(zip(dims[column][column], dims[column]['id'])))
             else:
                 if column != 'sector':
