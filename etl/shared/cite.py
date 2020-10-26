@@ -42,7 +42,10 @@ class TransformStep(PipelineStep):
         df['descriptivo'] = df['descriptivo'].str.replace('La ','')
         df['descriptivo'] = df['descriptivo'].str.lstrip()
         df['descriptivo'] = df['descriptivo'].str.capitalize()
-    
+
+        cite_list = list(df['cite'].unique())
+        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
+        df['cite_id'] = df['cite'].map(cite_map)
         df['cite'] = df['cite'].str.replace("CITE","")
         df['cite_slug'] = df['cite'].str.replace("CITE","")
 
@@ -64,15 +67,6 @@ class TransformStep(PipelineStep):
 
         return df
 
-class ReplaceStep(PipelineStep):
-    def run_step(self, prev, params):
-
-        df = prev
-
-        cite_dim = dict(zip(df['cite'].dropna().unique(), range(1, len(df['cite'].dropna().unique()) + 1 )))
-        df['cite_id'] = df['cite'].replace(cite_dim)
-        
-        return df
 
 class FormatStep(PipelineStep):
     def run_step(self, prev, params):
@@ -83,7 +77,6 @@ class FormatStep(PipelineStep):
         df['district_id'] = df['district_id'].astype(str).str.zfill(6) 
         df['latitud'] = df['latitud'].astype(str)
         df['longitud'] = df['longitud'].astype(str)
-
         return df
 
 class CiteInfoPipeline(EasyPipeline):
@@ -117,7 +110,6 @@ class CiteInfoPipeline(EasyPipeline):
          }
 
         transform_step = TransformStep()
-        replace_step = ReplaceStep()
         format_step = FormatStep()
 
         load_step = LoadStep(
@@ -125,9 +117,9 @@ class CiteInfoPipeline(EasyPipeline):
           pk=['cite_id'], dtype=dtypes, nullable_list=[])
 
         if params.get("ingest")==True:
-            steps = [transform_step, replace_step, format_step,  load_step]
+            steps = [transform_step, format_step,  load_step]
         else:
-            steps = [transform_step, replace_step, format_step]
+            steps = [transform_step, format_step]
 
         return steps
 
