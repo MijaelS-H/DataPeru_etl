@@ -25,7 +25,7 @@ class TransformStep(PipelineStep):
         
         df['anio'] = df['anio'].astype(int)
         
-        df['pim'] = df['pim'].str[:-3].replace(',','', regex=True).astype(float)
+        df['pim'] = df['pim'].replace(',','', regex=True).astype(float)
 
         df = df[['cite_id','anio','pim']]
         
