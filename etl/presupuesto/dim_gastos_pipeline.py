@@ -31,6 +31,8 @@ class TransformStep(PipelineStep):
 
         df[params.get('dimension')] = df[params.get('dimension')].astype(int)
 
+        df = df.drop_duplicates()
+
         return df
 
 class DimensionsPipeline(EasyPipeline):

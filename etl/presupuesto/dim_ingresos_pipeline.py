@@ -21,6 +21,8 @@ class TransformStep(PipelineStep):
         df.dropna(subset=[params.get('dimension')], inplace=True)
         df[params.get('dimension')] = df[params.get('dimension')].astype(int)
 
+        df = df.drop_duplicates()
+
         return df
 
 class DimensionsPipeline(EasyPipeline):
@@ -49,7 +51,7 @@ class DimensionsPipeline(EasyPipeline):
 if __name__ == "__main__":
     pp = DimensionsPipeline()
     for dim, dim_type in {'sector': 'UInt8', 
-                          'pliego': 'UInt8',
+                          'pliego': 'UInt16',
                           'rubro': 'UInt8',
                           'fuente_financiamiento': 'UInt8'
                           }.items():
