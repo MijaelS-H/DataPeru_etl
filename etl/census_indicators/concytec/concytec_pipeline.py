@@ -10,8 +10,8 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read modules
         list_name = [
-            '../../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap200.dta',
-            '../../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap300-400.dta'
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap200.dta',
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap300-400.dta'
         ]
 
         df = [pd.read_stata(x) for x in list_name]
@@ -81,14 +81,14 @@ class TransformStep(PipelineStep):
         
         df_final[['district_id', 'department_id', 'province_id', 'nation_id']] = df_final[['district_id', 'department_id', 'province_id', 'nation_id']].fillna(0).astype(str)
         df_final['year'] = 2016
-        print(df_final)
+        
         return df_final
 
 class CONCYTECPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         transform_step = TransformStep()
     
