@@ -43,6 +43,10 @@ class TransformStep(PipelineStep):
         df['nivel_gobierno'] = df['nivel_gobierno'].replace(TIPO_GOBIERNO)
         df['ubigeo'] = df['ubigeo'].astype(int).astype(str).str.zfill(6)
 
+        df['ubigeo'].replace({
+            '000000': '999999'
+        }, inplace=True)
+
         return df
 
 

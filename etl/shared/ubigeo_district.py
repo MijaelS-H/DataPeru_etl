@@ -10,6 +10,22 @@ from bamboo_lib.steps import LoadStep
 MISSING_UBIGEO = [
     {
         'department_name': 'Loreto',
+        'province_name': 'Maynas',
+        'district_name': 'Putumayo',
+        'department_id': '16',
+        'province_id': '1601',
+        'district_id': '160109'
+    },
+    {
+        'department_name': 'Loreto',
+        'province_name': 'Maynas',
+        'district_name': 'Teniente Manuel Clavero',
+        'department_id': '16',
+        'province_id': '1601',
+        'district_id': '160114'
+    },
+    {
+        'department_name': 'Loreto',
         'province_name': 'Alto Amazonas',
         'district_name': 'Barranca',
         'department_id': '16',
