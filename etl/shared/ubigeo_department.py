@@ -33,6 +33,15 @@ class TransformStep(PipelineStep):
 
         df.drop(columns=['PROVINCIA', 'PROVINCIA_id', 'DISTRITO', 'DISTRITO_id'], inplace=True)
 
+        df = df.append(
+            [{
+                'department_name': 'Exteriores',
+                'department_id': '98',
+                'nation_id': 'per',
+                'nation_name': 'Perú'
+            }]
+        )
+
         return df
 
 class UbigeoPipeline(EasyPipeline):
