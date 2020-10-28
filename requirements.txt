@@ -14,3 +14,4 @@ sklearn
 tables
 unidecode
 xlrd
+selenium
