@@ -1,5 +1,6 @@
 from bamboo_lib.models import PipelineStep
 from static import DISTRICT_REPLACE_4
+from bamboo_lib.helpers import query_to_df
 
 class ReplaceStep(PipelineStep):
     def run_step(self, prev, params):
@@ -8,6 +9,9 @@ class ReplaceStep(PipelineStep):
 
        # replace dims
         df['district_id'].replace(DISTRICT_REPLACE_4, inplace=True)
+        dim_geo_query = 'SELECT district_id, district_name FROM dim_shared_ubigeo_district'
+        dim_geo = query_to_df(self.connector, raw_query=dim_geo_query)
+        df['district_id'].replace(dict(zip(dim_geo['district_name'], dim_geo['district_id'])), inplace=True)
 
         # replace
         razon_social_dim = dict(zip(df['razon_social_id'].dropna().unique(), range(1, len(df['razon_social_id'].dropna().unique()) + 1 )))

@@ -52,7 +52,7 @@ class FormatStep(PipelineStep):
         'actividad_2_id','actividad_3_id','actividad_4_id']] = df[['actividad_1_id',	
         'actividad_2_id','actividad_3_id','actividad_4_id']].astype(int).astype(str)
 
-      
+        
         return df
 
 class CinePipeline(EasyPipeline):
@@ -69,7 +69,7 @@ class CinePipeline(EasyPipeline):
             'actividad_2_id':                 'UInt8',
             'actividad_3_id':                 'UInt8',
             'actividad_4_id':                 'UInt8',
-            'district_id':                    'UInt8',
+            'district_id':                    'String',
             'cantidad_org':                   'UInt8',
         }
 
