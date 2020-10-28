@@ -63,9 +63,9 @@ DTYPE = {
         'funcion':              'UInt8',
         'division_funcional':   'UInt8',
         'departamento_meta':    'String',
-        'pia':                  'Float32',
-        'pim':                  'Float32',
-        'devengado':            'Float32',
+        'pia':                  'Float64',
+        'pim':                  'Float64',
+        'devengado':            'Float64',
         'year':                 'UInt16'
     },
     'GR': {
@@ -78,9 +78,9 @@ DTYPE = {
         'funcion':              'UInt8',
         'division_funcional':   'UInt8',
         'departamento_meta':    'String',
-        'pia':                  'Float32',
-        'pim':                  'Float32',
-        'devengado':            'Float32',
+        'pia':                  'Float64',
+        'pim':                  'Float64',
+        'devengado':            'Float64',
         'year':                 'UInt16'
     },
     'GL': {
@@ -93,9 +93,9 @@ DTYPE = {
         'funcion':              'UInt8',
         'division_funcional':   'UInt8',
         'departamento_meta':    'String',
-        'pia':                  'Float32',
-        'pim':                  'Float32',
-        'devengado':            'Float32',
+        'pia':                  'Float64',
+        'pim':                  'Float64',
+        'devengado':            'Float64',
         'year':                 'UInt16'
     },
     '185602': {
@@ -105,9 +105,9 @@ DTYPE = {
         'rubro':                'UInt8',
         'ubigeo':               'String',
         'fuente_financiamiento':'UInt8',
-        'pia':                  'Float32',
-        'pim':                  'Float32',
-        'monto_recaudado':      'Float32',
+        'pia':                  'Float64',
+        'pim':                  'Float64',
+        'monto_recaudado':      'Float64',
         'year':                 'UInt16'
     },
     '185603': {
@@ -117,9 +117,9 @@ DTYPE = {
         'rubro':                'UInt8',
         'ubigeo':               'String',
         'fuente_financiamiento':'UInt8',
-        'pia':                  'Float32',
-        'pim':                  'Float32',
-        'monto_recaudado':      'Float32',
+        'pia':                  'Float64',
+        'pim':                  'Float64',
+        'monto_recaudado':      'Float64',
         'year':                 'UInt16'
     },
     '185604': {
@@ -129,9 +129,9 @@ DTYPE = {
         'rubro':                'UInt8',
         'ubigeo':               'String',
         'fuente_financiamiento':'UInt8',
-        'pia':                  'Float32',
-        'pim':                  'Float32',
-        'monto_recaudado':      'Float32',
+        'pia':                  'Float64',
+        'pim':                  'Float64',
+        'monto_recaudado':      'Float64',
         'year':                 'UInt16'
     }
 }
