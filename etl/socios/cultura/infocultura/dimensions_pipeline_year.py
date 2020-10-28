@@ -49,7 +49,7 @@ class DimAgentesPipeline(EasyPipeline):
 if __name__ == "__main__":
     pp = DimAgentesPipeline()
     for k, v in {'indicator_id':  'dim_shared_infocultura_indicators',
-                 'response_id':  'dim_shared_infocultura_indicators',
+                 'response_id':  'dim_shared_infocultura_responses',
                  }.items():
         pp.run({'pk': k,
                 'table_name': v})
