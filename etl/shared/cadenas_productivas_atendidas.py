@@ -41,7 +41,7 @@ class CitePartidasPipeline(EasyPipeline):
 
         dtypes = {
             'cadena_productiva':                'String',
-            'cadena_productiva_id':                     'UInt8',
+            'cadena_productiva_id':              'UInt8',
          }
 
         transform_step = TransformStep()  
