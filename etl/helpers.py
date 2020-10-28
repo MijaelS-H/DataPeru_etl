@@ -1,5 +1,6 @@
 
 import os
+import time
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.helpers import query_to_df
 
@@ -20,10 +21,10 @@ def clean_tables(table):
 
     return 0
 
-def downloads_done(folder_path):
-    while True:
-        for filename in os.listdir(folder_path):
-            if ".crdownload" in i:
-                time.sleep(10)
-                downloads_done()
+def wait_for_downloads(folder_path):
+    print("Waiting for downloads", end="")
+    while any([filename.endswith(".crdownload") for filename in 
+               os.listdir(folder_path)]):
+        time.sleep(2)
+        print(".", end="")
     print("done!")
