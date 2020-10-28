@@ -9,7 +9,7 @@ from static import DATA_FOLDER
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        data = glob.glob('{}/*ingreso*.csv'.format(DATA_FOLDER))
+        data = glob.glob('{}/ING_*.csv'.format(DATA_FOLDER))
         df = pd.DataFrame()
         for ele in data:
             temp = pd.read_csv(ele)

@@ -19,3 +19,11 @@ def clean_tables(table):
     print('Success! {}'.format(table))
 
     return 0
+
+def downloads_done(folder_path):
+    while True:
+        for filename in os.listdir(folder_path):
+            if ".crdownload" in i:
+                time.sleep(10)
+                downloads_done()
+    print("done!")

@@ -74,7 +74,7 @@ class PresupuestoPipeline(EasyPipeline):
 if __name__ == "__main__":
     pp = PresupuestoPipeline()
 
-    data = glob.glob('{}/*ingreso*.csv'.format(DATA_FOLDER))
+    data = glob.glob('{}/ING_*.csv'.format(DATA_FOLDER))
 
     for file in data:
         print(file)
