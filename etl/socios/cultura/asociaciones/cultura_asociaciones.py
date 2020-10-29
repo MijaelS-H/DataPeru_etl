@@ -9,7 +9,7 @@ from shared import ReplaceStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         
-        data = pd.ExcelFile("../../../../../datasets/20201018/05. Socios Estratégicos - Ministerio de Cultura (18-10-2020)/01. Puntos de Cultura_2020_DataPeru.xlsx")
+        data = pd.ExcelFile("../../../../datasets/20201018/05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)/01. Información Dirección de Industrias Culturales (18-10-2020)/01. Puntos de Cultura_2020_DataPeru.xlsx")
         sheet = data.sheet_names[1]
         df = pd.read_excel(data, data.sheet_names[1])
 
@@ -66,7 +66,7 @@ class AsociacionPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtype = {
             'codigo_asociacion':                    'String',

@@ -9,7 +9,7 @@ from shared import ReplaceStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         
-        data = pd.ExcelFile("../../../../../datasets/20201018/05. Socios Estratégicos - Ministerio de Cultura (18-10-2020)/04. Agentes del libro_2020_PNYPJ_DATAPERU.xlsx")
+        data = pd.ExcelFile("../../../../datasets/20201018/05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)/01. Información Dirección de Industrias Culturales (18-10-2020)/04. Agentes del libro_2020_PNYPJ_DATAPERU.xlsx")
         sheet = data.sheet_names[1]
         df = pd.read_excel(data, data.sheet_names[1])
 
@@ -49,7 +49,7 @@ class AgentesPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtype = {
             'razon_social_id':                  'UInt32',
@@ -67,7 +67,7 @@ class AgentesPipeline(EasyPipeline):
         load_step = LoadStep('cultura_agentes_libro', db_connector, if_exists='drop', 
                             pk=['district_id'], dtype=dtype)
 
-        return [transform_step, replace_step, format_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 if __name__ == "__main__":
     pp = AgentesPipeline()

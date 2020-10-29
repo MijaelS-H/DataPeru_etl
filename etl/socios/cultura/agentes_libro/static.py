@@ -9,8 +9,8 @@ DISTRICT_REPLACE_4 = {
     'Trujillo ': "Trujillo",
     'Villa el Salvador': "Villa El Salvador",
     'Huancayo ': "Huancayo",
-    'Sin información': "Otros",
-    'Talara': "Chiclayo ",
+    'Sin información': "Otro",
+    'Talara': "Chiclayo",
     'Callería': "Calleria",
     'Ancohuayllo Uripa': "Anco_Huallo"
 }
