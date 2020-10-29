@@ -25,6 +25,9 @@ python itp_cite_empresas_tipo.py
 # itp_cite_inversion
 python itp_cite_inversion.py
 
+# itp_cite_partidas_atendidas
+python itp_cite_partidas_atendidas.py
+
 # itp_cite_partidas
 python itp_cite_partidas.py
 

@@ -47,7 +47,7 @@ class CitePartidasPipeline(EasyPipeline):
         transform_step = TransformStep()  
         load_step = LoadStep(
           'dim_shared_cadenas_productivas_atendidas', connector=db_connector, if_exists='drop',
-          pk=['cite_id'], dtype=dtypes, nullable_list=[])
+          pk=['cadena_productiva_id'], dtype=dtypes, nullable_list=[])
 
         if params.get("ingest")==True:
             steps = [transform_step, load_step]
