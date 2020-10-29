@@ -60,7 +60,6 @@ class FormatStep(PipelineStep):
        'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',
        'cantidad_asociacion']].astype(int)
 
-
         return df
 
 class AsociacionPipeline(EasyPipeline):
@@ -77,6 +76,7 @@ class AsociacionPipeline(EasyPipeline):
             'actividad_n_2_id':                     'UInt8',
             'manifestacion_n_1_id':                 'UInt8',
             'manifestacion_n_2_id':                 'UInt8',
+            'manifestacion_n_3_id':                 'UInt8',
             'cantidad_asociacion':                  'UInt8',
         }
 

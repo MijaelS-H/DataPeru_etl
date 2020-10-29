@@ -14,7 +14,6 @@ class ProcessingStep(PipelineStep):
             df = pd.DataFrame.from_dict(estimulo_economico_dim, orient='index').reset_index()
             df.columns = ['estimulo_economico_name', 'estimulo_economico_id']
 
-            
             return df
 
         elif params.get('pk') == 'nombre_proyecto_id':
@@ -42,10 +41,15 @@ class DimEECPipeline(EasyPipeline):
 
         db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
 
-        dtype = {
-            params.get('pk'): 'UInt8'
-        }
-
+        if (k == 'estimulo_economico_id'):
+            dtype = {
+                params.get('pk'): 'UInt16'
+            }
+        else: 
+            dtype = {
+                params.get('pk'): 'UInt8'
+            }
+       
         transform_step = TransformStep()
         replace_step = ReplaceStep()
         processing_step = ProcessingStep()

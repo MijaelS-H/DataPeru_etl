@@ -55,7 +55,6 @@ class FormatStep(PipelineStep):
         'tipo_postulante_id',  'postulante_id', 'estado_id']] = df[['estimulo_economico_id',  'fase_cadena_valor_id',  'nombre_proyecto_id',  
         'tipo_postulante_id',  'postulante_id', 'estado_id']].astype(int).astype(str)
 
-     
         return df
 
 class EECPipeline(EasyPipeline):
@@ -73,7 +72,6 @@ class EECPipeline(EasyPipeline):
             'fase_cadena_valor_id':                 'UInt8',
             'estado_id':                            'UInt8',
             'cantidad_postulante':                  'UInt8',
-   
         }
 
         transform_step = TransformStep()

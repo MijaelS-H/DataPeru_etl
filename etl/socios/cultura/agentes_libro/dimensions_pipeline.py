@@ -38,7 +38,7 @@ class DimAgentesPipeline(EasyPipeline):
         replace_step = ReplaceStep()
         processing_step = ProcessingStep()
         load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
-                             pk=[params.get('pk')], dtype=dtype)
+                            pk=[params.get('pk')], dtype=dtype)
 
         return [transform_step, replace_step, processing_step]
 

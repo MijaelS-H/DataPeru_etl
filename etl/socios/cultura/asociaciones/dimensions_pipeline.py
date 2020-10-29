@@ -13,24 +13,24 @@ class ProcessingStep(PipelineStep):
         if params.get('pk') == 'codigo_asociacion':
             df = pd.DataFrame.from_dict(asociacion_dim, orient='index').reset_index()
             df.columns = ['asociacion_name', 'codigo_asociacion']
-         
+            
             return df
         elif (params.get('pk') == 'manifestacion_n_1_id'):
             df = pd.DataFrame.from_dict(manifestacion_n_1_dim, orient='index').reset_index()
             df.columns = ['manifestacion_n_1_name', 'manifestacion_n_1_id']
-        
+            
             return df
         
         elif (params.get('pk') == 'manifestacion_n_2_id'):
             df = pd.DataFrame.from_dict(manifestacion_n_2_dim, orient='index').reset_index()
             df.columns = ['manifestacion_n_2_name', 'manifestacion_n_2_id']
-      
+            
             return df
         
         elif (params.get('pk') == 'manifestacion_n_3_id'):
             df = pd.DataFrame.from_dict(manifestacion_n_3_dim, orient='index').reset_index()
             df.columns = ['manifestacion_n_3_name', 'manifestacion_n_3_id']
-      
+            
             return df
 
 class DimAsociacionesPipeline(EasyPipeline):
@@ -65,7 +65,7 @@ class DimAsociacionesPipeline(EasyPipeline):
 
 if __name__ == "__main__":
     pp = DimAsociacionesPipeline()
-    for k, v in {'codigo_asociacion':  'dim_asociaciones_culturales',
+    for k, v in {'codigo_asociacion':    'dim_asociaciones_culturales',
                 'manifestacion_n_1_id':  'dim_asociaciones_culturales_manifestacion_n_1',
                 'manifestacion_n_2_id':  'dim_asociaciones_culturales_manifestacion_n_2',
                 'manifestacion_n_3_id':  'dim_asociaciones_culturales_manifestacion_n_3',

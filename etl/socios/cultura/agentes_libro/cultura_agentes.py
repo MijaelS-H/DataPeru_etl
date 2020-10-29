@@ -21,6 +21,7 @@ class TransformStep(PipelineStep):
         "Actividad_2" : "actividad_2_id", "Actividad_3" : "actividad_3_id", "Actividad_4" : "actividad_4_id", "Distrito de la organización": "district_id"}, inplace=True)
         df['cantidad_agentes'] = 1
         df['actividad_1_id'] = df['actividad_1_id'].replace('cartonera', 'Cartonera')
+        
         return df
 
 class FormatStep(PipelineStep):
@@ -41,7 +42,6 @@ class FormatStep(PipelineStep):
         df[['razon_social_id', 'actividad_1_id',
        'actividad_2_id', 'actividad_3_id', 'actividad_4_id']] = df[['razon_social_id', 'actividad_1_id',
        'actividad_2_id', 'actividad_3_id', 'actividad_4_id']].astype(int)
-
 
         return df
 

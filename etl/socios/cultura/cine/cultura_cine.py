@@ -22,15 +22,15 @@ class TransformStep(PipelineStep):
 
             df[column] = df[column].str.strip()
     
-        df = df.rename(columns={'AÑO INSCRIPCIÓN' : "anio_inscripcion","TIPO DE CONSTITUCIÓN" : "tipo_constitucion_id","RAZON SOCIAL " : "razon_social_id",
+        df = df.rename(columns={'AÑO INSCRIPCIÓN' : "year","TIPO DE CONSTITUCIÓN" : "tipo_constitucion_id","RAZON SOCIAL " : "razon_social_id",
             "Actividad_1" : "actividad_1_id","Actividad_2":"actividad_2_id", "Actividad_3":"actividad_3_id",
             "Actividad_4":"actividad_4_id","DISTRITO":"district_id"})
 
 
         df['cantidad_org'] = 1
         df = df[df['district_id'].notna()]
-        df = df[df['anio_inscripcion'].notna()]
-        df = df[df['anio_inscripcion'] != "ND"]
+        df = df[df['year'].notna()]
+        df = df[df['year'] != "ND"]
      
         return df
 
@@ -39,7 +39,7 @@ class FormatStep(PipelineStep):
         # df subset
         df = prev[0]
         
-        df = df[['anio_inscripcion','tipo_constitucion_id','razon_social_id','actividad_1_id',	
+        df = df[['year','tipo_constitucion_id','razon_social_id','actividad_1_id',	
         'actividad_2_id','actividad_3_id','actividad_4_id',	'district_id', 'cantidad_org']].copy()
 
         # column types
@@ -62,7 +62,7 @@ class CinePipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
 
         dtype = {
-            'anio_inscripcion':               'UInt16',
+            'year':                           'UInt32',
             'tipo_constitucion_id':           'UInt8',
             'razon_social_id':                'UInt16',
             'actividad_1_id':                 'UInt8',
