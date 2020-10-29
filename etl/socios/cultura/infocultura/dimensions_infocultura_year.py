@@ -2,7 +2,7 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
-from infocultura_year import TransformStep
+from cultura_infocultura_year import TransformStep
 from shared_year import ReplaceStep
 
 class ProcessingStep(PipelineStep):
@@ -48,8 +48,8 @@ class DimAgentesPipeline(EasyPipeline):
 
 if __name__ == "__main__":
     pp = DimAgentesPipeline()
-    for k, v in {'indicator_id':  'dim_shared_infocultura_indicators',
-                 'response_id':  'dim_shared_infocultura_responses',
+    for k, v in {'indicator_id':  'dim_shared_infocultura_indicators_year',
+                 'response_id':  'dim_shared_infocultura_responses_year',
                  }.items():
         pp.run({'pk': k,
                 'table_name': v})
