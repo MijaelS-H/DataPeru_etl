@@ -19,6 +19,8 @@ class ProcessingStep(PipelineStep):
         elif params.get('pk') == 'nombre_proyecto_id':
             df = pd.DataFrame.from_dict(nombre_proyecto_dim, orient='index').reset_index()
             df.columns = ['nombre_proyecto_name', 'nombre_proyecto_id']
+
+            df['nombre_proyecto_name'] = df['nombre_proyecto_name'].astype(str)
         
             return df
 
@@ -39,7 +41,7 @@ class DimEECPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         if (k == 'estimulo_economico_id'):
             dtype = {
@@ -56,7 +58,7 @@ class DimEECPipeline(EasyPipeline):
         load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
                              pk=[params.get('pk')], dtype=dtype)
 
-        return [transform_step, replace_step, processing_step]
+        return [transform_step, replace_step, processing_step, load_step]
 
 if __name__ == "__main__":
     pp = DimEECPipeline()
