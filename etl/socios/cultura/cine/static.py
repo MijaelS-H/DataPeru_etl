@@ -39,5 +39,20 @@ DISTRICT_REPLACE_2 = {
      'LIMA' : "Lima",
      'San Sebastián' : "San Sebastian",
      'José Luis Bustamante y Rivero' : "José Luis Bustamante Y Rivero",
-
+     'Cercado' : "Lima",
+     'Cercado de Lima' : "Lima",
+     'Cerro colorado' : "Cerro Colorado",
+     'Cineguilla' : 'Cieneguilla',
+     'Huangáscar ' : 'Huangascar',
+     'Huáchac' : 'Huachac',
+     'La banda de Shilcayo' : 'La Banda de Shilcayo',
+     'Lurín' : 'Lurin',
+     'Rimac' : 'Rímac',
+     'Juliana' : 'Juliaca',
+     'San Vicente' : 'San Vicente de Cañete',
+     'San borja' : 'San Borja',
+     'Santa María Del Mar' : 'Santa María del Mar',
+     'Santa anita' : "Santa Anita",
+     'Veintiséis de Octubre' : 'Veintiseis de Octubre'
+               
 }
