@@ -75,7 +75,7 @@ class EECPipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        replace_step = ReplaceStep()
+        replace_step = ReplaceStep(connector=db_connector)
         format_step = FormatStep()
         load_step = LoadStep('cultura_eec', db_connector, if_exists='drop', 
                              pk=['estimulo_economico_id', 'fase_cadena_valor_id', 'nombre_proyecto_id'], dtype=dtype)

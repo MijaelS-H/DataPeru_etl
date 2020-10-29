@@ -74,7 +74,7 @@ class CinePipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        replace_step = ReplaceStep()
+        replace_step = ReplaceStep(connector=db_connector)
         format_step = FormatStep()
         load_step = LoadStep('cultura_cine', db_connector, if_exists='drop', 
                              pk=['district_id'], dtype=dtype)
