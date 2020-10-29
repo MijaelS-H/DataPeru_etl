@@ -51,7 +51,7 @@ class DimEECPipeline(EasyPipeline):
             }
        
         transform_step = TransformStep()
-        replace_step = ReplaceStep()
+        replace_step = ReplaceStep(connector=db_connector)
         processing_step = ProcessingStep()
         load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
                              pk=[params.get('pk')], dtype=dtype)
