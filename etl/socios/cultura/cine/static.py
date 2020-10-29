@@ -43,7 +43,7 @@ DISTRICT_REPLACE_2 = {
      'Cercado de Lima' : "Lima",
      'Cerro colorado' : "Cerro Colorado",
      'Cineguilla' : 'Cieneguilla',
-     'Huangáscar ' : 'Huangascar',
+     'Huangáscar' : 'Huangascar',
      'Huáchac' : 'Huachac',
      'La banda de Shilcayo' : 'La Banda de Shilcayo',
      'Lurín' : 'Lurin',

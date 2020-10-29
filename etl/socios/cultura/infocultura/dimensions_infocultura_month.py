@@ -32,7 +32,7 @@ class DimAgentesPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtype = {
             params.get('pk'): 'UInt16'
@@ -44,7 +44,7 @@ class DimAgentesPipeline(EasyPipeline):
         load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
                              pk=[params.get('pk')], dtype=dtype)
 
-        return [transform_step, replace_step, processing_step]
+        return [transform_step, replace_step, processing_step, load_step]
 
 if __name__ == "__main__":
     pp = DimAgentesPipeline()

@@ -168,19 +168,27 @@ class TransformStep(PipelineStep):
         df_8.rename(columns={'value': 'total'}, inplace=True)
         df_8 = df_8[['time','indicator_id','department_id','nation_id','total','response_name']]
 
-        df_list = df_list = [df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8]
+        df_list = [df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8]
 
         df = reduce(lambda df1,df2: df1.append(df2), df_list)
         df.rename(columns={'response_name':'response_id', 'time' : 'month_id'}, inplace=True)
         
+        df['department_id'] = df['department_id'].astype(str)
        
+        return df
+
+class FormatStep(PipelineStep):
+    def run_step(self, prev, params):
+
+        df = prev[0]
+
         return df
 
 class InfoCulturaPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtype = {
             'month_id':                'UInt32',
@@ -193,11 +201,12 @@ class InfoCulturaPipeline(EasyPipeline):
 
         transform_step = TransformStep()
         replace_step = ReplaceStep()
+        format_step = FormatStep()
         
         load_step = LoadStep('cultura_infocultura_month', db_connector, if_exists='drop', 
                             pk=['department_id'], dtype=dtype, nullable_list = ['total'])
 
-        return [transform_step, replace_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 
 

@@ -312,14 +312,22 @@ class TransformStep(PipelineStep):
         df = reduce(lambda df1,df2: df1.append(df2), df_list)
         df.rename(columns={'response_name':'response_id'}, inplace=True)
         
-        
+        df['department_id'] = df['department_id'].astype(str)
+
         return df
+
+class FormatStep(PipelineStep):
+    def run_step(self, prev, params):
+
+        df = prev[0]
+
+        return df        
 
 class InfoculturaPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtype = {
             'year':                    'UInt32',
@@ -332,11 +340,12 @@ class InfoculturaPipeline(EasyPipeline):
 
         transform_step = TransformStep()
         replace_step = ReplaceStep()
+        format_step = FormatStep()
         
         load_step = LoadStep('cultura_infocultura_year', db_connector, if_exists='drop', 
                             pk=['department_id'], dtype=dtype, nullable_list = ['total'])
 
-        return [transform_step, replace_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 
 

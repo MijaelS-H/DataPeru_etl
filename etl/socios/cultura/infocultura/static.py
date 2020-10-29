@@ -12,6 +12,7 @@ MONTHS_DICT = {
     'Julio' : '07',
     'Agosto' : '08',
     'Septiembre' : '09',
+    'Setiembre' : '09',
     'Octubre' : '10',
     'Noviembre' : '11',
     'Diciembre' : '12',
