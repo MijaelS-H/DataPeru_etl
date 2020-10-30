@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
             '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/03 MÓDULO 1118_ Características del Mercado/Capítulo_IV_NACIONAL.dta',
             '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/04 MÓDULO 1119_ Infraestructura, Instalaciones, Equipamiento y Otros/Capítulo_V_NACIONAL.sav',
             '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/05 MÓDULO 1120_ Gestión Administrativa y Financiera/Capítulo_VI_NACIONAL.sav',
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/01 MÓDULO 1116_ Localización del Mercado/Capítulo_I_NACIONAL.sav',
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/01 MÓDULO 1116_ Localización del Mercado/Capítulo_I_NACIONAL.sav',
             ]
         
         df = [pd.read_spss(x) if x != list_name[0] else pd.read_stata(x) for x in list_name]
