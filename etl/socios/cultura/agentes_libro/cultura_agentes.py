@@ -52,7 +52,7 @@ class AgentesPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtype = {
-            'razon_social_id':                  'UInt32',
+            'razon_social_id':                  'UInt16',
             'actividad_1_id':                   'UInt8',
             'actividad_2_id':                   'UInt8',
             'actividad_3_id':                   'UInt8',

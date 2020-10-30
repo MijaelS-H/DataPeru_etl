@@ -59,7 +59,7 @@ class FormatStep(PipelineStep):
        'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
        'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',
        'cantidad_asociacion']].astype(int)
-
+z
         return df
 
 class AsociacionPipeline(EasyPipeline):
