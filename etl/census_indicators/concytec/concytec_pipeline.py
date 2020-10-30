@@ -10,8 +10,8 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read modules
         list_name = [
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap200.dta',
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap300-400.dta'
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap200.dta',
+            '../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap300-400.dta'
         ]
 
         df = [pd.read_stata(x) for x in list_name]
