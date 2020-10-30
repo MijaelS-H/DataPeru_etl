@@ -1,36 +1,44 @@
-def INDICATOR(df, geo_id):
+def INDICATOR_INSTITUTE(df, geo_id):
     df['CONCYTEC_1'] = df['P213_aux_1']
     df['CONCYTEC_2'] = (df['P213_aux_1'] / df['count']) * 100
     df['CONCYTEC_3'] = df['P213_aux_2']
     df['CONCYTEC_4'] = (df['P213_aux_2'] / df['count']) * 100
-    df['CONCYTEC_5'] = df['P213_aux_3']
+    df['CONCYTEC_5'] = df['P213_aux_3'] 
     df['CONCYTEC_6'] = (df['P213_aux_3'] / df['count']) * 100
     df['CONCYTEC_7'] = df['P213_aux_4']
     df['CONCYTEC_8'] = (df['P213_aux_4'] / df['count']) * 100
     df['CONCYTEC_9'] = df['P214_aux_1']
     df['CONCYTEC_10'] = (df['P214_aux_1'] / df['count']) * 100
-    df['CONCYTEC_11'] = df['P214_aux_2']
+    df['CONCYTEC_11'] = df['P214_aux_2']  
     df['CONCYTEC_12'] = (df['P214_aux_2'] / df['count']) * 100
     df['CONCYTEC_13'] = df['P214_aux_3']
     df['CONCYTEC_14'] = (df['P214_aux_3'] / df['count']) * 100
-    df['CONCYTEC_15'] = df['P214_aux_4']
+    df['CONCYTEC_15'] = df['P214_aux_4'] 
     df['CONCYTEC_16'] = (df['P214_aux_4'] / df['count']) * 100
     df['CONCYTEC_17'] = df['P214_aux_5']
     df['CONCYTEC_18'] = (df['P214_aux_5'] / df['count']) * 100
     df['CONCYTEC_19'] = df['P214_aux_6']
-    df['CONCYTEC_20'] = (df['P214_aux_6'] / df['count']) * 100
-    df['CONCYTEC_21'] = df['P214_aux_7']     
+    df['CONCYTEC_20'] = (df['P214_aux_6'] / df['count']) * 100 #bien
+    df['CONCYTEC_21'] = df['P214_aux_7']      
     df['CONCYTEC_22'] = (df['P214_aux_7'] / df['count']) * 100
     df['CONCYTEC_23'] = df['P217']
     df['CONCYTEC_24'] = (df['P217'] / df['count']) * 100
-    df['CONCYTEC_25'] = df['P404_1_1'] / df['count'] 
-    df['CONCYTEC_26'] = df['P404_2_1'] / df['count'] 
-    df['CONCYTEC_27'] = df['P328_1_1'] / df['count'] 
+    
+    df = df[[geo_id, 'CONCYTEC_1', 'CONCYTEC_2', 'CONCYTEC_3', 'CONCYTEC_4', 'CONCYTEC_5', 'CONCYTEC_6', 'CONCYTEC_7', 'CONCYTEC_8', 
+         'CONCYTEC_9', 'CONCYTEC_10', 'CONCYTEC_11', 'CONCYTEC_12', 'CONCYTEC_13', 'CONCYTEC_14', 'CONCYTEC_15', 'CONCYTEC_16', 'CONCYTEC_17', 
+         'CONCYTEC_18', 'CONCYTEC_19', 'CONCYTEC_20', 'CONCYTEC_21', 'CONCYTEC_22', 'CONCYTEC_23', 'CONCYTEC_24']]
+    
+    return df
+
+def INDICATOR_CENTER(df, geo_id):
+    df['CONCYTEC_25'] = df['P404_1_4'] / df['count'] 
+    df['CONCYTEC_26'] = df['P404_2_4'] / df['count'] 
+    df['CONCYTEC_27'] = df['P328_1_1'] / df['count']  
     df['CONCYTEC_28'] = df['P328_2_1'] / df['count'] 
     df['CONCYTEC_29'] = df['P328_1_1_aux_1'] / df['P213_aux_1']  
     df['CONCYTEC_30'] = df['P328_2_1_aux_1'] / df['P213_aux_1']  
     df['CONCYTEC_31'] = df['P328_1_1_aux_2'] / df['P213_aux_2']  
-    df['CONCYTEC_32'] = df['P328_2_1_aux_2'] / df['P213_aux_2']
+    df['CONCYTEC_32'] = df['P328_2_1_aux_2'] / df['P213_aux_2'] 
     df['CONCYTEC_33'] = df['P328_1_1_aux_3'] / df['P213_aux_3'] 
     df['CONCYTEC_34'] = df['P328_2_1_aux_3'] / df['P213_aux_3'] 
     df['CONCYTEC_35'] = df['P328_1_1_aux_4'] / df['P213_aux_4'] 
@@ -82,9 +90,7 @@ def INDICATOR(df, geo_id):
     df['CONCYTEC_81'] = df['P329_2_6']
     df['CONCYTEC_82'] = (df['P329_2_6'] / df['P329_aux_2']) * 100
     
-    df = df[[geo_id, 'CONCYTEC_1', 'CONCYTEC_2', 'CONCYTEC_3', 'CONCYTEC_4', 'CONCYTEC_5', 'CONCYTEC_6', 'CONCYTEC_7', 'CONCYTEC_8', 
-         'CONCYTEC_9', 'CONCYTEC_10', 'CONCYTEC_11', 'CONCYTEC_12', 'CONCYTEC_13', 'CONCYTEC_14', 'CONCYTEC_15', 'CONCYTEC_16', 'CONCYTEC_17', 
-         'CONCYTEC_18', 'CONCYTEC_19', 'CONCYTEC_20', 'CONCYTEC_21', 'CONCYTEC_22', 'CONCYTEC_23', 'CONCYTEC_24', 'CONCYTEC_25', 'CONCYTEC_26', 
+    df = df[[geo_id, 'CONCYTEC_25', 'CONCYTEC_26', 
          'CONCYTEC_27', 'CONCYTEC_28', 'CONCYTEC_29', 'CONCYTEC_30', 'CONCYTEC_31', 'CONCYTEC_32', 'CONCYTEC_33', 'CONCYTEC_34', 'CONCYTEC_35', 
          'CONCYTEC_36', 'CONCYTEC_37', 'CONCYTEC_38', 'CONCYTEC_39', 'CONCYTEC_40', 'CONCYTEC_41', 'CONCYTEC_42', 'CONCYTEC_43', 'CONCYTEC_44', 
          'CONCYTEC_45', 'CONCYTEC_46', 'CONCYTEC_47', 'CONCYTEC_48', 'CONCYTEC_49', 'CONCYTEC_50', 'CONCYTEC_51', 'CONCYTEC_52', 'CONCYTEC_53', 

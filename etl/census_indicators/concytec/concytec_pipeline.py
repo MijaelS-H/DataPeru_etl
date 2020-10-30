@@ -4,7 +4,7 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
 from static import COLUMNS_RENAME, LIST_DICT, DTYPE, LIST_NULL
-from indicator import INDICATOR
+from indicator import INDICATOR_INSTITUTE, INDICATOR_CENTER
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -17,53 +17,56 @@ class TransformStep(PipelineStep):
         df = [pd.read_stata(x) for x in list_name]
 
         #choose columns
-        df[0] = df[0][['ID', 'CCDD', 'CCPP', 'CCDI', 'P217']]
+        df[0] = df[0][['ID', 'CCDD', 'CCPP', 'CCDI', 'P217', 'P213', 'P214']]
 
-        df[1] = df[1][['CCDD', 'CCDI', 'CCPP', 'ID', 'IDCI', 'UBIGCI', 'P213', 'P214', 'P328_1_1', 'P328_1_2', 'P328_2_1', 'P328_2_2',
+        df[1] = df[1][['CCDD', 'CCDI', 'CCPP', 'ID', 'IDCI', 'UBIGCI', 'P213', 'P328_1_1', 'P328_1_2', 'P328_2_1', 'P328_2_2',
                'P329_1_1', 'P329_1_2', 'P329_1_3', 'P329_1_4', 'P329_1_5', 'P329_1_6', 'P329_2_1', 'P329_2_2', 'P329_2_3',
                'P329_2_4', 'P329_2_5', 'P329_2_6', 'P404_1_1', 'P404_1_2', 'P404_1_3', 'P404_1_4', 'P404_2_1', 
                'P404_2_2', 'P404_2_3', 'P404_2_4']]
         
-        #merge modules
-        df_merge = df[1].merge(df[0], on=['ID', 'CCDD', 'CCPP', 'CCDI'], how='left')
-        df_merge.rename(columns = COLUMNS_RENAME, inplace=True)
-
+        #rename modules
+        df[0].rename(columns = COLUMNS_RENAME, inplace=True)
+        df[1].rename(columns = COLUMNS_RENAME, inplace=True)
+    
         #fix geo dimension
-        df_merge['nation_id'] = 'per'
-        df_merge['province_id'] = df_merge['department_id'] + df_merge['province_id']
-        df_merge['district_id'] = df_merge['province_id'] + df_merge['district_id']
+        for i in range(2):
+            df[i]['nation_id'] = 'per'
+            df[i]['province_id'] = df[i]['department_id'] + df[i]['province_id']
+            df[i]['district_id'] = df[i]['province_id'] + df[i]['district_id']
+            df[i]['count'] = 1
+            df[i]['P213'] = df[i]['P213'].str.strip()
+            df[i]['P213'] = df[i]['P213'].replace(LIST_DICT[0])
 
         #change column type
-        df_merge['count'] = 1
-
-        df_merge['P213'] = df_merge['P213'].str.strip()
-        df_merge['P213'] = df_merge['P213'].replace(LIST_DICT[0])
-        df_merge['P214'] = df_merge['P214'].replace(LIST_DICT[1])
+        df[0]['P214'] = df[0]['P214'].replace(LIST_DICT[1])
         
         for i in range(1,8):
-            df_merge['P214_aux_'+ str(i)] = df_merge.apply(lambda x: 1 if x['P214'] == i else 0, axis=1)  
+            df[0]['P214_aux_'+ str(i)] = df[0].apply(lambda x: 1 if x['P214'] == i else 0, axis=1)  
+        
+        df[0]['P217'] = df[0]['P217'].astype(str)
+        df[0]['P217'] = df[0]['P217'].replace(LIST_DICT[2]).astype(int)
+        df[0]['P217'] = df[0]['P217'].fillna(0)
         
         list_int = ['P404_1_4', 'P404_2_1', 'P404_1_2', 'P404_1_1', 'P404_2_4', 'P404_2_2', 'P404_1_3', 'P404_2_3']
         
-        list_bin = ['P217', 'P328_1_1', 'P328_2_1', 'P328_1_2', 'P328_2_2', 'P329_1_1', 'P329_1_2', 'P329_1_3', 'P329_1_4', 
+        list_bin = ['P328_1_1', 'P328_2_1', 'P328_1_2', 'P328_2_2', 'P329_1_1', 'P329_1_2', 'P329_1_3', 'P329_1_4', 
                     'P329_1_5', 'P329_1_6', 'P329_2_1', 'P329_2_2', 'P329_2_3', 'P329_2_4', 'P329_2_5', 'P329_2_6']
 
-        df_merge[list_bin] = df_merge[list_bin].astype(str)
-        df_merge[list_bin] = df_merge[list_bin].replace(LIST_DICT[2]).astype(int)
-        df_merge[list_int] = df_merge[list_int].fillna(0)
+        df[1][list_bin] = df[1][list_bin].astype(str)
+        df[1][list_bin] = df[1][list_bin].replace(LIST_DICT[2]).astype(int)
+        df[1][list_int] = df[1][list_int].fillna(0)
 
         for i in range(1,6):
-            df_merge['P213_aux_'+ str(i)] = df_merge.apply(lambda x: 1 if x['P213'] == i else 0, axis=1)
-            df_merge['P328_1_1_aux_'+ str(i)] = df_merge.apply(lambda x: x['P328_1_1'] if x['P213'] == i else 0, axis=1)
-            df_merge['P328_2_1_aux_'+ str(i)] = df_merge.apply(lambda x: x['P328_2_1'] if x['P213'] == i else 0, axis=1)
-            df_merge['P328_1_2_aux_'+ str(i)] = df_merge.apply(lambda x: x['P328_1_2'] if x['P213'] == i else 0, axis=1)
-            df_merge['P328_2_2_aux_'+ str(i)] = df_merge.apply(lambda x: x['P328_2_2'] if x['P213'] == i else 0, axis=1)
+            df[0]['P213_aux_'+ str(i)] = df[0].apply(lambda x: 1 if x['P213'] == i else 0, axis=1)
+            df[1]['P213_aux_'+ str(i)] = df[1].apply(lambda x: 1 if x['P213'] == i else 0, axis=1)
+            df[1]['P328_1_1_aux_'+ str(i)] = df[1].apply(lambda x: x['P328_1_1'] if x['P213'] == i else 0, axis=1)
+            df[1]['P328_2_1_aux_'+ str(i)] = df[1].apply(lambda x: x['P328_2_1'] if x['P213'] == i else 0, axis=1)
+            df[1]['P328_1_2_aux_'+ str(i)] = df[1].apply(lambda x: x['P328_1_2'] if x['P213'] == i else 0, axis=1)
+            df[1]['P328_2_2_aux_'+ str(i)] = df[1].apply(lambda x: x['P328_2_2'] if x['P213'] == i else 0, axis=1)
         
-        df_merge['P329_aux_1'] = df_merge.apply(lambda x: 1 if ((x['P329_1_1']==1) | (x['P329_1_2']==1) | (x['P329_1_3']==1) | (x['P329_1_4']==1) | (x['P329_1_5']==1) | (x['P329_1_6']==1)) else 0, axis=1)
-        df_merge['P329_aux_2'] = df_merge.apply(lambda x: 1 if ((x['P329_2_1']==1) | (x['P329_2_2']==1) | (x['P329_2_3']==1) | (x['P329_2_4']==1) | (x['P329_2_5']==1) | (x['P329_2_6']==1)) else 0, axis=1)
+        df[1]['P329_aux_1'] = df[1].apply(lambda x: 1 if ((x['P329_1_1']==1) | (x['P329_1_2']==1) | (x['P329_1_3']==1) | (x['P329_1_4']==1) | (x['P329_1_5']==1) | (x['P329_1_6']==1)) else 0, axis=1)
+        df[1]['P329_aux_2'] = df[1].apply(lambda x: 1 if ((x['P329_2_1']==1) | (x['P329_2_2']==1) | (x['P329_2_3']==1) | (x['P329_2_4']==1) | (x['P329_2_5']==1) | (x['P329_2_6']==1)) else 0, axis=1)
         
-        df_merge.drop(columns = ['ID', 'research_center_id', 'UBIGCI'], inplace=True)
-
         #indicators
         df_final = pd.DataFrame()
 
@@ -71,12 +74,19 @@ class TransformStep(PipelineStep):
             list_geo = ['department_id', 'province_id', 'district_id', 'nation_id']
             list_geo.remove(i)
 
-            df_indicator = df_merge.copy()
-            df_indicator.drop(columns = list_geo, inplace=True)
-            df_indicator = df_indicator.groupby([i]).sum().reset_index()
+            df_indicator_1 = df[0].copy()
+            df_indicator_2 = df[1].copy()
 
-            df_indicator = INDICATOR(df_indicator, i) 
+            df_indicator_1.drop(columns = list_geo, inplace=True)
+            df_indicator_2.drop(columns = list_geo, inplace=True)
 
+            df_indicator_1 = df_indicator_1.groupby([i]).sum().reset_index()
+            df_indicator_2 = df_indicator_2.groupby([i]).sum().reset_index()
+
+            df_indicator_1 = INDICATOR_INSTITUTE(df_indicator_1, i)
+            df_indicator_2 = INDICATOR_CENTER(df_indicator_2, i) 
+
+            df_indicator = df_indicator_1.merge(df_indicator_2, on=[i], how='left')    
             df_final = df_final.append(df_indicator, sort=False)
         
         df_final[['district_id', 'department_id', 'province_id', 'nation_id']] = df_final[['district_id', 'department_id', 'province_id', 'nation_id']].fillna(0).astype(str)

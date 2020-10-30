@@ -1,5 +1,6 @@
 COLUMNS_RENAME = {
     'IDCI': 'research_center_id',
+    'ID': 'institute_id',
     'CCDD': 'department_id',
     'CCPP':'province_id',
     'CCDI': 'district_id'
@@ -22,7 +23,8 @@ LIST_DICT = [
     },
     {'sí': 1, #Bin
      'no': 0,
-     'nan': 0
+     'nan': 0,
+     '9.0': 0
     }
 ]
 
@@ -90,36 +92,39 @@ DTYPE = {
     'CONCYTEC_56':      'Float32', 
     'CONCYTEC_57':      'Float32', 
     'CONCYTEC_58':      'Float32', 
-    'CONCYTEC_59':      'UInt32', 
+    'CONCYTEC_59':      'Float32',
     'CONCYTEC_60':      'Float32', 
-    'CONCYTEC_61':      'UInt32', 
+    'CONCYTEC_61':      'Float32', 
     'CONCYTEC_62':      'Float32', 
-    'CONCYTEC_63':      'UInt32', 
+    'CONCYTEC_63':      'Float32', 
     'CONCYTEC_64':      'Float32', 
-    'CONCYTEC_65':      'UInt32', 
+    'CONCYTEC_65':      'Float32',
     'CONCYTEC_66':      'Float32',
-    'CONCYTEC_67':      'UInt32',
+    'CONCYTEC_67':      'Float32',
     'CONCYTEC_68':      'Float32', 
-    'CONCYTEC_69':      'UInt32', 
+    'CONCYTEC_69':      'Float32', 
     'CONCYTEC_70':      'Float32', 
-    'CONCYTEC_71':      'UInt32', 
+    'CONCYTEC_71':      'Float32', 
     'CONCYTEC_72':      'Float32', 
-    'CONCYTEC_73':      'UInt32', 
+    'CONCYTEC_73':      'Float32', 
     'CONCYTEC_74':      'Float32', 
-    'CONCYTEC_75':      'UInt32', 
+    'CONCYTEC_75':      'Float32', 
     'CONCYTEC_76':      'Float32', 
-    'CONCYTEC_77':      'UInt32', 
+    'CONCYTEC_77':      'Float32', 
     'CONCYTEC_78':      'Float32',
-    'CONCYTEC_79':      'UInt32', 
+    'CONCYTEC_79':      'Float32', 
     'CONCYTEC_80':      'Float32', 
-    'CONCYTEC_81':      'UInt32', 
+    'CONCYTEC_81':      'Float32', 
     'CONCYTEC_82':      'Float32'
 }
 
 LIST_NULL = [
-    'CONCYTEC_29', 'CONCYTEC_30', 'CONCYTEC_31', 'CONCYTEC_32', 'CONCYTEC_33', 'CONCYTEC_34', 'CONCYTEC_35', 'CONCYTEC_36',
-    'CONCYTEC_39', 'CONCYTEC_40', 'CONCYTEC_41', 'CONCYTEC_42', 'CONCYTEC_43', 'CONCYTEC_44', 'CONCYTEC_45', 'CONCYTEC_46',
-    'CONCYTEC_48', 'CONCYTEC_50', 'CONCYTEC_52', 'CONCYTEC_54', 'CONCYTEC_56', 'CONCYTEC_58', 'CONCYTEC_60', 'CONCYTEC_62',
-    'CONCYTEC_64', 'CONCYTEC_66', 'CONCYTEC_68', 'CONCYTEC_70', 'CONCYTEC_72', 'CONCYTEC_74', 'CONCYTEC_76', 'CONCYTEC_78',
-    'CONCYTEC_80', 'CONCYTEC_82' 
+    'CONCYTEC_25', 'CONCYTEC_26', 'CONCYTEC_27', 'CONCYTEC_28', 'CONCYTEC_29', 'CONCYTEC_30', 'CONCYTEC_31', 'CONCYTEC_32', 
+    'CONCYTEC_33', 'CONCYTEC_34', 'CONCYTEC_35', 'CONCYTEC_36', 'CONCYTEC_37', 'CONCYTEC_38', 'CONCYTEC_39', 'CONCYTEC_40', 
+    'CONCYTEC_41', 'CONCYTEC_42', 'CONCYTEC_43', 'CONCYTEC_44', 'CONCYTEC_45', 'CONCYTEC_46', 'CONCYTEC_47', 'CONCYTEC_48', 
+    'CONCYTEC_49', 'CONCYTEC_50', 'CONCYTEC_51', 'CONCYTEC_52', 'CONCYTEC_53', 'CONCYTEC_54', 'CONCYTEC_55', 'CONCYTEC_56', 
+    'CONCYTEC_57', 'CONCYTEC_58', 'CONCYTEC_59', 'CONCYTEC_60', 'CONCYTEC_61', 'CONCYTEC_62', 'CONCYTEC_63', 'CONCYTEC_64', 
+    'CONCYTEC_65', 'CONCYTEC_66', 'CONCYTEC_67', 'CONCYTEC_68', 'CONCYTEC_69', 'CONCYTEC_70', 'CONCYTEC_71', 'CONCYTEC_72', 
+    'CONCYTEC_73', 'CONCYTEC_74', 'CONCYTEC_75', 'CONCYTEC_76', 'CONCYTEC_77', 'CONCYTEC_78', 'CONCYTEC_79', 'CONCYTEC_80', 
+    'CONCYTEC_81', 'CONCYTEC_82' 
 ]
