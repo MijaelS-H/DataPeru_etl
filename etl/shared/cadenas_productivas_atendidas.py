@@ -15,15 +15,12 @@ class TransformStep(PipelineStep):
 
         df = pd.read_excel('../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/07 PARTIDAS ARANCELARIAS/TABLA_07_N01.xlsx')
         df = df[df['cadena_productiva'].notna()]
-        cadena_productiva_list = list(df["cadena_productiva"].dropna().unique())
-        cadena_productiva_map = {k:v for (k,v) in zip(sorted(cadena_productiva_list), list(range(1, len(cadena_productiva_list) +1)))}
         
-        df['cadena_productiva_id'] = df['cadena_productiva'].map(cadena_productiva_map)
-        df['cadena_productiva_id'] = df['cadena_productiva_id'].fillna(0).astype(int)
-        
-        df = df[['cadena_productiva', 'cadena_productiva_id']]
-    
-        df = df.drop_duplicates()
+        cadena_dim = dict(zip(df['cadena_productiva'].dropna().unique(), range(1, len(df['cadena_productiva'].unique()) + 1 )))
+        cadena_dim.update({'No Aplica' : 0})
+
+        df = pd.DataFrame.from_dict(cadena_dim, orient='index').reset_index()
+        df.columns = ['cadena_productiva', 'cadena_productiva_id']
         
         return df
 

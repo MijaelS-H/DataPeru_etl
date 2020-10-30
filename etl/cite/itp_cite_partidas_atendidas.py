@@ -17,20 +17,30 @@ class TransformStep(PipelineStep):
         
         df = df[df['cadena_productiva'].notna()]
 
+        for column in ['cadena_atencion','cadena_pip','cadena_resolucion']:
+            df[column] = df[column].replace(1, df['cadena_productiva'])
+
         cite_list = list(df["cite"].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
         df['cite_id'] = df['cite'].map(cite_map)
-        
-        cadena_productiva_list = list(df["cadena_productiva"].dropna().unique())
-        cadena_productiva_map = {k:v for (k,v) in zip(sorted(cadena_productiva_list), list(range(1, len(cadena_productiva_list) +1)))}
-        df['cadena_productiva_id'] = df['cadena_productiva'].map(cadena_productiva_map)
-        
+        df[['cite_id']] = df[['cite_id']].fillna(0).astype(int)
         df['hs6_id'] = df['partida_arancelaria'].astype(str).str[:-6].str.zfill(6)
+
+        cadena_dim = dict(zip(df['cadena_productiva'].dropna().unique(), range(1, len(df['cadena_productiva'].unique()) + 1 )))
+        cadena_dim.update({'No Aplica' : 0})
+
+        df['cadena_atencion_id'] = df['cadena_atencion'].map(cadena_dim)
+        df['cadena_pip_id'] = df['cadena_pip'].map(cadena_dim)
+        df['cadena_resolucion_id'] = df['cadena_resolucion'].map(cadena_dim)
+
+        df[['cadena_atencion_id', 'cadena_pip_id', 'cadena_resolucion_id']] = df[['cadena_atencion_id', 'cadena_pip_id', 'cadena_resolucion_id']].fillna(0).astype(int)
         
-        df[['cite_id','cadena_productiva_id']] = df[['cite_id','cadena_productiva_id']].fillna(0).astype(int)
-        df[['cadena_atencion','cadena_pip','cadena_resolucion']] = df[['cadena_atencion','cadena_pip','cadena_resolucion']].fillna(0).astype(int)
+        df.rename(columns ={'descripcion_partida ' : 'hs10_name', 'partida_arancelaria' : 'hs10_id'}, inplace=True)
+        df['hs10_name'] = df['hs10_name'].str.title()      
         
-        df = df[['cite_id','hs6_id','cadena_productiva_id','cadena_atencion','cadena_pip','cadena_resolucion']]
+        df['cantidad_cite'] = 1
+        
+        df = df[['cite_id', 'hs10_id', 'cadena_atencion_id', 'cadena_pip_id', 'cadena_resolucion_id', 'cantidad_cite']]
         
         return df
 
@@ -47,19 +57,18 @@ class CitePartidasPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
         dtypes = {
-            'cite_id':                'UInt8',
-            'hs6_id':                 'String',
-            'cadena_productiva_id':   'UInt8',
-            'cadena_atencion':        'UInt8',
-            'cadena_pip':             'UInt8',
-            'cadena_resolucion':      'UInt8',
- 
+            'cite_id':                        'UInt8',
+            'hs10_id':                        'String',
+            'cadena_atencion_id':             'UInt8',
+            'cadena_pip_id':                  'UInt8',
+            'cadena_resolucion_id':           'UInt8',
+            'cantidad_cite':                  'UInt8'
          }
 
         transform_step = TransformStep()  
         load_step = LoadStep(
           'itp_cite_partidas_atendidas', connector=db_connector, if_exists='drop',
-          pk=['cite_id'], dtype=dtypes, nullable_list=[])
+          pk=['cite_id'], dtype=dtypes, nullable_list=['hs10_id'])
 
         if params.get("ingest")==True:
             steps = [transform_step, load_step]
