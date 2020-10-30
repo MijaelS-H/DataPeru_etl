@@ -24,6 +24,20 @@ class TransformStep(PipelineStep):
         df11 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.57.xlsx"), skiprows = (0,1,2,3,5,6,7,8,9), usecols = "A:O")[0:32]
         df12 = pd.read_excel(io = "{}/{}/{}".format(path, "E. Medio Ambiente", "E.39.xlsx"), skiprows = (0,1,2), usecols = "A:B")[0:21]
         df13 = pd.read_excel(io = "{}/{}/{}".format(path, "G. Seguridad Ciudadana", "G.3.xlsx"), skiprows = (0,1,2,3,4,6,7,8,9), usecols = "A,C:I")[0:20]
+        df14 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.182.xlsx"), skiprows = (0,1,2,3), usecols = "A,E:J,M,N")[8:20]
+        df15 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.164.xlsx"), skiprows = (0,1,2,3,5,6), usecols = "A,I:L,T:W")[0:8]
+
+        df16 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.71.xlsx"), skiprows = range(0,7), usecols = "A:D,F:H,L,M")[11:23]
+        df17 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.72.xlsx"), skiprows = range(0,8), usecols = "A,G:J,M,N,Q:S")[12:24]
+        df18 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.74.xlsx"), skiprows = (0,1,2,4,5,6), usecols = "A,I:T")[0:50]
+        df19 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.75.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,J:U")[2:13]
+        df20 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.76.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,K:V")[2:10]
+        df21 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.77.xlsx"), skiprows = (0,1,2,3), usecols = "A,K:V")[2:12]
+        df22 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.80.xlsx"), skiprows = (0,1,2,3), usecols = "A,J:U")[1:14]
+
+        df23 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.146.xls"), skiprows = range(0,6), usecols = "A:C,E,F,H,I")[14:26]
+        df24 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.148.xls"), skiprows = (0,1), usecols = "A,F:Q")[1:4]
+        df25 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.151.xls"), skiprows = (0,1,2,3), usecols = "A,D:O")[3:14]
 
         # Starts transforming step for each table, given their unique "formats"
         # df1
@@ -37,7 +51,8 @@ class TransformStep(PipelineStep):
         df2.columns = new_header
         df2.drop("  Hogares privados con servicio doméstico y", axis = 1, inplace = True)
         df2["year"] = df2.index
-        df2.rename(columns= {"  Agricultura, ganadería, caza y silvicultura": "agricultura_ganaderia_caza_silvicultura", "  Pesca": "pesca", "  Minería": "mineria", "  Industria manufacturera": "industria_manufacturera", "  Electricidad, gas y agua": "electricidad_gas_agua", "  Construcción": "construccion", "  Comercio": "comercio", "  Hoteles y restaurantes": "hoteles_restaurantes", "  Transporte, almacenamiento y comunicaciones": "transporte_almacenamiento_comunicaciones", "  Intermediación financiera": "intermediacion_financiera", "  Actividad inmobiliarias, empresariales y de alquiler": "actividad_inmobiliarias_empresariales_alquiler", "  Administración pública y defensa": "administracion_publica_defensa", "  Enseñanza": "ensenianza", "  Servicios sociales y salud": "servicios_sociales_salud", "  Otras actividades de servicios comunitarios": "otras_actividades_servicios_comunitarios", "  Hogares privados con servicio doméstico y": "droped", "  organizaciones extraterritoriales": "hogares_privados_organizaciones_extraterritoriales", "Créditos Hipotecarios para Vivienda": "creditos_hipotecariosvivienda", "Créditos de Consumo": "creditos_consumo"}, inplace = True)
+        
+        df2.rename(columns= {"  Agricultura, ganadería, caza y silvicultura": "agricultura_ganaderia_caza_silvicultura_mill_soles", "  Pesca": "pesca_mill_soles", "  Minería": "mineria_mill_soles", "  Industria manufacturera": "industria_manufacturera_mill_soles", "  Electricidad, gas y agua": "electricidad_gas_agua_mill_soles", "  Construcción": "construccion_mill_soles", "  Comercio": "comercio_mill_soles", "  Hoteles y restaurantes": "hoteles_restaurantes_mill_soles", "  Transporte, almacenamiento y comunicaciones": "transporte_almacenamiento_comunicaciones_mill_soles", "  Intermediación financiera": "intermediacion_financiera_mill_soles", "  Actividad inmobiliarias, empresariales y de alquiler": "actividad_inmobiliarias_empresariales_alquiler_mill_soles", "  Administración pública y defensa": "administracion_publica_defensa_mill_soles", "  Enseñanza": "ensenianza_mill_soles", "  Servicios sociales y salud": "servicios_sociales_salud_mill_soles", "  Otras actividades de servicios comunitarios": "otras_actividades_servicios_comunitarios_mill_soles", "  Hogares privados con servicio doméstico y": "droped", "  organizaciones extraterritoriales": "hogares_privados_organizaciones_extraterritoriales_mill_soles", "Créditos Hipotecarios para Vivienda": "creditos_hipotecariosvivienda_mill_soles", "Créditos de Consumo": "creditos_consumo_mill_soles"}, inplace = True)
 
         # df3
         df3.rename(columns= {"Unnamed: 0": "year", "Expor-": "exportaciones", "Impor-": "importaciones", "Balanza": "balanza_comercial", "Balanza.1": "balanza_pagos", "Activos": "activos_externos_netos_corto_plazo", "Deuda": "deuda_publica_externa"}, inplace = True)
@@ -89,7 +104,8 @@ class TransformStep(PipelineStep):
         df9 = df9[1:]
         df9.columns = new_header
         df9["year"] = df9.index
-        df9.rename(columns= {"Educación Inicial": "gasto_social_educacion_inicial", "Educación Primaria": "gasto_social_educacion_primaria", "Educación Secundaria": "gasto_social_educacion_secundaria", "Asistencia Social": "gasto_social_asistencia_social", "Salud Colectiva": "gasto_social_salud_colectiva", "Salud Individual": "gasto_social_salud_individual" }, inplace = True)
+
+        df9.rename(columns= {"Educación Inicial": "gasto_social_educacion_inicial_mill_soles", "Educación Primaria": "gasto_social_educacion_primaria_mill_soles", "Educación Secundaria": "gasto_social_educacion_secundaria_mill_soles", "Asistencia Social": "gasto_social_asistencia_social_mill_soles", "Salud Colectiva": "gasto_social_salud_colectiva_mill_soles", "Salud Individual": "gasto_social_salud_individual_mill_soles" }, inplace = True)
 
         # df10
         df10.drop("Unnamed: 1", axis = 1, inplace = True)
@@ -116,19 +132,138 @@ class TransformStep(PipelineStep):
         df13["year"] = df13.index
         df13.rename(columns= {"Delitos contra la vida, el cuerpo y la salud": "delitos_vida_cuerpo_salud", "Delitos contra el honor": "delitos_honor", "Delitos contra la familia": "delitos_familia", "Delitos contra la libertad": "delitos_libertad", "Delitos contra el patrimonio": "delitos_patrimonio", "Delito contra la confianza y la buena fe en los negocios": "delitos_confianza_buena_fe_negocios", "Delitos contra los derechos intelectuales": "delitos_derechos_intelectuales", "Delitos contra el patrimonio cultural": "delitos_patrimonio_cultural", "Delitos contra el orden económico": "delitos_orden_economico", "Delitos contra el orden financiero y monetario": "delitos_orden_financiero_monetario", "Delitos tributarios": "delitos_tributarios", "Delitos contra la seguridad pública": "delitos_seguridad_publica", "Delitos ambientales": "delitos_ambientales", "Delitos contra la tranquilidad pública": "delitos_tranquilidad_publica", "Delitos contra la humanidad": "delitos_humanidad", "Delitos contra el estado y la defensa nacional": "delitos_estado_defensa_nacional", "Delitos contra los poderes del estado y el orden constitucional": "delitos_poderes_estado_orden_const", "Delito contra la voluntad popular": "delitos_voluntad_popular", "Delitos contra la administración pública": "delitos_administracion_publica", "Delitos contra la fe pública": "delitos_fe_publica"}, inplace = True)
 
+        # df14
+        df14.rename(columns= { "Año": "year", "Derechos  Ad Valorem": "trib_adu_ingr_teso_pub_DAV_mill_soles", "Derechos Específicos ": "trib_adu_ingr_teso_pub_D_especificos_mill_soles", "Sobretasa Adicional 5%": "trib_adu_ingr_teso_pub_sobretasa_ad_5perc_mill_soles", "IGV ": "trib_adu_ingr_teso_pub_IGV_mill_soles", "ISC ": "trib_adu_ingr_teso_pub_ISC_mill_soles", "Otros 1/": "trib_adu_ingr_teso_pub_otros_mill_soles", "Gobiernos Locales \n2/": "trib_adu_otros_org_gobiernos_loc_mill_soles", "INDECOPI": "trib_adu_otros_org_INDECOPI_mill_soles"}, inplace = True)
+        df14["year"] = df14["year"].astype(int)
+
+        # df15
+        df_1 = df15[["Unnamed: 0", 2015, 2016, 2017, 2018]]
+        df_2 = df15[["Unnamed: 0", "2015.1", "2016.1", "2017.1", "2018.1"]]
+        df_1 = df_1.T
+        df_2 = df_2.T
+        df_1 = df_1[1:5].copy()
+        df_2 = df_2[1:5].copy()
+        new_header_1 = ["banca_multiple_creditos", "empresas_financieras_creditos", "cajas_municipales_creditos", "cajas_rur_ahorro_credito_creditos", "entidades_desa_peq_micr_empresa_EDPYME_creditos", "empresas_arrenda_financiero_creditos", "banco_nacion_creditos", "agrobanco_creditos", "year"]
+        new_header_2 = ["banca_multiple_depositos", "empresas_financieras_depositos", "cajas_municipales_depositos", "cajas_rur_ahorro_credito_depositos", "entidades_desa_peq_micr_empresa_EDPYME_depositos", "empresas_arrenda_financiero_depositos", "banco_nacion_depositos", "agrobanco_depositos", "year"]
+        df_1["year"] = df_1.index
+        df_2["year"] = df_2.index
+        df_1["year"] = df_1["year"].astype(int)
+        df_2["year"] = df_2["year"].str.slice(0,-2).astype(int)
+        df_1.columns = new_header_1
+        df_2.columns = new_header_2
+        df15 = pd.merge(df_1, df_2[["banca_multiple_depositos", "empresas_financieras_depositos", "cajas_municipales_depositos", "cajas_rur_ahorro_credito_depositos", "entidades_desa_peq_micr_empresa_EDPYME_depositos", "empresas_arrenda_financiero_depositos", "banco_nacion_depositos", "agrobanco_depositos", "year"]], on = "year", how = "left")
+
+        # df16
+        new_header = ["year", "sector_pesquero_PIB_mill_soles_const_2007", "sector_pesquero_VAB_mill_soles_const_2007", "sector_pesquero_porc_VAB_d_PIB", "sector_pesquero_desem_mil_ton_met", "sector_pesquero_trans_mil_ton_met", "sector_pesquero_prod_harina_pescado_mil_ton_met", "sector_pesquero_consumo_interno_total_mil_ton_met", "sector_pesquero_consumo_interno_per_capita_kg"]
+        df16.columns = new_header
+
+        # df17
+        new_header = ["year", "sector_pesquero_mar_con_dir_enlatado_mil_ton_met", "sector_pesquero_mar_con_dir_congelado_mil_ton_met", "sector_pesquero_mar_con_dir_curado_mil_ton_met", "sector_pesquero_mar_con_dir_fresco_mil_ton_met", "sector_pesquero_mar_con_ind_anchoveta_mil_ton_met", "sector_pesquero_mar_con_ind_o_especies_mil_ton_met", "sector_pesquero_con_dir_curado_mil_ton_met", "sector_pesquero_con_dir_fresco_mil_ton_met", "sector_pesquero_con_dir_congelado_mil_ton_met"]
+        df17.columns = new_header
+        df17["year"].replace({"2018 P/": 2018, "2017 ": 2017}, inplace = True)
+
+        # df18
+        df18.rename(columns = {"2018 P/": 2018}, inplace = True)
+        df18 = df18.T
+        new_header = df18.iloc[0]
+        df18 = df18[1:]
+        df18.columns = new_header
+        df18.drop(["Pelágicos 1/", "Demersales 2/", "Costeros (Pelágicos y Demersales)", "Otros Peces", "Otros Grupos", "Quelonios", "Crustáceos", "Moluscos", "Otros", "Equinodermos", "Cetáceos Menores", "Vegetales"], axis = 1, inplace = True)
+        df18.rename(columns = {"Ayanque (Cachema)": "Ayanque", "Concha de Abanico": "Concha_de_Abanico", "Atún": "Atun", "Tiburón": "Tiburon", "Abalón": "abalon"}, inplace = True)
+        df18.columns = [x.lower() for x in df18.columns]
+        df18 = df18.add_prefix("pesca_desem_")
+        df18 = df18.add_suffix("_mil_ton_metricas")
+        df18["year"] = df18.index
+
+        # df19
+        df19.drop(df19.loc[df19["Giro industrial"].str.contains("Pesca |Consumo ")].index, inplace = True)
+        df19.rename(columns= {"2018 P/": 2018}, inplace = True)
+        df19 = df19.T
+        new_header = ["pesca_trans_mar_enlatado_mil_ton_metricas", "pesca_trans_mar_congelado_mil_ton_metricas", "pesca_trans_mar_curado_mil_ton_metricas", "pesca_trans_mar_harina_pescado_mil_ton_metricas", "pesca_trans_mar_aceite_crudo_pescado_mil_ton_metricas", "pesca_trans_con_congelado_mil_ton_metricas", "pesca_trans_con_curado_mil_ton_metricas"]
+        df19.drop(["Giro industrial"], axis = 0, inplace = True)
+        df19.columns = new_header
+        df19["year"] = df19.index
+
+        # df20
+        df20.drop(df20.loc[df20["Utilización"].str.contains("Consumo ")].index, inplace = True)
+        df20.rename(columns= {"2018 P/": 2018}, inplace = True)
+        df20 = df20.T
+        df20.drop(["Utilización"], axis = 0, inplace = True)
+        new_header = ["pesca_venta_interna_con_direc_enlatado_mil_ton_metricas", "pesca_venta_interna_con_direc_congelado_mil_ton_metricas", "pesca_venta_interna_con_direc_curado_mil_ton_metricas", "pesca_venta_interna_con_direc_fresco_mil_ton_metricas", "pesca_venta_interna_con_indirec_harina_pescado_mil_ton_metricas", "pesca_venta_interna_con_indirec_aceite_crudo_pescado_mil_ton_metricas"]
+        df20.columns = new_header
+        df20["year"] = df20.index
+
+        # df21
+        df21.rename(columns= {"2018 P/": 2018}, inplace = True)
+        df_1 = df21.iloc[:4].copy()
+        df_2 = df21.iloc[6:10].copy()
+        df_1 = df_1.T
+        df_2 = df_2.T
+        df_1.drop(["Utilización"], axis = 0, inplace = True)
+        df_2.drop(["Utilización"], axis = 0, inplace = True)
+        new_header = ["pesca_consumo_interno_direc_enlatado_mil_ton_metricas", "pesca_consumo_interno_direc_congelado_mil_ton_metricas", "pesca_consumo_interno_direc_curado_mil_ton_metricas", "pesca_consumo_interno_direc_fresco_mil_ton_metricas"]
+        df_1.columns = new_header
+        new_header = ["pesca_consumo_interno_direc_enlatado_per_cap_kg_hab", "pesca_consumo_interno_direc_congelado_per_cap_kg_hab", "pesca_consumo_interno_direc_curado_per_cap_kg_hab", "pesca_consumo_interno_direc_fresco_per_cap_kg_hab"]
+        df_2.columns = new_header
+        df_1["year"] = df_1.index
+        df_2["year"] = df_2.index
+        df21 = pd.merge(df_1, df_2[["year", "pesca_consumo_interno_direc_enlatado_per_cap_kg_hab", "pesca_consumo_interno_direc_congelado_per_cap_kg_hab", "pesca_consumo_interno_direc_curado_per_cap_kg_hab", "pesca_consumo_interno_direc_fresco_per_cap_kg_hab"]], on = "year", how = "left")
+
+        # df22
+        df22.rename(columns= {"2018 P/": 2018}, inplace = True)
+        df22 = df22.T
+        df_ = df22[[2,3,6,7,9,10,12,13]].copy()
+        new_header = ["pesca_n_plantas_instaladas_enlatado", "pesca_capaci_inst_enlatado_u_cajas_turno", "pesca_n_plantas_instaladas_congelado", "pesca_capaci_inst_congelado_u_ton_dia", "pesca_n_plantas_instaladas_curado", "pesca_capaci_inst_curado_u_ton_mes", "pesca_n_plantas_instaladas_harina", "pesca_capaci_inst_harina_u_ton_hora"]
+        df_.columns = new_header
+        df_.drop(["Rubro de producción"], axis = 0, inplace = True)
+        df_['year'] = df_.index
+        df22 = df_.copy()
+
+        # df23
+        new_header = ["year", "turismo_entrada_turistas", "turismo_salida_turistas", "turismo_ingreso_divisas_millones_dolares", "turismo_egreso_divisas_millones_dolares", "turismo_ingreso_divisas_per_capita_dolares", "turismo_egreso_divisas_per_capita_dolares"]
+        df23.columns = new_header
+
+        # df24
+        df24 = df24.T
+        df24.drop([" Lugar de Entrada"], axis = 0, inplace = True)
+        new_header = ["ing_tur_intern_aeropuerto_Jorge_Chavez", "ing_tur_intern_puesto_control_Santa_Rosa","ing_tur_intern_otros_puntos"]
+        df24.columns = new_header
+        df24["year"] = df24.index
+
+        # df25
+        df25 = df25.T
+        df25.drop(["Variable"], axis = 0, inplace = True)
+        df25.drop([5,6,9,10,11], axis = 1, inplace = True)
+        new_header = ["turismo_arribo_turistas_nacionales", "turismo_arribo_turistas_extranjeros", "turismo_pernoctacion_turistas_nacionales", "turismo_pernoctacion_turistas_extranjeros", "turismo_permanencia_prom_turistas_nacionales", "turismo_permanencia_prom_turistas_extranjeros"]
+        df25.columns = new_header
+        df25['year'] = df25.index
+
         # Merge of the 13 datasets
-        df = pd.merge(df1, df2[["year", "agricultura_ganaderia_caza_silvicultura", "pesca", "mineria", "industria_manufacturera", "electricidad_gas_agua", "construccion", "comercio", "hoteles_restaurantes", "transporte_almacenamiento_comunicaciones", "intermediacion_financiera", "actividad_inmobiliarias_empresariales_alquiler", "administracion_publica_defensa", "ensenianza", "servicios_sociales_salud", "otras_actividades_servicios_comunitarios", "hogares_privados_organizaciones_extraterritoriales", "creditos_hipotecariosvivienda", "creditos_consumo"]], on = "year", how = "left")
-        df = pd.merge(df, df3[["year", "exportaciones", "importaciones", "balanza_comercial", "balanza_pagos", "activos_externos_netos_corto_plazo", "deuda_publica_externa"]], on = "year", how = "left")
-        df = pd.merge(df, df4[["year", "act_reserva_BCRP", "act_sist_financiero_sin_BCRP", "act_otros_activos", "pas_med_lar_sector_privado", "pas_med_lar_sector_publico", "pas_cort_sist_financiero_sin_BCRP", "pas_cort_BCRP", "pas_cort_otros", "pas_inversion_directa", "pas_participacion_capital"]], on = "year", how = "left")
-        df = pd.merge(df, df5[["year", "poblacion_total", "poblacion_censada", "poblacion_omitida"]], on = "year", how = "left")
-        df = pd.merge(df, df6[["year", "pea_hombres", "pea_mujeres", "pea_14_24_yrs", "pea_25_44_yrs", "pea_45_64_yrs", "pea_65_o_mas_yrs", "pea_primaria_o_inferior", "pea_secundaria", "pea_superior_no_universitaria", "pea_universitaria", "pea_empresa_1_10_empleados", "pea_empresa_11_50_empleados", "pea_empresa_50_o_mas_empleados", "pea_agricultura_pesca_mineria", "pea_manufactura", "pea_construccion", "pea_comercio", "pea_transporte_comunicaciones", "pea_otros_servicios"]], on = "year", how = "left")
-        df = pd.merge(df, df7[["year", "pea_sin_seguro_medico", "pea_con_seguro_medico"]], on = "year", how = "left")
-        df = pd.merge(df, df8[["year", "perc_poblacion_con_1_nbi", "perc_poblacion_con_2_a_5_nbi", "perc_poblacion_nbi_vivienda_inadecuada", "perc_poblacion_nbi_vivienda_hacinada", "perc_poblacion_nbi_servicios_higienicos", "perc_poblacion_nbi_menores_sin_escuela", "perc_poblacion_nbi_alta_dependencia_economica"]], on = "year", how = "left")
-        df = pd.merge(df, df9[["year", "gasto_social_educacion_inicial", "gasto_social_educacion_primaria", "gasto_social_educacion_secundaria", "gasto_social_asistencia_social", "gasto_social_salud_colectiva", "gasto_social_salud_individual"]], on = "year", how = "left")
-        df = pd.merge(df, df10[["year", "gasto_gobierno_sector_publico", "gasto_gobierno_sector_privado"]], on = "year", how = "left")
+        df = pd.merge(df1, df2[["year", "agricultura_ganaderia_caza_silvicultura_mill_soles", "pesca_mill_soles", "mineria_mill_soles", "industria_manufacturera_mill_soles", "electricidad_gas_agua_mill_soles", "construccion_mill_soles", "comercio_mill_soles", "hoteles_restaurantes_mill_soles", "transporte_almacenamiento_comunicaciones_mill_soles", "intermediacion_financiera_mill_soles", "actividad_inmobiliarias_empresariales_alquiler_mill_soles", "administracion_publica_defensa_mill_soles", "ensenianza_mill_soles", "servicios_sociales_salud_mill_soles", "otras_actividades_servicios_comunitarios_mill_soles", "hogares_privados_organizaciones_extraterritoriales_mill_soles", "creditos_hipotecariosvivienda_mill_soles", "creditos_consumo_mill_soles"]], on = "year", how = "left")
+        df = pd.merge(df,  df3[["year", "exportaciones_mill_dolares", "importaciones_mill_dolares", "balanza_comercial_mill_dolares", "balanza_pagos_mill_dolares", "activos_externos_netos_corto_plazo_mill_dolares", "deuda_publica_externa_mill_dolares"]], on = "year", how = "left")
+        df = pd.merge(df,  df4[["year", "act_reserva_BCRP_mill_dolares", "act_sist_financiero_sin_BCRP_mill_dolares", "act_otros_activos_mill_dolares", "pas_med_lar_sector_privado_mill_dolares", "pas_med_lar_sector_publico_mill_dolares", "pas_cort_sist_financiero_sin_BCRP_mill_dolares", "pas_cort_BCRP_mill_dolares", "pas_cort_otros_mill_dolares", "pas_inversion_directa_mill_dolares", "pas_participacion_capital_mill_dolares"]], on = "year", how = "left")
+        df = pd.merge(df,  df5[["year", "poblacion_total", "poblacion_censada", "poblacion_omitida"]], on = "year", how = "left")
+        df = pd.merge(df,  df6[["year", "pea_hombres", "pea_mujeres", "pea_14_24_yrs", "pea_25_44_yrs", "pea_45_64_yrs", "pea_65_o_mas_yrs", "pea_primaria_o_inferior", "pea_secundaria", "pea_superior_no_universitaria", "pea_universitaria", "pea_empresa_1_10_empleados", "pea_empresa_11_50_empleados", "pea_empresa_50_o_mas_empleados", "pea_agricultura_pesca_mineria", "pea_manufactura", "pea_construccion", "pea_comercio", "pea_transporte_comunicaciones", "pea_otros_servicios"]], on = "year", how = "left")
+        df = pd.merge(df,  df7[["year", "pea_sin_seguro_medico", "pea_con_seguro_medico"]], on = "year", how = "left")
+        df = pd.merge(df,  df8[["year", "perc_poblacion_con_1_nbi", "perc_poblacion_con_2_a_5_nbi", "perc_poblacion_nbi_vivienda_inadecuada", "perc_poblacion_nbi_vivienda_hacinada", "perc_poblacion_nbi_servicios_higienicos", "perc_poblacion_nbi_menores_sin_escuela", "perc_poblacion_nbi_alta_dependencia_economica"]], on = "year", how = "left")
+        df = pd.merge(df,  df9[["year", "gasto_social_educacion_inicial_mill_soles", "gasto_social_educacion_primaria_mill_soles", "gasto_social_educacion_secundaria_mill_soles", "gasto_social_asistencia_social_mill_soles", "gasto_social_salud_colectiva_mill_soles", "gasto_social_salud_individual_mill_soles"]], on = "year", how = "left")
+        df = pd.merge(df, df10[["year", "gasto_gobierno_sector_publico_mill_soles", "gasto_gobierno_sector_privado_mill_soles"]], on = "year", how = "left")
         df = pd.merge(df, df11[["year", "analfabetismo_total_15_19", "analfabetismo_total_20_29", "analfabetismo_total_30_39", "analfabetismo_total_40_49", "analfabetismo_total_50_59", "analfabetismo_total_60_y_mas", "analfabetismo_h_15_19", "analfabetismo_f_15_19", "analfabetismo_h_20_29", "analfabetismo_f_20_29", "analfabetismo_h_30_39", "analfabetismo_f_30_39", "analfabetismo_h_40_49", "analfabetismo_f_40_49", "analfabetismo_h_50_59", "analfabetismo_f_50_59", "analfabetismo_h_60_y_mas", "analfabetismo_f_60_y_mas"]], on = "year", how = "left")
         df = pd.merge(df, df12[["year", "millones_toneladas_co2_equivalente"]], on = "year", how = "left")
-        df = pd.merge(df,df13[["delitos_vida_cuerpo_salud", "delitos_honor", "delitos_familia", "delitos_libertad", "delitos_patrimonio", "delitos_confianza_buena_fe_negocios", "delitos_derechos_intelectuales", "delitos_patrimonio_cultural", "delitos_orden_economico", "delitos_orden_financiero_monetario", "delitos_tributarios", "delitos_seguridad_publica", "delitos_ambientales", "delitos_tranquilidad_publica", "delitos_humanidad", "delitos_estado_defensa_nacional", "delitos_poderes_estado_orden_const", "delitos_voluntad_popular", "delitos_administracion_publica", "delitos_fe_publica", "year"]], on = "year", how = "left")
+        df = pd.merge(df, df13[["delitos_vida_cuerpo_salud", "delitos_honor", "delitos_familia", "delitos_libertad", "delitos_patrimonio", "delitos_confianza_buena_fe_negocios", "delitos_derechos_intelectuales", "delitos_patrimonio_cultural", "delitos_orden_economico", "delitos_orden_financiero_monetario", "delitos_tributarios", "delitos_seguridad_publica", "delitos_ambientales", "delitos_tranquilidad_publica", "delitos_humanidad", "delitos_estado_defensa_nacional", "delitos_poderes_estado_orden_const", "delitos_voluntad_popular", "delitos_administracion_publica", "delitos_fe_publica", "year"]], on = "year", how = "left")
+        df = pd.merge(df, df14[["year", "trib_adu_ingr_teso_pub_DAV_mill_soles", "trib_adu_ingr_teso_pub_D_especificos_mill_soles", "trib_adu_ingr_teso_pub_sobretasa_ad_5perc_mill_soles", "trib_adu_ingr_teso_pub_IGV_mill_soles", "trib_adu_ingr_teso_pub_ISC_mill_soles", "trib_adu_ingr_teso_pub_otros_mill_soles", "trib_adu_otros_org_gobiernos_loc_mill_soles", "trib_adu_otros_org_INDECOPI_mill_soles"]], on = "year", how = "left")
+
+        df = pd.merge(df, df15[["year", "banca_multiple_creditos", "empresas_financieras_creditos", "cajas_municipales_creditos", "cajas_rur_ahorro_credito_creditos", "entidades_desa_peq_micr_empresa_EDPYME_creditos", "empresas_arrenda_financiero_creditos", "banco_nacion_creditos", "agrobanco_creditos", "banca_multiple_depositos", "empresas_financieras_depositos", "cajas_municipales_depositos", "cajas_rur_ahorro_credito_depositos", "entidades_desa_peq_micr_empresa_EDPYME_depositos", "empresas_arrenda_financiero_depositos", "banco_nacion_depositos", "agrobanco_depositos"]], on = "year", how = "left")
+        df = pd.merge(df, df16[["year", "sector_pesquero_PIB_mill_soles_const_2007", "sector_pesquero_VAB_mill_soles_const_2007", "sector_pesquero_porc_VAB_d_PIB", "sector_pesquero_desem_mil_ton_met", "sector_pesquero_trans_mil_ton_met", "sector_pesquero_prod_harina_pescado_mil_ton_met", "sector_pesquero_consumo_interno_total_mil_ton_met", "sector_pesquero_consumo_interno_per_capita_kg"]], on = "year", how = "left")
+        df = pd.merge(df, df17[["year", "sector_pesquero_mar_con_dir_enlatado_mil_ton_met", "sector_pesquero_mar_con_dir_congelado_mil_ton_met", "sector_pesquero_mar_con_dir_curado_mil_ton_met", "sector_pesquero_mar_con_dir_fresco_mil_ton_met", "sector_pesquero_mar_con_ind_anchoveta_mil_ton_met", "sector_pesquero_mar_con_ind_o_especies_mil_ton_met", "sector_pesquero_con_dir_curado_mil_ton_met", "sector_pesquero_con_dir_fresco_mil_ton_met", "sector_pesquero_con_dir_congelado_mil_ton_met"]], on = "year", how = "left")
+        df = pd.merge(df, df18[["year", "pesca_desem_anchoveta_mil_ton_metricas", "pesca_desem_atun_mil_ton_metricas", "pesca_desem_bonito_mil_ton_metricas", "pesca_desem_caballa_mil_ton_metricas", "pesca_desem_jurel_mil_ton_metricas", "pesca_desem_perico_mil_ton_metricas", "pesca_desem_samasa_mil_ton_metricas", "pesca_desem_sardina_mil_ton_metricas", "pesca_desem_tiburon_mil_ton_metricas", "pesca_desem_ayanque_mil_ton_metricas", "pesca_desem_cabrilla_mil_ton_metricas", "pesca_desem_coco_mil_ton_metricas", "pesca_desem_lenguado_mil_ton_metricas", "pesca_desem_merluza_mil_ton_metricas", "pesca_desem_raya_mil_ton_metricas", "pesca_desem_tollo_mil_ton_metricas", "pesca_desem_cabinza_mil_ton_metricas", "pesca_desem_cojinova_mil_ton_metricas", "pesca_desem_corvina_mil_ton_metricas", "pesca_desem_chita_mil_ton_metricas", "pesca_desem_liza_mil_ton_metricas", "pesca_desem_lorna_mil_ton_metricas", "pesca_desem_machete_mil_ton_metricas", "pesca_desem_pejerrey_mil_ton_metricas", "pesca_desem_pintadilla_mil_ton_metricas", "pesca_desem_cangrejo_mil_ton_metricas", "pesca_desem_langosta_mil_ton_metricas", "pesca_desem_langostino_mil_ton_metricas", "pesca_desem_abalon_mil_ton_metricas", "pesca_desem_caracol_mil_ton_metricas", "pesca_desem_choro_mil_ton_metricas", "pesca_desem_concha_de_abanico_mil_ton_metricas", "pesca_desem_macha_mil_ton_metricas", "pesca_desem_almeja_mil_ton_metricas", "pesca_desem_calamar_mil_ton_metricas", "pesca_desem_pota_mil_ton_metricas", "pesca_desem_pulpo_mil_ton_metricas"]], on = "year", how = "left")
+        df = pd.merge(df, df19[["year", "pesca_trans_mar_enlatado_mil_ton_metricas", "pesca_trans_mar_congelado_mil_ton_metricas", "pesca_trans_mar_curado_mil_ton_metricas", "pesca_trans_mar_harina_pescado_mil_ton_metricas", "pesca_trans_mar_aceite_crudo_pescado_mil_ton_metricas", "pesca_trans_con_congelado_mil_ton_metricas", "pesca_trans_con_curado_mil_ton_metricas"]], on = "year", how = "left")
+        df = pd.merge(df, df20[["year", "pesca_venta_interna_con_direc_enlatado_mil_ton_metricas", "pesca_venta_interna_con_direc_congelado_mil_ton_metricas", "pesca_venta_interna_con_direc_curado_mil_ton_metricas", "pesca_venta_interna_con_direc_fresco_mil_ton_metricas", "pesca_venta_interna_con_indirec_harina_pescado_mil_ton_metricas", "pesca_venta_interna_con_indirec_aceite_crudo_pescado_mil_ton_metricas"]], on = "year", how = "left")
+        df = pd.merge(df, df21[["year", "pesca_consumo_interno_direc_enlatado_mil_ton_metricas", "pesca_consumo_interno_direc_congelado_mil_ton_metricas", "pesca_consumo_interno_direc_curado_mil_ton_metricas", "pesca_consumo_interno_direc_fresco_mil_ton_metricas", "pesca_consumo_interno_direc_enlatado_per_cap_kg_hab", "pesca_consumo_interno_direc_congelado_per_cap_kg_hab", "pesca_consumo_interno_direc_curado_per_cap_kg_hab", "pesca_consumo_interno_direc_fresco_per_cap_kg_hab"]], on = "year", how = "left")
+        df = pd.merge(df, df22[["year", "pesca_n_plantas_instaladas_enlatado", "pesca_capaci_inst_enlatado_u_cajas_turno", "pesca_n_plantas_instaladas_congelado", "pesca_capaci_inst_congelado_u_ton_dia", "pesca_n_plantas_instaladas_curado", "pesca_capaci_inst_curado_u_ton_mes", "pesca_n_plantas_instaladas_harina", "pesca_capaci_inst_harina_u_ton_hora"]], on = "year", how = "left")
+        df = pd.merge(df, df23[["year", "turismo_entrada_turistas", "turismo_salida_turistas", "turismo_ingreso_divisas_millones_dolares", "turismo_egreso_divisas_millones_dolares", "turismo_ingreso_divisas_per_capita_dolares", "turismo_egreso_divisas_per_capita_dolares"]], on = "year", how = "left")
+        df = pd.merge(df, df24[["year", "ing_tur_intern_aeropuerto_Jorge_Chavez", "ing_tur_intern_puesto_control_Santa_Rosa", "ing_tur_intern_otros_puntos"]], on = "year", how = "left")
+        df = pd.merge(df, df25[["year", "turismo_arribo_turistas_nacionales", "turismo_arribo_turistas_extranjeros", "turismo_pernoctacion_turistas_nacionales", "turismo_pernoctacion_turistas_extranjeros", "turismo_permanencia_prom_turistas_nacionales", "turismo_permanencia_prom_turistas_extranjeros"]], on = "year", how = "left")
 
         df.replace("-", 0, inplace = True)
         # Changing str values to float/int values
@@ -151,147 +286,298 @@ class itp_indicators_y_n_nat_pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
 
         dtype = {
-            "ubigeo":                                                 "String",
-            "year":                                                   "UInt16",
-            "producto_interno_bruto":                                 "UInt16",
-            "remuneraciones":                                         "UInt16",
-            "derechos_importacion":                                   "UInt16",
-            "impuestos_productos":                                    "UInt16",
-            "otros_impuestos":                                        "UInt16",
-            "ingreso_explotacion":                                    "UInt16",
-            "excedente_explotacion_bruto":                            "UInt16",
-            "ingreso_mixto":                                          "UInt16",
-            "agricultura_ganaderia_caza_silvicultura":                "UInt16",
-            "pesca":                                                  "UInt16",
-            "mineria":                                                "UInt16",
-            "industria_manufacturera":                                "UInt16",
-            "electricidad_gas_agua":                                  "UInt16",
-            "construccion":                                           "UInt16",
-            "comercio":                                               "UInt16",
-            "hoteles_restaurantes":                                   "UInt16",
-            "transporte_almacenamiento_comunicaciones":               "UInt16",
-            "intermediacion_financiera":                              "UInt16",
-            "actividad_inmobiliarias_empresariales_alquiler":         "UInt16",
-            "administracion_publica_defensa":                         "UInt16",
-            "ensenianza":                                             "UInt16",
-            "servicios_sociales_salud":                               "UInt16",
-            "otras_actividades_servicios_comunitarios":               "UInt16",
-            "hogares_privados_organizaciones_extraterritoriales":     "UInt16",
-            "creditos_hipotecariosvivienda":                          "UInt16",
-            "creditos_consumo":                                       "UInt16",
-            "exportaciones":                                          "UInt16",
-            "importaciones":                                          "UInt16",
-            "balanza_comercial":                                      "Int32",
-            "balanza_pagos":                                          "Int32",
-            "activos_externos_netos_corto_plazo":                     "UInt16",
-            "deuda_publica_externa":                                  "UInt16",
-            "act_reserva_BCRP":                                       "UInt16",
-            "act_sist_financiero_sin_BCRP":                           "UInt16",
-            "act_otros_activos":                                      "UInt16",
-            "pas_med_lar_sector_privado":                             "UInt16",
-            "pas_med_lar_sector_publico":                             "UInt16",
-            "pas_cort_sist_financiero_sin_BCRP":                      "UInt16",
-            "pas_cort_BCRP":                                          "UInt16",
-            "pas_cort_otros":                                         "UInt16",
-            "pas_inversion_directa":                                  "UInt16",
-            "pas_participacion_capital":                              "UInt16",
-            "poblacion_total":                                        "UInt16",
-            "poblacion_censada":                                      "UInt16",
-            "poblacion_omitida":                                      "UInt16",
-            "pea_hombres":                                            "UInt16",
-            "pea_mujeres":                                            "UInt16",
-            "pea_14_24_yrs":                                          "UInt16",
-            "pea_25_44_yrs":                                          "UInt16",
-            "pea_45_64_yrs":                                          "UInt16",
-            "pea_65_o_mas_yrs":                                       "UInt16",
-            "pea_primaria_o_inferior":                                "UInt16",
-            "pea_secundaria":                                         "UInt16",
-            "pea_superior_no_universitaria":                          "UInt16",
-            "pea_universitaria":                                      "UInt16",
-            "pea_empresa_1_10_empleados":                             "UInt16",
-            "pea_empresa_11_50_empleados":                            "UInt16",
-            "pea_empresa_50_o_mas_empleados":                         "UInt16",
-            "pea_agricultura_pesca_mineria":                          "UInt16",
-            "pea_manufactura":                                        "UInt16",
-            "pea_construccion":                                       "UInt16",
-            "pea_comercio":                                           "UInt16",
-            "pea_transporte_comunicaciones":                          "UInt16",
-            "pea_otros_servicios":                                    "UInt16",
-            "pea_sin_seguro_medico":                                  "UInt16",
-            "pea_con_seguro_medico":                                  "UInt16",
-            "perc_poblacion_con_1_nbi":                               "UInt16",
-            "perc_poblacion_con_2_a_5_nbi":                           "UInt16",
-            "perc_poblacion_nbi_vivienda_inadecuada":                 "UInt16",
-            "perc_poblacion_nbi_vivienda_hacinada":                   "UInt16",
-            "perc_poblacion_nbi_servicios_higienicos":                "UInt16",
-            "perc_poblacion_nbi_menores_sin_escuela":                 "UInt16",
-            "perc_poblacion_nbi_alta_dependencia_economica":          "UInt16",
-            "gasto_social_educacion_inicial":                         "UInt16",
-            "gasto_social_educacion_primaria":                        "UInt16",
-            "gasto_social_educacion_secundaria":                      "UInt16",
-            "gasto_social_asistencia_social":                         "UInt16",
-            "gasto_social_salud_colectiva":                           "UInt16",
-            "gasto_social_salud_individual":                          "UInt16",
-            "gasto_gobierno_sector_publico":                          "UInt16",
-            "gasto_gobierno_sector_privado":                          "UInt16",
-            "analfabetismo_total_15_19":                              "UInt16",
-            "analfabetismo_total_20_29":                              "UInt16",
-            "analfabetismo_total_30_39":                              "UInt16",
-            "analfabetismo_total_40_49":                              "UInt16",
-            "analfabetismo_total_50_59":                              "UInt16",
-            "analfabetismo_total_60_y_mas":                           "UInt16",
-            "analfabetismo_h_15_19":                                  "UInt16",
-            "analfabetismo_f_15_19":                                  "UInt16",
-            "analfabetismo_h_20_29":                                  "UInt16",
-            "analfabetismo_f_20_29":                                  "UInt16",
-            "analfabetismo_h_30_39":                                  "UInt16",
-            "analfabetismo_f_30_39":                                  "UInt16",
-            "analfabetismo_h_40_49":                                  "UInt16",
-            "analfabetismo_f_40_49":                                  "UInt16",
-            "analfabetismo_h_50_59":                                  "UInt16",
-            "analfabetismo_f_50_59":                                  "UInt16",
-            "analfabetismo_h_60_y_mas":                               "UInt16",
-            "analfabetismo_f_60_y_mas":                               "UInt16",
-            "millones_toneladas_co2_equivalente":                     "UInt16",
-            "delitos_vida_cuerpo_salud":                              "UInt16",
-            "delitos_honor":                                          "UInt16",
-            "delitos_familia":                                        "UInt16",
-            "delitos_libertad":                                       "UInt16",
-            "delitos_patrimonio":                                     "UInt16",
-            "delitos_confianza_buena_fe_negocios":                    "UInt16",
-            "delitos_derechos_intelectuales":                         "UInt16",
-            "delitos_patrimonio_cultural":                            "UInt16",
-            "delitos_orden_economico":                                "UInt16",
-            "delitos_orden_financiero_monetario":                     "UInt16",
-            "delitos_tributarios":                                    "UInt16",
-            "delitos_seguridad_publica":                              "UInt16",
-            "delitos_ambientales":                                    "UInt16",
-            "delitos_tranquilidad_publica":                           "UInt16",
-            "delitos_humanidad":                                      "UInt16",
-            "delitos_estado_defensa_nacional":                        "UInt16",
-            "delitos_poderes_estado_orden_const":                     "UInt16",
-            "delitos_voluntad_popular":                               "UInt16",
-            "delitos_administracion_publica":                         "UInt16",
-            "delitos_fe_publica":                                     "UInt16"
+            "ubigeo":                                                                       "String",
+            "year":                                                                         "UInt16",
+            "producto_interno_bruto_mill_n_soles":                                          "UInt16",
+            "remuneraciones_mill_n_soles":                                                  "UInt16",
+            "derechos_importacion_mill_n_soles":                                            "UInt16",
+            "impuestos_productos_mill_n_soles":                                             "UInt16",
+            "otros_impuestos_mill_n_soles":                                                 "UInt16",
+            "ingreso_explotacion_mill_n_soles":                                             "UInt16",
+            "excedente_explotacion_bruto_mill_n_soles":                                     "UInt16",
+            "ingreso_mixto_mill_n_soles":                                                   "UInt16",
+            "agricultura_ganaderia_caza_silvicultura_mill_soles":                           "UInt16",
+            "pesca_mill_soles":                                                             "UInt16",
+            "mineria_mill_soles":                                                           "UInt16",
+            "industria_manufacturera_mill_soles":                                           "UInt16",
+            "electricidad_gas_agua_mill_soles":                                             "UInt16",
+            "construccion_mill_soles":                                                      "UInt16",
+            "comercio_mill_soles":                                                          "UInt16",
+            "hoteles_restaurantes_mill_soles":                                              "UInt16",
+            "transporte_almacenamiento_comunicaciones_mill_soles":                          "UInt16",
+            "intermediacion_financiera_mill_soles":                                         "UInt16",
+            "actividad_inmobiliarias_empresariales_alquiler_mill_soles":                    "UInt16",
+            "administracion_publica_defensa_mill_soles":                                    "UInt16",
+            "ensenianza_mill_soles":                                                        "UInt16",
+            "servicios_sociales_salud_mill_soles":                                          "UInt16",
+            "otras_actividades_servicios_comunitarios_mill_soles":                          "UInt16",
+            "hogares_privados_organizaciones_extraterritoriales_mill_soles":                "UInt16",
+            "creditos_hipotecariosvivienda_mill_soles":                                     "UInt16",
+            "creditos_consumo_mill_soles":                                                  "UInt16",
+            "exportaciones_mill_dolares":                                                   "UInt16",
+            "importaciones_mill_dolares":                                                   "UInt16",
+            "balanza_comercial_mill_dolares":                                               "Int32",
+            "balanza_pagos_mill_dolares":                                                   "Int32",
+            "activos_externos_netos_corto_plazo_mill_dolares":                              "UInt16",
+            "deuda_publica_externa_mill_dolares":                                           "UInt16",
+            "act_reserva_BCRP_mill_dolares":                                                "UInt16",
+            "act_sist_financiero_sin_BCRP_mill_dolares":                                    "UInt16",
+            "act_otros_activos_mill_dolares":                                               "UInt16",
+            "pas_med_lar_sector_privado_mill_dolares":                                      "UInt16",
+            "pas_med_lar_sector_publico_mill_dolares":                                      "UInt16",
+            "pas_cort_sist_financiero_sin_BCRP_mill_dolares":                               "UInt16",
+            "pas_cort_BCRP_mill_dolares":                                                   "UInt16",
+            "pas_cort_otros_mill_dolares":                                                  "UInt16",
+            "pas_inversion_directa_mill_dolares":                                           "UInt16",
+            "pas_participacion_capital_mill_dolares":                                       "UInt16",
+            "poblacion_total":                                                              "UInt16",
+            "poblacion_censada":                                                            "UInt16",
+            "poblacion_omitida":                                                            "UInt16",
+            "pea_hombres":                                                                  "UInt16",
+            "pea_mujeres":                                                                  "UInt16",
+            "pea_14_24_yrs":                                                                "UInt16",
+            "pea_25_44_yrs":                                                                "UInt16",
+            "pea_45_64_yrs":                                                                "UInt16",
+            "pea_65_o_mas_yrs":                                                             "UInt16",
+            "pea_primaria_o_inferior":                                                      "UInt16",
+            "pea_secundaria":                                                               "UInt16",
+            "pea_superior_no_universitaria":                                                "UInt16",
+            "pea_universitaria":                                                            "UInt16",
+            "pea_empresa_1_10_empleados":                                                   "UInt16",
+            "pea_empresa_11_50_empleados":                                                  "UInt16",
+            "pea_empresa_50_o_mas_empleados":                                               "UInt16",
+            "pea_agricultura_pesca_mineria":                                                "UInt16",
+            "pea_manufactura":                                                              "UInt16",
+            "pea_construccion":                                                             "UInt16",
+            "pea_comercio":                                                                 "UInt16",
+            "pea_transporte_comunicaciones":                                                "UInt16",
+            "pea_otros_servicios":                                                          "UInt16",
+            "pea_sin_seguro_medico":                                                        "UInt16",
+            "pea_con_seguro_medico":                                                        "UInt16",
+            "perc_poblacion_con_1_nbi":                                                     "UInt16",
+            "perc_poblacion_con_2_a_5_nbi":                                                 "UInt16",
+            "perc_poblacion_nbi_vivienda_inadecuada":                                       "UInt16",
+            "perc_poblacion_nbi_vivienda_hacinada":                                         "UInt16",
+            "perc_poblacion_nbi_servicios_higienicos":                                      "UInt16",
+            "perc_poblacion_nbi_menores_sin_escuela":                                       "UInt16",
+            "perc_poblacion_nbi_alta_dependencia_economica":                                "UInt16",
+            "gasto_social_educacion_inicial_mill_soles":                                    "UInt16",
+            "gasto_social_educacion_primaria_mill_soles":                                   "UInt16",
+            "gasto_social_educacion_secundaria_mill_soles":                                 "UInt16",
+            "gasto_social_asistencia_social_mill_soles":                                    "UInt16",
+            "gasto_social_salud_colectiva_mill_soles":                                      "UInt16",
+            "gasto_social_salud_individual_mill_soles":                                     "UInt16",
+            "gasto_gobierno_sector_publico_mill_soles":                                     "UInt16",
+            "gasto_gobierno_sector_privado_mill_soles":                                     "UInt16",
+            "analfabetismo_total_15_19":                                                    "UInt16",
+            "analfabetismo_total_20_29":                                                    "UInt16",
+            "analfabetismo_total_30_39":                                                    "UInt16",
+            "analfabetismo_total_40_49":                                                    "UInt16",
+            "analfabetismo_total_50_59":                                                    "UInt16",
+            "analfabetismo_total_60_y_mas":                                                 "UInt16",
+            "analfabetismo_h_15_19":                                                        "UInt16",
+            "analfabetismo_f_15_19":                                                        "UInt16",
+            "analfabetismo_h_20_29":                                                        "UInt16",
+            "analfabetismo_f_20_29":                                                        "UInt16",
+            "analfabetismo_h_30_39":                                                        "UInt16",
+            "analfabetismo_f_30_39":                                                        "UInt16",
+            "analfabetismo_h_40_49":                                                        "UInt16",
+            "analfabetismo_f_40_49":                                                        "UInt16",
+            "analfabetismo_h_50_59":                                                        "UInt16",
+            "analfabetismo_f_50_59":                                                        "UInt16",
+            "analfabetismo_h_60_y_mas":                                                     "UInt16",
+            "analfabetismo_f_60_y_mas":                                                     "UInt16",
+            "millones_toneladas_co2_equivalente":                                           "UInt16",
+            "delitos_vida_cuerpo_salud":                                                    "UInt16",
+            "delitos_honor":                                                                "UInt16",
+            "delitos_familia":                                                              "UInt16",
+            "delitos_libertad":                                                             "UInt16",
+            "delitos_patrimonio":                                                           "UInt16",
+            "delitos_confianza_buena_fe_negocios":                                          "UInt16",
+            "delitos_derechos_intelectuales":                                               "UInt16",
+            "delitos_patrimonio_cultural":                                                  "UInt16",
+            "delitos_orden_economico":                                                      "UInt16",
+            "delitos_orden_financiero_monetario":                                           "UInt16",
+            "delitos_tributarios":                                                          "UInt16",
+            "delitos_seguridad_publica":                                                    "UInt16",
+            "delitos_ambientales":                                                          "UInt16",
+            "delitos_tranquilidad_publica":                                                 "UInt16",
+            "delitos_humanidad":                                                            "UInt16",
+            "delitos_estado_defensa_nacional":                                              "UInt16",
+            "delitos_poderes_estado_orden_const":                                           "UInt16",
+            "delitos_voluntad_popular":                                                     "UInt16",
+            "delitos_administracion_publica":                                               "UInt16",
+            "delitos_fe_publica":                                                           "UInt16",
+            "trib_adu_ingr_teso_pub_DAV_mill_soles":                                        "UInt16",
+            "trib_adu_ingr_teso_pub_D_especificos_mill_soles":                              "UInt16",
+            "trib_adu_ingr_teso_pub_sobretasa_ad_5perc_mill_soles":                         "UInt16",
+            "trib_adu_ingr_teso_pub_IGV_mill_soles":                                        "UInt16",
+            "trib_adu_ingr_teso_pub_ISC_mill_soles":                                        "UInt16",
+            "trib_adu_ingr_teso_pub_otros_mill_soles":                                      "UInt16",
+            "trib_adu_otros_org_gobiernos_loc_mill_soles":                                  "UInt16",
+            "trib_adu_otros_org_INDECOPI_mill_soles":                                       "UInt16",
+            "banca_multiple_creditos":                                                      "UInt16",
+            "empresas_financieras_creditos":                                                "UInt16",
+            "cajas_municipales_creditos":                                                   "UInt16",
+            "cajas_rur_ahorro_credito_creditos":                                            "UInt16",
+            "entidades_desa_peq_micr_empresa_EDPYME_creditos":                              "UInt16",
+            "empresas_arrenda_financiero_creditos":                                         "UInt16",
+            "banco_nacion_creditos":                                                        "UInt16",
+            "agrobanco_creditos":                                                           "UInt16",
+            "banca_multiple_depositos":                                                     "UInt16",
+            "empresas_financieras_depositos":                                               "UInt16",
+            "cajas_municipales_depositos":                                                  "UInt16",
+            "cajas_rur_ahorro_credito_depositos":                                           "UInt16",
+            "entidades_desa_peq_micr_empresa_EDPYME_depositos":                             "UInt16",
+            "empresas_arrenda_financiero_depositos":                                        "UInt16",
+            "banco_nacion_depositos":                                                       "UInt16",
+            "agrobanco_depositos":                                                          "UInt16",
+
+            "sector_pesquero_PIB_mill_soles_const_2007":                                    "UInt32",
+            "sector_pesquero_VAB_mill_soles_const_2007":                                    "UInt16",
+            "sector_pesquero_porc_VAB_d_PIB":                                               "Float32",
+            "sector_pesquero_desem_mil_ton_met":                                            "Float32",
+            "sector_pesquero_trans_mil_ton_met":                                            "Float32",
+            "sector_pesquero_prod_harina_pescado_mil_ton_met":                              "Float32",
+            "sector_pesquero_consumo_interno_total_mil_ton_met":                            "Float32",
+            "sector_pesquero_consumo_interno_per_capita_kg":                                "Float32",
+            "sector_pesquero_mar_con_dir_enlatado_mil_ton_met":                             "Float32",
+            "sector_pesquero_mar_con_dir_congelado_mil_ton_met":                            "Float32",
+            "sector_pesquero_mar_con_dir_curado_mil_ton_met":                               "Float32",
+            "sector_pesquero_mar_con_dir_fresco_mil_ton_met":                               "Float32",
+            "sector_pesquero_mar_con_ind_anchoveta_mil_ton_met":                            "Float32",
+            "sector_pesquero_mar_con_ind_o_especies_mil_ton_met":                           "Float32",
+            "sector_pesquero_con_dir_curado_mil_ton_met":                                   "Float32",
+            "sector_pesquero_con_dir_fresco_mil_ton_met":                                   "Float32",
+            "sector_pesquero_con_dir_congelado_mil_ton_met":                                "Float32",
+            "pesca_desem_anchoveta_mil_ton_metricas":                                       "UInt32",
+            "pesca_desem_atun_mil_ton_metricas":                                            "UInt16",
+            "pesca_desem_bonito_mil_ton_metricas":                                          "UInt16",
+            "pesca_desem_caballa_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_jurel_mil_ton_metricas":                                           "UInt16",
+            "pesca_desem_perico_mil_ton_metricas":                                          "UInt16",
+            "pesca_desem_samasa_mil_ton_metricas":                                          "UInt16",
+            "pesca_desem_sardina_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_tiburon_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_ayanque_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_cabrilla_mil_ton_metricas":                                        "UInt16",
+            "pesca_desem_coco_mil_ton_metricas":                                            "UInt16",
+            "pesca_desem_lenguado_mil_ton_metricas":                                        "UInt16",
+            "pesca_desem_merluza_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_raya_mil_ton_metricas":                                            "UInt16",
+            "pesca_desem_tollo_mil_ton_metricas":                                           "UInt16",
+            "pesca_desem_cabinza_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_cojinova_mil_ton_metricas":                                        "UInt16",
+            "pesca_desem_corvina_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_chita_mil_ton_metricas":                                           "UInt16",
+            "pesca_desem_liza_mil_ton_metricas":                                            "UInt16",
+            "pesca_desem_lorna_mil_ton_metricas":                                           "UInt16",
+            "pesca_desem_machete_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_pejerrey_mil_ton_metricas":                                        "UInt16",
+            "pesca_desem_pintadilla_mil_ton_metricas":                                      "UInt16",
+            "pesca_desem_cangrejo_mil_ton_metricas":                                        "UInt16",
+            "pesca_desem_langosta_mil_ton_metricas":                                        "UInt16",
+            "pesca_desem_langostino_mil_ton_metricas":                                      "UInt16",
+            "pesca_desem_abalon_mil_ton_metricas":                                          "UInt16",
+            "pesca_desem_caracol_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_choro_mil_ton_metricas":                                           "UInt16",
+            "pesca_desem_concha_de_abanico_mil_ton_metricas":                               "UInt16",
+            "pesca_desem_macha_mil_ton_metricas":                                           "UInt16",
+            "pesca_desem_almeja_mil_ton_metricas":                                          "UInt16",
+            "pesca_desem_calamar_mil_ton_metricas":                                         "UInt16",
+            "pesca_desem_pota_mil_ton_metricas":                                            "UInt16",
+            "pesca_desem_pulpo_mil_ton_metricas":                                           "UInt16",
+            "pesca_trans_mar_enlatado_mil_ton_metricas":                                    "UInt16",
+            "pesca_trans_mar_congelado_mil_ton_metricas":                                   "UInt16",
+            "pesca_trans_mar_curado_mil_ton_metricas":                                      "UInt16",
+            "pesca_trans_mar_harina_pescado_mil_ton_metricas":                              "UInt16",
+            "pesca_trans_mar_aceite_crudo_pescado_mil_ton_metricas":                        "UInt16",
+            "pesca_trans_con_congelado_mil_ton_metricas":                                   "UInt16",
+            "pesca_trans_con_curado_mil_ton_metricas":                                      "UInt16",
+            "pesca_venta_interna_con_direc_enlatado_mil_ton_metricas":                      "UInt16",
+            "pesca_venta_interna_con_direc_congelado_mil_ton_metricas":                     "UInt16",
+            "pesca_venta_interna_con_direc_curado_mil_ton_metricas":                        "UInt16",
+            "pesca_venta_interna_con_direc_fresco_mil_ton_metricas":                        "UInt16",
+            "pesca_venta_interna_con_indirec_harina_pescado_mil_ton_metricas":              "UInt16",
+            "pesca_venta_interna_con_indirec_aceite_crudo_pescado_mil_ton_metricas":        "UInt16",
+            "pesca_consumo_interno_direc_enlatado_mil_ton_metricas":                        "Float32",
+            "pesca_consumo_interno_direc_congelado_mil_ton_metricas":                       "Float32",
+            "pesca_consumo_interno_direc_curado_mil_ton_metricas":                          "Float32",
+            "pesca_consumo_interno_direc_fresco_mil_ton_metricas":                          "Float32",
+            "pesca_consumo_interno_direc_enlatado_per_cap_kg_hab":                          "Float32",
+            "pesca_consumo_interno_direc_congelado_per_cap_kg_hab":                         "Float32",
+            "pesca_consumo_interno_direc_curado_per_cap_kg_hab":                            "Float32",
+            "pesca_consumo_interno_direc_fresco_per_cap_kg_hab":                            "Float32",
+            "pesca_n_plantas_instaladas_enlatado":                                          "UInt16",
+            "pesca_capaci_inst_enlatado_u_cajas_turno":                                     "Float32",
+            "pesca_n_plantas_instaladas_congelado":                                         "UInt16",
+            "pesca_capaci_inst_congelado_u_ton_dia":                                        "Float32",
+            "pesca_n_plantas_instaladas_curado":                                            "UInt16",
+            "pesca_capaci_inst_curado_u_ton_mes":                                           "Float32",
+            "pesca_n_plantas_instaladas_harina":                                            "UInt16",
+            "pesca_capaci_inst_harina_u_ton_hora":                                          "Float32",
+            "turismo_entrada_turistas":                                                     "UInt32",
+            "turismo_salida_turistas":                                                      "UInt32",
+            "turismo_ingreso_divisas_millones_dolares":                                     "Float32",
+            "turismo_egreso_divisas_millones_dolares":                                      "Float32",
+            "turismo_ingreso_divisas_per_capita_dolares":                                   "Float32",
+            "turismo_egreso_divisas_per_capita_dolares":                                    "Float32",
+            "ing_tur_intern_aeropuerto_Jorge_Chavez":                                       "UInt32",
+            "ing_tur_intern_puesto_control_Santa_Rosa":                                     "UInt32",
+            "ing_tur_intern_otros_puntos":                                                  "UInt32",
+            "turismo_arribo_turistas_nacionales":                                           "UInt32",
+            "turismo_arribo_turistas_extranjeros":                                          "UInt32",
+            "turismo_pernoctacion_turistas_nacionales":                                     "UInt32",
+            "turismo_pernoctacion_turistas_extranjeros":                                    "UInt32",
+            "turismo_permanencia_prom_turistas_nacionales":                                 "Float32",
+            "turismo_permanencia_prom_turistas_extranjeros":                                "Float32"
             }
 
         transform_step = TransformStep()
         load_step = LoadStep(
             "itp_indicators_y_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["agricultura_ganaderia_caza_silvicultura", "pesca", "mineria", "industria_manufacturera", "electricidad_gas_agua", "construccion", "comercio",
-                          "hoteles_restaurantes", "transporte_almacenamiento_comunicaciones", "intermediacion_financiera", "actividad_inmobiliarias_empresariales_alquiler",
-                          "administracion_publica_defensa", "ensenianza", "servicios_sociales_salud", "otras_actividades_servicios_comunitarios",
-                          "hogares_privados_organizaciones_extraterritoriales", "creditos_hipotecariosvivienda", "creditos_consumo", "poblacion_total", "poblacion_censada",
-                          "poblacion_omitida", "perc_poblacion_con_1_nbi", "perc_poblacion_con_2_a_5_nbi", "perc_poblacion_nbi_vivienda_inadecuada",
-                          "perc_poblacion_nbi_vivienda_hacinada", "perc_poblacion_nbi_servicios_higienicos", "perc_poblacion_nbi_menores_sin_escuela",
-                          "perc_poblacion_nbi_alta_dependencia_economica", "gasto_social_educacion_inicial", "gasto_social_educacion_primaria", "gasto_social_educacion_secundaria",
-                          "gasto_social_asistencia_social", "gasto_social_salud_colectiva", "gasto_social_salud_individual", "analfabetismo_h_15_19", "analfabetismo_f_15_19",
-                          "analfabetismo_h_20_29", "analfabetismo_f_20_29", "analfabetismo_h_30_39", "analfabetismo_f_30_39", "analfabetismo_h_40_49", "analfabetismo_f_40_49",
-                          "analfabetismo_h_50_59", "analfabetismo_f_50_59", "analfabetismo_h_60_y_mas", "analfabetismo_f_60_y_mas", "millones_toneladas_co2_equivalente",
-                          "delitos_vida_cuerpo_salud", "delitos_honor", "delitos_familia", "delitos_libertad", "delitos_patrimonio", "delitos_confianza_buena_fe_negocios",
-                          "delitos_derechos_intelectuales", "delitos_patrimonio_cultural", "delitos_orden_economico", "delitos_orden_financiero_monetario", "delitos_tributarios",
-                          "delitos_seguridad_publica", "delitos_ambientales", "delitos_tranquilidad_publica", "delitos_humanidad", "delitos_estado_defensa_nacional",
-                          "delitos_poderes_estado_orden_const", "delitos_voluntad_popular", "delitos_administracion_publica", "delitos_fe_publica"]
+
+            nullable_list=["agricultura_ganaderia_caza_silvicultura_mill_soles", "pesca_mill_soles", "mineria_mill_soles", "industria_manufacturera_mill_soles",
+            "electricidad_gas_agua_mill_soles", "construccion_mill_soles", "comercio_mill_soles", "hoteles_restaurantes_mill_soles",
+            "transporte_almacenamiento_comunicaciones_mill_soles", "intermediacion_financiera_mill_soles", "actividad_inmobiliarias_empresariales_alquiler_mill_soles",
+            "administracion_publica_defensa_mill_soles", "ensenianza_mill_soles", "servicios_sociales_salud_mill_soles", "otras_actividades_servicios_comunitarios_mill_soles",
+            "hogares_privados_organizaciones_extraterritoriales_mill_soles", "creditos_hipotecariosvivienda_mill_soles", "creditos_consumo_mill_soles",
+            "poblacion_total", "poblacion_censada", "poblacion_omitida", "perc_poblacion_con_1_nbi", "perc_poblacion_con_2_a_5_nbi", "perc_poblacion_nbi_vivienda_inadecuada",
+            "perc_poblacion_nbi_vivienda_hacinada", "perc_poblacion_nbi_servicios_higienicos", "perc_poblacion_nbi_menores_sin_escuela", "perc_poblacion_nbi_alta_dependencia_economica",
+            "gasto_social_educacion_inicial_mill_soles", "gasto_social_educacion_primaria_mill_soles", "gasto_social_educacion_secundaria_mill_soles", "gasto_social_asistencia_social_mill_soles",
+            "gasto_social_salud_colectiva_mill_soles", "gasto_social_salud_individual_mill_soles", "analfabetismo_h_15_19", "analfabetismo_f_15_19",
+            "analfabetismo_h_20_29", "analfabetismo_f_20_29", "analfabetismo_h_30_39", "analfabetismo_f_30_39", "analfabetismo_h_40_49", "analfabetismo_f_40_49",
+            "analfabetismo_h_50_59", "analfabetismo_f_50_59", "analfabetismo_h_60_y_mas", "analfabetismo_f_60_y_mas", "millones_toneladas_co2_equivalente",
+            "delitos_vida_cuerpo_salud", "delitos_honor", "delitos_familia", "delitos_libertad", "delitos_patrimonio", "delitos_confianza_buena_fe_negocios",
+            "delitos_derechos_intelectuales", "delitos_patrimonio_cultural", "delitos_orden_economico", "delitos_orden_financiero_monetario", "delitos_tributarios",
+            "delitos_seguridad_publica", "delitos_ambientales", "delitos_tranquilidad_publica", "delitos_humanidad", "delitos_estado_defensa_nacional",
+            "delitos_poderes_estado_orden_const", "delitos_voluntad_popular", "delitos_administracion_publica", "delitos_fe_publica", 
+            "trib_adu_ingr_teso_pub_DAV_mill_soles", "trib_adu_ingr_teso_pub_D_especificos_mill_soles", "trib_adu_ingr_teso_pub_sobretasa_ad_5perc_mill_soles",
+            "trib_adu_ingr_teso_pub_IGV_mill_soles", "trib_adu_ingr_teso_pub_ISC_mill_soles", "trib_adu_ingr_teso_pub_otros_mill_soles",
+            "trib_adu_otros_org_gobiernos_loc_mill_soles", "trib_adu_otros_org_INDECOPI_mill_soles", "banca_multiple_creditos", "empresas_financieras_creditos", "cajas_municipales_creditos", "cajas_rur_ahorro_credito_creditos", "entidades_desa_peq_micr_empresa_EDPYME_creditos", "empresas_arrenda_financiero_creditos", "banco_nacion_creditos", "agrobanco_creditos", "banca_multiple_depositos", "empresas_financieras_depositos", "cajas_municipales_depositos", "cajas_rur_ahorro_credito_depositos", "entidades_desa_peq_micr_empresa_EDPYME_depositos", "empresas_arrenda_financiero_depositos", "banco_nacion_depositos", "agrobanco_depositos",
+            "sector_pesquero_PIB_mill_soles_const_2007", "sector_pesquero_VAB_mill_soles_const_2007",
+            "sector_pesquero_porc_VAB_d_PIB", "sector_pesquero_desem_mil_ton_met", "sector_pesquero_trans_mil_ton_met", "sector_pesquero_prod_harina_pescado_mil_ton_met",
+            "sector_pesquero_consumo_interno_total_mil_ton_met", "sector_pesquero_consumo_interno_per_capita_kg",
+            "sector_pesquero_mar_con_dir_enlatado_mil_ton_met", "sector_pesquero_mar_con_dir_congelado_mil_ton_met", "sector_pesquero_mar_con_dir_curado_mil_ton_met", "sector_pesquero_mar_con_dir_fresco_mil_ton_met", "sector_pesquero_mar_con_ind_anchoveta_mil_ton_met", "sector_pesquero_mar_con_ind_o_especies_mil_ton_met", "sector_pesquero_con_dir_curado_mil_ton_met", "sector_pesquero_con_dir_fresco_mil_ton_met", "sector_pesquero_con_dir_congelado_mil_ton_met", "pesca_desem_anchoveta_mil_ton_metricas", "pesca_desem_atun_mil_ton_metricas", "pesca_desem_bonito_mil_ton_metricas", "pesca_desem_caballa_mil_ton_metricas",
+            "pesca_desem_jurel_mil_ton_metricas", "pesca_desem_perico_mil_ton_metricas", "pesca_desem_samasa_mil_ton_metricas", "pesca_desem_sardina_mil_ton_metricas", "pesca_desem_tiburon_mil_ton_metricas",
+            "pesca_desem_ayanque_mil_ton_metricas", "pesca_desem_cabrilla_mil_ton_metricas", "pesca_desem_coco_mil_ton_metricas", "pesca_desem_lenguado_mil_ton_metricas", "pesca_desem_merluza_mil_ton_metricas",
+            "pesca_desem_raya_mil_ton_metricas", "pesca_desem_tollo_mil_ton_metricas", "pesca_desem_cabinza_mil_ton_metricas", "pesca_desem_cojinova_mil_ton_metricas", "pesca_desem_corvina_mil_ton_metricas",
+            "pesca_desem_chita_mil_ton_metricas", "pesca_desem_liza_mil_ton_metricas", "pesca_desem_lorna_mil_ton_metricas", "pesca_desem_machete_mil_ton_metricas", "pesca_desem_pejerrey_mil_ton_metricas",
+            "pesca_desem_pintadilla_mil_ton_metricas", "pesca_desem_cangrejo_mil_ton_metricas", "pesca_desem_langosta_mil_ton_metricas", "pesca_desem_langostino_mil_ton_metricas", "pesca_desem_abalon_mil_ton_metricas",
+            "pesca_desem_caracol_mil_ton_metricas", "pesca_desem_choro_mil_ton_metricas", "pesca_desem_concha_de_abanico_mil_ton_metricas", "pesca_desem_macha_mil_ton_metricas", "pesca_desem_almeja_mil_ton_metricas",
+            "pesca_desem_calamar_mil_ton_metricas", "pesca_desem_pota_mil_ton_metricas", "pesca_desem_pulpo_mil_ton_metricas", 
+            "pesca_trans_mar_enlatado_mil_ton_metricas", "pesca_trans_mar_congelado_mil_ton_metricas", "pesca_trans_mar_curado_mil_ton_metricas", "pesca_trans_mar_harina_pescado_mil_ton_metricas", "pesca_trans_mar_aceite_crudo_pescado_mil_ton_metricas", "pesca_trans_con_congelado_mil_ton_metricas", "pesca_trans_con_curado_mil_ton_metricas", 
+            "pesca_venta_interna_con_direc_enlatado_mil_ton_metricas", "pesca_venta_interna_con_direc_congelado_mil_ton_metricas", "pesca_venta_interna_con_direc_curado_mil_ton_metricas", "pesca_venta_interna_con_direc_fresco_mil_ton_metricas", "pesca_venta_interna_con_indirec_harina_pescado_mil_ton_metricas", "pesca_venta_interna_con_indirec_aceite_crudo_pescado_mil_ton_metricas", "pesca_consumo_interno_direc_enlatado_mil_ton_metricas", "pesca_consumo_interno_direc_congelado_mil_ton_metricas", "pesca_consumo_interno_direc_curado_mil_ton_metricas",
+            "pesca_consumo_interno_direc_fresco_mil_ton_metricas", "pesca_consumo_interno_direc_enlatado_per_cap_kg_hab", "pesca_consumo_interno_direc_congelado_per_cap_kg_hab", "pesca_consumo_interno_direc_curado_per_cap_kg_hab",
+            "pesca_consumo_interno_direc_fresco_per_cap_kg_hab", "pesca_n_plantas_instaladas_enlatado", "pesca_capaci_inst_enlatado_u_cajas_turno", "pesca_n_plantas_instaladas_congelado",
+            "pesca_capaci_inst_congelado_u_ton_dia", "pesca_n_plantas_instaladas_curado", "pesca_capaci_inst_curado_u_ton_mes", "pesca_n_plantas_instaladas_harina",
+            "pesca_capaci_inst_harina_u_ton_hora",
+            "turismo_entrada_turistas", "turismo_salida_turistas", "turismo_ingreso_divisas_millones_dolares", "turismo_egreso_divisas_millones_dolares", "turismo_ingreso_divisas_per_capita_dolares", "turismo_egreso_divisas_per_capita_dolares",
+            "ing_tur_intern_aeropuerto_Jorge_Chavez", "ing_tur_intern_puesto_control_Santa_Rosa", "ing_tur_intern_otros_puntos",
+            "turismo_arribo_turistas_nacionales", "turismo_arribo_turistas_extranjeros",
+            "turismo_pernoctacion_turistas_nacionales", "turismo_pernoctacion_turistas_extranjeros",
+            "turismo_permanencia_prom_turistas_nacionales", "turismo_permanencia_prom_turistas_extranjeros"
+                        ]
         )
 
         return [transform_step, load_step]
