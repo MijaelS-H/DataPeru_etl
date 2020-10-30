@@ -30,7 +30,7 @@ class DimCulturaPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtype = {
-            params.get('pk'): 'UInt8'
+            params.get('pk'): 'UInt16'
         }
 
         transform_step = TransformStep()
