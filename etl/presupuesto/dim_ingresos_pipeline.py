@@ -12,7 +12,7 @@ class TransformStep(PipelineStep):
         data = glob.glob('{}/ING_*.csv'.format(DATA_FOLDER))
         df = pd.DataFrame()
         for ele in data:
-            temp = pd.read_csv(ele)
+            temp = pd.read_csv(ele, encoding='latin-1')
             temp.rename(columns={'fuente_financ': 'fuente_financiamiento'}, inplace=True)
             df = df.append(temp, sort=False)
 

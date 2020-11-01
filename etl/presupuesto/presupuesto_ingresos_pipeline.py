@@ -12,7 +12,7 @@ from helpers import return_dimension
 class ReadStep(PipelineStep):
     def run_step(self, prev, params):
 
-        base = BASE[re.findall('[0-9]+', params.get('data'))[0]]
+        base = BASE[re.findall('(?<=2020_)(.*)(?=.csv)', params.get('data'))[0]]
 
         temp = pd.DataFrame()
 
@@ -62,7 +62,7 @@ class PresupuestoPipeline(EasyPipeline):
 
         db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
 
-        dtype = DTYPE[re.findall('[0-9]+', params.get('data'))[0]]
+        dtype = DTYPE[re.findall('(?<=2020_)(.*)(?=.csv)', params.get('data'))[0]]
 
         read_step = ReadStep()
         transform_step = TransformStep()
@@ -78,6 +78,7 @@ if __name__ == "__main__":
 
     for file in data:
         print(file)
+        
         pp.run({
             'data': file
         })

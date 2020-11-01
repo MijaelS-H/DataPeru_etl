@@ -14,7 +14,7 @@ class TransformStep(PipelineStep):
 
         df = pd.DataFrame()
         for file in data:
-            temp = pd.read_csv(file)
+            temp = pd.read_csv(file, encoding='latin-1')
             df = df.append(temp)
         temp = []
 

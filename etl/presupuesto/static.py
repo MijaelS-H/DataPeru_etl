@@ -19,9 +19,9 @@ BASE = {
     'GL': ['ubigeo', 'tipo_gobierno', 'ejecutora', 
            'sec_ejec', 'programa_ppto', 'producto_proyecto', 
            'funcion', 'division_funcional', 'departamento_meta'],
-    '185602': ['nivel_gobierno', 'sector', 'pliego', 'ubigeo', 'fuente_financiamiento', 'rubro'],
-    '185603': ['nivel_gobierno', 'pliego', 'fuente_financ', 'rubro'],
-    '185604': ['nivel_gobierno', 'fuente_financiamiento', 'rubro', 'ubigeo']
+    'gn_sectores': ['nivel_gobierno', 'sector', 'pliego', 'ubigeo', 'fuente_financiamiento', 'rubro'],
+    'gob_regionales': ['nivel_gobierno', 'pliego', 'fuente_financ', 'rubro'],
+    'gob_locales': ['nivel_gobierno', 'fuente_financiamiento', 'rubro', 'ubigeo']
 }
 
 DIMENSIONS = {
@@ -98,7 +98,7 @@ DTYPE = {
         'devengado':            'Float64',
         'year':                 'UInt16'
     },
-    '185602': {
+    'gn_sectores': {
         'nivel_gobierno':       'UInt8',
         'sector':               'UInt8',
         'pliego':               'UInt16',
@@ -110,7 +110,7 @@ DTYPE = {
         'monto_recaudado':      'Float64',
         'year':                 'UInt16'
     },
-    '185603': {
+    'gob_regionales': {
         'nivel_gobierno':       'UInt8',
         'sector':               'UInt8',
         'pliego':               'UInt16',
@@ -122,7 +122,7 @@ DTYPE = {
         'monto_recaudado':      'Float64',
         'year':                 'UInt16'
     },
-    '185604': {
+    'gob_locales': {
         'nivel_gobierno':       'UInt8',
         'sector':               'UInt8',
         'pliego':               'UInt16',
