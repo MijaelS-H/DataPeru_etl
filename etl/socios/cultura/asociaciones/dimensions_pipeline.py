@@ -12,7 +12,7 @@ class ProcessingStep(PipelineStep):
 
         if params.get('pk') == 'codigo_asociacion':
             df = pd.DataFrame.from_dict(asociacion_dim, orient='index').reset_index()
-            df.columns = ['asociacion_name', 'codigo_asociacion']
+            df.columns = ['codigo_asociacion', 'asociacion_name']
             
             return df
         elif (params.get('pk') == 'manifestacion_n_1_id'):

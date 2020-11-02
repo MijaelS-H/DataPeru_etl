@@ -53,6 +53,7 @@ DISTRICT_REPLACE_2 = {
      'San borja' : 'San Borja',
      'Santa María Del Mar' : 'Santa María del Mar',
      'Santa anita' : "Santa Anita",
-     'Veintiséis de Octubre' : 'Veintiseis de Octubre'
-               
+     'Veintiséis de Octubre' : 'Veintiseis de Octubre',
+     '-': 'Otro',
+     'Raimondi': 'Raymondi'
 }

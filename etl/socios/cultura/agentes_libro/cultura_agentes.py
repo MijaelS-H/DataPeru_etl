@@ -43,6 +43,8 @@ class FormatStep(PipelineStep):
        'actividad_2_id', 'actividad_3_id', 'actividad_4_id']] = df[['razon_social_id', 'actividad_1_id',
        'actividad_2_id', 'actividad_3_id', 'actividad_4_id']].astype(int)
 
+        df = df.drop_duplicates()
+
         return df
 
 class AgentesPipeline(EasyPipeline):

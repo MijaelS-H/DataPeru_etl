@@ -23,12 +23,21 @@ class ReplaceStep(PipelineStep):
         df['actividad_n_2_id'].replace(actividad_n_2_dim, inplace=True)
 
         manifestacion_n_1_dim = dict(zip(df['manifestacion_n_1_id'].dropna().unique(), range(1, len(df['manifestacion_n_1_id'].dropna().unique()) + 1 )))
+        
+        manifestacion_n_1_dim['No reportado'] = 0
+
         df['manifestacion_n_1_id'].replace(manifestacion_n_1_dim, inplace=True)
 
         manifestacion_n_2_dim = dict(zip(df['manifestacion_n_2_id'].dropna().unique(), range(1, len(df['manifestacion_n_2_id'].dropna().unique()) + 1 )))
+
+        manifestacion_n_2_dim['No reportado'] = 0
+
         df['manifestacion_n_2_id'].replace(manifestacion_n_2_dim, inplace=True)
 
         manifestacion_n_3_dim = dict(zip(df['manifestacion_n_3_id'].dropna().unique(), range(1, len(df['manifestacion_n_3_id'].dropna().unique()) + 1 )))
+
+        manifestacion_n_3_dim['No reportado'] = 0
+
         df['manifestacion_n_3_id'].replace(manifestacion_n_3_dim, inplace=True)
 
         inscrita_sunarp_dim = dict(zip(df['inscrita_sunarp_id'].dropna().unique(), range(1, len(df['inscrita_sunarp_id'].dropna().unique()) + 1 )))

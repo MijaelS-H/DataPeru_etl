@@ -27,7 +27,7 @@ class ProcessingStep(PipelineStep):
         elif params.get('pk') == 'postulante_id':
             df = pd.DataFrame.from_dict(postulante_dim, orient='index').reset_index()
             df.columns = ['postulante_name', 'postulante_id']
-         
+
             return df
 
 class DimEECPipeline(EasyPipeline):
@@ -49,7 +49,7 @@ class DimEECPipeline(EasyPipeline):
             }
         else: 
             dtype = {
-                params.get('pk'): 'UInt8'
+                params.get('pk'): 'UInt16'
             }
        
         transform_step = TransformStep()

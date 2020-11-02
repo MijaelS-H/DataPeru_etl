@@ -1,4 +1,5 @@
 import re
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
@@ -16,7 +17,7 @@ class TransformStep(PipelineStep):
         df = df[['AÑO INSCRIPCIÓN',
        'TIPO DE CONSTITUCIÓN', 'RAZON SOCIAL ',
        'Actividad_1', 'Actividad_2', 'Actividad_3', 'Actividad_4',
-       'DISTRITO']]
+       'DISTRITO']].copy()
         
         for column in ['DISTRITO','TIPO DE CONSTITUCIÓN']:
 
@@ -26,11 +27,10 @@ class TransformStep(PipelineStep):
             "Actividad_1" : "actividad_1_id","Actividad_2":"actividad_2_id", "Actividad_3":"actividad_3_id",
             "Actividad_4":"actividad_4_id","DISTRITO":"district_id"})
 
-
         df['cantidad_org'] = 1
-        df = df[df['district_id'].notna()]
-        df = df[df['year'].notna()]
-        df = df[df['year'] != "ND"]
+
+        df['district_id'] = df['district_id'].fillna('999999')
+        df['year'] = df['year'].replace({"ND": np.nan})
      
         return df
 
@@ -43,6 +43,8 @@ class FormatStep(PipelineStep):
         'actividad_2_id','actividad_3_id','actividad_4_id',	'district_id', 'cantidad_org']].copy()
 
         # column types
+
+        df['year'] = df['year'].astype(float).astype(pd.Int32Dtype())
 
         df[['actividad_1_id',	
         'actividad_2_id','actividad_3_id','actividad_4_id']] = df[['actividad_1_id',	
@@ -62,7 +64,7 @@ class CinePipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtype = {
-            'year':                           'UInt32',
+            'year':                           'UInt16',
             'tipo_constitucion_id':           'UInt8',
             'razon_social_id':                'UInt16',
             'actividad_1_id':                 'UInt8',
@@ -77,7 +79,7 @@ class CinePipeline(EasyPipeline):
         replace_step = ReplaceStep(connector=db_connector)
         format_step = FormatStep()
         load_step = LoadStep('cultura_cine', db_connector, if_exists='drop', 
-                             pk=['district_id'], dtype=dtype)
+                             pk=['district_id'], dtype=dtype, nullable_list=['year'])
 
         return [transform_step, replace_step, format_step, load_step]
 
