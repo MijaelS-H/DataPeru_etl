@@ -32,7 +32,7 @@ python itp_indicators_y_n_nat_pipeline.py
 python met_education_y_level_dep_pipeline.py
 
 # minsa_health_y_gender_age_nat_pipeline
-python minsa_health_y_gender_age_nat_pipeline.py
+# python minsa_health_y_gender_age_nat_pipeline.py
 
 # proinversion_fdi_y_origin_nat_pipeline
 python proinversion_fdi_y_origin_nat_pipeline.py

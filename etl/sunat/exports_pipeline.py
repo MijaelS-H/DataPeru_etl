@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.helpers import grab_parent_dir
+from bamboo_lib.helpers import grab_parent_dir, query_to_df
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
 from bamboo_lib.models import PipelineStep
@@ -33,7 +33,14 @@ class TransformStep(PipelineStep):
         df['hs6_id'] = df['hs6_id'].str.replace('.','').str[:-4]
 
         # Replace
+        dim_country_query = "SELECT iso2, iso3 FROM dim_shared_country"
+        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        countries = query_to_df(db_connector, raw_query=dim_country_query)
+
+        DICT_COUNTRIES = dict(zip(countries['iso2'], countries['iso3']))
+
         df['country_id'] = df['country_id'].str.lower()
+        df['country_id'] = df['country_id'].replace(DICT_COUNTRIES)
 
         df['trade_flow_id'].replace(REGIMEN_DICT, inplace=True)
         df['unit'].replace(UNIT_DICT, inplace=True)
