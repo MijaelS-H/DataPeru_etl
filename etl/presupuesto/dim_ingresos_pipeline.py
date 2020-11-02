@@ -21,7 +21,11 @@ class TransformStep(PipelineStep):
         df.dropna(subset=[params.get('dimension')], inplace=True)
         df[params.get('dimension')] = df[params.get('dimension')].astype(int)
 
-        df = df.drop_duplicates()
+        df.drop_duplicates(subset=['{}_nombre'.format(params.get('dimension'))], inplace=True)
+
+        df['data_name'] = df['{}_nombre'.format(params.get('dimension'))]
+        df['{}_nombre'.format(params.get('dimension'))] = df['{}_nombre'.format(params.get('dimension'))].str.capitalize()
+        df[params.get('dimension')] = range(1, df.shape[0] + 1)
 
         return df
 

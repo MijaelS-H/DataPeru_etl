@@ -5,6 +5,7 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
+from bamboo_lib.helpers import query_to_df
 from static import TIPO_GOBIERNO, BASE, DTYPE, DATA_FOLDER
 from helpers import return_dimension
 
@@ -27,7 +28,7 @@ class ReadStep(PipelineStep):
             temp = temp.append(df)
         
         temp.rename(columns={
-            'fuente_financ': 'fuente_financiamiento'
+            'fuente_financ_nombre': 'fuente_financiamiento'
         }, inplace=True)
 
         return temp
@@ -36,9 +37,22 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = prev
 
-        for column in ['sector', 'pliego', 'ubigeo']:
+        for column in ['sector_nombre', 'pliego_nombre', 'ubigeo']:
             if column not in df.columns:
-                df[column] = 0
+                df[column] = '0'
+
+        df.rename(columns={
+            'sector_nombre': 'sector',
+            'pliego_nombre': 'pliego',
+            'fuente_financiamiento_nombre': 'fuente_financiamiento',
+            'rubro_nombre': 'rubro'
+        }, inplace=True)
+
+        for column in ['sector', 'pliego', 'fuente_financiamiento', 'rubro']:
+            # replace dimensions
+            dim_query = 'SELECT {}, data_name, {}_nombre FROM dim_mef_ingresos_{}'.format(column, column, column)
+            dim_result = query_to_df(self.connector, raw_query=dim_query)
+            df[column] = df[column].replace(dict(zip(dim_result['data_name'], dim_result[column])))
 
         df['nivel_gobierno'] = df['nivel_gobierno'].replace(TIPO_GOBIERNO)
         df['ubigeo'] = df['ubigeo'].astype(int).astype(str).str.zfill(6)
@@ -46,6 +60,8 @@ class TransformStep(PipelineStep):
         df['ubigeo'].replace({
             '000000': '999999'
         }, inplace=True)
+
+        df[['sector', 'pliego', 'fuente_financiamiento', 'rubro']] = df[['sector', 'pliego', 'fuente_financiamiento', 'rubro']].astype(int)
 
         return df
 
@@ -65,7 +81,7 @@ class PresupuestoPipeline(EasyPipeline):
         dtype = DTYPE[re.findall('(?<=2020_)(.*)(?=.csv)', params.get('data'))[0]]
 
         read_step = ReadStep()
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         load_step = LoadStep('mef_presupuesto_ingresos', db_connector, if_exists='append', 
                              pk=['ubigeo', 'year'], dtype=dtype)
 

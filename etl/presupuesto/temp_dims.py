@@ -34,7 +34,7 @@ for PREFIX in ['GN', 'GR', 'GL']:
             result = get_dimension(df, dimension)
             result.to_csv('{}/G_{}_{}'.format(FOLDER, PREFIX, file_name), index=False)
 
-    for column_exception in ['pliego', 'ejecutora']:
+    for column_exception in ['pliego', 'ejecutora', 'producto_proyecto', 'programa_ppto']:
         df_ = df.copy()
         try:
             if (PREFIX == 'GL') & (column_exception == 'pliego'):
@@ -51,3 +51,5 @@ for PREFIX in ['GN', 'GR', 'GL']:
 # exceptions
 process_exceptions('pliego', ['GN', 'GR'], folder=FOLDER)
 process_exceptions('ejecutora', ['GN', 'GR', 'GL'], folder=FOLDER)
+process_exceptions('producto_proyecto', ['GN', 'GR', 'GL'], folder=FOLDER)
+process_exceptions('programa_ppto', ['GN', 'GR', 'GL'], folder=FOLDER)

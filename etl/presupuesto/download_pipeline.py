@@ -30,28 +30,11 @@ for ele in df.to_dict(orient='records'):
 
 
 # Presupuesto ingresos
-urls = ['https://datosabiertos.mef.gob.pe/datasets/185602-comparacion-de-ingreso-del-gobierno-nacional-2014-2020.download',
-       'https://datosabiertos.mef.gob.pe/datasets/185603-comparacion-de-ingreso-de-los-gobiernos-regionales-2014-2020.download',
-       'https://datosabiertos.mef.gob.pe/datasets/185604-comparacion-de-ingreso-de-los-gobiernos-locales-2014-2020.download']
+urls = {'ING_comparacion_2014_2020_gn_sectores.csv': 'https://datosabiertos.mef.gob.pe/datasets/185602-comparacion-de-ingreso-del-gobierno-nacional-2014-2020.download',
+        'ING_comparacion_2014_2020_gob_regionales.csv': 'https://datosabiertos.mef.gob.pe/datasets/185603-comparacion-de-ingreso-de-los-gobiernos-regionales-2014-2020.download',
+        'ING_comparacion_2014_2020_gob_locales.csv': 'https://datosabiertos.mef.gob.pe/datasets/185604-comparacion-de-ingreso-de-los-gobiernos-locales-2014-2020.download'}
 
-executable_path = os.getcwd().split('/etl/')[0] + '/chromedriver'
-
-for ele in urls:
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--window-size=1440, 900")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--verbose')
-    chrome_options.add_experimental_option("prefs", {
-            "download.default_directory": os.getcwd().split('dataperu-etl/')[0] + DATA_FOLDER.split('../../../')[1],
-            "download.prompt_for_download": False,
-            "download.directory_upgrade": True,
-            "safebrowsing_for_trusted_sources_enabled": False,
-            "safebrowsing.enabled": False
-    })
-
-    driver = webdriver.Chrome(options=chrome_options, executable_path=executable_path)
-    driver.get(ele)
-
-wait_for_downloads(DATA_FOLDER)
+for file_name, url in urls.items():
+    print('current:', url)
+    os.system('wget -cO - {} > {}/{}'.format(url, DATA_FOLDER, file_name))
+    time.sleep(5)

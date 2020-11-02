@@ -19,9 +19,9 @@ BASE = {
     'GL': ['ubigeo', 'tipo_gobierno', 'ejecutora', 
            'sec_ejec', 'programa_ppto', 'producto_proyecto', 
            'funcion', 'division_funcional', 'departamento_meta'],
-    'gn_sectores': ['nivel_gobierno', 'sector', 'pliego', 'ubigeo', 'fuente_financiamiento', 'rubro'],
-    'gob_regionales': ['nivel_gobierno', 'pliego', 'fuente_financ', 'rubro'],
-    'gob_locales': ['nivel_gobierno', 'fuente_financiamiento', 'rubro', 'ubigeo']
+    'gn_sectores': ['nivel_gobierno', 'sector_nombre', 'pliego_nombre', 'ubigeo', 'fuente_financiamiento_nombre', 'rubro_nombre'],
+    'gob_regionales': ['nivel_gobierno', 'pliego_nombre', 'fuente_financ_nombre', 'rubro_nombre'],
+    'gob_locales': ['nivel_gobierno', 'fuente_financiamiento_nombre', 'rubro_nombre', 'ubigeo']
 }
 
 DIMENSIONS = {
