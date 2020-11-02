@@ -20,7 +20,6 @@ class TransformStep(PipelineStep):
 
         dim_country_query = "SELECT * FROM dim_shared_country"
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
-        print(dim_country_query, db_connector)
         countries = query_to_df(db_connector, raw_query=dim_country_query) #, col_headers = ["continent_id", "iso3", "country_name_es"])
 
 
@@ -47,6 +46,8 @@ class TransformStep(PipelineStep):
         df["year"] = df["year"].astype(int)
         df["ied_millones_USD"] = df["ied_millones_USD"].astype(float)
         df["ubigeo"] = "per"
+
+        df = df[["ubigeo", "year", "ied_millones_USD", "iso3"]]
 
         return df
 
