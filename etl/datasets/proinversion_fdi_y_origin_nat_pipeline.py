@@ -20,7 +20,10 @@ class TransformStep(PipelineStep):
 
         dim_country_query = "SELECT * FROM dim_shared_country"
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
-        countries = query_to_df(db_connector, raw_query=dim_country_query)
+        print(dim_country_query, db_connector)
+        countries = query_to_df(db_connector, raw_query=dim_country_query) #, col_headers = ["continent_id", "iso3", "country_name_es"])
+
+
         #countries = pd.read_csv(grab_parent_dir("../../") + "/datasets/anexos/countries.csv")
 
         # Transpose dataframe, adding new header and year column from index
@@ -38,7 +41,7 @@ class TransformStep(PipelineStep):
         df_1["country_name_es"].replace({"Estados Unidos de América" : "Estados Unidos", "Islas Bermudas " : "Bermuda", "Islas Bahamas " : "Las Bahamas", "Corea" : "Corea del Sur", "Gran Bretaña" : "Reino Unido", "U.E.A. (United Arab Emirates)" : "Emiratos Árabes Unidos", "Otros 1/": "Otros"}, inplace = True)
 
         # Adding countries columns to dataframe
-        df = pd.merge(df_1, countries[["iso3", "continent_id", "continent_es", "country_name_es"]], on = "country_name_es", how = "left")
+        df = pd.merge(df_1, countries[["iso3", "country_name_es"]], on = "country_name_es", how = "left")
 
         # Changing types to certain columns
         df["year"] = df["year"].astype(int)
@@ -61,16 +64,13 @@ class proinversion_fdi_y_origin_nat_pipeline(EasyPipeline):
             "ubigeo":                             "String",
             "year":                               "UInt16",
             "ied_millones_USD":                   "Float32",
-            "continent_es":                       "String",
-            "continent_id":                       "String",
-            "country_name_es":                    "String",
             "iso3":                               "String"
             }
 
         transform_step = TransformStep()
         load_step = LoadStep(
             "proinversion_fdi_y_origin_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["iso3", "continent_id", "continent_es"]
+            nullable_list=["iso3"]
         )
 
         return [transform_step, load_step]
