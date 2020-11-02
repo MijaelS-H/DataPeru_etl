@@ -18,6 +18,7 @@ class TransformStep(PipelineStep):
         # Loading data
         df1 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.158.xlsx"), skiprows = (0,1,2))
         df2 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.159.xlsx"), skiprows = (0,1,2))
+
         df3 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.166.xlsx"), skiprows = (0,1,2,4), usecols = "A:O")[0:12]
         df4 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.156.xls"), skiprows = (0,1,2), usecols = "A,C:F,H:P")[24:102]
 
@@ -27,8 +28,6 @@ class TransformStep(PipelineStep):
             item["Año"] = item["Año"].astype(int)
             item["Mes"].replace(month_dict, inplace = True)
             item["month_id"] = item["Año"].astype(str) + item["Mes"].astype(str)
-
-        df3["Mes"].replace(month_dict, inplace = True)
 
         # Renaming columns to understandable names
         df1.rename(columns = {"Índice": "ipc_base_2011_observado", "Mensual": "ipc_base_2011_var_mes_anterior", "Acumulada": "ipc_base_2011_var_acumulado", "Anual": "ipc_base_2011_var_anio_anterior"}, inplace = True)
