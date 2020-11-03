@@ -28,8 +28,8 @@ class ReadStep(PipelineStep):
             temp = temp.append(df)
 
         # ubigeo replace
-        if 'MANC' in file:
-            df['ubigeo'] = df['sec_ejec']
+        if 'MANC' in params.get('data'):
+            temp['ubigeo'] = temp['sec_ejec']
 
         return temp
 
@@ -43,8 +43,11 @@ class ReplaceStep(PipelineStep):
             dims[column] = return_dimension(params.get('prefix'), column)
             df[column] = df[column].map(dict(zip(dims[column][column], dims[column]['id'])))
 
-        if 'ejecutora' == column:
-            df[column] = df[column].fillna(9999)
+        # ids without name
+        df['ejecutora'].replace({
+            2171: 9999,
+            2099: 9999
+        }, inplace=True)
 
         return df
 
