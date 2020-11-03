@@ -31,7 +31,13 @@ class TransformStep(PipelineStep):
 
         df[params.get('dimension')] = df[params.get('dimension')].astype(int)
 
-        df = df.drop_duplicates()
+        df.drop_duplicates(inplace=True)
+
+        if params.get('dimension') == 'ejecutora':
+            df =  df.append({
+                'ejecutora': 9999,
+                'ejecutora_name': 'No especificado'
+            }, ignore_index=True)
 
         return df
 

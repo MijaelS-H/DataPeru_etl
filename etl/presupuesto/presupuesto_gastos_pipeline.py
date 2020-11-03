@@ -24,8 +24,12 @@ class ReadStep(PipelineStep):
 
             df['year'] = year
 
-            df.columns = base + ['pia', 'pim', 'devengado'] + ['year']
-            temp = temp.append(df)  
+            df.columns = base + ['pia', 'pim', 'devengado', 'year']
+            temp = temp.append(df)
+
+        # ubigeo replace
+        if 'MANC' in file:
+            df['ubigeo'] = df['sec_ejec']
 
         return temp
 
@@ -39,6 +43,8 @@ class ReplaceStep(PipelineStep):
             dims[column] = return_dimension(params.get('prefix'), column)
             df[column] = df[column].map(dict(zip(dims[column][column], dims[column]['id'])))
 
+        if 'ejecutora' == column:
+            df[column] = df[column].fillna(9999)
 
         return df
 
@@ -84,7 +90,7 @@ class PresupuestoPipeline(EasyPipeline):
         transform_step = TransformStep()
         load_step = LoadStep(params.get('table'), db_connector, if_exists='append', 
                              pk=['departamento_meta', 'year'], dtype=dtype, 
-                             nullable_list=['pia', 'pim', 'devengado', 'ejecutora'])
+                             nullable_list=['pia', 'pim', 'devengado'])
 
         return [read_step, replace_step, transform_step, load_step]
 
@@ -101,4 +107,3 @@ if __name__ == "__main__":
                 'prefix': PREFIX,
                 'table': 'mef_presupuesto_gastos'
             })
-
