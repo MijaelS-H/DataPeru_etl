@@ -66,10 +66,10 @@ class TransformStep(PipelineStep):
 
         df = pd.merge(df_1, df_2[["code", "n_salidas_turistas_internacionales"]], on = "code", how = "left")
         df = pd.merge(df, df_3[["code", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]], on = "code", how = "left")
-        df.drop(["code"], axis = 1, inplace = True)
 
         df.replace("-", 0, inplace = True)
         df["ubigeo"] = "per"
+        df = df[["ubigeo", "year", "iso3", "n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]]
 
         return df
 
@@ -91,18 +91,14 @@ class itp_indicators_y_n_tourism_pipeline(EasyPipeline):
             "arribos_turistas_extranjeros":                           "UInt16",
             "prenoctacion_turistas_extranjeros":                      "UInt16",
             "permanencia_prom_noche_turistas_extranjeros":            "Float32",
-            "continent_es":                                           "String",
-            "continent_id":                                           "String",
-            "country_name_es":                                        "String",
             "iso3":                                                   "String"
             }
 
         transform_step = TransformStep()
         load_step = LoadStep(
             "itp_indicators_y_n_tourism", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["iso3", "continent_id", "continent_es", "n_ingresos_turistas_internacionales",
-                            "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros",
-                            "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]
+            nullable_list=["iso3", "n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros",
+            "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]
         )
 
         return [transform_step, load_step]
