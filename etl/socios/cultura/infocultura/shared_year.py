@@ -9,8 +9,11 @@ class ReplaceStep(PipelineStep):
         indicator_dim = dict(zip(df['indicator_id'].unique(), range(1, len(df['indicator_id'].unique()) + 1 )))
         df['indicator_id'].replace(indicator_dim, inplace=True)
 
-        response_dim = dict(zip(df['response_id'].unique(), range(1, len(df['response_id'].unique()) + 1 )))
-        df['response_id'].replace(response_dim, inplace=True)
+        category_dim = dict(zip(df['category_id'].unique(), range(1, len(df['category_id'].unique()) + 1 )))
+        df['category_id'].replace(category_dim, inplace=True)
 
-        
-        return df, indicator_dim, response_dim
+        subcategory_dim = dict(zip(df['subcategory_id'].dropna().unique(), range(1, len(df['subcategory_id'].unique()) + 1 )))
+        df['subcategory_id'].replace(subcategory_dim, inplace=True)
+
+
+        return df, indicator_dim, category_dim, subcategory_dim

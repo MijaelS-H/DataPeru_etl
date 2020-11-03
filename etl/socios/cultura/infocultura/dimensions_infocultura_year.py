@@ -7,18 +7,25 @@ from shared_year import ReplaceStep
 
 class ProcessingStep(PipelineStep):
     def run_step(self, prev, params):
-        df, indicator_dim, response_dim = prev
+        df, indicator_dim, category_dim, subcategory_dim = prev
 
         if params.get('pk') == 'indicator_id':
             df = pd.DataFrame.from_dict(indicator_dim, orient='index').reset_index()
             df.columns = ['indicator_name', 'indicator_id']
             
             return df
-        elif params.get('pk') == 'response_id':
-            df = pd.DataFrame.from_dict(response_dim, orient='index').reset_index()
-            df.columns = ['response_name', 'response_id']
+        
+        elif params.get('pk') == 'category_id':
+            df = pd.DataFrame.from_dict(category_dim, orient='index').reset_index()
+            df.columns = ['category_name', 'category_id']
             
-            return df
+            return df        
+        
+        elif params.get('pk') == 'subcategory_id':
+            df = pd.DataFrame.from_dict(subcategory_dim, orient='index').reset_index()
+            df.columns = ['subcategory_name', 'subcategory_id']
+            
+            return df   
 
 
 class DimAgentesPipeline(EasyPipeline):
@@ -34,9 +41,14 @@ class DimAgentesPipeline(EasyPipeline):
 
         db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
-        dtype = {
-            params.get('pk'): 'UInt16'
-        }
+        if (k == 'subcategory_id'):
+            dtype = {
+                params.get('pk'): 'UInt16'
+            }
+        else: 
+            dtype = {
+                params.get('pk'): 'UInt8'
+            }
 
         transform_step = TransformStep()
         replace_step = ReplaceStep()
@@ -48,8 +60,9 @@ class DimAgentesPipeline(EasyPipeline):
 
 if __name__ == "__main__":
     pp = DimAgentesPipeline()
-    for k, v in {'indicator_id':  'dim_shared_infocultura_indicators_year',
-                 'response_id':  'dim_shared_infocultura_responses_year',
+    for k, v in {'indicator_id':    'dim_shared_infocultura_indicators_year',
+                 'category_id':     'dim_shared_infocultura_categories_year',
+                 'subcategory_id':  'dim_shared_infocultura_subcategories_year',
                  }.items():
         pp.run({'pk': k,
                 'table_name': v})
