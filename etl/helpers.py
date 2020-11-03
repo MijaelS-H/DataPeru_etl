@@ -20,3 +20,11 @@ def clean_tables(table):
     print('Success! {}'.format(table))
 
     return 0
+
+def wait_for_downloads(folder_path):
+    print("Waiting for downloads", end="")
+    while any([filename.endswith(".crdownload") for filename in 
+               os.listdir(folder_path)]):
+        time.sleep(2)
+        print(".", end="")
+    print("done!")
