@@ -6,7 +6,6 @@ import pandas as pd
 from static import DATA_FOLDER
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from etl.helpers import wait_for_downloads
 
 os.makedirs('{}'.format(DATA_FOLDER), exist_ok=True)
 
