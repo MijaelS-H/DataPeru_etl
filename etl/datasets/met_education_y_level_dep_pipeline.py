@@ -92,6 +92,11 @@ class TransformStep(PipelineStep):
         df["estudiantes"].replace({"…": 0}, inplace = True)
         df = df.groupby(["ubigeo", "year", "nivel_educativo"]).sum().reset_index()
 
+        # Replacing educational levels with id's (schema)
+        df["nivel_educativo"].replace({'Inicial': 1, 'Primaria': 2, 'Secundaria': 3, 'Básica Alternativa': 4,
+                                        'Básica Especial': 5, 'Técnico Productiva': 6, 'Superior No Universitaria': 7,
+                                        'Superior Universitaria': 8}, inplace = True)
+
         # Creating ubigeo id"s
         df["ubigeo"].replace(depto_dict, inplace = True)
 
@@ -109,7 +114,7 @@ class met_education_y_level_dep_Pipeline(EasyPipeline):
         dtype = {
             "year":                          "UInt16",
             "ubigeo":                        "String",
-            "nivel_educativo":               "String",
+            "nivel_educativo":               "UInt16",
             "estudiantes":                   "Float"
         }
 
