@@ -1,3 +1,6 @@
+# drop_tables
+python drop_tables.py
+
 # itp_indicators_y_act_dept_pipeline
 python run.py
 
@@ -22,11 +25,26 @@ python itp_indicators_m_n_nat_pipeline.py
 # itp_indicators_q_n_nat_pipeline
 python itp_indicators_q_n_nat_pipeline.py
 
+# itp_indicators_y_d_ports_pipeline
+python itp_indicators_y_d_ports_pipeline.py
+
+# itp_indicators_y_n_manu_mill_soles_2007_pipeline
+python itp_indicators_y_n_manu_mill_soles_2007_pipeline.py
+
 # itp_indicators_y_n_nat_54_pipeline
 python itp_indicators_y_n_nat_54_pipeline.py
 
 # itp_indicators_y_n_nat_pipeline
 python itp_indicators_y_n_nat_pipeline.py
+
+# itp_indicators_y_n_prod_ciiu_group_pipeline
+python itp_indicators_y_n_prod_ciiu_group_pipeline.py
+
+# itp_indicators_y_n_tourism_capacity_pipeline
+python itp_indicators_y_n_tourism_capacity_pipeline.py
+
+# itp_indicators_y_n_tourism_pipeline
+python itp_indicators_y_n_tourism_pipeline.py
 
 # met_education_y_level_dep_pipeline
 python met_education_y_level_dep_pipeline.py

@@ -41,7 +41,7 @@ class TransformStep(PipelineStep):
 
         # Starts transforming step for each table, given their unique "formats"
         # df1
-        df1.rename(columns= {"Años": "year", "Producto Bruto Interno ": "producto_interno_bruto", "Remune-\nraciones": "remuneraciones", "Derechos \nde \nImportación": "derechos_importacion", "Impuestos \na los \nProductos": "impuestos_productos", "Otros Impuestos": "otros_impuestos", " Ingreso de explotación": "ingreso_explotacion", " Excedente de explotación bruto": "excedente_explotacion_bruto", " Ingreso mixto": "ingreso_mixto"}, inplace = True)
+        df1.rename(columns= {"Años": "year", "Producto Bruto Interno ": "producto_interno_bruto_mill_n_soles", "Remune-\nraciones": "remuneraciones_mill_n_soles", "Derechos \nde \nImportación": "derechos_importacion_mill_n_soles", "Impuestos \na los \nProductos": "impuestos_productos_mill_n_soles", "Otros Impuestos": "otros_impuestos_mill_n_soles", " Ingreso de explotación": "ingreso_explotacion_mill_n_soles", " Excedente de explotación bruto": "excedente_explotacion_bruto_mill_n_soles", " Ingreso mixto": "ingreso_mixto_mill_n_soles"}, inplace = True)
         df1["year"].replace({"2016P/": 2016, "2017P/": 2017, "2018E/": 2018}, inplace = True)
 
         #df2
@@ -65,7 +65,7 @@ class TransformStep(PipelineStep):
         df4.columns = new_header
         df4.drop(["I.  Activos", "II. Pasivos", "        Privada y Pública  1/", "    1. Bonos y Deuda Externa Total", "                  BCRP", "          a.    Mediano y Largo Plazo ", "           b.   Corto Plazo"], axis = 1, inplace = True)
         df4["year"] = df4.index
-        df4.rename(columns= {"    1.  Activos de Reserva del BCRP": "act_reserva_BCRP", "    2.  Sistema Financiero (sin BCRP)": "act_sist_financiero_sin_BCRP", "    3.  Otros Activos": "act_otros_activos", "                  Sector Privado    2/": "pas_med_lar_sector_privado", "                  Sector Público    3/": "pas_med_lar_sector_publico", "                  Sistema Financiero (sin BCRP)": "pas_cort_sist_financiero_sin_BCRP", "                  BCRP   4/": "pas_cort_BCRP", "                  Otros    5/": "pas_cort_otros", "     2. Inversión Directa": "pas_inversion_directa", "     3. Participación del Capital": "pas_participacion_capital" }, inplace = True)
+        df4.rename(columns= {"    1.  Activos de Reserva del BCRP": "act_reserva_BCRP_mill_dolares", "    2.  Sistema Financiero (sin BCRP)": "act_sist_financiero_sin_BCRP_mill_dolares", "    3.  Otros Activos": "act_otros_activos_mill_dolares", "                  Sector Privado    2/": "pas_med_lar_sector_privado_mill_dolares", "                  Sector Público    3/": "pas_med_lar_sector_publico_mill_dolares", "                  Sistema Financiero (sin BCRP)": "pas_cort_sist_financiero_sin_BCRP_mill_dolares", "                  BCRP   4/": "pas_cort_BCRP_mill_dolares", "                  Otros    5/": "pas_cort_otros_mill_dolares", "     2. Inversión Directa": "pas_inversion_directa_mill_dolares", "     3. Participación del Capital": "pas_participacion_capital_mill_dolares" }, inplace = True)
 
         # df5
         df5.drop(["Unnamed: 1", "Unnamed: 4"], axis = 1, inplace = True)
@@ -109,7 +109,7 @@ class TransformStep(PipelineStep):
 
         # df10
         df10.drop("Unnamed: 1", axis = 1, inplace = True)
-        df10.rename(columns= {"Unnamed: 0": "year", "Unnamed: 2": "gasto_gobierno_sector_publico", "Unnamed: 3": "gasto_gobierno_sector_privado"}, inplace = True)
+        df10.rename(columns= {"Unnamed: 0": "year", "Unnamed: 2": "gasto_gobierno_sector_publico_mill_soles", "Unnamed: 3": "gasto_gobierno_sector_privado_mill_soles"}, inplace = True)
         df10["year"].replace({"2015  P/": 2015, "2016  P/": 2016, "2017  E/": 2017, "2018  E/": 2018}, inplace = True)
 
         # df11

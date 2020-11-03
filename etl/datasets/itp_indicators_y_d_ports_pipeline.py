@@ -37,7 +37,7 @@ class TransformStep(PipelineStep):
         df["ubigeo"].fillna("99", inplace = True)
         df["year"] = df["year"].astype(int)
         df["ubigeo"] = df["ubigeo"].astype(str)
-        print(df.head(30))
+        
         return df
 
 class itp_indicators_y_d_ports_Pipeline(EasyPipeline):
