@@ -179,6 +179,11 @@ class TransformStep(PipelineStep):
 
         df_8_list = [df_8[i] for i in range(1,3 + 1)]
         df_8 = reduce(lambda df_81,df_82: df_81.append(df_82), df_8_list)
+        df_8['category_id'] = df_8['category_id'].str.replace('_', ' ').str.title()
+        df_8['category_id'] = df_8['category_id'].replace(TOTALES_REPLACE_DICT)
+        df_8['response'] = df_8['response'].astype(float)
+        df_8 = df_8.groupby(['year', 'indicator_id', 'category_id', 'department_id', 'nation_id']).sum().reset_index()
+        df_8 = df_8[['year', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
 
         df_9 = pd.DataFrame()
 
