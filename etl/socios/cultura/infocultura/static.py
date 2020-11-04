@@ -37,17 +37,16 @@ TOTALES_REPLACE_DICT = {
     'Total Estudiantes Ext' : 'Total Estudiantes Extranjero', 
     'Total Adultos Nac' : 'Total Adultos Nacional',
     'Total Adultos Ext' : 'Total Adultos Extranjero',
-    'Total Adu Bolesp Nac' : 'Total Boletos Adultos Nacional', 
-    'Total Adu Bolesp Ext' : 'Total Boletos Adultos Extranjero',
-    'Total Est Bolesp Nac' : 'Total Boletos Estudiantes Nacional', 
-    'Total Est Bolesp Ext' : 'Total Boletos Estudiantes Extranjero', 
-    'Total Nin Bolesp Nac' : 'Total Boletos Niños Nacional', 
-    'Total Nin Bolesp Ext' : 'Total Boletos Niños Extranjero',
-    'Total Mil Bolesp Nac' : 'Total Boletos Militares Nacional',  
-    'Total Mil Bolesp Ext' : 'Total Boletos Militares Extranjero', 
-    'Total Adm Bolesp Nac' : 'Total Boletos Adultos Mayores Nacional', 
-    'Total Adm Bolesp Ext' : 'Total Boletos Adultos Mayores Extranjero', 
-
+    'Total Adu Bolesp Nac' : 'Total Adultos Nacional', 
+    'Total Adu Bolesp Ext' : 'Total Adultos Extranjero',
+    'Total Est Bolesp Nac' : 'Total Estudiantes Nacional', 
+    'Total Est Bolesp Ext' : 'Total Estudiantes Extranjero', 
+    'Total Nin Bolesp Nac' : 'Total Niños Nacional', 
+    'Total Nin Bolesp Ext' : 'Total Niños Extranjero',
+    'Total Mil Bolesp Nac' : 'Total Militares Nacional',  
+    'Total Mil Bolesp Ext' : 'Total Militares Extranjero', 
+    'Total Adm Bolesp Nac' : 'Total Adultos Mayores Nacional', 
+    'Total Adm Bolesp Ext' : 'Total Adultos Mayores Extranjero', 
 }
 
 
