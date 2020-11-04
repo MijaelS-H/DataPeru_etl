@@ -244,6 +244,8 @@ class TransformStep(PipelineStep):
 
         df = df.append(COUNTRIES, ignore_index=True)
 
+        df = df.drop_duplicates(subset=['iso3'])
+
         return df
 
 class CountryPipeline(EasyPipeline):
