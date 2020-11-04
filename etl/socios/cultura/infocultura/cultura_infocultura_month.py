@@ -92,18 +92,17 @@ class TransformStep(PipelineStep):
             df_5_query = query(parameters[10],year)
 
             for i in range(0, len(df_5_query)):
-                mini_df_5_query = pd.io.json.json_normalize(df_5_query[df_5_query.columns[2]][i], 'CANTIDAD')
+                mini_df_5_query = pd.io.json.json_normalize(df_5_query[df_5_query.columns[2]][i], 'CANTIDAD', 'NOMBRE')
                 mini_df_5_query['department_id'] = df_5_query[df_5_query.columns[0]][i]
                 mini_df_5_query['year'] = df_5_query[df_5_query.columns[3]][i]
                 df_5 = df_5.append(mini_df_5_query)
 
 
-        df_5 = pd.melt(df_5, id_vars=['year','MES','department_id'], value_vars=['ADULTO', 'ESTUDIANTE', 'MENORES', 'ADULTO_MAYOR','TOTAL'])
+        df_5 = pd.melt(df_5, id_vars=['year','MES','department_id', 'NOMBRE'], value_vars=['ADULTO', 'ESTUDIANTE', 'MENORES', 'ADULTO_MAYOR','TOTAL'])
         df_5['time'] = df_5['year'].astype(str) + df_5['MES'].map(MONTHS_DICT)
         df_5['indicator_id'] = 'Visitas a museos - MUA'
-        df_5['nation_id'] = 0
-        df_5['subcategory_id'] = np.nan
-        df_5.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
+        df_5['nation_id'] = 'per'
+        df_5.rename(columns={'value':'response', 'variable' : 'category_id', 'NOMBRE' : 'subcategory_id'}, inplace=True)
         df_5 = df_5[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
         df_5['response'].fillna(0, inplace = True)
 
