@@ -27,7 +27,8 @@ class TransformStep(PipelineStep):
         hs_10_dim = pd.merge(hs6, hs10, on=['hs6_id'])
 
         hs_10_dim['hs10_id'] = hs_10_dim['hs10_id'].astype(int).astype(str).str.zfill(10)
-        
+        hs_10_dim = hs_10_dim.append({'chapter_id' : 0, 'chapter_name': 'No definido', 'hs2_id': '00', 'hs2_name': 'No definido', 'hs4_id': '0000',
+       'hs4_name': 'No definido', 'hs6_id': '000000', 'hs6_name': 'No definido', 'hs10_id': '0000000000', 'hs10_name': 'No definido'}, ignore_index=True)
         return hs_10_dim
 
 class HSPipeline(EasyPipeline):
