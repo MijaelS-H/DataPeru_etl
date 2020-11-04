@@ -13,22 +13,26 @@ from shared_year import ReplaceStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         
-        k = 1
-        df_1 = {}
-        for year in [2018,2019,2020]:
-            df_1[k] = query(parameters[0],year)
-            df_1[k]['indicator_id'] = "Expresiones declaradas"
-            df_1[k]['year'] = year
-            df_1[k]['nation_id'] = 0
-            df_1[k]['Nombres'] = df_1[k]['EXPRESION'].apply(lambda x: np.nan if isinstance(x, float) else [d['NOMBRE'] for d in x])
-            df_1[k]['Nombres'] = df_1[k]['Nombres'].apply(lambda x: ", ".join( repr(e) for e in x ).replace("'","") if isinstance(x, list) else x)
-            df_1[k]['category_id'] = "Total"
-            df_1[k].rename(columns={'CODDEP': 'department_id', 'TOTAL':'response','Nombres':'subcategory_id'}, inplace=True)
-            df_1[k] = df_1[k][['year','indicator_id','category_id','subcategory_id','department_id','nation_id', 'response']]
-            k = k + 1
+        df_1 = pd.DataFrame()
 
-        df_1_list = [df_1[i] for i in range(1,3 + 1)]
-        df_1 = reduce(lambda df_11,df_12: df_11.append(df_12), df_1_list)
+        for year in [2018, 2019, 2020]: 
+            df_query = query(parameters[0],year)
+            df_query = df_query.dropna().reset_index()
+            df_query.drop('index', axis = 1, inplace=True)
+
+            for i in range(0, len(df_query)):
+                mini_df_query = pd.io.json.json_normalize(df_query[df_query.columns[3]][i])
+                mini_df_query['department_id'] = df_query[df_query.columns[0]][i]
+                mini_df_query['year'] = df_query[df_query.columns[4]][i]
+                df_1 = df_1.append(mini_df_query)
+
+        df_1['response'] = 1
+        df_1['category_id'] = 'Total'
+        df_1.rename(columns={'NOMBRE': 'subcategory_id','value': 'total'}, inplace=True)
+        df_1['indicator_id'] = 'Expresiones declaradas' 
+        df_1['nation_id'] = 0
+
+        df_1 = df_1[['year', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
     
         k = 1
         df_2 = {}
@@ -308,7 +312,7 @@ class InfoculturaPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open('../../../conns.yaml'))
 
         dtype = {
             'year':                    'UInt16',
