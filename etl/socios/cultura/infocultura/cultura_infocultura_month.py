@@ -27,7 +27,7 @@ class TransformStep(PipelineStep):
         df_1 = pd.melt(df_1, id_vars=['year','MES','department_id', 'NOMBRE'], value_vars=['NACIONAL', 'EXTRANJERO', 'TOTAL'])
         df_1['time'] = df_1['year'].astype(str) + df_1['MES'].map(MONTHS_DICT)
         df_1['indicator_id'] = 'Visitas a complejos arqueológicos'
-        df_1['nation_id'] = 'per'
+        df_1['nation_id'] = 0
         df_1.rename(columns={'value': 'response', 'variable' : 'category_id', 'NOMBRE' : 'subcategory_id'}, inplace=True)
         df_1 = df_1[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
 
@@ -65,7 +65,7 @@ class TransformStep(PipelineStep):
         df_3 = pd.melt(df_3, id_vars=['year','MES','department_id'], value_vars=['ARQUEOLOGICO', 'HISTORICO', 'PALEONTOLOGICO', 'TOTAL'])
         df_3['time'] = df_3['year'].astype(str) + df_3['MES'].map(MONTHS_DICT)
         df_3['indicator_id'] = 'Alertas de atentados a nivel nacional'
-        df_3['nation_id'] = 'per'
+        df_3['nation_id'] = 0
         df_3['subcategory_id'] = np.nan
         df_3.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
         df_3 = df_3[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
@@ -81,7 +81,7 @@ class TransformStep(PipelineStep):
         df_4.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
         df_4['indicator_id'] = 'Alertas de atentados en Lima'
         df_4['department_id'] = 15
-        df_4['nation_id'] = 'per'
+        df_4['nation_id'] = 0
         df_4['subcategory_id'] = np.nan
         df_4['MES'] = df_4['MES'].replace('Setiembre', 'Septiembre')
         df_4['time'] = df_4['anio'].astype(str) + df_4['MES'].map(MONTHS_DICT)
@@ -101,7 +101,7 @@ class TransformStep(PipelineStep):
         df_5 = pd.melt(df_5, id_vars=['year','MES','department_id'], value_vars=['ADULTO', 'ESTUDIANTE', 'MENORES', 'ADULTO_MAYOR','TOTAL'])
         df_5['time'] = df_5['year'].astype(str) + df_5['MES'].map(MONTHS_DICT)
         df_5['indicator_id'] = 'Visitas a museos - MUA'
-        df_5['nation_id'] = 'per'
+        df_5['nation_id'] = 0
         df_5['subcategory_id'] = np.nan
         df_5.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
         df_5 = df_5[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
@@ -121,7 +121,7 @@ class TransformStep(PipelineStep):
         df_6 = pd.melt(df_6, id_vars=['year','MES','department_id'], value_vars=['NACIONAL', 'EXTRANJERO', 'TOTAL'])
         df_6['time'] = df_6['year'].astype(str) + df_6['MES'].map(MONTHS_DICT)
         df_6['indicator_id'] = 'Visitas a museos'
-        df_6['nation_id'] = 'per'
+        df_6['nation_id'] = 0
         df_6['subcategory_id'] = np.nan
         df_6.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
         df_6 = df_6[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
@@ -141,7 +141,7 @@ class TransformStep(PipelineStep):
         df_7['MES'] = df_7['MES'].replace({'Setiembre' : 'Septiembre'})
         df_7['time'] = df_7['year'].astype(str) + df_7['MES'].map(MONTHS_DICT)
         df_7['indicator_id'] = 'Visitas a salas de exposición'
-        df_7['nation_id'] = 'per'
+        df_7['nation_id'] = 0
         df_7['subcategory_id'] = np.nan
         df_7.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
         df_7 = df_7[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
@@ -180,7 +180,7 @@ class TransformStep(PipelineStep):
         df_9 = pd.melt(df_9, id_vars=['year','IDMES','department_id'], value_vars=['TALLERES', 'BENEFICIARIOS'])
         df_9['time'] = df_9['year'].astype(str) + df_9['IDMES'].map(MONTHS_DICT)
         df_9['indicator_id'] = 'Beneficiarios de talleres vinculados a las artes e industrias culturales'
-        df_9['nation_id'] = 'per'
+        df_9['nation_id'] = 0
         df_9['subcategory_id'] = np.nan
         df_9.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
         df_9 = df_9[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]       
@@ -201,6 +201,7 @@ class FormatStep(PipelineStep):
         df = prev[0]
         df[['month_id', 'indicator_id', 'category_id', 'subcategory_id']] = df[['month_id', 'indicator_id', 'category_id', 'subcategory_id']].fillna(0).astype(int)  
         df['response'] = df['response'].astype(float)
+        df['nation_id'] = df['nation_id'].astype(str)
         return df
 
 class InfoCulturaPipeline(EasyPipeline):

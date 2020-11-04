@@ -19,7 +19,7 @@ class TransformStep(PipelineStep):
             df_1[k] = query(parameters[0],year)
             df_1[k]['indicator_id'] = "Expresiones declaradas"
             df_1[k]['year'] = year
-            df_1[k]['nation_id'] = 'per'
+            df_1[k]['nation_id'] = 0
             df_1[k]['Nombres'] = df_1[k]['EXPRESION'].apply(lambda x: np.nan if isinstance(x, float) else [d['NOMBRE'] for d in x])
             df_1[k]['Nombres'] = df_1[k]['Nombres'].apply(lambda x: ", ".join( repr(e) for e in x ).replace("'","") if isinstance(x, list) else x)
             df_1[k]['category_id'] = "Total"
@@ -55,7 +55,7 @@ class TransformStep(PipelineStep):
                        '12','13','14','15','16','17', '18', '19', '20', '21', '22', '23', '24', '25', '26'])
             df_2[k].rename(columns={'anio': 'year','variable':'department_id','value':'response','index':'subcategory_id'}, inplace= True)
             df_2[k]['indicator_id'] = 'Actividades de preservación'
-            df_2[k]['nation_id'] = 'per'
+            df_2[k]['nation_id'] = 0
             df_2[k]['category_id'] = 'Total'
             df_2[k] = df_2[k][['year','indicator_id','category_id','subcategory_id','department_id','nation_id','response']]
             k = k + 1
@@ -189,7 +189,7 @@ class TransformStep(PipelineStep):
         df_9['category_id'] = 'Total'
         df_9.rename(columns={'NOMBRE': 'subcategory_id','value': 'total'}, inplace=True)
         df_9['indicator_id'] = 'Puntos de cultura reconocidos' 
-        df_9['nation_id'] = 'per'
+        df_9['nation_id'] = 0
 
         df_9 = df_9[['year', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
 
@@ -198,7 +198,7 @@ class TransformStep(PipelineStep):
         for year in [2018,2019,2020]:
             df_10[k] = query(parameters[16],year)  
             df_10[k]['indicator_id'] = 'Asistencia a las presentaciones de los elencos nacionales'
-            df_10[k]['nation_id'] = 'per'
+            df_10[k]['nation_id'] = 0
             df_10[k].rename(columns={'coddpto': 'department_id','anio': 'year', 'asist':'response'}, inplace=True)
             df_10[k]['category_id'] = 'Total'
             df_10[k]['subcategory_id'] = np.nan
@@ -258,7 +258,7 @@ class TransformStep(PipelineStep):
             df_14[k] = query(parameters[23],year)
             df_14[k] = pd.melt(df_14[k], id_vars=['CODDEP', 'anio'], value_vars=['LOCALIDADES'])
             df_14[k]['indicator_id'] = 'Localidades por departamento'
-            df_14[k]['nation_id'] = 'per'
+            df_14[k]['nation_id'] = 0
             df_14[k]['subcategory_id'] = np.nan
             df_14[k].rename(columns={'anio':'year', 'CODDEP' : 'department_id', 'value': 'response', 'variable' :'category_id', 'PUEBLO' : 'subcategory_id'}, inplace=True)
 
@@ -278,7 +278,7 @@ class TransformStep(PipelineStep):
                 mini_df_query['year'] = df_query[df_query.columns[4]][i]
                 df_15 = df_15.append(mini_df_query)
         df_15['indicator_id'] = 'Alerta contra el racismo'
-        df_15['nation_id'] = 'per'
+        df_15['nation_id'] = 0
         df_15['response'] = 1
         df_15.rename(columns={'CATEGORIA' : 'category_id', 'TITULO' : 'subcategory_id'}, inplace=True)
         df_15 = df_15[['year', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
@@ -299,6 +299,7 @@ class FormatStep(PipelineStep):
         df = prev[0]
         df[['year', 'indicator_id', 'category_id', 'subcategory_id']] = df[['year', 'indicator_id', 'category_id', 'subcategory_id']].fillna(0).astype(int) 
         df['response'] = df['response'].fillna(0).astype(float)
+        df['nation_id'] = df['nation_id'].astype(str)
         return df        
 
 class InfoculturaPipeline(EasyPipeline):
