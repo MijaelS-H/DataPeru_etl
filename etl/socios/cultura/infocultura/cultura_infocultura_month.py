@@ -168,7 +168,7 @@ class TransformStep(PipelineStep):
 
             for i in range(0, len(df_9_query)):
                 mini_df_9_query = pd.io.json.json_normalize(df_9_query[df_9_query.columns[2]][i]).rename(columns={'CANTIDAD' : 'TALLERES'})
-                mini_df_9_query['BENEFICIARIOS'] = pd.io.json.json_normalize(df_9_query[df_9_query.columns[3]][i],'CANTIDAD').rename(columns={'CANTIDAD' : 'BENEFICIARIOS'})
+                mini_df_9_query['BENEFICIARIOS'] = pd.io.json.json_normalize(df_9_query[df_9_query.columns[3]][i])['CANTIDAD']
                 mini_df_9_query['department_id'] = df_9_query[df_9_query.columns[0]][i]
                 mini_df_9_query['year'] = df_9_query[df_9_query.columns[5]][i]
                 df_9 = df_9.append(mini_df_9_query)
@@ -177,10 +177,10 @@ class TransformStep(PipelineStep):
         df_9 = pd.melt(df_9, id_vars=['year','IDMES','department_id'], value_vars=['TALLERES', 'BENEFICIARIOS'])
         df_9['time'] = df_9['year'].astype(str) + df_9['IDMES'].map(MONTHS_DICT)
         df_9['indicator_id'] = 'Beneficiarios de talleres vinculados a las artes e industrias culturales'
-        df_9['nation_id'] = 0
+        df_9['nation_id'] = 'per'
         df_9['subcategory_id'] = np.nan
         df_9.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
-        df_9 = df_9[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]       
+        df_9 = df_9[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]   
 
         df_list = [df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8, df_9]
 
