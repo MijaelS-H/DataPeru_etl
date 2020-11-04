@@ -6,7 +6,7 @@ from bamboo_lib.models import Parameter
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
-path = grab_parent_dir('../../') + "/datasets/20200318"
+path = grab_parent_dir("../../") + "/datasets/20200318"
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -54,44 +54,44 @@ class TransformStep(PipelineStep):
         }
 
         # Creating inicial empty dataframe
-        df = pd.DataFrame(columns=['ubigeo', 'year', 'act_economica', 'valor_agregado_bruto_2007', 'valor_agregado_bruto_cte'])
+        df = pd.DataFrame(columns=["ubigeo", "year", "act_economica", "valor_agregado_bruto_2007", "valor_agregado_bruto_cte"])
 
-        left = pd.read_excel(io = '{}/{}/{}'.format(path, data_object['path'], data_object['filename']),
-                        sheet_name = data_object['sheet_name_1'],
-                        usecols = data_object['cols'],
-                        skiprows = data_object['skiprows_'])[0:27]
-        right = pd.read_excel(io = '{}/{}/{}'.format(path, data_object['path'], data_object['filename']),
-                        sheet_name = data_object['sheet_name_2'],
-                        usecols = data_object['cols'],
-                        skiprows = data_object['skiprows_'])[0:27]
+        left = pd.read_excel(io = "{}/{}/{}".format(path, data_object["path"], data_object["filename"]),
+                        sheet_name = data_object["sheet_name_1"],
+                        usecols = data_object["cols"],
+                        skiprows = data_object["skiprows_"])[0:27]
+        right = pd.read_excel(io = "{}/{}/{}".format(path, data_object["path"], data_object["filename"]),
+                        sheet_name = data_object["sheet_name_2"],
+                        usecols = data_object["cols"],
+                        skiprows = data_object["skiprows_"])[0:27]
         
         # Renaming columns for 2 datasets
-        left.rename(columns = data_object['rename_columns'], inplace = True)
-        right.rename(columns = data_object['rename_columns'], inplace = True)
+        left.rename(columns = data_object["rename_columns"], inplace = True)
+        right.rename(columns = data_object["rename_columns"], inplace = True)
 
         # Melt step in order to merge the sets for the same economic activity
-        df_l = pd.melt(left, id_vars =['ubigeo'], value_vars = data_object['melt_'],
-                    var_name = 'year', value_name = data_object['var_name_1'])
-        df_r = pd.melt(right, id_vars =['ubigeo'], value_vars = data_object['melt_'],
-                    var_name = 'year', value_name = data_object['var_name_2'])
+        df_l = pd.melt(left, id_vars =["ubigeo"], value_vars = data_object["melt_"],
+                    var_name = "year", value_name = data_object["var_name_1"])
+        df_r = pd.melt(right, id_vars =["ubigeo"], value_vars = data_object["melt_"],
+                    var_name = "year", value_name = data_object["var_name_2"])
         
         # Creating key column for merge step
-        df_l['code'] = df_l['ubigeo'].astype('str') + df_l['year'].astype('str')
-        df_r['code'] = df_r['ubigeo'].astype('str') + df_r['year'].astype('str')
+        df_l["code"] = df_l["ubigeo"].astype("str") + df_l["year"].astype("str")
+        df_r["code"] = df_r["ubigeo"].astype("str") + df_r["year"].astype("str")
 
-        pivote = pd.merge(df_l,  df_r[['code', 'valor_agregado_bruto_cte']], on = 'code', how = 'left')
-        pivote.drop(['code'], axis = 1, inplace = True)
-        pivote['act_economica'] = data_object['name']
+        pivote = pd.merge(df_l,  df_r[["code", "valor_agregado_bruto_cte"]], on = "code", how = "left")
+        pivote.drop(["code"], axis = 1, inplace = True)
+        pivote["act_economica"] = data_object["name"]
         
         # Append files to df
-        df = df.append(pivote)
+        df = df.append(pivote, sort=False)
 
-        # Replacing values with id's and droping un used values
+        # Replacing values with id"s and droping un used values
         df["ubigeo"].replace(depto_dict, inplace = True)
         df["act_economica"].replace(act_dict, inplace = True)
         df = df.loc[(df["ubigeo"] != "Lima Provincias") & (df["ubigeo"] != "Lima Metropolitana")]
 
-        # Turning id's from int to string
+        # Turning id"s from int to string
         df["ubigeo"] = df["ubigeo"].astype("str").str.zfill(2)
 
         return df

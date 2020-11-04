@@ -6,7 +6,7 @@ from bamboo_lib.models import Parameter
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
-path = grab_parent_dir('../../') + "/datasets/20200318"
+path = grab_parent_dir("../../") + "/datasets/20200318"
 
 depto_dict = {
     "Amazonas  ": "01",
@@ -39,23 +39,28 @@ depto_dict = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = '{}/{}/{}'.format(path, 'D. Sociales', "D.37.xlsx"), skiprows = (0,1,2))[4:117]
-        df2 = pd.read_excel(io = '{}/{}/{}'.format(path, 'D. Sociales', "D.38.xlsx"), skiprows = (0,1,2))[1:114]
-        df3 = pd.read_excel(io = '{}/{}/{}'.format(path, 'D. Sociales', "D.39.xlsx"), skiprows = (0,1,2))[1:88]
+        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.37.xlsx"), skiprows = (0,1,2))[4:117]
+        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.38.xlsx"), skiprows = (0,1,2))[1:114]
+        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.39.xlsx"), skiprows = (0,1,2))[1:88]
 
         dframes_ = [df1, df2, df3]
         np_rows_ = [{0:59, 1:64}, {0:59, 1:64}, {0:45, 1:51}]
 
         # For each dataframe, 
+        temp = []
         for i in range(0,3):
-            dframes_[i].rename(columns = {"Departamento/\nNivel Educativo": "ubigeo", "Nivel educativo /\nDepartamento": "ubigeo"}, inplace = True)
-            dframes_[i]["ubigeo"].replace({"Región Lima  1/": "Lima", "Lima  Metropolitana" : "Lima", "Prov. Const. del Callao": "Callao", "    -Inicial": "Inicial", "    -Primaria ": "Primaria", "    -Secundaria": "Secundaria", "    Inicial": "Inicial", "    Primaria ": "Primaria", "    Secundaria": "Secundaria", "    -Básica Alternativa": "Básica Alternativa", "    -Básica Especial": "Básica Especial", "    -Técnico Productiva": "Técnico Productiva", "    -Superior No Universitaria": "Superior No Universitaria", "    -Superior Universitaria": "Superior Universitaria"}, inplace = True)
-            dframes_[i]["ubigeo"][np_rows_[i][0]:np_rows_[i][1]] = pd.np.nan
+            df = dframes_[i].copy()
+            df.rename(columns = {"Departamento/\nNivel Educativo": "ubigeo", "Nivel educativo /\nDepartamento": "ubigeo", "Departamento de inscripción": "ubigeo", "Ámbito geográfico": "ubigeo", "Departamento": "ubigeo", "Ámbito geográfico": "ubigeo"}, inplace = True)
+            df["ubigeo"].replace({"Región Lima  1/": "Lima", "Lima  Metropolitana" : "Lima", "Prov. Const. del Callao": "Callao", "    -Inicial": "Inicial", "    -Primaria ": "Primaria", "    -Secundaria": "Secundaria", "    Inicial": "Inicial", "    Primaria ": "Primaria", "    Secundaria": "Secundaria", "    -Básica Alternativa": "Básica Alternativa", "    -Básica Especial": "Básica Especial", "    -Técnico Productiva": "Técnico Productiva", "    -Superior No Universitaria": "Superior No Universitaria", "    -Superior Universitaria": "Superior Universitaria"}, inplace = True)
+            df.iloc[np_rows_[i][0]:np_rows_[i][1], 0] = pd.np.nan
+            temp.append(df)
+
+        df1, df2, df3 = temp
 
         # Assign migration flow value
-        df1 = df1[df1["ubigeo"].notna()]
-        df2 = df2[df2["ubigeo"].notna()]
-        df3 = df3[df3["ubigeo"].notna()]
+        df1 = df1[df1["ubigeo"].notna()].copy()
+        df2 = df2[df2["ubigeo"].notna()].copy()
+        df3 = df3[df3["ubigeo"].notna()].copy()
         df1["nivel_educativo"] = pd.np.nan
         df2["nivel_educativo"] = pd.np.nan
         df3["nivel_educativo"] = pd.np.nan
@@ -70,9 +75,9 @@ class TransformStep(PipelineStep):
         df1["ubigeo"].fillna(method="ffill", inplace = True)
         df2["ubigeo"].fillna(method="ffill", inplace = True)
         df3["ubigeo"].fillna(method="ffill", inplace = True)
-        df1.dropna(axis=0, how='any', inplace = True)
-        df2.dropna(axis=0, how='any', inplace = True)
-        df3.dropna(axis=0, how='any', inplace = True)
+        df1.dropna(axis=0, how="any", inplace = True)
+        df2.dropna(axis=0, how="any", inplace = True)
+        df3.dropna(axis=0, how="any", inplace = True)
 
         # Melt of the dataframes to append later
         df1 = pd.melt(df1, id_vars = ["ubigeo", "nivel_educativo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "estudiantes") 
@@ -80,14 +85,19 @@ class TransformStep(PipelineStep):
         df3 = pd.melt(df3, id_vars = ["ubigeo", "nivel_educativo"], value_vars = [2007, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "estudiantes") 
 
         # Append 3 datasets
-        df = df1.append(df2)
-        df = df.append(df3)
+        df = df1.append(df2, sort = True)
+        df = df.append(df3, sort = True)
 
         # Removing non number values, to gruopby step (Lima issue)
         df["estudiantes"].replace({"…": 0}, inplace = True)
         df = df.groupby(["ubigeo", "year", "nivel_educativo"]).sum().reset_index()
 
-        # Creating ubigeo id's
+        # Replacing educational levels with id's (schema)
+        df["nivel_educativo"].replace({'Inicial': 1, 'Primaria': 2, 'Secundaria': 3, 'Básica Alternativa': 4,
+                                        'Básica Especial': 5, 'Técnico Productiva': 6, 'Superior No Universitaria': 7,
+                                        'Superior Universitaria': 8}, inplace = True)
+
+        # Creating ubigeo id"s
         df["ubigeo"].replace(depto_dict, inplace = True)
 
         return df
@@ -104,13 +114,13 @@ class met_education_y_level_dep_Pipeline(EasyPipeline):
         dtype = {
             "year":                          "UInt16",
             "ubigeo":                        "String",
-            "nivel_educativo":               "String",
+            "nivel_educativo":               "UInt16",
             "estudiantes":                   "Float"
         }
 
         transform_step = TransformStep()
         load_step = LoadStep(
-            "met_education_y_level_dep", db_connector, if_exists="drop", pk=["ubigeo","year"], dtype=dtype,
+            "met_education_y_level_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype,
         )
 
         return [transform_step, load_step]

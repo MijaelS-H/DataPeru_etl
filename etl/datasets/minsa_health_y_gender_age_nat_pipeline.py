@@ -6,20 +6,20 @@ from bamboo_lib.models import Parameter
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
-path = grab_parent_dir('../../') + "/datasets/20200318"
+path = grab_parent_dir("../../") + "/datasets/20200318"
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = '{}/{}/{}'.format(path, 'D. Sociales', "D.25.xlsx"), skiprows = range(0,5))[2:131]
-        df2 = pd.read_excel(io = '{}/{}/{}'.format(path, 'D. Sociales', "D.26.xlsx"), skiprows = (0,1,2))[2:124]
+        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.25.xlsx"), skiprows = range(0,5))[2:131]
+        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.26.xlsx"), skiprows = (0,1,2))[2:124]
 
         # For each dataframe, 
         for item in [df1, df2]:
             item.rename(columns = {"Causas / Grupos de edad": "causas", "Causas /Grupos de edad": "causas"}, inplace = True)
             item.dropna(thresh = 3, axis=0, inplace = True)
             item["age_group"] = pd.np.nan
-            item["causas"].replace({'   Menores de 15 años': "Menores de 15 años", '   De 15 a 24 años': "De 15 a 24 años", '   De 25 a 49': "De 25 a 49 años", '   50 y más años': "50 y más años", '   De 25 a 49 años': "De 25 a 49 años", '  50 y más años': "50 y más años", '   No identificada': "No identificada", '   Ignorado': "Ignorado"}, inplace = True)
+            item["causas"].replace({"   Menores de 15 años": "Menores de 15 años", "   De 15 a 24 años": "De 15 a 24 años", "   De 25 a 49": "De 25 a 49 años", "   50 y más años": "50 y más años", "   De 25 a 49 años": "De 25 a 49 años", "  50 y más años": "50 y más años", "   No identificada": "No identificada", "   Ignorado": "Ignorado"}, inplace = True)
             item.loc[item["causas"].str.contains("años|Ignorado|identifi"), "age_group"] = item["causas"]
             item.loc[item["causas"].str.contains("años|Ignorado|identifi"), "causas"] = pd.np.nan
             item["causas"].fillna(method="ffill", inplace = True)
@@ -50,6 +50,8 @@ class TransformStep(PipelineStep):
         df["year"] = df["year"].astype(int)
         df["poblacion"] = df["poblacion"].astype(float)
 
+        df["ubigeo"] = "per"
+
         return df
 
 class minsa_health_y_gender_age_nat_Pipeline(EasyPipeline):
@@ -62,6 +64,7 @@ class minsa_health_y_gender_age_nat_Pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
 
         dtype = {
+            "ubigeo":                        "String",
             "year":                          "UInt16",
             "causas":                        "String",
             "sexo":                          "String",
@@ -71,7 +74,7 @@ class minsa_health_y_gender_age_nat_Pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         load_step = LoadStep(
-            "minsa_health_y_gender_age_nat", db_connector, if_exists="drop", pk=["year"], dtype=dtype, nullable_list=["poblacion"]
+            "minsa_health_y_gender_age_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["poblacion"]
         )
 
         return [transform_step, load_step]

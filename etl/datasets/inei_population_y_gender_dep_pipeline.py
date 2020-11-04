@@ -6,7 +6,7 @@ from bamboo_lib.models import Parameter
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
-path = grab_parent_dir('../../') + "/datasets/20200318"
+path = grab_parent_dir("../../") + "/datasets/20200318"
 
 depto_dict = {
     "Amazonas": 1,
@@ -60,15 +60,15 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame(columns = ["Unnamed: 0", "Hombre", "Mujer", "year"])
 
         # First reading step
-        xls = pd.ExcelFile(io = '{}/{}/{}'.format(path, 'B. Población y Vivienda', "B.12.xls"))
+        xls = pd.ExcelFile(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.12.xls"))
 
         # For each sheet, adding year columns and corrections to dataframe
         for i in list(range(0,6)):
             pivote = pd.read_excel(xls, sheets[i], dtype=str, skiprows = (0,1,2,4,5,6))[0:24]
             pivote.columns = pivote.columns.str.strip()
-            pivote_1 = pivote[["Unnamed: 0", "Hombre", "Mujer"]]
-            pivote_2 = pivote[["Unnamed: 0", "Hombre.1", "Mujer.1"]]
-            pivote_3 = pivote[["Unnamed: 0", "Hombre.2", "Mujer.2"]]
+            pivote_1 = pivote[["Unnamed: 0", "Hombre", "Mujer"]].copy()
+            pivote_2 = pivote[["Unnamed: 0", "Hombre.1", "Mujer.1"]].copy()
+            pivote_3 = pivote[["Unnamed: 0", "Hombre.2", "Mujer.2"]].copy()
             pivote_1["year"] = years[i][0]
             pivote_2["year"] = years[i][1]
             pivote_3["year"] = years[i][2]
@@ -82,36 +82,36 @@ class TransformStep(PipelineStep):
         df["ubigeo"] = df["ubigeo"].str.slice(0,2)
 
         # Second reading step
-        df2 = pd.read_excel(io = '{}/{}/{}'.format(path, 'C. Empleo', "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
-        df3 = pd.read_excel(io = '{}/{}/{}'.format(path, 'C. Empleo', "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
-        df4 = pd.read_excel(io = '{}/{}/{}'.format(path, 'C. Empleo', "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df5 = pd.read_excel(io = '{}/{}/{}'.format(path, 'C. Empleo', "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df6 = pd.read_excel(io = '{}/{}/{}'.format(path, 'C. Empleo', "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df7 = pd.read_excel(io = '{}/{}/{}'.format(path, 'C. Empleo', "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df8 = pd.read_excel(io = '{}/{}/{}'.format(path, 'C. Empleo', "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df4 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df5 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df6 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df7 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df8 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:41]
 
         for item in [df2, df3, df4, df5, df6 ,df7, df8]:
             item.rename(columns = {"Ámbito geográfico": "ubigeo"}, inplace = True)
-            item.drop(item.loc[item['ubigeo'].str.contains("Provincia|Regi|Departamento")].index, inplace=True)
+            item.drop(item.loc[item["ubigeo"].str.contains("Provincia|Regi|Departamento")].index, inplace=True)
 
-        df2 = pd.melt(df2, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = 'year', value_name = "pea_total_masculina")
-        df3 = pd.melt(df3, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = 'year', value_name = "pea_total_femenina")
+        df2 = pd.melt(df2, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "pea_total_masculina")
+        df3 = pd.melt(df3, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "pea_total_femenina")
         df2["pea_total_masculina"] = df2["pea_total_masculina"]*1000
         df3["pea_total_femenina"]  = df3["pea_total_femenina"]*1000
 
-        df4 = pd.melt(df4, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = 'year', value_name = "pea_ocupada_masculina")
-        df5 = pd.melt(df5, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = 'year', value_name = "pea_ocupada_femenina")
+        df4 = pd.melt(df4, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "pea_ocupada_masculina")
+        df5 = pd.melt(df5, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "pea_ocupada_femenina")
         df4["pea_ocupada_masculina"] = df4["pea_ocupada_masculina"]*1000
         df5["pea_ocupada_femenina"]  = df5["pea_ocupada_femenina"]*1000
 
 
-        df6 = pd.melt(df6, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = 'year', value_name = "ingreso_promedio_mensual_soles_nom")
-        df7 = pd.melt(df7, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = 'year', value_name = "ingreso_promedio_m_mensual_soles_nom")
-        df8 = pd.melt(df8, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = 'year', value_name = "ingreso_promedio_f_mensual_soles_nom")
+        df6 = pd.melt(df6, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "ingreso_promedio_mensual_soles_nom")
+        df7 = pd.melt(df7, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "ingreso_promedio_m_mensual_soles_nom")
+        df8 = pd.melt(df8, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "ingreso_promedio_f_mensual_soles_nom")
 
         df["code"] = df["ubigeo"].astype(str) + df["year"].astype(str)
 
-        # Turning id's from int to string # Replacing values with id's
+        # Turning id"s from int to string # Replacing values with id"s
         for item in [df2, df3, df4, df5, df6 ,df7, df8]:
             item["ubigeo"].replace(depto_dict, inplace = True)
             item["ubigeo"] = item["ubigeo"].astype("str").str.zfill(2)
@@ -167,7 +167,6 @@ class inei_population_y_gender_dep_Pipeline(EasyPipeline):
         )
 
         return [transform_step, load_step]
-
 
 if __name__ == "__main__":
     pp = inei_population_y_gender_dep_Pipeline()

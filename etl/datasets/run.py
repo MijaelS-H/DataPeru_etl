@@ -192,4 +192,4 @@ data_object = [
 ]
 for i in data_object:
     pp = itp_ind_year_Pipeline
-    pp.run({"data": i})
+    pp.run({'data': i})

@@ -1,6 +1,11 @@
 .env
+
+*.csv
+
 __pycache__/
 data/
 temp/
 venv/
 *.ipynb
+
+etl/presupuesto/dimensions/
