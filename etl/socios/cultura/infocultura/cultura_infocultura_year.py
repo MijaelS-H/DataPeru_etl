@@ -187,6 +187,8 @@ class TransformStep(PipelineStep):
 
         df_9 = pd.DataFrame()
 
+        df_9 = pd.DataFrame()
+
         for year in [2018]: 
             df_query = query(parameters[15],year)
             df_query = df_query.dropna().reset_index()
@@ -194,17 +196,16 @@ class TransformStep(PipelineStep):
 
             for i in range(0, len(df_query)):
                 mini_df_query = pd.io.json.json_normalize(df_query[df_query.columns[2]][i])
-                mini_df_query.drop(['TIPO', 'DISCIPLINA','ACTIVIDAD'], axis=1, inplace=True)
+                mini_df_query.drop(['TIPO', 'ACTIVIDAD'], axis=1, inplace=True)
                 mini_df_query['department_id'] = df_query[df_query.columns[0]][i]
                 mini_df_query['year'] = df_query[df_query.columns[3]][i]
                 df_9 = df_9.append(mini_df_query)
 
         df_9['response'] = 1
-        df_9['category_id'] = 'Total'
-        df_9.rename(columns={'NOMBRE': 'subcategory_id','value': 'total'}, inplace=True)
+    
+        df_9.rename(columns={'NOMBRE': 'category_id','value': 'total', 'DISCIPLINA' : 'subcategory_id'}, inplace=True)
         df_9['indicator_id'] = 'Puntos de cultura reconocidos' 
-        df_9['nation_id'] = 0
-
+        df_9['nation_id'] = 'per'
         df_9 = df_9[['year', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
 
         k = 1
