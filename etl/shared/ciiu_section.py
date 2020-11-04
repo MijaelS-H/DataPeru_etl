@@ -38,7 +38,7 @@ class TransformStep(PipelineStep):
 
         sections = pd.DataFrame(sections, columns=['section_id', 'interval_lower', 'interval_upper'])
 
-        df['group_id'] = df.apply(lambda x: x['Code'][0:3] if len(x['Code']) == 4 else np.nan, axis=1)
+        
         df['division_id'] = df.apply(lambda x: x['Code'][0:2] if len(x['Code']) >= 3 else np.nan, axis=1)
         df['section_id'] = df.apply(lambda x: float(x['division_id']), axis=1)
 
@@ -49,8 +49,6 @@ class TransformStep(PipelineStep):
                     break
 
         sections_df = df[df['Code'].str.len() == 1][['Code', 'Title']].copy()
-        division_df = df[df['Code'].str.len() == 2][['Code', 'Title']].copy()
-        group_df = df[df['Code'].str.len() == 3][['Code', 'Title']].copy()
         df = df[df['Code'].str.len() == 4]
 
         sections_df.rename(columns={
@@ -58,31 +56,23 @@ class TransformStep(PipelineStep):
             'Title': 'section_name'
         }, inplace=True)
 
-        division_df.rename(columns={
-            'Code': 'division_id',
-            'Title': 'division_name'
-        }, inplace=True)
-
-        group_df.rename(columns={
-            'Code': 'group_id',
-            'Title': 'group_name'
-        }, inplace=True)
 
         df.rename(columns={
             'Code': 'class_id',
             'Title': 'class_name'
         }, inplace=True)
 
-        df = pd.merge(df, group_df, on='group_id', how='left')
-        df = pd.merge(df, division_df, on='division_id', how='left')
+        
         df = pd.merge(df, sections_df, on='section_id', how='left')
 
-        df = df[['section_name', 'division_name', 'group_name', 'class_name', 'section_id', 'division_id', 'group_id', 'class_id']]
+        df = df[['section_name', 'section_id']]
 
-        additional_df = pd.DataFrame(data=[['No determinado', 'No determinado', 'No determinado', 'No determinado', 'Z', '00', '000', '0000']], columns=df.columns)
+        additional_df = pd.DataFrame(data=[['No determinado', 'Z' ]], columns=df.columns)
 
         df = df.append(additional_df)
+        df.drop_duplicates(subset=['section_id'], inplace = True)
 
+    
         return df
 
 class CIIUPipeline(EasyPipeline):
@@ -93,18 +83,12 @@ class CIIUPipeline(EasyPipeline):
         dtype = {
             'section_id': 'String',
             'section_name': 'String',
-            'division_id': 'String',
-            'division_name': 'String',
-            'group_id': 'String',
-            'group_name': 'String',
-            'class_id': 'String',
-            'class_name': 'String'
         }
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "dim_shared_ciiu", db_connector, if_exists="drop", pk=["class_id"], dtype=dtype)
+            "dim_shared_ciiu_section", db_connector, if_exists="drop", pk=["section_id"], dtype=dtype)
 
         return [transform_step, load_step]
 
