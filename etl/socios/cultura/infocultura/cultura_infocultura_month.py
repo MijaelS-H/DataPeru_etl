@@ -111,18 +111,17 @@ class TransformStep(PipelineStep):
             df_6_query = query(parameters[13],year)
 
             for i in range(0, len(df_6_query)):
-                mini_df_6_query = pd.io.json.json_normalize(df_6_query[df_6_query.columns[2]][i], 'CANTIDAD')
+                mini_df_6_query = pd.io.json.json_normalize(df_6_query[df_6_query.columns[2]][i], 'CANTIDAD', 'NOMBRE')
                 mini_df_6_query['department_id'] = df_6_query[df_6_query.columns[0]][i]
                 mini_df_6_query['year'] = df_6_query[df_6_query.columns[3]][i]
                 df_6 = df_6.append(mini_df_6_query)
 
 
-        df_6 = pd.melt(df_6, id_vars=['year','MES','department_id'], value_vars=['NACIONAL', 'EXTRANJERO', 'TOTAL'])
+        df_6 = pd.melt(df_6, id_vars=['year','MES','department_id', 'NOMBRE'], value_vars=['NACIONAL', 'EXTRANJERO', 'TOTAL'])
         df_6['time'] = df_6['year'].astype(str) + df_6['MES'].map(MONTHS_DICT)
         df_6['indicator_id'] = 'Visitas a museos'
         df_6['nation_id'] = 0
-        df_6['subcategory_id'] = np.nan
-        df_6.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
+        df_6.rename(columns={'value':'response', 'variable' : 'category_id', 'NOMBRE' : 'subcategory_id'}, inplace=True)
         df_6 = df_6[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
 
         df_7 = pd.DataFrame()
@@ -130,19 +129,18 @@ class TransformStep(PipelineStep):
             df_7_query = query(parameters[14],year)
 
             for i in range(0, len(df_7_query)):
-                mini_df_7_query = pd.io.json.json_normalize(df_7_query[df_7_query.columns[2]][i], 'CANTIDAD')
+                mini_df_7_query = pd.io.json.json_normalize(df_7_query[df_7_query.columns[2]][i], 'CANTIDAD', 'NOMBRE')
                 mini_df_7_query['department_id'] = df_7_query[df_7_query.columns[0]][i]
                 mini_df_7_query['year'] = df_7_query[df_7_query.columns[3]][i]
                 df_7 = df_7.append(mini_df_7_query)
 
 
-        df_7 = pd.melt(df_7, id_vars=['year','MES','department_id'], value_vars=['NACIONAL', 'EXTRANJERO', 'TOTAL'])
+        df_7 = pd.melt(df_7, id_vars=['year','MES','department_id', 'NOMBRE'], value_vars=['NACIONAL', 'EXTRANJERO', 'TOTAL'])
         df_7['MES'] = df_7['MES'].replace({'Setiembre' : 'Septiembre'})
         df_7['time'] = df_7['year'].astype(str) + df_7['MES'].map(MONTHS_DICT)
         df_7['indicator_id'] = 'Visitas a salas de exposición'
         df_7['nation_id'] = 0
-        df_7['subcategory_id'] = np.nan
-        df_7.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
+        df_7.rename(columns={'value':'response', 'variable' : 'category_id', 'NOMBRE' : 'subcategory_id'}, inplace=True)
         df_7 = df_7[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
 
         df_8 = pd.DataFrame()
