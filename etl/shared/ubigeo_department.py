@@ -7,6 +7,21 @@ from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 
+MISSING_DEPARTMENTS = [
+    {
+        'department_name': 'Exteriores',
+        'department_id': '98',
+        'nation_id': 'per',
+        'nation_name': 'Perú'
+    },
+    {
+        "department_name": "Todos",
+        "department_id": "26",
+        'nation_id': 'per',
+        'nation_name': 'Perú'
+    }
+]
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
@@ -33,14 +48,7 @@ class TransformStep(PipelineStep):
 
         df.drop(columns=['PROVINCIA', 'PROVINCIA_id', 'DISTRITO', 'DISTRITO_id'], inplace=True)
 
-        df = df.append(
-            [{
-                'department_name': 'Exteriores',
-                'department_id': '98',
-                'nation_id': 'per',
-                'nation_name': 'Perú'
-            }]
-        )
+        df = df.append(MISSING_DEPARTMENTS)
 
         return df
 
