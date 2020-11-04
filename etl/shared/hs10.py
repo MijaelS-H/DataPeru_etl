@@ -26,7 +26,7 @@ class TransformStep(PipelineStep):
 
         hs_10_dim = pd.merge(hs6, hs10, on=['hs6_id'])
 
-        hs_10_dim[['hs10_name','hs10_id']] = hs_10_dim[['hs10_name','hs10_id']].astype(str)
+        hs_10_dim['hs10_id'] = hs_10_dim['hs10_id'].astype(int).astype(str).str.zfill(10)
         
         return hs_10_dim
 
