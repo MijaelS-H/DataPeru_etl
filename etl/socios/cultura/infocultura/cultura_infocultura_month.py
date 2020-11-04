@@ -211,7 +211,7 @@ class InfoCulturaPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         dtype = {
-            'year':                    'UInt32',
+            'month_id':                'UInt32',
             'indicator_id':            'UInt8',
             'category_id':             'UInt8',
             'subcategory_id':          'UInt8',

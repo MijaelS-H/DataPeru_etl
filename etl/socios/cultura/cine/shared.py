@@ -16,8 +16,6 @@ class ReplaceStep(PipelineStep):
         tipo_constitucion_dim = dict(zip(df['tipo_constitucion_id'].dropna().unique(), range(1, len(df['tipo_constitucion_id'].dropna().unique()) + 1 )))
         df['tipo_constitucion_id'].replace(tipo_constitucion_dim, inplace=True)
 
-        print(tipo_constitucion_dim)
-
         razon_social_dim = dict(zip(df['razon_social_id'].dropna().unique(), range(1, len(df['razon_social_id'].dropna().unique()) + 1 )))
         df['razon_social_id'].replace(razon_social_dim, inplace=True)
 
