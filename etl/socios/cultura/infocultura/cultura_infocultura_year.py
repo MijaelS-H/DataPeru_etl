@@ -187,7 +187,7 @@ class TransformStep(PipelineStep):
 
         df_9 = pd.DataFrame()
 
-        for year in [2018, 2019, 2020]: 
+        for year in [2018]: 
             df_query = query(parameters[15],year)
             df_query = df_query.dropna().reset_index()
             df_query.drop('index', axis = 1, inplace=True)
