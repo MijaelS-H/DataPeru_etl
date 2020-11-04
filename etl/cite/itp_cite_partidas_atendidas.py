@@ -36,7 +36,9 @@ class TransformStep(PipelineStep):
         df[['cadena_atencion_id', 'cadena_pip_id', 'cadena_resolucion_id']] = df[['cadena_atencion_id', 'cadena_pip_id', 'cadena_resolucion_id']].fillna(0).astype(int)
         
         df.rename(columns ={'descripcion_partida ' : 'hs10_name', 'partida_arancelaria' : 'hs10_id'}, inplace=True)
-        df['hs10_name'] = df['hs10_name'].str.title()      
+        df['hs10_name'] = df['hs10_name'].str.title()
+        df['hs10_id'] = df['hs10_id'].fillna(0)
+        df['hs10_id'] = df['hs10_id'].astype(int).astype(str).str.zfill(10)      
         
         df['cantidad_cite'] = 1
         
