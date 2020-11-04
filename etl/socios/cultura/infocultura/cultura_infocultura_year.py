@@ -7,7 +7,7 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
 from pandas.io.json import json_normalize
-from static import MONTHS_DICT, query, parameters
+from static import TOTALES_REPLACE_DICT, ACTIVIDADES_REPLACE_DICT, MONTHS_DICT, query, parameters
 from shared_year import ReplaceStep
 
 class TransformStep(PipelineStep):
@@ -289,7 +289,9 @@ class TransformStep(PipelineStep):
         df = reduce(lambda df1,df2: df1.append(df2), df_list)
         df.rename(columns={'response_name':'response_id'}, inplace=True)
         df['category_id'] = df['category_id'].str.replace('_', ' ').str.title()
+        df['subcategory_id'] = df['subcategory_id'].replace(ACTIVIDADES_REPLACE_DICT).str.strip()
         df['department_id'] = df['department_id'].astype(str)
+        df['category_id'] = df['category_id'].replace(TOTALES_REPLACE_DICT).str.strip()
         
         return df
 

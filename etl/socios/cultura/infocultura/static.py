@@ -18,6 +18,37 @@ MONTHS_DICT = {
     'Diciembre' : '12',
 }
 
+ACTIVIDADES_REPLACE_DICT = {
+    'insp_tec' : 'Inspecciones Técnicas', 
+    'eval_tec': 'Evaluaciones Técnicas', 
+    'intervencion': 'Intervención',
+    'determ_medidas_emergencia' : 'Determinación de Medidas de Emergencia', 
+    'elab_prop_interv' : 'Elaboración de Propuestas de Intervención', 
+    'asist_tecnica' : 'Asistencia Técnica',
+    'superv_obras' : 'Supervisión de Obras', 
+    'elab_prop_reglamentacion' : 'Elaboración de Propuestas de Reglamentación', 
+    'entidades' : 'Entidades'
+}
+
+TOTALES_REPLACE_DICT = {
+    'Total Ninos Nac' : 'Total Niños Nacional',
+    'Total Ninos Ext' : 'Total Niños Extranjero',
+    'Total Estudiantes Nac' : 'Total Estudiantes Nacional',
+    'Total Estudiantes Ext' : 'Total Estudiantes Extranjero', 
+    'Total Adultos Nac' : 'Total Adultos Nacional',
+    'Total Adultos Ext' : 'Total Adultos Extranjero',
+    'Total Adu Bolesp Nac' : 'Total Boletos Adultos Nacional', 
+    'Total Adu Bolesp Ext' : 'Total Boletos Adultos Extranjero',
+    'Total Est Bolesp Nac' : 'Total Boletos Estudiantes Nacional', 
+    'Total Est Bolesp Ext' : 'Total Boletos Estudiantes Extranjero', 
+    'Total Nin Bolesp Nac' : 'Total Boletos Niños Nacional', 
+    'Total Nin Bolesp Ext' : 'Total Boletos Niños Extranjero',
+    'Total Mil Bolesp Nac' : 'Total Boletos Militares Nacional',  
+    'Total Mil Bolesp Ext' : 'Total Boletos Militares Extranjero', 
+    'Total Adm Bolesp Nac' : 'Total Boletos Adultos Mayores Nacional', 
+    'Total Adm Bolesp Ext' : 'Total Boletos Adultos Mayores Extranjero', 
+
+}
 
 
 def query(indicador, year):

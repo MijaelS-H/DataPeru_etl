@@ -192,7 +192,7 @@ class TransformStep(PipelineStep):
         
         df['department_id'] = df['department_id'].astype(str)
         df['category_id'] = df['category_id'].str.replace('_', ' ').str.title()
-
+        
         return df
 
 class FormatStep(PipelineStep):
