@@ -191,7 +191,7 @@ class TransformStep(PipelineStep):
         df.rename(columns={'response_name':'response_id', 'time' : 'month_id'}, inplace=True)
         
         df['department_id'] = df['department_id'].astype(str)
-        df['category_id'] = df['category_id'].replace('_', ' ').str.title()
+        df['category_id'] = df['category_id'].str.replace('_', ' ').str.title()
 
         return df
 
