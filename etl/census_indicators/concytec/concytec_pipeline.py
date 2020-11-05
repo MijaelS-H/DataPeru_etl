@@ -1,17 +1,22 @@
+from os import path
+
 import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from static import COLUMNS_RENAME, LIST_DICT, DTYPE, LIST_NULL
-from indicator import INDICATOR_INSTITUTE, INDICATOR_CENTER
+from etl.consistency import AggregatorStep
+
+from .indicator import INDICATOR_CENTER, INDICATOR_INSTITUTE
+from .static import COLUMNS_RENAME, DTYPE, LIST_DICT, LIST_NULL
+
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read modules
         list_name = [
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap200.dta',
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO/03 BASE DE DATOS/cap300-400.dta'
+            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO", "03 BASE DE DATOS", "cap200.dta"),
+            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO", "03 BASE DE DATOS", "cap300-400.dta"),
         ]
 
         df = [pd.read_stata(x) for x in list_name]
@@ -94,21 +99,34 @@ class TransformStep(PipelineStep):
         
         return df_final
 
+
 class CONCYTECPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        table_name = "inei_concytec"
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         transform_step = TransformStep()
-    
-        load_step = LoadStep('inei_concytec', db_connector, if_exists='drop', 
+
+        agg_step = AggregatorStep(table_name, measures=[])
+
+        load_step = LoadStep(table_name, db_connector, if_exists='drop', 
                              pk=['district_id', 'province_id', 'department_id',
                                  'nation_id', 'year'], dtype=DTYPE,
                              nullable_list=LIST_NULL)
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+
+def run_pipeline(params: dict):
+    pp = CONCYTECPipeline()
+    pp.run(params)
+
 
 if __name__ == "__main__":
-    pp = CONCYTECPipeline()
-    pp.run({})
+    import sys
+    
+    run_pipeline({
+        "connector": "../../conns.yaml", 
+        "datasets": sys.argv[1]
+    })

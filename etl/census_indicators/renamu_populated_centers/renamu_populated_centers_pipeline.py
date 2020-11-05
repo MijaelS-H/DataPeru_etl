@@ -1,16 +1,25 @@
-import numpy as np
 import os
+
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.helpers import grab_parent_dir, query_to_df
+from bamboo_lib.helpers import query_to_df
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from static import COLUMNS_DICT, DTYPES, NULLABLE_LISTS, PRIMARY_KEYS, SELECTED_COLUMNS, VARIABLES_DICT
+from etl.consistency import AggregatorStep
 
-path = grab_parent_dir('../../../') + "/datasets/20201001/02. Información Censos (01-10-2020)/02  RENAMU - CENTROS POBLADOS/"
+from .static import (COLUMNS_DICT, DTYPES, NULLABLE_LISTS, PRIMARY_KEYS,
+                     SELECTED_COLUMNS, VARIABLES_DICT)
+
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
+        path = os.path.join(
+            params["datasets"],
+            "20201001",
+            "02. Información Censos (01-10-2020)",
+            "02  RENAMU - CENTROS POBLADOS",
+        )
 
         # Open all RENAMU files and creates a DataFrame
 
@@ -486,27 +495,41 @@ class TransformStep(PipelineStep):
 
         return output
 
+
 class RENAMUCCPPPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        table_name = params["table_name"]
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         transform_step = TransformStep()
-        load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
+
+        agg_step = AggregatorStep(table_name, measures=[])
+
+        load_step = LoadStep(table_name, db_connector, if_exists='drop',
                              pk=PRIMARY_KEYS[params.get('level')], dtype=DTYPES[params.get('level')],
                              nullable_list=NULLABLE_LISTS[params.get('level')])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+
+def run_pipeline(params):
+    pp = RENAMUCCPPPipeline()
+    levels = {
+        "dimension_table": "dim_shared_populated_centers",
+        "fact_table": "inei_renamu_populated_centers",
+    }
+
+    for k, v in levels.items():
+        pp_params = {"level": k, "table_name": v}
+        pp_params.update(params)
+        pp.run(pp_params)
+
 
 if __name__ == "__main__":
-    pp = RENAMUCCPPPipeline()
+    import sys
 
-    for k, v in {
-        'dimension_table':  'dim_shared_populated_centers',
-        'fact_table': 'inei_renamu_populated_centers'
-            }.items():
-        pp.run({
-            'level': k,
-            'table_name': v
-        })
+    run_pipeline({
+        "connector": "../../conns.yaml",
+        "datasets": sys.argv[1]
+    })
