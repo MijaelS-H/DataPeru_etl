@@ -22,9 +22,6 @@ class TransformStep(PipelineStep):
         db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
         countries = query_to_df(db_connector, raw_query=dim_country_query) #, col_headers = ["continent_id", "iso3", "country_name_es"])
 
-
-        #countries = pd.read_csv(grab_parent_dir("../../") + "/datasets/anexos/countries.csv")
-
         # Transpose dataframe, adding new header and year column from index
         df1 = df1.T
         new_header = df1.iloc[0]

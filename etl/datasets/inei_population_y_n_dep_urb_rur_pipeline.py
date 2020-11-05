@@ -80,7 +80,7 @@ class inei_population_y_n_dep_urb_rur_pipeline(EasyPipeline):
             "ubigeo":                         "String",
             "measure":                        "String",
             "year":                           "UInt16",
-            "poblacion":                      "Float"
+            "poblacion":                      "Float32"
         }
 
         transform_step = TransformStep()

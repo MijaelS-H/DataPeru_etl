@@ -148,15 +148,15 @@ class inei_population_y_gender_dep_Pipeline(EasyPipeline):
         dtype = {
             "ubigeo":                                 "String",
             "year":                                   "UInt16",
-            "poblacion_masculina":                    "UInt32",
-            "poblacion_femenina":                     "UInt32",
-            "pea_total_masculina":                    "Float",
-            "pea_total_femenina":                     "Float",
-            "pea_ocupada_masculina":                  "Float",
-            "pea_ocupada_femenina":                   "Float",
-            "ingreso_promedio_mensual_soles_nom":     "Float",
-            "ingreso_promedio_m_mensual_soles_nom":   "Float",
-            "ingreso_promedio_f_mensual_soles_nom":   "Float"
+            "poblacion_masculina":                    "Float32",
+            "poblacion_femenina":                     "Float32",
+            "pea_total_masculina":                    "Float32",
+            "pea_total_femenina":                     "Float32",
+            "pea_ocupada_masculina":                  "Float32",
+            "pea_ocupada_femenina":                   "Float32",
+            "ingreso_promedio_mensual_soles_nom":     "Float32",
+            "ingreso_promedio_m_mensual_soles_nom":   "Float32",
+            "ingreso_promedio_f_mensual_soles_nom":   "Float32"
         }
 
         transform_step = TransformStep()

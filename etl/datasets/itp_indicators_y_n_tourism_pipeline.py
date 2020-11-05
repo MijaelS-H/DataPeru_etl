@@ -14,10 +14,10 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
         df1_1 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.147.xls"), sheet_name = "19.2 (c)", skiprows = (0,1,2,3), usecols = "A:K")[3:44]
-        df1_2 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.147.xls"), sheet_name = "19.2 (d)", skiprows = (0,1,2,3), usecols = "A:K")[2:44]
+        df1_2 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.147.xls"), sheet_name = "19.2 (d)", skiprows = (0,1,2,3), usecols = "A:K")[2:45]
 
         df2_1 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.149.xls"), sheet_name = "cap22005c", skiprows = (0,1,2,3))[3:45]
-        df2_2 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.149.xls"), sheet_name = "cap22005d", skiprows = (0,1,2,3))[2:36]
+        df2_2 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.149.xls"), sheet_name = "cap22005d", skiprows = (0,1,2,3))[2:37]
 
         df3_1 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.154.xls"), skiprows = (0,1,2), usecols = "A:D,F:H,J:L,N:P,R:T,V:X,Z:AB")[5:51]
 
@@ -28,13 +28,15 @@ class TransformStep(PipelineStep):
         df1 = df1_1.append(df1_2, sort = True)
         df2 = df2_1.append(df2_2, sort = True)
 
-        df_1_ = df3_1[["Residencia Habitual", 2012, "Unnamed: 2", "Unnamed: 3"]].copy()
-        df_2_ = df3_1[["Residencia Habitual", 2013, "Unnamed: 6", "Unnamed: 7"]].copy()
-        df_3_ = df3_1[["Residencia Habitual", 2014, "Unnamed: 10", "Unnamed: 11"]].copy()
-        df_4_ = df3_1[["Residencia Habitual", 2015, "Unnamed: 14", "Unnamed: 15"]].copy()
-        df_5_ = df3_1[["Residencia Habitual", 2016, "Unnamed: 18", "Unnamed: 19"]].copy()
-        df_6_ = df3_1[["Residencia Habitual", 2017, "Unnamed: 22", "Unnamed: 23"]].copy()
-        df_7_ = df3_1[["Residencia Habitual", 2018, "Unnamed: 26", "Unnamed: 27"]].copy()
+        df_3['Residencia Habitual'].replace({"Sud-Africa" : "Sudáfrica", "Oceanía (Australia)": "Australia"}, inplace = True)
+
+        df_1_ = df_3[['Residencia Habitual', 2012, 'Unnamed: 2', 'Unnamed: 3']].copy()
+        df_2_ = df_3[['Residencia Habitual', 2013, 'Unnamed: 6', 'Unnamed: 7']].copy()
+        df_3_ = df_3[['Residencia Habitual', 2014, 'Unnamed: 10', 'Unnamed: 11']].copy()
+        df_4_ = df_3[['Residencia Habitual', 2015, 'Unnamed: 14', 'Unnamed: 15']].copy()
+        df_5_ = df_3[['Residencia Habitual', 2016, 'Unnamed: 18', 'Unnamed: 19']].copy()
+        df_6_ = df_3[['Residencia Habitual', 2017, 'Unnamed: 22', 'Unnamed: 23']].copy()
+        df_7_ = df_3[['Residencia Habitual', 2018, 'Unnamed: 26', 'Unnamed: 27']].copy()
 
         df_ = [df_1_, df_2_, df_3_, df_4_, df_5_, df_6_, df_7_]
         df3 = pd.DataFrame(columns = ["country_name_es", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros", "year"])
@@ -47,15 +49,29 @@ class TransformStep(PipelineStep):
         df1.rename(columns ={"Zona Geográfica y": "country_name_es"}, inplace = True)
         df2.rename(columns ={"Zona Geográfica y": "country_name_es"}, inplace = True)
 
+        df1.iloc[16, df1.columns.get_loc("country_name_es")] = "Otros C"
+        df1.iloc[27, df1.columns.get_loc("country_name_es")] = "Otros S"
+        df1.iloc[57, df1.columns.get_loc("country_name_es")] = "Otros E"
+        df1.iloc[73, df1.columns.get_loc("country_name_es")] = "Otros A"
+        df1.iloc[78, df1.columns.get_loc("country_name_es")] = "Otros Á"
+        df1.iloc[82, df1.columns.get_loc("country_name_es")] = "Otros O"
+
+        df2.iloc[17, df2.columns.get_loc("country_name_es")] = "Otros C"
+        df2.iloc[28, df2.columns.get_loc("country_name_es")] = "Otros S"
+        df2.iloc[51, df2.columns.get_loc("country_name_es")] = "Otros E"
+        df2.iloc[68, df2.columns.get_loc("country_name_es")] = "Otros A"
+        df2.iloc[72, df2.columns.get_loc("country_name_es")] = "Otros Á"
+        df2.iloc[75, df2.columns.get_loc("country_name_es")] = "Otros O"
+
         for item in [df1, df2, df3]:
-            item.drop(item.loc[item["country_name_es"].str.contains("Norteamérica|Centroamérica|Centro América|Otros|Sudamérica|Europa|Asia|África|Africa|Oceanía")].index, axis = 0, inplace = True)
+            item.drop(item.loc[item["country_name_es"].str.contains("Norteamérica|Centroamérica|Sudamérica|Europa|Asia|África|Oceanía")].index, axis = 0, inplace = True)
             item["country_name_es"] = item["country_name_es"].str.strip()
-            item["country_name_es"].replace({"Estados Unidos de América" : "Estados Unidos", "Países bajos (Holanda)" : "Países Bajos", "Rep. Checa" : "Chequia", "Rumanía" : "Rumania", "Nueva Zelanda" : "Nueva Zelandia", "Bielorusia": "Bielorrusia", "Corea del  Norte": "Corea del Norte", "Holanda-Países Bajos": "Países Bajos", "Bahamas": "Las Bahamas", "Paises Bajos (Holanda)": "Países Bajos", "China (R.P.)": "China", "Taiwán": "Taiwan", "República Popular China": "China", "Inglaterra-Reino Unido": "Reino Unido", "Panama": "Panamá"}, inplace = True)
+            item["country_name_es"].replace({"Estados Unidos de América" : "Estados Unidos", "Países bajos (Holanda)" : "Países Bajos", "Rep. Checa" : "Chequia", "Rumanía" : "Rumania", "Nueva Zelanda" : "Nueva Zelandia", "Bielorusia": "Bielorrusia", "Corea del  Norte": "Corea del Norte", "Holanda-Países Bajos": "Países Bajos", "Bahamas": "Las Bahamas", "Paises Bajos (Holanda)": "Países Bajos", "China (R.P.)": "China", "Taiwán": "Taiwan", "República Popular China": "China", "Inglaterra-Reino Unido": "Reino Unido", "Panama": "Panamá", "Otros 1/": "Aguas Internacionales", "Otros C": "Otros Centroamérica", "Otros S": "Otros Sudamérica", "Otros E": "Otros Europa", "Otros A": "Otros Asia", "Otros Á": "Otros África", "Otros O": "Otros Oceanía", "Otros paises": "Otros"}, inplace = True)
 
         df1 = pd.melt(df1, id_vars = "country_name_es", value_vars = [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018],
-                      var_name = "year", value_name = "n_ingresos_turistas_internacionales")
+                    var_name = "year", value_name = "n_ingresos_turistas_internacionales")
         df2 = pd.melt(df2, id_vars = "country_name_es", value_vars = [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018],
-                      var_name = "year", value_name = "n_salidas_turistas_internacionales")
+                    var_name = "year", value_name = "n_salidas_turistas_internacionales")
 
         df_1 = pd.merge(df1, countries[["iso3", "continent_id", "continent_es", "country_name_es"]], on = "country_name_es", how = "left")
         df_2 = pd.merge(df2, countries[["iso3", "continent_id", "continent_es", "country_name_es"]], on = "country_name_es", how = "left")

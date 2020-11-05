@@ -99,9 +99,7 @@ class TransformStep(PipelineStep):
 class itp_ind_year_Pipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
-        return [
-          # Parameter(label="Data", name="year", dtype=dict)
-        ]
+        return []
 
     @staticmethod
     def steps(params):
@@ -111,8 +109,8 @@ class itp_ind_year_Pipeline(EasyPipeline):
             "ubigeo":                                 "String",
             "act_economica":                          "UInt8",
             "year":                                   "UInt16",
-            "valor_agregado_bruto_2007":              "UInt32",
-            "valor_agregado_bruto_cte":               "UInt32",
+            "valor_agregado_bruto_2007":              "Float32",
+            "valor_agregado_bruto_cte":               "Float32"
         }
 
         transform_step = TransformStep()
