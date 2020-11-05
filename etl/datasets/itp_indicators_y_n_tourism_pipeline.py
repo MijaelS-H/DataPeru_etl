@@ -24,7 +24,7 @@ class TransformStep(PipelineStep):
         df2_1 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.149.xls"), sheet_name = "cap22005c", skiprows = (0,1,2,3))[3:45]
         df2_2 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.149.xls"), sheet_name = "cap22005d", skiprows = (0,1,2,3))[2:37]
 
-        df_3 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.154.xls"), skiprows = (0,1,2), usecols = "A:D,F:H,J:L,N:P,R:T,V:X,Z:AB")[5:51]
+        df_3 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.154.xls"), skiprows = (0,1,2), usecols = "A:D,F:H,J:L,N:P,R:T,V:X,Z:AB")[5:52]
 
         df1 = df1_1.append(df1_2, sort = True)
         df2 = df2_1.append(df2_2, sort = True)
@@ -65,7 +65,7 @@ class TransformStep(PipelineStep):
         df2.iloc[75, df2.columns.get_loc("country_name_es")] = "Otros O"
 
         for item in [df1, df2, df3]:
-            item.drop(item.loc[item["country_name_es"].str.contains("Norteamérica|Centroamérica|Sudamérica|Europa|Asia|África|Oceanía")].index, axis = 0, inplace = True)
+            item.drop(item.loc[item["country_name_es"].str.contains("Norteamérica|Centroamérica|Sudamérica|Europa|Asia|África|Oceanía|Africa|Centro América")].index, axis = 0, inplace = True)
             item["country_name_es"] = item["country_name_es"].str.strip()
             item["country_name_es"].replace({"Estados Unidos de América" : "Estados Unidos", "Países bajos (Holanda)" : "Países Bajos", "Rep. Checa" : "Chequia", "Rumanía" : "Rumania", "Nueva Zelanda" : "Nueva Zelandia", "Bielorusia": "Bielorrusia", "Corea del  Norte": "Corea del Norte", "Holanda-Países Bajos": "Países Bajos", "Bahamas": "Las Bahamas", "Paises Bajos (Holanda)": "Países Bajos", "China (R.P.)": "China", "Taiwán": "Taiwan", "República Popular China": "China", "Inglaterra-Reino Unido": "Reino Unido", "Panama": "Panamá", "Otros 1/": "Aguas Internacionales", "Otros C": "Otros Centroamérica", "Otros S": "Otros América del Sur", "Otros E": "Otros Europa", "Otros A": "Otros Asia", "Otros Á": "Otros África", "Otros O": "Otros Oceanía", "Otros paises": "Otros"}, inplace = True)
 
@@ -78,11 +78,21 @@ class TransformStep(PipelineStep):
         df_2 = pd.merge(df2, countries[["iso3", "continent_id", "continent_es", "country_name_es"]], on = "country_name_es", how = "left")
         df_3 = pd.merge(df3, countries[["iso3", "continent_id", "continent_es", "country_name_es"]], on = "country_name_es", how = "left")
 
+        temp = []
+
         for item in [df_1, df_2, df_3]:
             item["code"] = item["iso3"].astype("str") + item["year"].astype("str")
+            temp = temp + list(item["code"].unique())
 
-        df = pd.merge(df_1, df_2[["code", "n_salidas_turistas_internacionales"]], on = "code", how = "left")
-        df = pd.merge(df, df_3[["code", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]], on = "code", how = "left")
+        temp = list(set(temp))
+
+        temp = pd.DataFrame(temp, columns=["code"])
+        temp["year"] = temp["code"].str[-4:]
+        temp["iso3"] = temp["code"].str[:-4]
+
+        df = pd.merge(temp, df_1, on = "code", how = "left", suffixes=("", "_drop"))
+        df = pd.merge(df, df_2[["code", "n_salidas_turistas_internacionales"]], on = "code", how = "left", suffixes=("", "_drop"))
+        df = pd.merge(df, df_3[["code", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]], on = "code", how = "left", suffixes=("", "_drop"))
 
         df.replace("-", 0, inplace = True)
         df["ubigeo"] = "per"
@@ -103,10 +113,10 @@ class itp_indicators_y_n_tourism_pipeline(EasyPipeline):
         dtype = {
             "ubigeo":                                                 "String",
             "year":                                                   "UInt16",
-            "n_ingresos_turistas_internacionales":                    "UInt16",
-            "n_salidas_turistas_internacionales":                     "UInt16",
-            "arribos_turistas_extranjeros":                           "UInt16",
-            "prenoctacion_turistas_extranjeros":                      "UInt16",
+            "n_ingresos_turistas_internacionales":                    "UInt32",
+            "n_salidas_turistas_internacionales":                     "UInt32",
+            "arribos_turistas_extranjeros":                           "UInt32",
+            "prenoctacion_turistas_extranjeros":                      "UInt32",
             "permanencia_prom_noche_turistas_extranjeros":            "Float32",
             "iso3":                                                   "String"
             }
