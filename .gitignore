@@ -6,3 +6,6 @@ __pycache__/
 data/
 temp/
 venv/
+*.ipynb
+
+etl/presupuesto/dimensions/
