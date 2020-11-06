@@ -122,13 +122,12 @@ class itp_indicators_y_n_tourism_pipeline(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_y_n_tourism", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["iso3", "n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros",
-            "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]
-        )
+        agg_step = AggregatorStep("itp_indicators_y_n_tourism", measures=["n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"])
+        load_step = LoadStep("itp_indicators_y_n_tourism", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+                    nullable_list=["iso3", "n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros",
+                    "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
 if __name__ == "__main__":
     pp = itp_indicators_y_n_tourism_pipeline()

@@ -75,7 +75,7 @@ class MINAGRIAgricolaPipeline(EasyPipeline):
 
         transform_step = TransformStep()
 
-        agg_step = AggregatorStep(table_name, measures=[])
+        agg_step = AggregatorStep(table_name, measures=["superficie_sembrada", "superficie_cosechada", "produccion", "rendimiento", "precio"])
 
         load_step = LoadStep(table_name, db_connector, if_exists='drop',
                              pk=PRIMARY_KEYS[level], dtype=DTYPES[level],

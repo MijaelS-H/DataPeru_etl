@@ -1,11 +1,10 @@
 import pandas as pd
 from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
+
 path = grab_parent_dir("../../") + "/datasets/20200318"
 
 depto_dict = {"Amazonas": "01", "Áncash": "02", "Apurímac": "03", "Arequipa": "04", "Ayacucho": "05", "Cajamarca": "06", "Callao": "07", "Callao 1/": "07", "Prov. Const. del Callao": "07", "Prov. Const.Callao": "07", "Cusco": "08", "Huancavelica": "09", "Huánuco": "10", "Ica": "11", "Junín": "12", "La Libertad": "13", "La libertad": "13", "Lambayeque": "14", "Lima": "15", "Lima 1/": "15", "Lima y Callao": "15", "Proyecto CARAL (PEZAC) 2/": "15", "Loreto": "16", "Madre de Dios": "17", "Moquegua": "18", "Pasco": "19", "Pasco 1/": "19", "Piura": "20", "Puno": "21", "San Martín": "22", "Tacna": "23", "Tumbes": "24", "Ucayali": "25", "Ucayali 1/": "25" }
@@ -278,12 +277,19 @@ class inei_population_y_n_dep(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "inei_population_y_n_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list = ["inmigrantes", "emigrantes", "nbi_1_o_mas_perc_pob", "mbpa_1_o_mas_members_perc_hog", "mbpa_1_o_mas_members_perc_hog_pob", "n_medicos_colegiados", "n_habitantes_por_medico", "n_enfermeras_os_colegiados", "n_habitantes_por_enfermera_os", "desnutricion_5yrs_perc", "estudios_prom_15yrs", "superficie_agricola_hect", "superficie_no_agricola_hect", "sup_agr_cultivos_hect", "sup_agr_en_barbencho_hect", "sup_agr_no_trabajadas_hect", "sup_agr_en_descanso_hect", "sup_bosque_humedo_amazonico_hect", "hogares_tecn_informacion_perc", "hogares_television_perc", "hogares_cable_perc", "hogares_telefono_fijo_perc", "hogares_telefono_movil_perc", "hogares_computadora_perc", "hogares_internet_perc", "n_faltas_registradas", "n_comision_delitos", "n_personas_detenidas_delitos", "n_bandas_delictuales_desarticuladas", "n_victimas_femicidios", "n_denuncias_violencia_familiar_fisica", "n_denuncias_violencia_familiar_sicolo", "n_denuncias_robo_vehiculos", "enfer_diarreicas_5yrs", "huespedes_nacionales", "huespedes_extranjeros", "visitantes_nacionales_museos_arqueologia", "visitantes_extranjeros_museos_arqueologia"]
-        )
+        agg_step = AggregatorStep("inei_population_y_n_dep", measures=["nacimientos", "defunciones", "inmigrantes", "emigrantes", "peao_afiliada_pensiones", "nbi_1_o_mas_perc_pob", "mbpa_1_o_mas_members_perc_hog", "mbpa_1_o_mas_members_perc_hog_pob", "n_medicos_colegiados", "n_habitantes_por_medico", "n_enfermeras_os_colegiados", "n_habitantes_por_enfermera_os", "desnutricion_5yrs_perc", "enfermedades_ra_5yrs_perc", "enfer_diarreicas_5yrs", "estudios_prom_15yrs", "superficie_agricola_hect", "superficie_no_agricola_hect", "sup_agr_cultivos_hect", "sup_agr_en_barbencho_hect", "sup_agr_no_trabajadas_hect", "sup_agr_en_descanso_hect", "sup_bosque_humedo_amazonico_hect", "hogares_tecn_informacion_perc", "hogares_television_perc", "hogares_cable_perc", "hogares_telefono_fijo_perc", "hogares_telefono_movil_perc", "hogares_computadora_perc", "hogares_internet_perc", "n_faltas_registradas", "n_comision_delitos", "n_personas_detenidas_delitos", "n_bandas_delictuales_desarticuladas", "n_victimas_femicidios", "n_denuncias_violencia_familiar_fisica", "n_denuncias_violencia_familiar_sicolo", "n_denuncias_robo_vehiculos", "huespedes_nacionales", "huespedes_extranjeros", "visitantes_nacionales_museos_arqueologia", "visitantes_extranjeros_museos_arqueologia"])
+        load_step = LoadStep("inei_population_y_n_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+                    nullable_list = ["inmigrantes", "emigrantes", "nbi_1_o_mas_perc_pob", "mbpa_1_o_mas_members_perc_hog", "mbpa_1_o_mas_members_perc_hog_pob",
+                    "n_medicos_colegiados", "n_habitantes_por_medico", "n_enfermeras_os_colegiados", "n_habitantes_por_enfermera_os", "desnutricion_5yrs_perc",
+                    "estudios_prom_15yrs", "superficie_agricola_hect", "superficie_no_agricola_hect", "sup_agr_cultivos_hect", "sup_agr_en_barbencho_hect",
+                    "sup_agr_no_trabajadas_hect", "sup_agr_en_descanso_hect", "sup_bosque_humedo_amazonico_hect", "hogares_tecn_informacion_perc", "hogares_television_perc",
+                    "hogares_cable_perc", "hogares_telefono_fijo_perc", "hogares_telefono_movil_perc", "hogares_computadora_perc", "hogares_internet_perc",
+                    "n_faltas_registradas", "n_comision_delitos", "n_personas_detenidas_delitos", "n_bandas_delictuales_desarticuladas", "n_victimas_femicidios",
+                    "n_denuncias_violencia_familiar_fisica", "n_denuncias_violencia_familiar_sicolo", "n_denuncias_robo_vehiculos", "enfer_diarreicas_5yrs",
+                    "huespedes_nacionales", "huespedes_extranjeros", "visitantes_nacionales_museos_arqueologia", "visitantes_extranjeros_museos_arqueologia"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
 
 if __name__ == "__main__":
     pp = inei_population_y_n_dep()

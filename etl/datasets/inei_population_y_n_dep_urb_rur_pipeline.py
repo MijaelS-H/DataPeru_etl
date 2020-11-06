@@ -1,11 +1,10 @@
 import pandas as pd
 from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
+
 path = grab_parent_dir("../../") + "/datasets/20200318"
 
 depto_dict = {"Amazonas": 1, "Amazonas ": 1, "Áncash": 2, "Áncash 1/": 2, "Apurímac": 3, "Arequipa": 4, "Ayacucho": 5, "Cajamarca": 6, "Cajamarca 1/": 6, "Callao": 7, "Prov. Const. del Callao 2/": 7, "Cusco": 8, "Huancavelica": 9, "Huánuco": 10, "Huánuco 1/": 10, "Ica": 11, "Junín": 12, "Junín 1/": 12, "La Libertad": 13, "La Libertad 1/": 13, "Lambayeque": 14, "Lima": 15, "Región Lima 2/": 15, "Región Lima    2/": 15, "Loreto": 16, "Loreto 1/": 16, "Madre de Dios": 17, "Moquegua": 18, "Pasco": 19, "Pasco 1/": 19, "Piura": 20, "Piura ": 20, "Puno": 21, "San Martín": 22, "Tacna": 23, "Tumbes": 24, "Ucayali": 25, "Ucayali 1/": 25}
@@ -84,12 +83,10 @@ class inei_population_y_n_dep_urb_rur_pipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "inei_population_y_n_dep_urb_rur", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["poblacion"]
-        )
+        agg_step = AggregatorStep("inei_population_y_n_dep_urb_rur", measures=["poblacion"])
+        load_step = LoadStep("inei_population_y_n_dep_urb_rur", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["poblacion"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
 if __name__ == "__main__":
     pp = inei_population_y_n_dep_urb_rur_pipeline()

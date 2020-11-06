@@ -1,11 +1,10 @@
 import pandas as pd
 from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
+
 path = grab_parent_dir("../../") + "/datasets/20200318"
 
 class TransformStep(PipelineStep):
@@ -51,11 +50,10 @@ class itp_indicators_y_n_tourism_capacity_pipeline(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_y_n_tourism_capacity", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype
-        )
+        agg_step = AggregatorStep("itp_indicators_y_n_tourism_capacity", measures=["n_arribos_nacionales", "n_arribos_extranjeros", "n_pernoctaciones_nacionales", "n_pernoctaciones_extranjeros", "permanencia_prom_nacionales", "permanencia_prom_extranjeros", "tasa_ocupacion_hab", "tasa_ocupacion_camas"])
+        load_step = LoadStep("itp_indicators_y_n_tourism_capacity", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype)
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
 if __name__ == "__main__":
     pp = itp_indicators_y_n_tourism_capacity_pipeline()

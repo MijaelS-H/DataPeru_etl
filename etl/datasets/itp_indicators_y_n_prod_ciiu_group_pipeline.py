@@ -1,11 +1,14 @@
 import pandas as pd
 from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.models import
+from bamboo_lib.models import 
+from bamboo_lib.steps import DownloadStep, LoadStep
+from bamboo_lib.steps import 
+
+from etl.consistency import AggregatorStep
+
 path = grab_parent_dir("../../") + "/datasets/20200318"
 
 
@@ -58,12 +61,10 @@ class itp_indicators_y_n_prod_ciiu_group_pipeline(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_y_n_prod_ciiu_group", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["produccion_industrial_anual"]
-        )
+        agg_step = AggregatorStep("itp_indicators_y_n_prod_ciiu_group", measures=["produccion_industrial_anual"])
+        load_step = LoadStep("itp_indicators_y_n_prod_ciiu_group", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["produccion_industrial_anual"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
 if __name__ == "__main__":
     pp = itp_indicators_y_n_prod_ciiu_group_pipeline()

@@ -1,11 +1,10 @@
 import pandas as pd
 from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
+
 path = grab_parent_dir("../../") + "/datasets/20200318"
 
 depto_dict = {
@@ -160,14 +159,14 @@ class inei_population_y_gender_dep_Pipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "inei_population_y_gender_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["pea_total_masculina", "pea_total_femenina", "pea_ocupada_masculina", "pea_ocupada_femenina", "ingreso_promedio_mensual_soles_nom",
-                            "ingreso_promedio_m_mensual_soles_nom", "ingreso_promedio_f_mensual_soles_nom"]
-        )
+        agg_step = AggregatorStep("inei_population_y_gender_dep", measures=["poblacion_masculina", "poblacion_femenina", "pea_total_masculina", "pea_total_femenina", "pea_ocupada_masculina", "pea_ocupada_femenina", "ingreso_promedio_mensual_soles_nom", "ingreso_promedio_m_mensual_soles_nom", "ingreso_promedio_f_mensual_soles_nom"])
+        load_step = LoadStep("inei_population_y_gender_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+                    nullable_list=["pea_total_masculina", "pea_total_femenina", "pea_ocupada_masculina", "pea_ocupada_femenina",
+                    "ingreso_promedio_mensual_soles_nom", "ingreso_promedio_m_mensual_soles_nom", "ingreso_promedio_f_mensual_soles_nom"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
 if __name__ == "__main__":
     pp = inei_population_y_gender_dep_Pipeline()
     pp.run({})
+

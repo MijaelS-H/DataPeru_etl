@@ -1,16 +1,13 @@
 import pandas as pd
 from bamboo_lib.helpers import grab_parent_dir, query_to_df
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
 path1 = grab_parent_dir("../../") + "/datasets/20200318"
 path2 = grab_parent_dir("../../") + "/datasets/anexos"
 
 country_list = ["España", "Reino Unido", "Chile", "Estados Unidos de América", "Países Bajos", "Brasil", "Colombia", "Canadá", "Panamá", "México", "Luxemburgo", "Suiza", "Singapur", "Islas Bermudas ", "Japón", "China", "Francia", "Alemania", "Islas Bahamas ", "Bélgica", "Italia", "Ecuador", "Uruguay", "Islas Caimán", "Suecia", "Corea", "Argentina", "Portugal", "Gran Bretaña", "Liechtenstein", "Dinamarca", "Austria", "Australia", "Nueva Zelandia", "Malta", "U.E.A. (United Arab Emirates)", "Venezuela", "Bolivia", "Honduras", "Rusia", "Otros 1/"]
-
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -66,12 +63,10 @@ class proinversion_fdi_y_origin_nat_pipeline(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "proinversion_fdi_y_origin_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["iso3"]
-        )
+        agg_step = AggregatorStep("proinversion_fdi_y_origin_nat", measures=["ied_millones_USD"])
+        load_step = LoadStep("proinversion_fdi_y_origin_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["iso3"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
 if __name__ == "__main__":
     pp = proinversion_fdi_y_origin_nat_pipeline()

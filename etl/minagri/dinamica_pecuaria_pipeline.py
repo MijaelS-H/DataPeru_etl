@@ -70,7 +70,7 @@ class MINAGRIPecuariaPipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", params["connector"])
 
         transform_step = TransformStep()
-        agg_step = AggregatorStep(table_name, measures=[])
+        agg_step = AggregatorStep(table_name, measures=["produccion"])
         load_step = LoadStep(table_name, db_connector, if_exists='drop', 
                              pk=PRIMARY_KEYS[level], dtype=DTYPES[level],
                              nullable_list=[])

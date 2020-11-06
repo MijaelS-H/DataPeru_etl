@@ -58,7 +58,7 @@ class DimensionsPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         transform_step = TransformStep()
-        agg_step = AggregatorStep(table_name, measures=[])
+        agg_step = AggregatorStep(table_name, measures=["pia", "pim", "devengado"])
         load_step = LoadStep(table_name, db_connector,
                              if_exists='drop',
                              pk=[dimension],

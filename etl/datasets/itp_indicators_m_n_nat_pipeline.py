@@ -1,11 +1,10 @@
 import pandas as pd
 from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
+
 path = grab_parent_dir("../../") + "/datasets/20200318"
 
 
@@ -101,16 +100,15 @@ class itp_indicators_m_n_nat_pipeline(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_m_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["ipc_base_2011_observado", "ipc_base_2011_var_mes_anterior", "ipc_base_2011_var_acumulado", "ipc_base_2011_var_anio_anterior", 
-            "ipm_base_2013_observado", "ipm_base_2013_var_mes_anterior", "ipm_base_2013_var_acumulado", "perc_morosidad_credi_banca_mult",
-            "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac",
-            "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal",
-            "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"]
-        )
+        agg_step = AggregatorStep("itp_indicators_m_n_nat", measures=["ipc_base_2011_observado", "ipc_base_2011_var_mes_anterior", "ipc_base_2011_var_acumulado", "ipc_base_2011_var_anio_anterior", "ipm_base_2013_observado", "ipm_base_2013_var_mes_anterior", "ipm_base_2013_var_acumulado", "perc_morosidad_credi_banca_mult", "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac", "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal", "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"])
+        load_step = LoadStep("itp_indicators_m_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+                    nullable_list=["ipc_base_2011_observado", "ipc_base_2011_var_mes_anterior", "ipc_base_2011_var_acumulado", "ipc_base_2011_var_anio_anterior", 
+                    "ipm_base_2013_observado", "ipm_base_2013_var_mes_anterior", "ipm_base_2013_var_acumulado", "perc_morosidad_credi_banca_mult",
+                    "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac",
+                    "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal",
+                    "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
 if __name__ == "__main__":
     pp = itp_indicators_m_n_nat_pipeline()

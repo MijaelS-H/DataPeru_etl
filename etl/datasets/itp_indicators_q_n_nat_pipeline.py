@@ -1,11 +1,10 @@
 import pandas as pd
 from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
+
 path = grab_parent_dir("../../") + "/datasets/20200318"
 
 class TransformStep(PipelineStep):
@@ -131,12 +130,10 @@ class itp_ind_quarter_n_nat_pipeline(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_q_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["poblacion_anual"]
-        )
+        agg_step = AggregatorStep("itp_indicators_q_n_nat", measures=["producto_bruto_interno_2007", "gasto_consumo_final_privado_2007", "gasto_consumo_gobierno_2007", "formacion_bruta_capital_2007", "formacion_bruta_capital_fijo_2007", "exportaciones_2007", "importaciones_2007", "producto_bruto_interno_nominal", "gasto_consumo_final_privado_nominal", "gasto_consumo_gobierno_nominal", "formacion_bruta_capital_nominal", "formacion_bruta_capital_fijo_nominal", "exportaciones_nominal", "importaciones_nominal", "producto_interno_bruto", "derechos_importacion_otros_impuestos", "valor_agregado_bruto_total", "agricultura_ganaderia_caza_silvicultura", "pesca_acuicultura", "extraccion_petroleo_gas_minerales_servicios_conexos", "manufactura", "construccion", "electricidad_gas_agua", "comercio_mantenimiento_reparacion_vehiculos", "transporte_almacenamiento_correo_mensajeria", "alojamiento_restaurantes", "telecomunicaciones_otros_servicios_informacion", "servicios_financieros_seguros_pensiones", "servicios_prestados_empresas", "administracion_publica_defensa", "otros_servicios", "formacion_bruta_cap_fijo_publico_2007", "formacion_bruta_cap_fijo_privado_2007", "formacion_bruta_cap_fijo_construccion_2007", "formacion_bruta_cap_fijo_maq_nac_2007", "formacion_bruta_cap_fijo_maq_imp_2007", "formacion_bruta_cap_fijo_publico_nom", "formacion_bruta_cap_fijo_privado_nom", "formacion_bruta_cap_fijo_construccion_nom", "formacion_bruta_cap_fijo_maq_nac_nom", "formacion_bruta_cap_fijo_maq_imp_nom", "poblacion_anual"])
+        load_step = LoadStep("itp_indicators_q_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["poblacion_anual"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
 if __name__ == "__main__":
     pp = itp_ind_quarter_n_nat_pipeline()
