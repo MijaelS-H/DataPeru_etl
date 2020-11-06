@@ -1,11 +1,13 @@
 
+import json
 import os
 import time
-import json
+
 import pandas as pd
-from static import DATA_FOLDER
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+
+from .static import DATA_FOLDER
 
 os.makedirs('{}'.format(DATA_FOLDER), exist_ok=True)
 

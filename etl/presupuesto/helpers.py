@@ -1,5 +1,7 @@
 import pandas as pd
-from static import FOLDER
+
+from .static import FOLDER
+
 
 def get_dimension(df, target_column):
     dimension = df[[target_column]].drop_duplicates().copy()
