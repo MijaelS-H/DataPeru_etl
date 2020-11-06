@@ -1,20 +1,25 @@
+from os import path
+
 import nltk
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
 from etl.helpers import format_text
-from dinamica_pecuaria_static import DTYPES, PRIMARY_KEYS, RENAME_COLUMNS, REPLACE_VALUES
+
+from .dinamica_pecuaria_static import (DTYPES, PRIMARY_KEYS, RENAME_COLUMNS,
+                                       REPLACE_VALUES)
+
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Reads 02. DINAMICA PECUARIA file
-        path = '../../../datasets/20201020/07. Socios Estratégicos - Ministerio de Agricultura (20-10-2020)/02. DINAMICA PECUARIA.xlsx'
-        df = pd.read_excel(path, dtype='str')
+        df = pd.read_excel(
+            path.join(params["datasets"], "20201020", "07. Socios Estratégicos - Ministerio de Agricultura (20-10-2020)", "02. DINAMICA PECUARIA.xlsx"),
+            dtype='str'
+        )
 
         # Rename columns to unique name
         df.rename(columns=RENAME_COLUMNS, inplace=True)
@@ -49,26 +54,47 @@ class TransformStep(PipelineStep):
         
         return df
 
+
 class MINAGRIPecuariaPipeline(EasyPipeline):
     @staticmethod
+    def parameter_list():
+        return [
+            Parameter(name='level', dtype=str),
+            Parameter(name='table_name', dtype=str)
+        ]
+
+    @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        level = params["level"]
+        table_name = params["table_name"]
+        db_connector = Connector.fetch("clickhouse-database", params["connector"])
 
         transform_step = TransformStep()
-        load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
-                             pk=PRIMARY_KEYS[params.get('level')], dtype=DTYPES[params.get('level')],
+        agg_step = AggregatorStep(table_name, measures=[])
+        load_step = LoadStep(table_name, db_connector, if_exists='drop', 
+                             pk=PRIMARY_KEYS[level], dtype=DTYPES[level],
                              nullable_list=[])
 
         return [transform_step, load_step]
 
-if __name__ == '__main__':
-   pp = MINAGRIPecuariaPipeline()
-   
-   for k, v in {
-        'dimension_table':  'dim_shared_dinamica_pecuaria',
-        'fact_table': 'minagri_dinamica_pecuaria'
-            }.items():
-        pp.run({
-            'level': k,
-            'table_name': v
-        })
+
+def run_pipeline(params: dict):
+    pp = MINAGRIPecuariaPipeline()
+    levels = {
+        "dimension_table": "dim_shared_dinamica_pecuaria",
+        "fact_table": "minagri_dinamica_pecuaria"
+    }
+
+    for k, v in levels.items():
+        pp_params = {"level": k, "table_name": v}
+        pp_params.update(params)
+        pp.run(pp_params)
+
+
+if __name__ == "__main__":
+    import sys
+
+    run_pipeline({
+        "connector": "../conns.yaml",
+        "datasets": sys.argv[1]
+    })
