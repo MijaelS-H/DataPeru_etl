@@ -18,7 +18,8 @@ class TransformStep(PipelineStep):
         renamu_versions = {}
 
         for folder in os.listdir(path):
-            if int(folder[-4:]) > 2017:
+            if int(folder[-4:]) > 2016:
+                print('Current year: {}'.format(int(folder[-4:])))
                 _df = pd.DataFrame()
                 for subfolder in os.listdir('{}{}'.format(path, folder)):
                     for filename in os.listdir('{}{}/{}'.format(path, folder, subfolder)):
@@ -35,10 +36,15 @@ class TransformStep(PipelineStep):
                             )
 
                             temp = temp.loc[:, temp.columns.isin(SELECTED_COLUMNS[int(folder[-4:])])].copy()
-                            temp.drop_duplicates(inplace = True)
+                            temp.replace({'21403': '021403'}, inplace=True)
+                            temp.drop_duplicates(subset=['district_id'], inplace = True)
 
                             if _df.shape[0] != 0:
-                                _df = pd.merge(_df, temp, on = 'district_id', suffixes = ('', '_drop'))
+                        
+                                unique_districts = pd.DataFrame(_df['district_id'].unique(), columns=['district_id']).append(pd.DataFrame(temp['district_id'].unique(), columns=['district_id'])).drop_duplicates().reset_index(drop=True)
+                        
+                                _df = pd.merge(unique_districts, _df, on = 'district_id', suffixes = ('', '_drop'), how='left')
+                                _df = pd.merge(_df, temp, on = 'district_id', suffixes = ('', '_drop'), how='left')
                                 _df = _df.iloc[:, ~_df.columns.str.contains('_drop')]
                             else:
                                 _df = temp
@@ -70,8 +76,11 @@ class TransformStep(PipelineStep):
                     _df['_RENAMU_48'] = _df['P34A_22'] + _df['P34A_23'] + _df['P34A_24'] + _df['P34A_25'] + _df['P34A_26'] + _df['P34A_27'] + _df['P34A_28'] + _df['P34A_29'] + _df['P34A_30']
                     _df['_RENAMU_50'] = _df['P58_1_1'] + _df['P58_2_1'] + _df['P58_3_1'] + _df['P58_4_1']
                     _df['_RENAMU_51'] = _df['P59_1_1'] + _df['P59_10_1'] + _df['P59_11_1'] + _df['P59_2_1'] + _df['P59_3_1'] + _df['P59_4_1'] + _df['P59_5_1'] + _df['P59_6_1'] + _df['P59_7_1'] + _df['P59_8_1'] + _df['P59_9_1']
+                    _df['_RENAMU_53'] = _df['P70A_1_1'] + _df['P70A_2_1'] + _df['P70A_3_1'] + _df['P70A_4_1'] + _df['P70A_5_1']
                     _df['_RENAMU_55'] = _df['P11_1']
                     _df['_RENAMU_56'] = _df['P11_1']
+                    _df['_RENAMU_81'] = _df.apply(lambda x: 1 if x['P23_1'] == 1 or x['P23_2'] == 1 or x['P23_3'] == 1 or x['P23_4'] == 1 or x['P23_5'] == 1 or x['P23_6'] == 1 or x['P23_7'] == 1 or x['P23_8'] == 1 or x['P23_9'] == 1 or x['P23_10'] == 1 or x['P23_11'] == 1 or x['P23_12'] == 1 or x['P23_13'] == 1 or x['P23_14'] == 1 else 0, axis=1)
+                    _df['_RENAMU_91'] = _df.apply(lambda x: 1 if x['P33_1'] == 1 or x['P33_2'] == 1 else 0, axis=1)
                     _df['_RENAMU_140'] = _df['P56']
                     _df['_RENAMU_144'] = _df['P60A_1']
                     _df['_RENAMU_147'] = _df['P60A_2']
@@ -102,20 +111,65 @@ class TransformStep(PipelineStep):
                     _df['_RENAMU_48'] = _df['P36A_20'] + _df['P36A_21'] + _df['P36A_22'] + _df['P36A_23'] + _df['P36A_24'] + _df['P36A_25'] + _df['P36A_26'] + _df['P36A_27'] + _df['P36A_28'] + _df['P36A_29'] + _df['P36A_30']
                     _df['_RENAMU_50'] = _df['P62A_1_1'] + _df['P62A_2_1'] + _df['P62A_3_1'] + _df['P62A_4_1'] + _df['P62A_5_1'] + _df['P62A_6_1']
                     _df['_RENAMU_51'] = _df['P61A_1'] + _df['P61A_2'] + _df['P61A_3'] + _df['P61A_4'] + _df['P61A_5'] + _df['P61A_6'] + _df['P61A_7'] + _df['P61A_8'] + _df['P61A_9'] + _df['P61A_10'] + _df['P61A_11']
+                    _df['_RENAMU_53'] = _df['P73A_1_1'] + _df['P73A_2_1'] + _df['P73A_3_1'] + _df['P73A_4_1'] + _df['P73A_5_1']
                     _df['_RENAMU_55'] = np.nan
                     _df['_RENAMU_56'] = np.nan
+                    _df['_RENAMU_81'] = _df.apply(lambda x: 1 if x['P23_1'] == 1 or x['P23_2'] == 1 or x['P23_3'] == 1 or x['P23_4'] == 1 or x['P23_5'] == 1 or x['P23_6'] == 1 or x['P23_7'] == 1 or x['P23_8'] == 1 or x['P23_9'] == 1 or x['P23_10'] == 1 or x['P23_11'] == 1 or x['P23_12'] == 1 or x['P23_13'] == 1 or x['P23_14'] == 1 else 0, axis=1)
+                    _df['_RENAMU_91'] = _df.apply(lambda x: 1 if x['P34_1'] == 1 or x['P34_2'] == 1 else 0, axis=1)
                     _df['_RENAMU_140'] = _df.apply(lambda x: 1 if x['P59_T'] > 0 else 0 if x['P59_T'] == 0 else np.nan, axis=1)
                     _df['_RENAMU_144'] = _df.apply(lambda x: 1 if x['P63_1_1'] > 0 else 0 if x['P63_1_1'] == 0 else np.nan, axis=1)
                     _df['_RENAMU_147'] = _df.apply(lambda x: 1 if x['P63_2_1'] > 0 else 0 if x['P63_2_1'] == 0 else np.nan, axis=1)
                     _df['_RENAMU_150'] = _df.apply(lambda x: 1 if x['P63_3_1'] > 0 else 0 if x['P63_3_1'] == 0 else np.nan, axis=1)
 
+                elif int(folder[-4:]) == 2017:
+
+                    _df[[
+                        'P39A_1', 'P39A_2', 'P39A_3', 'P39A_4', 'P39A_5', 'P39A_6', 'P39A_7', 'P39A_8', 'P39A_9', 'P39A_10', 
+                        'P39A_11', 'P39A_12', 'P39A_13', 'P39A_14', 'P39A_16', 'P39A_17', 'P39A_31', 'P39A_32', 'P39A_33', 
+                        'P39A_34', 'P39A_35', 'P39A_36', 'P39A_18', 'P39A_19', 'P39A_20', 'P39A_21', 'P39A_22', 'P39A_23', 
+                        'P39A_24', 'P39A_25', 'P39A_26', 'P39A_27', 'P39A_28', 'P39A_29', 'P39A_30', 'P39A_31', 'P39A_32', 
+                        'P39A_33', 'P39A_34', 'P39A_35', 'P39A_36', 
+                        'P65A_1_1', 'P65A_2_1', 
+                        'P65A_3_1', 'P65A_4_1', 'P65A_5_1', 'P65A_6_1', 'P64A_1', 'P64A_2', 'P64A_3', 'P64A_4', 'P64A_5', 
+                        'P64A_6', 'P64A_7', 'P64A_8', 'P64A_9', 'P64A_10', 'P64A_11'
+                    ]] = _df[[
+                        'P39A_1', 'P39A_2', 'P39A_3', 'P39A_4', 'P39A_5', 'P39A_6', 'P39A_7', 'P39A_8', 'P39A_9', 'P39A_10', 
+                        'P39A_11', 'P39A_12', 'P39A_13', 'P39A_14', 'P39A_16', 'P39A_17', 'P39A_31', 'P39A_32', 'P39A_33', 
+                        'P39A_34', 'P39A_35', 'P39A_36', 'P39A_18', 'P39A_19', 'P39A_20', 'P39A_21', 'P39A_22', 'P39A_23', 
+                        'P39A_24', 'P39A_25', 'P39A_26', 'P39A_27', 'P39A_28', 'P39A_29', 'P39A_30', 'P39A_31', 'P39A_32', 
+                        'P39A_33', 'P39A_34', 'P39A_35', 'P39A_36', 
+                        'P65A_1_1', 'P65A_2_1', 
+                        'P65A_3_1', 'P65A_4_1', 'P65A_5_1', 'P65A_6_1', 'P64A_1', 'P64A_2', 'P64A_3', 'P64A_4', 'P64A_5', 
+                        'P64A_6', 'P64A_7', 'P64A_8', 'P64A_9', 'P64A_10', 'P64A_11'
+                    ]].copy()
+
+                    _df['_RENAMU_41'] = _df['P39A_1'] + _df['P39A_2'] + _df['P39A_3'] + _df['P39A_4'] + _df['P39A_5'] + _df['P39A_6'] + _df['P39A_7'] + _df['P39A_8'] + _df['P39A_9'] + _df['P39A_10'] + _df['P39A_11'] + _df['P39A_12'] + _df['P39A_13'] + _df['P39A_14'] + _df['P39A_16'] + _df['P39A_17'] + _df['P39A_31'] + _df['P39A_32'] + _df['P39A_33'] + _df['P39A_34'] + _df['P39A_35'] + _df['P39A_36'] + _df['P39A_18'] + _df['P39A_19'] + _df['P39A_20'] + _df['P39A_21'] + _df['P39A_22'] + _df['P39A_23'] + _df['P39A_24'] + _df['P39A_25'] + _df['P39A_26'] + _df['P39A_27'] + _df['P39A_28'] + _df['P39A_29'] + _df['P39A_30']
+                    _df['_RENAMU_42'] = _df['P39A_1'] + _df['P39A_2'] + _df['P39A_3'] + _df['P39A_4'] + _df['P39A_5'] + _df['P39A_6'] + _df['P39A_7'] + _df['P39A_8'] + _df['P39A_9'] + _df['P39A_10'] + _df['P39A_11'] + _df['P39A_12'] + _df['P39A_13'] + _df['P39A_14'] + _df['P39A_16'] + _df['P39A_17']
+                    _df['_RENAMU_44'] = _df['P39A_31'] + _df['P39A_32'] + _df['P39A_33'] + _df['P39A_34'] + _df['P39A_35'] + _df['P39A_36']
+                    _df['_RENAMU_46'] = _df['P39A_18'] + _df['P39A_19']
+                    _df['_RENAMU_48'] = _df['P39A_20'] + _df['P39A_21'] + _df['P39A_22'] + _df['P39A_23'] + _df['P39A_24'] + _df['P39A_25'] + _df['P39A_26'] + _df['P39A_27'] + _df['P39A_28'] + _df['P39A_29'] + _df['P39A_30']
+                    _df['_RENAMU_50'] = _df['P65A_1_1'] + _df['P65A_2_1'] + _df['P65A_3_1'] + _df['P65A_4_1'] + _df['P65A_5_1'] + _df['P65A_6_1']
+                    _df['_RENAMU_51'] = _df['P64A_1'] + _df['P64A_2'] + _df['P64A_3'] + _df['P64A_4'] + _df['P64A_5'] + _df['P64A_6'] + _df['P64A_7'] + _df['P64A_8'] + _df['P64A_9'] + _df['P64A_10'] + _df['P64A_11']
+                    _df['_RENAMU_53'] = _df['P76A_1_1'] + _df['P76A_2_1'] + _df['P76A_3_1'] + _df['P76A_4_1'] + _df['P76A_5_1'] + _df['P76_6_1']
+                    _df['_RENAMU_55'] = np.nan
+                    _df['_RENAMU_56'] = np.nan
+                    _df['_RENAMU_81'] = _df.apply(lambda x: 1 if x['P25_1'] == 1 or x['P25_2'] == 1 or x['P25_3'] == 1 or x['P25_4'] == 1 or x['P25_5'] == 1 or x['P25_6'] == 1 or x['P25_7'] == 1 or x['P25_8'] == 1 or x['P25_9'] == 1 or x['P25_10'] == 1 or x['P25_11'] == 1 or x['P25_12'] == 1 or x['P25_13'] == 1 or x['P25_14'] == 1 or x['P25_15'] == 1 or x['P25_16'] == 1 else 0, axis=1)
+                    _df['_RENAMU_91'] = _df.apply(lambda x: 1 if x['P37'] == 1 or x['P37'] == 2 else 0, axis=1)
+                    _df['_RENAMU_140'] = _df.apply(lambda x: 1 if x['P62_T'] > 0 else 0 if x['P62_T'] == 0 else np.nan, axis=1)
+                    _df['_RENAMU_144'] = _df['P66_1']
+                    _df['_RENAMU_147'] = _df['P66_2']
+                    _df['_RENAMU_150'] = _df['P66_3']
+
                 if int(folder[-4:]) < 2019:
+                    print(int(folder[-4:]))
                     for item in VARIABLES_DICT[int(folder[-4:])]:
                         _df[item] = _df[item].replace(VARIABLES_DICT[int(folder[-4:])][item])
 
                     _df.rename(columns=COLUMNS_DICT[int(folder[-4:])], inplace=True)
 
                 renamu_versions[int(folder[-4:])] = _df
+
+                print(_df['_RENAMU_144'].unique())
 
         for item in renamu_versions:
             df = df.append(renamu_versions[item], sort=True)
@@ -135,7 +189,7 @@ class TransformStep(PipelineStep):
 
         df['_P41_1'] = df['P41_1']
         df['_P43_1'] = df['P43_1']
-        df['P33_AUX'] = df.apply(lambda x: 1 if x['P33_1'] == 1 or x['P33_2'] == 1 else 0, axis=1)
+        # df['P33_AUX'] = df.apply(lambda x: 1 if x['P33_1'] == 1 or x['P33_2'] == 1 else 0, axis=1)
         df['P41_1_1_AUX'] = df.apply(lambda x: 1 if x['_P41_1'] == 1 else 0, axis=1)
         df['P41_1_2_AUX'] = df.apply(lambda x: 1 if x['_P41_1'] == 2 else 0, axis=1)
         df['P41_1_3_AUX'] = df.apply(lambda x: 1 if x['_P41_1'] == 3 else 0, axis=1)
@@ -145,7 +199,7 @@ class TransformStep(PipelineStep):
         df['P43_1_3_AUX'] = df.apply(lambda x: 1 if x['_P43_1'] == 3 else 0, axis=1)
         df['P43_1_4_AUX'] = df.apply(lambda x: 1 if x['_P43_1'] == 4 else 0, axis=1)
         df['P51_AUX'] = df.apply(lambda x: 1 if x['P51A'] == 1 or x['P51B'] == 1 or x['P51C'] == 1 or x['P51D'] == 1 or x['P51E'] == 1 or x['P51F'] == 1 else 0, axis=1)
-        df['P23_AUX'] = df.apply(lambda x: 1 if x['P23_1'] == 1 or x['P23_2'] == 1 or x['P23_3'] == 1 or x['P23_4'] == 1 or x['P23_5'] == 1 or x['P23_6'] == 1 or x['P23_7'] == 1 or x['P23_8'] == 1 or x['P23_9'] == 1 or x['P23_10'] == 1 or x['P23_11'] == 1 or x['P23_12'] == 1 or x['P23_13'] == 1 or x['P23_14'] == 1 else 0, axis=1)
+        # df['P23_AUX'] = df.apply(lambda x: 1 if x['P23_1'] == 1 or x['P23_2'] == 1 or x['P23_3'] == 1 or x['P23_4'] == 1 or x['P23_5'] == 1 or x['P23_6'] == 1 or x['P23_7'] == 1 or x['P23_8'] == 1 or x['P23_9'] == 1 or x['P23_10'] == 1 or x['P23_11'] == 1 or x['P23_12'] == 1 or x['P23_13'] == 1 or x['P23_14'] == 1 else 0, axis=1)
         df['P19_AUX'] = df.apply(lambda x: 1 if x['P19'] == 1 else 0, axis=1)
         df['P13_1_AUX'] = df.apply(lambda x: 1 if x['P13_1'] == 1 else 0, axis=1)
 
@@ -210,7 +264,7 @@ class TransformStep(PipelineStep):
         output_district['RENAMU_50'] = df['_RENAMU_50']
         output_district['RENAMU_51'] = df['_RENAMU_51']
         output_district['RENAMU_52'] = df['P66_1_1'] +  df['P66_10_1'] +  df['P66_2_1'] +  df['P66_3_1'] +  df['P66_4_1']  +  df['P66_5_1'] +  df['P66_6_1'] +  df['P66_7_1'] +  df['P66_8_1'] +  df['P66_9_1'] 
-        output_district['RENAMU_53'] = df['P70A_1_1'] +  df['P70A_2_1'] +  df['P70A_3_1'] + df['P70A_4_1'] +  df['P70A_5_1']
+        output_district['RENAMU_53'] = df['_RENAMU_53']
         output_district['RENAMU_54'] = df['P70A_6_1'] +  df['P70A_7_1'] +  df['P70A_8_1']
         output_district['RENAMU_55'] = df['_RENAMU_55']
         output_district['RENAMU_56'] = np.nan
@@ -238,7 +292,7 @@ class TransformStep(PipelineStep):
         output_district['RENAMU_78'] = np.nan
         output_district['RENAMU_79'] = df.apply(lambda x: 1 if x['P16_5'] == 1 else 0 if x['P16_5'] == 0 else np.nan, axis=1)
         output_district['RENAMU_80'] = np.nan
-        output_district['RENAMU_81'] = df['P23_AUX']
+        output_district['RENAMU_81'] = df['_RENAMU_81']
         output_district['RENAMU_82'] = np.nan
         output_district['RENAMU_83'] = df.apply(lambda x: 1 if x['P31_1'] == 1 else 0 if x['P31_1'] == 0 else np.nan, axis=1)
         output_district['RENAMU_84'] = np.nan
@@ -248,7 +302,7 @@ class TransformStep(PipelineStep):
         output_district['RENAMU_88'] = np.nan
         output_district['RENAMU_89'] = df.apply(lambda x: 1 if x['P31_4'] == 1 else 0 if x['P31_4'] == 0 else np.nan, axis=1)
         output_district['RENAMU_90'] = np.nan
-        output_district['RENAMU_91'] = df['P33_AUX']
+        output_district['RENAMU_91'] = df['_RENAMU_91']
         output_district['RENAMU_92'] = np.nan
         output_district['RENAMU_93'] = df.apply(lambda x: 1 if x['P39_1'] == 1 else 0 if x['P39_1'] == 0 else np.nan, axis=1)
         output_district['RENAMU_94'] = np.nan
@@ -404,7 +458,7 @@ class TransformStep(PipelineStep):
         output_province['RENAMU_50'] = df_province['_RENAMU_50']
         output_province['RENAMU_51'] = df_province['_RENAMU_51']
         output_province['RENAMU_52'] = df_province['P66_1_1'] +  df_province['P66_10_1'] +  df_province['P66_2_1'] +  df_province['P66_3_1'] +  df_province['P66_4_1']  +  df_province['P66_5_1'] +  df_province['P66_6_1'] +  df_province['P66_7_1'] +  df_province['P66_8_1'] +  df_province['P66_9_1'] 
-        output_province['RENAMU_53'] = df_province['P70A_1_1'] +  df_province['P70A_2_1'] +  df_province['P70A_3_1'] + df_province['P70A_4_1'] +  df_province['P70A_5_1']
+        output_province['RENAMU_53'] = df_province['_RENAMU_53']
         output_province['RENAMU_54'] = df_province['P70A_6_1'] +  df_province['P70A_7_1'] +  df_province['P70A_8_1']
         output_province['RENAMU_55'] = np.nan
         output_province['RENAMU_56'] = df_province['_RENAMU_56'] * 100 / df_province['count']
@@ -433,7 +487,7 @@ class TransformStep(PipelineStep):
         output_province['RENAMU_79'] = np.nan
         output_province['RENAMU_80'] = df_province['P16_5'] * 100 / df_province['count']
         output_province['RENAMU_81'] = np.nan
-        output_province['RENAMU_82'] = df_province['P23_AUX'] * 100 / df_province['count']
+        output_province['RENAMU_82'] = df_province['_RENAMU_81'] * 100 / df_province['count']
         output_province['RENAMU_83'] = np.nan
         output_province['RENAMU_84'] = df_province['P31_1'] * 100 / df_province['count']
         output_province['RENAMU_85'] = np.nan
@@ -443,7 +497,7 @@ class TransformStep(PipelineStep):
         output_province['RENAMU_89'] = np.nan
         output_province['RENAMU_90'] = df_province['P31_4'] * 100 / df_province['count']
         output_province['RENAMU_91'] = np.nan
-        output_province['RENAMU_92'] = df_province['P33_AUX'] * 100 / df_province['count']
+        output_province['RENAMU_92'] = df_province['_RENAMU_91'] * 100 / df_province['count']
         output_province['RENAMU_93'] = np.nan
         output_province['RENAMU_94'] = df_province['P39_1'] * 100 / df_province['count']
         output_province['RENAMU_95'] = np.nan
@@ -598,7 +652,7 @@ class TransformStep(PipelineStep):
         output_department['RENAMU_50'] = df_department['_RENAMU_50']
         output_department['RENAMU_51'] = df_department['_RENAMU_51']
         output_department['RENAMU_52'] = df_department['P66_1_1'] +  df_department['P66_10_1'] +  df_department['P66_2_1'] +  df_department['P66_3_1'] +  df_department['P66_4_1']  +  df_department['P66_5_1'] +  df_department['P66_6_1'] +  df_department['P66_7_1'] +  df_department['P66_8_1'] +  df_department['P66_9_1'] 
-        output_department['RENAMU_53'] = df_department['P70A_1_1'] +  df_department['P70A_2_1'] +  df_department['P70A_3_1'] + df_department['P70A_4_1'] +  df_department['P70A_5_1']
+        output_department['RENAMU_53'] = df_department['_RENAMU_53']
         output_department['RENAMU_54'] = df_department['P70A_6_1'] +  df_department['P70A_7_1'] +  df_department['P70A_8_1']
         output_department['RENAMU_55'] = np.nan
         output_department['RENAMU_56'] = df_department['_RENAMU_56'] * 100 / df_department['count']
@@ -627,7 +681,7 @@ class TransformStep(PipelineStep):
         output_department['RENAMU_79'] = np.nan
         output_department['RENAMU_80'] = df_department['P16_5'] * 100 / df_department['count']
         output_department['RENAMU_81'] = np.nan
-        output_department['RENAMU_82'] = df_department['P23_AUX'] * 100 / df_department['count']
+        output_department['RENAMU_82'] = df_department['_RENAMU_81'] * 100 / df_department['count']
         output_department['RENAMU_83'] = np.nan
         output_department['RENAMU_84'] = df_department['P31_1'] * 100 / df_department['count']
         output_department['RENAMU_85'] = np.nan
@@ -637,7 +691,7 @@ class TransformStep(PipelineStep):
         output_department['RENAMU_89'] = np.nan
         output_department['RENAMU_90'] = df_department['P31_4'] * 100 / df_department['count']
         output_department['RENAMU_91'] = np.nan
-        output_department['RENAMU_92'] = df_department['P33_AUX'] * 100 / df_department['count']
+        output_department['RENAMU_92'] = df_department['_RENAMU_91'] * 100 / df_department['count']
         output_department['RENAMU_93'] = np.nan
         output_department['RENAMU_94'] = df_department['P39_1'] * 100 / df_department['count']
         output_department['RENAMU_95'] = np.nan
@@ -792,7 +846,7 @@ class TransformStep(PipelineStep):
         output_nation['RENAMU_50'] = df_nation['_RENAMU_50']
         output_nation['RENAMU_51'] = df_nation['_RENAMU_51']
         output_nation['RENAMU_52'] = df_nation['P66_1_1'] +  df_nation['P66_10_1'] +  df_nation['P66_2_1'] +  df_nation['P66_3_1'] +  df_nation['P66_4_1']  +  df_nation['P66_5_1'] +  df_nation['P66_6_1'] +  df_nation['P66_7_1'] +  df_nation['P66_8_1'] +  df_nation['P66_9_1'] 
-        output_nation['RENAMU_53'] = df_nation['P70A_1_1'] +  df_nation['P70A_2_1'] +  df_nation['P70A_3_1'] + df_nation['P70A_4_1'] +  df_nation['P70A_5_1']
+        output_nation['RENAMU_53'] = df_nation['_RENAMU_53']
         output_nation['RENAMU_54'] = df_nation['P70A_6_1'] +  df_nation['P70A_7_1'] +  df_nation['P70A_8_1']
         output_nation['RENAMU_55'] = np.nan
         output_nation['RENAMU_56'] = df_nation['_RENAMU_56'] * 100 / df_nation['count']
@@ -821,7 +875,7 @@ class TransformStep(PipelineStep):
         output_nation['RENAMU_79'] = np.nan
         output_nation['RENAMU_80'] = df_nation['P16_5'] * 100 / df_nation['count']
         output_nation['RENAMU_81'] = np.nan
-        output_nation['RENAMU_82'] = df_nation['P23_AUX'] * 100 / df_nation['count']
+        output_nation['RENAMU_82'] = df_nation['_RENAMU_81'] * 100 / df_nation['count']
         output_nation['RENAMU_83'] = np.nan
         output_nation['RENAMU_84'] = df_nation['P31_1'] * 100 / df_nation['count']
         output_nation['RENAMU_85'] = np.nan
@@ -831,7 +885,7 @@ class TransformStep(PipelineStep):
         output_nation['RENAMU_89'] = np.nan
         output_nation['RENAMU_90'] = df_nation['P31_4'] * 100 / df_nation['count']
         output_nation['RENAMU_91'] = np.nan
-        output_nation['RENAMU_92'] = df_nation['P33_AUX'] * 100 / df_nation['count']
+        output_nation['RENAMU_92'] = df_nation['_RENAMU_91'] * 100 / df_nation['count']
         output_nation['RENAMU_93'] = np.nan
         output_nation['RENAMU_94'] = df_nation['P39_1'] * 100 / df_nation['count']
         output_nation['RENAMU_95'] = np.nan
