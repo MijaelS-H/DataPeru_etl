@@ -779,11 +779,23 @@ VARIABLES_DICT = {
             'Brinda': 1,
             'No brinda': 0
         },
+        '_RENAMU_144': {
+            'Si': 1,
+            'No': 0
+        },
         'P66_1': {
             'Si': 1,
             'No': 0
         },
+        '_RENAMU_147': {
+            'Si': 1,
+            'No': 0
+        },
         'P66_2': {
+            'Si': 1,
+            'No': 0
+        },
+        '_RENAMU_150': {
             'Si': 1,
             'No': 0
         },

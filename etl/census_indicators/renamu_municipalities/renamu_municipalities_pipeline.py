@@ -19,7 +19,6 @@ class TransformStep(PipelineStep):
 
         for folder in os.listdir(path):
             if int(folder[-4:]) > 2016:
-                print('Current year: {}'.format(int(folder[-4:])))
                 _df = pd.DataFrame()
                 for subfolder in os.listdir('{}{}'.format(path, folder)):
                     for filename in os.listdir('{}{}/{}'.format(path, folder, subfolder)):
@@ -36,7 +35,7 @@ class TransformStep(PipelineStep):
                             )
 
                             temp = temp.loc[:, temp.columns.isin(SELECTED_COLUMNS[int(folder[-4:])])].copy()
-                            temp.replace({'21403': '021403'}, inplace=True)
+                            temp.replace({'21403': '021403', '240302,': '240302'}, inplace=True)
                             temp.drop_duplicates(subset=['district_id'], inplace = True)
 
                             if _df.shape[0] != 0:
@@ -161,15 +160,12 @@ class TransformStep(PipelineStep):
                     _df['_RENAMU_150'] = _df['P66_3']
 
                 if int(folder[-4:]) < 2019:
-                    print(int(folder[-4:]))
                     for item in VARIABLES_DICT[int(folder[-4:])]:
                         _df[item] = _df[item].replace(VARIABLES_DICT[int(folder[-4:])][item])
 
                     _df.rename(columns=COLUMNS_DICT[int(folder[-4:])], inplace=True)
 
                 renamu_versions[int(folder[-4:])] = _df
-
-                print(_df['_RENAMU_144'].unique())
 
         for item in renamu_versions:
             df = df.append(renamu_versions[item], sort=True)
@@ -202,6 +198,10 @@ class TransformStep(PipelineStep):
         # df['P23_AUX'] = df.apply(lambda x: 1 if x['P23_1'] == 1 or x['P23_2'] == 1 or x['P23_3'] == 1 or x['P23_4'] == 1 or x['P23_5'] == 1 or x['P23_6'] == 1 or x['P23_7'] == 1 or x['P23_8'] == 1 or x['P23_9'] == 1 or x['P23_10'] == 1 or x['P23_11'] == 1 or x['P23_12'] == 1 or x['P23_13'] == 1 or x['P23_14'] == 1 else 0, axis=1)
         df['P19_AUX'] = df.apply(lambda x: 1 if x['P19'] == 1 else 0, axis=1)
         df['P13_1_AUX'] = df.apply(lambda x: 1 if x['P13_1'] == 1 else 0, axis=1)
+
+        # Drops departments rows at district level
+
+        df = df[~df['district_id'].isin(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '1,'])]
 
         # Creates aggregated DataFrames for provinces, departments and nation levels
 
