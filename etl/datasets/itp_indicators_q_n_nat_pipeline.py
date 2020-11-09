@@ -1,22 +1,20 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
 from etl.consistency import AggregatorStep
 
-path = grab_parent_dir("../../") + "/datasets/20200318"
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
         range_ = list(range(0, 4)) + list(range(6,39))
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.3.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.4.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
-        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.5.xlsx"), usecols = "B:T", skiprows = range_, reset_index = True)
-        df4 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.6.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
-        df5 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.7.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
-        df6 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.8.xlsx"), usecols = "A,F", skiprows = range(0,6), reset_index = True)
+        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.3.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
+        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.4.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
+        df3 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.5.xlsx"), usecols = "B:T", skiprows = range_, reset_index = True)
+        df4 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.6.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
+        df5 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.7.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
+        df6 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.8.xlsx"), usecols = "A,F", skiprows = range(0,6), reset_index = True)
 
         # Dropping unused rows from datasets
         df1.drop([0,66,67,68], axis = 0, inplace = True)
@@ -80,7 +78,7 @@ class itp_ind_quarter_n_nat_pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                                                     "String",
@@ -135,6 +133,14 @@ class itp_ind_quarter_n_nat_pipeline(EasyPipeline):
 
         return [transform_step, agg_step, load_step]
 
-if __name__ == "__main__":
+def run_pipeline(params: dict):
     pp = itp_ind_quarter_n_nat_pipeline()
-    pp.run({})
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })

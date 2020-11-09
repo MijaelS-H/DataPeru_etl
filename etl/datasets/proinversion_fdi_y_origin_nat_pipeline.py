@@ -1,11 +1,10 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir, query_to_df
+from bamboo_lib.helpers import query_to_df
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
 from etl.consistency import AggregatorStep
-path1 = grab_parent_dir("../../") + "/datasets/20200318"
-path2 = grab_parent_dir("../../") + "/datasets/anexos"
 
 country_list = ["España", "Reino Unido", "Chile", "Estados Unidos de América", "Países Bajos", "Brasil", "Colombia", "Canadá", "Panamá", "México", "Luxemburgo", "Suiza", "Singapur", "Islas Bermudas ", "Japón", "China", "Francia", "Alemania", "Islas Bahamas ", "Bélgica", "Italia", "Ecuador", "Uruguay", "Islas Caimán", "Suecia", "Corea", "Argentina", "Portugal", "Gran Bretaña", "Liechtenstein", "Dinamarca", "Austria", "Australia", "Nueva Zelandia", "Malta", "U.E.A. (United Arab Emirates)", "Venezuela", "Bolivia", "Honduras", "Rusia", "Otros 1/"]
 
@@ -13,10 +12,10 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Loading data
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.188.xlsx"), skiprows = (0,1,2,4))[0:41]
+        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.188.xlsx"), skiprows = (0,1,2,4))[0:41]
 
         dim_country_query = "SELECT * FROM dim_shared_country"
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         countries = query_to_df(db_connector, raw_query=dim_country_query) #, col_headers = ["continent_id", "iso3", "country_name_es"])
 
         # Transpose dataframe, adding new header and year column from index
@@ -53,7 +52,7 @@ class proinversion_fdi_y_origin_nat_pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                             "String",
@@ -68,6 +67,14 @@ class proinversion_fdi_y_origin_nat_pipeline(EasyPipeline):
 
         return [transform_step, agg_step, load_step]
 
-if __name__ == "__main__":
+def run_pipeline(params: dict):
     pp = proinversion_fdi_y_origin_nat_pipeline()
-    pp.run({})
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })

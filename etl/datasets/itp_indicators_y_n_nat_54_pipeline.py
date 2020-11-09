@@ -1,18 +1,16 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
 from etl.consistency import AggregatorStep
 
-path = grab_parent_dir("../../") + "/datasets/20200318"
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
         years_ = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018]
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.14.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.21.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
+        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.14.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
+        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.21.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
 
         # For cycle to repeated step for the 2 datasets
         for item in [df1, df2]: 
@@ -56,7 +54,7 @@ class itp_indicators_y_n_nat_54(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                                    "String",
@@ -72,6 +70,14 @@ class itp_indicators_y_n_nat_54(EasyPipeline):
 
         return [transform_step, agg_step, load_step]
 
-if __name__ == "__main__":
+def run_pipeline(params: dict):
     pp = itp_indicators_y_n_nat_54()
-    pp.run({})
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })

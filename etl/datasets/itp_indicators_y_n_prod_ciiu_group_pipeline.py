@@ -1,23 +1,16 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
-from bamboo_lib.models import
-from bamboo_lib.models import 
 from bamboo_lib.steps import DownloadStep, LoadStep
-from bamboo_lib.steps import 
-
 from etl.consistency import AggregatorStep
-
-path = grab_parent_dir("../../") + "/datasets/20200318"
-
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.95.xlsx"), skiprows = (0,1,2))[2:74]
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.96.xlsx"), skiprows = (0,1,2,3))[2:83]
-        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.99.xlsx"), skiprows = (0,1,2,3))[2:40]
+        df1 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.95.xlsx"), skiprows = (0,1,2))[2:74]
+        df2 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.96.xlsx"), skiprows = (0,1,2,3))[2:83]
+        df3 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.99.xlsx"), skiprows = (0,1,2,3))[2:40]
 
         # Common steps
         for item in [df1,df2, df3]:
@@ -50,7 +43,7 @@ class itp_indicators_y_n_prod_ciiu_group_pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
             "ubigeo":                                   "String",
             "group_id":                                 "String",
@@ -66,6 +59,14 @@ class itp_indicators_y_n_prod_ciiu_group_pipeline(EasyPipeline):
 
         return [transform_step, agg_step, load_step]
 
-if __name__ == "__main__":
+def run_pipeline(params: dict):
     pp = itp_indicators_y_n_prod_ciiu_group_pipeline()
-    pp.run({})
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })
