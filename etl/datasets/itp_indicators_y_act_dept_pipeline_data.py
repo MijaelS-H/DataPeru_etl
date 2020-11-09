@@ -1,6 +1,4 @@
-from itp_indicators_y_act_dept_pipeline import itp_ind_year_Pipeline
-
-data_object = [
+datalist = [
     {
         'path': 'A. Economía',
         'name': 'Agricultura, ganaderia, caza y silvicultura',
@@ -190,6 +188,3 @@ data_object = [
         }
     }
 ]
-for i in data_object:
-    pp = itp_ind_year_Pipeline
-    pp.run({'data': i})

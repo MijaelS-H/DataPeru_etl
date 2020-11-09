@@ -16,6 +16,8 @@ from .itp_indicators_y_n_tourism_capacity_pipeline import run_pipeline as run_pi
 from .itp_indicators_y_n_tourism_pipeline import run_pipeline as run_pipeline_yearly_tourims
 from .proinversion_fdi_y_origin_nat_pipeline import run_pipeline as run_pipeline_fdi_national
 
+from .itp_indicators_y_act_dept_pipeline import run_pipeline as run_pipeline_activity_department
+
 
 def run_pipeline(params: dict):
     run_pipeline_age_travel(params)
@@ -35,6 +37,8 @@ def run_pipeline(params: dict):
     run_pipeline_yearly_tourims_c(params)
     run_pipeline_yearly_tourims(params)
     run_pipeline_fdi_national(params)
+
+    run_pipeline_activity_department(params)
 
 if __name__ == "__main__":
     import sys
