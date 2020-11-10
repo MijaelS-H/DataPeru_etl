@@ -5,10 +5,10 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from static import DTYPES, SELECTED_COLUMNS, VARIABLES_DICT, COLUMNS_DICT
+from .static import DTYPES, SELECTED_COLUMNS, VARIABLES_DICT, COLUMNS_DICT
+from etl.consistency import AggregatorStep
 
-from .static import DTYPES, SELECTED_COLUMNS, VARIABLES_DICT
-
+pd.set_option('use_inf_as_na', True)
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -28,10 +28,10 @@ class TransformStep(PipelineStep):
             if int(folder[-4:]) > 2014:
                 print('Current year: {}'.format(int(folder[-4:])))
                 _df = pd.DataFrame()
-                for subfolder in os.listdir('{}{}'.format(path, folder)):
-                    for filename in os.listdir('{}{}/{}'.format(path, folder, subfolder)):
+                for subfolder in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder))):
+                    for filename in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder),'{}'.format(subfolder))):
                         if filename.endswith('.sav') and filename not in ['C115.sav', 'C116.sav']:
-                            temp = pd.read_spss('{}{}/{}/{}'.format(path, folder, subfolder, filename))
+                            temp = pd.read_spss(os.path.join('{}'.format(path), '{}'.format(folder),'{}'.format(subfolder), '{}'.format(filename)))
                             temp = temp.replace('', np.nan).dropna(how='all')
                             temp.rename(
                                 columns = {
@@ -1113,6 +1113,29 @@ class RENAMUPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
 
         transform_step = TransformStep()
+
+        agg_step = AggregatorStep('inei_renamu_municipalities', measures=[
+            'RENAMU_1', 'RENAMU_2', 'RENAMU_3', 'RENAMU_4', 'RENAMU_5', 'RENAMU_6', 'RENAMU_7', 'RENAMU_8', 'RENAMU_9', 'RENAMU_10', 'RENAMU_11',
+            'RENAMU_12', 'RENAMU_13', 'RENAMU_14', 'RENAMU_15', 'RENAMU_16', 'RENAMU_17', 'RENAMU_18', 'RENAMU_19', 'RENAMU_20', 'RENAMU_21', 
+            'RENAMU_22', 'RENAMU_23', 'RENAMU_24', 'RENAMU_25', 'RENAMU_26', 'RENAMU_27', 'RENAMU_28', 'RENAMU_29', 'RENAMU_30', 'RENAMU_31', 
+            'RENAMU_32', 'RENAMU_33', 'RENAMU_34', 'RENAMU_35', 'RENAMU_36', 'RENAMU_37', 'RENAMU_38', 'RENAMU_39', 'RENAMU_40', 'RENAMU_41', 
+            'RENAMU_42', 'RENAMU_43', 'RENAMU_44', 'RENAMU_45', 'RENAMU_46', 'RENAMU_47', 'RENAMU_48', 'RENAMU_49', 'RENAMU_50', 'RENAMU_51',
+            'RENAMU_52', 'RENAMU_53', 'RENAMU_54', 'RENAMU_55', 'RENAMU_56', 'RENAMU_57', 'RENAMU_58', 'RENAMU_59', 'RENAMU_60', 'RENAMU_61', 
+            'RENAMU_62', 'RENAMU_63', 'RENAMU_64', 'RENAMU_65', 'RENAMU_66', 'RENAMU_67', 'RENAMU_68', 'RENAMU_69', 'RENAMU_70', 'RENAMU_71',
+            'RENAMU_72', 'RENAMU_73', 'RENAMU_74', 'RENAMU_75', 'RENAMU_76', 'RENAMU_77', 'RENAMU_78', 'RENAMU_79', 'RENAMU_80', 'RENAMU_81',
+            'RENAMU_82', 'RENAMU_83', 'RENAMU_84', 'RENAMU_85', 'RENAMU_86', 'RENAMU_87', 'RENAMU_88', 'RENAMU_89', 'RENAMU_90', 'RENAMU_91',
+            'RENAMU_92', 'RENAMU_93', 'RENAMU_94', 'RENAMU_95', 'RENAMU_96', 'RENAMU_97', 'RENAMU_98', 'RENAMU_99', 'RENAMU_100', 'RENAMU_101',
+            'RENAMU_102', 'RENAMU_103', 'RENAMU_104', 'RENAMU_105', 'RENAMU_106', 'RENAMU_107', 'RENAMU_108', 'RENAMU_109', 'RENAMU_110', 'RENAMU_111',
+            'RENAMU_112', 'RENAMU_113', 'RENAMU_114', 'RENAMU_115', 'RENAMU_116', 'RENAMU_117', 'RENAMU_118', 'RENAMU_119', 'RENAMU_120', 'RENAMU_121',
+            'RENAMU_122', 'RENAMU_123', 'RENAMU_124', 'RENAMU_125', 'RENAMU_126', 'RENAMU_127', 'RENAMU_128', 'RENAMU_129', 'RENAMU_130', 'RENAMU_131',
+            'RENAMU_132', 'RENAMU_133', 'RENAMU_134', 'RENAMU_135', 'RENAMU_136', 'RENAMU_137', 'RENAMU_138', 'RENAMU_139', 'RENAMU_140', 'RENAMU_141',
+            'RENAMU_142', 'RENAMU_143', 'RENAMU_144', 'RENAMU_145', 'RENAMU_146', 'RENAMU_147', 'RENAMU_148', 'RENAMU_149', 'RENAMU_150', 'RENAMU_151',
+            'RENAMU_152', 'RENAMU_153', 'RENAMU_154', 'RENAMU_155', 'RENAMU_156', 'RENAMU_157', 'RENAMU_158', 'RENAMU_159', 'RENAMU_160', 'RENAMU_161', 
+            'RENAMU_162', 'RENAMU_163', 'RENAMU_164', 'RENAMU_165', 'RENAMU_166', 'RENAMU_167', 'RENAMU_168', 'RENAMU_169', 'RENAMU_170', 'RENAMU_171', 
+            'RENAMU_172', 'RENAMU_173', 'RENAMU_174', 'RENAMU_175', 'RENAMU_176', 'RENAMU_177', 'RENAMU_178', 'RENAMU_179', 'RENAMU_180', 'RENAMU_181', 
+            'RENAMU_182', 'RENAMU_183', 'RENAMU_184', 'RENAMU_185', 'RENAMU_186', 'RENAMU_187', 'RENAMU_188', 'RENAMU_189', 'RENAMU_190'
+        ])
+
         load_step = LoadStep('inei_renamu_municipalities', db_connector, if_exists='drop', 
                              pk=['nation_id', 'department_id', 'province_id', 'district_id', 'year'], dtype=DTYPES,
                              nullable_list=[
@@ -1136,7 +1159,7 @@ class RENAMUPipeline(EasyPipeline):
                                 'RENAMU_172', 'RENAMU_173', 'RENAMU_174', 'RENAMU_175', 'RENAMU_176', 'RENAMU_177', 'RENAMU_178', 'RENAMU_179', 'RENAMU_180', 'RENAMU_181', 
                                 'RENAMU_182', 'RENAMU_183', 'RENAMU_184', 'RENAMU_185', 'RENAMU_186', 'RENAMU_187', 'RENAMU_188', 'RENAMU_189', 'RENAMU_190'])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
 
 def run_pipeline(params: dict):
@@ -1146,8 +1169,9 @@ def run_pipeline(params: dict):
 
 if __name__ == "__main__":
     import sys
-
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
-        "connector": "../../conns.yaml",
+        "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
