@@ -1,12 +1,9 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
-path = grab_parent_dir("../../") + "/datasets/20200318"
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
 
 depto_dict = {"Amazonas": "01", "Áncash": "02", "Apurímac": "03", "Arequipa": "04", "Ayacucho": "05", "Cajamarca": "06", "Callao": "07", "Callao 1/": "07", "Prov. Const. del Callao": "07", "Prov. Const.Callao": "07", "Cusco": "08", "Huancavelica": "09", "Huánuco": "10", "Ica": "11", "Junín": "12", "La Libertad": "13", "La libertad": "13", "Lambayeque": "14", "Lima": "15", "Lima 1/": "15", "Lima y Callao": "15", "Proyecto CARAL (PEZAC) 2/": "15", "Loreto": "16", "Madre de Dios": "17", "Moquegua": "18", "Pasco": "19", "Pasco 1/": "19", "Piura": "20", "Puno": "21", "San Martín": "22", "Tacna": "23", "Tumbes": "24", "Ucayali": "25", "Ucayali 1/": "25" }
 years_migration = [1940, 1961, 1972, 1981, 1993, 2007, 2017]
@@ -15,48 +12,48 @@ columns_ = [["Departamento", "Inmi-", "Emi-"], ["Departamento", "Inmi-.1", "Emi-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data from: population and housing
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.18.xlsx"), skiprows = (0,1))[3:30]
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.21.xlsx"), skiprows = (0,1))[3:30]
-        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.24.xls"), skiprows = (0,1,2,3), usecols = "A:U")[3:27]
+        df1 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.18.xlsx"), skiprows = (0,1))[3:30]
+        df2 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.21.xlsx"), skiprows = (0,1))[3:30]
+        df3 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.24.xls"), skiprows = (0,1,2,3), usecols = "A:U")[3:27]
         # Loading data from: employment
-        df4 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.15.xlsx"), skiprows = (0,1,2,3))[14:41]
+        df4 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.15.xlsx"), skiprows = (0,1,2,3))[14:41]
         # Loading data from: socials
-        df5 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.4.xlsx"), skiprows = (0,1,2), usecols = "A:K")[5:32]
-        df6 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.8.xlsx"), skiprows = (0,1,2,3))[11:38]
-        df7 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.9.xlsx"), skiprows = (0,1,2,3))[11:38]
-        df8 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.11.xlsx"), skiprows = (0,1,2,3), usecols = "A:K")[3:28]
-        df9 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.12.xlsx"), skiprows = (0,1,2,3), usecols = "A,J:R")[3:28]
-        df10 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.14.xlsx"), skiprows = (0,1), usecols = "A,E:N")[3:30]
-        df11 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.15.xlsx"), skiprows = (0,1,2), usecols = "A,F:N")[3:30]
-        df12 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.16.xlsx"), skiprows = (0,1,2,3), usecols = "A,G:J")[3:30]
-        df13 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.18.xlsx"), skiprows = range(0,4), usecols = "A,K:V")[3:30]
-        df14 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.55.xlsx"), skiprows = range(0,6), usecols = "A:L")[12:39]
+        df5 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.4.xlsx"), skiprows = (0,1,2), usecols = "A:K")[5:32]
+        df6 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.8.xlsx"), skiprows = (0,1,2,3))[11:38]
+        df7 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.9.xlsx"), skiprows = (0,1,2,3))[11:38]
+        df8 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.11.xlsx"), skiprows = (0,1,2,3), usecols = "A:K")[3:28]
+        df9 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.12.xlsx"), skiprows = (0,1,2,3), usecols = "A,J:R")[3:28]
+        df10 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.14.xlsx"), skiprows = (0,1), usecols = "A,E:N")[3:30]
+        df11 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.15.xlsx"), skiprows = (0,1,2), usecols = "A,F:N")[3:30]
+        df12 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.16.xlsx"), skiprows = (0,1,2,3), usecols = "A,G:J")[3:30]
+        df13 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.18.xlsx"), skiprows = range(0,4), usecols = "A,K:V")[3:30]
+        df14 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.55.xlsx"), skiprows = range(0,6), usecols = "A:L")[12:39]
         # Loading data from: environment
-        df15 = pd.read_excel(io = "{}/{}/{}".format(path, "E. Medio Ambiente", "E.12.xlsx"), skiprows = range(0,6), usecols = "A,C,D,G,H")[9:33]
-        df16 = pd.read_excel(io = "{}/{}/{}".format(path, "E. Medio Ambiente", "E.13.xlsx"), skiprows = (0,1,2,3), usecols = "A,C:F,I:L")[8:32]
-        df17 = pd.read_excel(io = "{}/{}/{}".format(path, "E. Medio Ambiente", "E.22.xlsx"), skiprows = (0,1,2))[3:18]
+        df15 = pd.read_excel(io = path.join(params["datasets"],"20200318", "E. Medio Ambiente", "E.12.xlsx"), skiprows = range(0,6), usecols = "A,C,D,G,H")[9:33]
+        df16 = pd.read_excel(io = path.join(params["datasets"],"20200318", "E. Medio Ambiente", "E.13.xlsx"), skiprows = (0,1,2,3), usecols = "A,C:F,I:L")[8:32]
+        df17 = pd.read_excel(io = path.join(params["datasets"],"20200318", "E. Medio Ambiente", "E.22.xlsx"), skiprows = (0,1,2))[3:18]
         # Loading data from: information and communication technology
-        df18 = pd.read_excel(io = "{}/{}/{}".format(path, "F. Tecnología de la Información y Comunicación", "F.1.xlsx"), skiprows = range(0,6))[17:44]
-        df19 = pd.read_excel(io = "{}/{}/{}".format(path, "F. Tecnología de la Información y Comunicación", "F.2.xlsx"), skiprows = range(0,4))[17:44]
-        df20 = pd.read_excel(io = "{}/{}/{}".format(path, "F. Tecnología de la Información y Comunicación", "F.3.xlsx"), skiprows = range(0,4))[16:43]
-        df21 = pd.read_excel(io = "{}/{}/{}".format(path, "F. Tecnología de la Información y Comunicación", "F.4.xlsx"), skiprows = range(0,4))[17:44]
-        df22 = pd.read_excel(io = "{}/{}/{}".format(path, "F. Tecnología de la Información y Comunicación", "F.5.xlsx"), skiprows = range(0,4))[17:44]
-        df23 = pd.read_excel(io = "{}/{}/{}".format(path, "F. Tecnología de la Información y Comunicación", "F.6.xlsx"), skiprows = range(0,4))[17:44]
-        df24 = pd.read_excel(io = "{}/{}/{}".format(path, "F. Tecnología de la Información y Comunicación", "F.7.xlsx"), skiprows = range(0,4))[17:44]
+        df18 = pd.read_excel(io = path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.1.xlsx"), skiprows = range(0,6))[17:44]
+        df19 = pd.read_excel(io = path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.2.xlsx"), skiprows = range(0,4))[17:44]
+        df20 = pd.read_excel(io = path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.3.xlsx"), skiprows = range(0,4))[16:43]
+        df21 = pd.read_excel(io = path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.4.xlsx"), skiprows = range(0,4))[17:44]
+        df22 = pd.read_excel(io = path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.5.xlsx"), skiprows = range(0,4))[17:44]
+        df23 = pd.read_excel(io = path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.6.xlsx"), skiprows = range(0,4))[17:44]
+        df24 = pd.read_excel(io = path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.7.xlsx"), skiprows = range(0,4))[17:44]
         # Loading data from: public safety
-        df25 = pd.read_excel(io = "{}/{}/{}".format(path, "G. Seguridad Ciudadana", "G.2.xlsx"), skiprows = (0,1,2))[3:28]
-        df26 = pd.read_excel(io = "{}/{}/{}".format(path, "G. Seguridad Ciudadana", "G.4.xlsx"), skiprows = (0,1,2), usecols = "A,C:I")[3:30]
-        df27 = pd.read_excel(io = "{}/{}/{}".format(path, "G. Seguridad Ciudadana", "G.7.xlsx"), skiprows = (0,1,2))[3:28]
-        df28 = pd.read_excel(io = "{}/{}/{}".format(path, "G. Seguridad Ciudadana", "G.8.xlsx"), skiprows = (0,1,2))[3:28]
-        df29 = pd.read_excel(io = "{}/{}/{}".format(path, "G. Seguridad Ciudadana", "G.9.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,D:G")[3:30]
-        df30 = pd.read_excel(io = "{}/{}/{}".format(path, "G. Seguridad Ciudadana", "G.10.xlsx"), skiprows = (0,1,2))[4:29]
-        df31 = pd.read_excel(io = "{}/{}/{}".format(path, "G. Seguridad Ciudadana", "G.11.xlsx"), skiprows = (0,1,2))[4:29]
-        df32 = pd.read_excel(io = "{}/{}/{}".format(path, "G. Seguridad Ciudadana", "G.12.xlsx"), skiprows = (0,1,2,3,4))[3:28]
+        df25 = pd.read_excel(io = path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.2.xlsx"), skiprows = (0,1,2))[3:28]
+        df26 = pd.read_excel(io = path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.4.xlsx"), skiprows = (0,1,2), usecols = "A,C:I")[3:30]
+        df27 = pd.read_excel(io = path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.7.xlsx"), skiprows = (0,1,2))[3:28]
+        df28 = pd.read_excel(io = path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.8.xlsx"), skiprows = (0,1,2))[3:28]
+        df29 = pd.read_excel(io = path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.9.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,D:G")[3:30]
+        df30 = pd.read_excel(io = path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.10.xlsx"), skiprows = (0,1,2))[4:29]
+        df31 = pd.read_excel(io = path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.11.xlsx"), skiprows = (0,1,2))[4:29]
+        df32 = pd.read_excel(io = path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.12.xlsx"), skiprows = (0,1,2,3,4))[3:28]
 
         # Added new datasets
-        df33 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.19.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,J:U")[4:31]
-        df34 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.152.xls"), sheet_name = "19.13 (a)", skiprows = range(0,34))[2:27]
-        df35 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.155.xls"), skiprows = (0,1,2,3,4))[1:23]
+        df33 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.19.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,J:U")[4:31]
+        df34 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.152.xls"), sheet_name = "19.13 (a)", skiprows = range(0,34))[2:27]
+        df35 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.155.xls"), skiprows = (0,1,2,3,4))[1:23]
 
         # Special steps for some datasets: census survey migration data (20017-2017)
         df_3 = pd.DataFrame(columns = ["ubigeo", "inmigrantes", "emigrantes", "year"])
@@ -84,9 +81,6 @@ class TransformStep(PipelineStep):
         df_1["year"] = 2017
         df_2["year"] = 2018
         df_16 = df_1.append(df_2, sort = True)
-
-        # Special steps for some datasets: agriculture area available by use
-        #df8.drop(["2012.1"], axis =1, inplace = True)
 
         # Special steps for some datasets: tourism data related to arrivals
         df34.dropna(axis = 1 , how = "any", inplace = True)
@@ -171,45 +165,42 @@ class TransformStep(PipelineStep):
         # Added datasets
         df_33 = pd.melt(df33, id_vars = ["ubigeo"], value_vars = [2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018], var_name = "year", value_name = "enfer_diarreicas_5yrs")
 
-        # Correction to the scale to thousands of people
-        df_4["peao_afiliada_pensiones"] = df_4["peao_afiliada_pensiones"] * 1000
-
         # Creating standard code to merge the 32 tables
         for item in [df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8, df_9, df_10, df_11, df_12, df_13, df_14, df_15, df_16, df_17, df_18, df_19, df_20, df_21, df_22, df_23, df_24, df_25, df_26, df_27, df_28, df_29, df_30, df_31, df_32, df_33, df_34, df_35]:
             item["code"] = item["ubigeo"].astype("str") + item["year"].astype("str")
 
         # Actually merging the datasets 
         df = pd.merge(df_1,  df_2[["code", "defunciones"]], on = "code", how = "left")
-        df = pd.merge(df,  df_3[["code", "inmigrantes", "emigrantes"]], on = "code", how = "left")
-        df = pd.merge(df,  df_4[["code", "peao_afiliada_pensiones"]], on = "code", how = "left")
-        df = pd.merge(df,  df_5[["code", "nbi_1_o_mas_perc_pob"]], on = "code", how = "left")
-        df = pd.merge(df,  df_6[["code", "mbpa_1_o_mas_members_perc_hog"]], on = "code", how = "left")
-        df = pd.merge(df,  df_7[["code", "mbpa_1_o_mas_members_perc_hog_pob"]], on = "code", how = "left")
-        df = pd.merge(df,  df_8[["code", "n_medicos_colegiados"]], on = "code", how = "left")
-        df = pd.merge(df,  df_9[["code", "n_habitantes_por_medico"]], on = "code", how = "left")
-        df = pd.merge(df,  df_10[["code", "n_enfermeras_os_colegiados"]], on = "code", how = "left")
-        df = pd.merge(df,  df_11[["code", "n_habitantes_por_enfermera_os"]], on = "code", how = "left")
-        df = pd.merge(df,  df_12[["code", "desnutricion_5yrs_perc"]], on = "code", how = "left")
-        df = pd.merge(df,  df_13[["code", "enfermedades_ra_5yrs_perc"]], on = "code", how = "left")
-        df = pd.merge(df,  df_14[["code", "estudios_prom_15yrs"]], on = "code", how = "left")
-        df = pd.merge(df,  df_15[["code", "superficie_agricola_hect", "superficie_no_agricola_hect"]], on = "code", how = "left")
-        df = pd.merge(df,  df_16[["code", "sup_agr_cultivos_hect", "sup_agr_en_barbencho_hect", "sup_agr_no_trabajadas_hect", "sup_agr_en_descanso_hect"]], on = "code", how = "left")
-        df = pd.merge(df,  df_17[["code", "sup_bosque_humedo_amazonico_hect"]], on = "code", how = "left")
-        df = pd.merge(df,  df_18[["code", "hogares_tecn_informacion_perc"]], on = "code", how = "left")
-        df = pd.merge(df,  df_19[["code", "hogares_television_perc"]], on = "code", how = "left")
-        df = pd.merge(df,  df_20[["code", "hogares_cable_perc"]], on = "code", how = "left")
-        df = pd.merge(df,  df_21[["code", "hogares_telefono_fijo_perc"]], on = "code", how = "left")
-        df = pd.merge(df,  df_22[["code", "hogares_telefono_movil_perc"]], on = "code", how = "left")
-        df = pd.merge(df,  df_23[["code", "hogares_computadora_perc"]], on = "code", how = "left")
-        df = pd.merge(df,  df_24[["code", "hogares_internet_perc"]], on = "code", how = "left")
-        df = pd.merge(df,  df_25[["code", "n_faltas_registradas"]], on = "code", how = "left")
-        df = pd.merge(df,  df_26[["code", "n_comision_delitos"]], on = "code", how = "left")
-        df = pd.merge(df,  df_27[["code", "n_personas_detenidas_delitos"]], on = "code", how = "left")
-        df = pd.merge(df,  df_28[["code", "n_bandas_delictuales_desarticuladas"]], on = "code", how = "left")
-        df = pd.merge(df,  df_29[["code", "n_victimas_femicidios"]], on = "code", how = "left")
-        df = pd.merge(df,  df_30[["code", "n_denuncias_violencia_familiar_fisica"]], on = "code", how = "left")
-        df = pd.merge(df,  df_31[["code", "n_denuncias_violencia_familiar_sicolo"]], on = "code", how = "left")
-        df = pd.merge(df,  df_32[["code", "n_denuncias_robo_vehiculos"]], on = "code", how = "left")
+        df = pd.merge(df,    df_3[["code", "inmigrantes", "emigrantes"]], on = "code", how = "left")
+        df = pd.merge(df,    df_4[["code", "peao_afiliada_pensiones"]], on = "code", how = "left")
+        df = pd.merge(df,    df_5[["code", "nbi_1_o_mas_perc_pob"]], on = "code", how = "left")
+        df = pd.merge(df,    df_6[["code", "mbpa_1_o_mas_members_perc_hog"]], on = "code", how = "left")
+        df = pd.merge(df,    df_7[["code", "mbpa_1_o_mas_members_perc_hog_pob"]], on = "code", how = "left")
+        df = pd.merge(df,    df_8[["code", "n_medicos_colegiados"]], on = "code", how = "left")
+        df = pd.merge(df,    df_9[["code", "n_habitantes_por_medico"]], on = "code", how = "left")
+        df = pd.merge(df,    df_10[["code", "n_enfermeras_os_colegiados"]], on = "code", how = "left")
+        df = pd.merge(df,    df_11[["code", "n_habitantes_por_enfermera_os"]], on = "code", how = "left")
+        df = pd.merge(df,    df_12[["code", "desnutricion_5yrs_perc"]], on = "code", how = "left")
+        df = pd.merge(df,    df_13[["code", "enfermedades_ra_5yrs_perc"]], on = "code", how = "left")
+        df = pd.merge(df,    df_14[["code", "estudios_prom_15yrs"]], on = "code", how = "left")
+        df = pd.merge(df,    df_15[["code", "superficie_agricola_hect", "superficie_no_agricola_hect"]], on = "code", how = "left")
+        df = pd.merge(df,    df_16[["code", "sup_agr_cultivos_hect", "sup_agr_en_barbencho_hect", "sup_agr_no_trabajadas_hect", "sup_agr_en_descanso_hect"]], on = "code", how = "left")
+        df = pd.merge(df,    df_17[["code", "sup_bosque_humedo_amazonico_hect"]], on = "code", how = "left")
+        df = pd.merge(df,    df_18[["code", "hogares_tecn_informacion_perc"]], on = "code", how = "left")
+        df = pd.merge(df,    df_19[["code", "hogares_television_perc"]], on = "code", how = "left")
+        df = pd.merge(df,    df_20[["code", "hogares_cable_perc"]], on = "code", how = "left")
+        df = pd.merge(df,    df_21[["code", "hogares_telefono_fijo_perc"]], on = "code", how = "left")
+        df = pd.merge(df,    df_22[["code", "hogares_telefono_movil_perc"]], on = "code", how = "left")
+        df = pd.merge(df,    df_23[["code", "hogares_computadora_perc"]], on = "code", how = "left")
+        df = pd.merge(df,    df_24[["code", "hogares_internet_perc"]], on = "code", how = "left")
+        df = pd.merge(df,    df_25[["code", "n_faltas_registradas"]], on = "code", how = "left")
+        df = pd.merge(df,    df_26[["code", "n_comision_delitos"]], on = "code", how = "left")
+        df = pd.merge(df,    df_27[["code", "n_personas_detenidas_delitos"]], on = "code", how = "left")
+        df = pd.merge(df,    df_28[["code", "n_bandas_delictuales_desarticuladas"]], on = "code", how = "left")
+        df = pd.merge(df,    df_29[["code", "n_victimas_femicidios"]], on = "code", how = "left")
+        df = pd.merge(df,    df_30[["code", "n_denuncias_violencia_familiar_fisica"]], on = "code", how = "left")
+        df = pd.merge(df,    df_31[["code", "n_denuncias_violencia_familiar_sicolo"]], on = "code", how = "left")
+        df = pd.merge(df,    df_32[["code", "n_denuncias_robo_vehiculos"]], on = "code", how = "left")
 
         # Added datasets
         df = pd.merge(df,  df_33[["code", "enfer_diarreicas_5yrs"]], on = "code", how = "left")
@@ -233,7 +224,7 @@ class inei_population_y_n_dep(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                                              "String",
@@ -242,31 +233,32 @@ class inei_population_y_n_dep(EasyPipeline):
             "defunciones":                                         "UInt32",
             "inmigrantes":                                         "UInt32",
             "emigrantes":                                          "UInt32",
-            "peao_afiliada_pensiones":                             "UInt32",
-            "nbi_1_o_mas_perc_pob":                                "Float64",
-            "mbpa_1_o_mas_members_perc_hog":                       "Float64",
-            "mbpa_1_o_mas_members_perc_hog_pob":                   "Float64",
+            "peao_afiliada_pensiones":                             "Float32",
+            "nbi_1_o_mas_perc_pob":                                "Float32",
+            "mbpa_1_o_mas_members_perc_hog":                       "Float32",
+            "mbpa_1_o_mas_members_perc_hog_pob":                   "Float32",
             "n_medicos_colegiados":                                "UInt16",
-            "n_habitantes_por_medico":                             "Float64",
+            "n_habitantes_por_medico":                             "Float32",
             "n_enfermeras_os_colegiados":                          "UInt16",
-            "n_habitantes_por_enfermera_os":                       "Float64",
-            "desnutricion_5yrs_perc":                              "Float64",
+            "n_habitantes_por_enfermera_os":                       "Float32",
+            "desnutricion_5yrs_perc":                              "Float32",
+            "enfer_diarreicas_5yrs":                               "UInt32",
             "enfermedades_ra_5yrs_perc":                           "UInt32",
-            "estudios_prom_15yrs":                                 "Float64",
-            "superficie_agricola_hect":                            "Float64",
-            "superficie_no_agricola_hect":                         "Float64",
-            "sup_agr_cultivos_hect":                               "Float64",
-            "sup_agr_en_barbencho_hect":                           "Float64",
-            "sup_agr_no_trabajadas_hect":                          "Float64",
-            "sup_agr_en_descanso_hect":                            "Float64",
-            "sup_bosque_humedo_amazonico_hect":                    "Float64",
-            "hogares_tecn_informacion_perc":                       "Float64",
-            "hogares_television_perc":                             "Float64",
-            "hogares_cable_perc":                                  "Float64",
-            "hogares_telefono_fijo_perc":                          "Float64",
-            "hogares_telefono_movil_perc":                         "Float64",
-            "hogares_computadora_perc":                            "Float64",
-            "hogares_internet_perc":                               "Float64",
+            "estudios_prom_15yrs":                                 "Float32",
+            "superficie_agricola_hect":                            "UInt32",
+            "superficie_no_agricola_hect":                         "UInt32",
+            "sup_agr_cultivos_hect":                               "UInt32",
+            "sup_agr_en_barbencho_hect":                           "UInt32",
+            "sup_agr_no_trabajadas_hect":                          "UInt32",
+            "sup_agr_en_descanso_hect":                            "UInt32",
+            "sup_bosque_humedo_amazonico_hect":                    "UInt32",
+            "hogares_tecn_informacion_perc":                       "Float32",
+            "hogares_television_perc":                             "Float32",
+            "hogares_cable_perc":                                  "Float32",
+            "hogares_telefono_fijo_perc":                          "Float32",
+            "hogares_telefono_movil_perc":                         "Float32",
+            "hogares_computadora_perc":                            "Float32",
+            "hogares_internet_perc":                               "Float32",
             "n_faltas_registradas":                                "UInt32",
             "n_comision_delitos":                                  "UInt32",
             "n_personas_detenidas_delitos":                        "UInt32",
@@ -275,21 +267,35 @@ class inei_population_y_n_dep(EasyPipeline):
             "n_denuncias_violencia_familiar_fisica":               "UInt32",
             "n_denuncias_violencia_familiar_sicolo":               "UInt32",
             "n_denuncias_robo_vehiculos":                          "UInt32",
-            "enfer_diarreicas_5yrs":                               "UInt32",
-            "huespedes_nacionales":                                "UInt32",
-            "huespedes_extranjeros":                               "UInt32",
-            "visitantes_nacionales_museos_arqueologia":            "UInt32",
-            "visitantes_extranjeros_museos_arqueologia":           "UInt32"
+
+            "huespedes_nacionales":                                "Float32",
+            "huespedes_extranjeros":                               "Float32",
+            "visitantes_nacionales_museos_arqueologia":            "Float32",
+            "visitantes_extranjeros_museos_arqueologia":           "Float32"
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "inei_population_y_n_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list = ["inmigrantes", "emigrantes", "nbi_1_o_mas_perc_pob", "mbpa_1_o_mas_members_perc_hog", "mbpa_1_o_mas_members_perc_hog_pob", "n_medicos_colegiados", "n_habitantes_por_medico", "n_enfermeras_os_colegiados", "n_habitantes_por_enfermera_os", "desnutricion_5yrs_perc", "estudios_prom_15yrs", "superficie_agricola_hect", "superficie_no_agricola_hect", "sup_agr_cultivos_hect", "sup_agr_en_barbencho_hect", "sup_agr_no_trabajadas_hect", "sup_agr_en_descanso_hect", "sup_bosque_humedo_amazonico_hect", "hogares_tecn_informacion_perc", "hogares_television_perc", "hogares_cable_perc", "hogares_telefono_fijo_perc", "hogares_telefono_movil_perc", "hogares_computadora_perc", "hogares_internet_perc", "n_faltas_registradas", "n_comision_delitos", "n_personas_detenidas_delitos", "n_bandas_delictuales_desarticuladas", "n_victimas_femicidios", "n_denuncias_violencia_familiar_fisica", "n_denuncias_violencia_familiar_sicolo", "n_denuncias_robo_vehiculos", "enfer_diarreicas_5yrs", "huespedes_nacionales", "huespedes_extranjeros", "visitantes_nacionales_museos_arqueologia", "visitantes_extranjeros_museos_arqueologia"]
-        )
+        agg_step = AggregatorStep("inei_population_y_n_dep", measures=["nacimientos", "defunciones", "inmigrantes", "emigrantes", "peao_afiliada_pensiones", "nbi_1_o_mas_perc_pob", "mbpa_1_o_mas_members_perc_hog", "mbpa_1_o_mas_members_perc_hog_pob", "n_medicos_colegiados", "n_habitantes_por_medico", "n_enfermeras_os_colegiados", "n_habitantes_por_enfermera_os", "desnutricion_5yrs_perc", "enfermedades_ra_5yrs_perc", "enfer_diarreicas_5yrs", "estudios_prom_15yrs", "superficie_agricola_hect", "superficie_no_agricola_hect", "sup_agr_cultivos_hect", "sup_agr_en_barbencho_hect", "sup_agr_no_trabajadas_hect", "sup_agr_en_descanso_hect", "sup_bosque_humedo_amazonico_hect", "hogares_tecn_informacion_perc", "hogares_television_perc", "hogares_cable_perc", "hogares_telefono_fijo_perc", "hogares_telefono_movil_perc", "hogares_computadora_perc", "hogares_internet_perc", "n_faltas_registradas", "n_comision_delitos", "n_personas_detenidas_delitos", "n_bandas_delictuales_desarticuladas", "n_victimas_femicidios", "n_denuncias_violencia_familiar_fisica", "n_denuncias_violencia_familiar_sicolo", "n_denuncias_robo_vehiculos", "huespedes_nacionales", "huespedes_extranjeros", "visitantes_nacionales_museos_arqueologia", "visitantes_extranjeros_museos_arqueologia"])
+        load_step = LoadStep("inei_population_y_n_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+                    nullable_list = ["inmigrantes", "emigrantes", "nbi_1_o_mas_perc_pob", "mbpa_1_o_mas_members_perc_hog", "mbpa_1_o_mas_members_perc_hog_pob",
+                    "n_medicos_colegiados", "n_habitantes_por_medico", "n_enfermeras_os_colegiados", "n_habitantes_por_enfermera_os", "desnutricion_5yrs_perc",
+                    "estudios_prom_15yrs", "superficie_agricola_hect", "superficie_no_agricola_hect", "sup_agr_cultivos_hect", "sup_agr_en_barbencho_hect",
+                    "sup_agr_no_trabajadas_hect", "sup_agr_en_descanso_hect", "sup_bosque_humedo_amazonico_hect", "hogares_tecn_informacion_perc", "hogares_television_perc",
+                    "hogares_cable_perc", "hogares_telefono_fijo_perc", "hogares_telefono_movil_perc", "hogares_computadora_perc", "hogares_internet_perc",
+                    "n_faltas_registradas", "n_comision_delitos", "n_personas_detenidas_delitos", "n_bandas_delictuales_desarticuladas", "n_victimas_femicidios",
+                    "n_denuncias_violencia_familiar_fisica", "n_denuncias_violencia_familiar_sicolo", "n_denuncias_robo_vehiculos", "enfer_diarreicas_5yrs",
+                    "huespedes_nacionales", "huespedes_extranjeros", "visitantes_nacionales_museos_arqueologia", "visitantes_extranjeros_museos_arqueologia"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = inei_population_y_n_dep()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = inei_population_y_n_dep()
-    pp.run({})
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })

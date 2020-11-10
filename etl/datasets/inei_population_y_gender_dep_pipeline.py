@@ -1,58 +1,14 @@
-import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
-from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
-path = grab_parent_dir("../../") + "/datasets/20200318"
+from os import path
 
-depto_dict = {
-    "Amazonas": 1,
-    "Áncash": 2,
-    "Apurímac": 3,
-    "Arequipa": 4,
-    "Ayacucho": 5,
-    "Cajamarca": 6,
-    "Prov. Const.Callao": 7,
-    "Prov. Const. del Callao": 7,
-    "Callao": 7,
-    "Cusco": 8,
-    "Huancavelica": 9,
-    "Huánuco": 10,
-    "Ica": 11,
-    "Junín": 12,
-    "La Libertad": 13,
-    "Lambayeque": 14,
-    "Lima": 15,
-    "Loreto": 16,
-    "Madre de Dios": 17,
-    "Moquegua": 18,
-    "Pasco": 19,
-    "Piura": 20,
-    "Puno": 21,
-    "San Martín": 22,
-    "Tacna": 23,
-    "Tumbes": 24,
-    "Ucayali": 25
-}
-years = [
-    {0: 2000, 1: 2001, 2: 2002},
-    {0: 2003, 1: 2004, 2: 2005},
-    {0: 2006, 1: 2007, 2: 2008},
-    {0: 2009, 1: 2010, 2: 2011},
-    {0: 2012, 1: 2013, 2: 2014},
-    {0: 2015, 1: 2016, 2: 2017}
-]
-sheets = [
-    "2000-2002",
-    "2003-2005",
-    "2006-2008",
-    "2009-2011",
-    "2012-2014",
-    "2015-2017"
-]
+import pandas as pd
+from bamboo_lib.connectors.models import Connector
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
+
+depto_dict = {"Amazonas": 1, "Áncash": 2, "Apurímac": 3, "Arequipa": 4, "Ayacucho": 5, "Cajamarca": 6, "Prov. Const.Callao": 7, "Prov. Const. del Callao": 7, "Callao": 7, "Cusco": 8, "Huancavelica": 9, "Huánuco": 10, "Ica": 11, "Junín": 12, "La Libertad": 13, "Lambayeque": 14, "Lima": 15, "Loreto": 16, "Madre de Dios": 17, "Moquegua": 18, "Pasco": 19, "Piura": 20, "Puno": 21, "San Martín": 22, "Tacna": 23, "Tumbes": 24, "Ucayali": 25}
+years = [{0: 2000, 1: 2001, 2: 2002}, {0: 2003, 1: 2004, 2: 2005}, {0: 2006, 1: 2007, 2: 2008}, {0: 2009, 1: 2010, 2: 2011}, {0: 2012, 1: 2013, 2: 2014}, {0: 2015, 1: 2016, 2: 2017}]
+sheets = ["2000-2002", "2003-2005", "2006-2008", "2009-2011", "2012-2014", "2015-2017"]
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -60,7 +16,7 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame(columns = ["Unnamed: 0", "Hombre", "Mujer", "year"])
 
         # First reading step
-        xls = pd.ExcelFile(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.12.xls"))
+        xls = pd.ExcelFile(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.12.xls"))
 
         # For each sheet, adding year columns and corrections to dataframe
         for i in list(range(0,6)):
@@ -82,13 +38,13 @@ class TransformStep(PipelineStep):
         df["ubigeo"] = df["ubigeo"].str.slice(0,2)
 
         # Second reading step
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
-        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
-        df4 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df5 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df6 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df7 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df8 = pd.read_excel(io = "{}/{}/{}".format(path, "C. Empleo", "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df3 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df4 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df5 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df6 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df7 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df8 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:41]
 
         for item in [df2, df3, df4, df5, df6 ,df7, df8]:
             item.rename(columns = {"Ámbito geográfico": "ubigeo"}, inplace = True)
@@ -143,7 +99,7 @@ class inei_population_y_gender_dep_Pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                                 "String",
@@ -160,14 +116,21 @@ class inei_population_y_gender_dep_Pipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "inei_population_y_gender_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["pea_total_masculina", "pea_total_femenina", "pea_ocupada_masculina", "pea_ocupada_femenina", "ingreso_promedio_mensual_soles_nom",
-                            "ingreso_promedio_m_mensual_soles_nom", "ingreso_promedio_f_mensual_soles_nom"]
-        )
+        agg_step = AggregatorStep("inei_population_y_gender_dep", measures=["poblacion_masculina", "poblacion_femenina", "pea_total_masculina", "pea_total_femenina", "pea_ocupada_masculina", "pea_ocupada_femenina", "ingreso_promedio_mensual_soles_nom", "ingreso_promedio_m_mensual_soles_nom", "ingreso_promedio_f_mensual_soles_nom"])
+        load_step = LoadStep("inei_population_y_gender_dep", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+                    nullable_list=["pea_total_masculina", "pea_total_femenina", "pea_ocupada_masculina", "pea_ocupada_femenina",
+                    "ingreso_promedio_mensual_soles_nom", "ingreso_promedio_m_mensual_soles_nom", "ingreso_promedio_f_mensual_soles_nom"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = inei_population_y_gender_dep_Pipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = inei_population_y_gender_dep_Pipeline()
-    pp.run({})
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })

@@ -1,10 +1,12 @@
 
-import os
 import glob
+import os
 import shutil
+
 import pandas as pd
-from helpers import get_dimension, process_exceptions
-from static import FOLDER, DATA_FOLDER, DIMENSIONS, BASE
+
+from .helpers import get_dimension, process_exceptions
+from .static import BASE, DATA_FOLDER, DIMENSIONS, FOLDER
 
 # delete dims folder
 shutil.rmtree(FOLDER, ignore_errors=True)

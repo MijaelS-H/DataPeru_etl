@@ -1,19 +1,15 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
-path = grab_parent_dir("../../") + "/datasets/20200318"
+from bamboo_lib.models import EasyPipeline , Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-
         # Loading data
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.27.xls"), skiprows = (0,1,2))[2:171]
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.28.xls"), skiprows = (0,1,2))[2:171]
+        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.27.xls"), skiprows = (0,1,2))[2:171]
+        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.28.xls"), skiprows = (0,1,2))[2:171]
 
         # For each dataframe
         for item in [df1, df2]:
@@ -58,7 +54,7 @@ class inei_population_y_age_nat_travel_Pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                        "String",
@@ -70,12 +66,19 @@ class inei_population_y_age_nat_travel_Pipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "inei_population_y_age_nat_travel", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["poblacion"]
-        )
+        agg_step = AggregatorStep("inei_population_y_age_nat_travel", measures=["poblacion"])
+        load_step = LoadStep("inei_population_y_age_nat_travel", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["poblacion"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = inei_population_y_age_nat_travel_Pipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = inei_population_y_age_nat_travel_Pipeline()
-    pp.run({})
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })

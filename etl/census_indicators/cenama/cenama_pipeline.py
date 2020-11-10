@@ -1,33 +1,39 @@
+from os import path
+
 import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from static import COLUMNS_RENAME, LIST_DICT, DTYPE, LIST_NULL, DICT_GROUPBY
-from indicator import INDICATOR_MARKET, INDICATOR_GEO, INDICATOR_EXCEPTION
+from etl.consistency import AggregatorStep
+
+from .indicator import INDICATOR_EXCEPTION, INDICATOR_GEO, INDICATOR_MARKET
+from .static import COLUMNS_RENAME, DICT_GROUPBY, DTYPE, LIST_DICT, LIST_NULL
+
 
 def convert_string(column):
     new_data = pd.DataFrame()
-    new_data[['number', 'decimal']] = column.str.split(',', expand=True)
-    new_data['decimal'] = new_data['decimal'].fillna('0')
-    new_data['total'] = new_data['number'] + '.' + new_data['decimal']
-    return new_data['total']
+    new_data[["number", "decimal"]] = column.str.split(",", expand=True)
+    new_data["decimal"] = new_data["decimal"].fillna("0")
+    new_data["total"] = new_data["number"] + "." + new_data["decimal"]
+    return new_data["total"]
+
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read modules
         list_name = [
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/03 MÓDULO 1118_ Características del Mercado/Capítulo_IV_NACIONAL.dta',
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/04 MÓDULO 1119_ Infraestructura, Instalaciones, Equipamiento y Otros/Capítulo_V_NACIONAL.sav',
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/05 MÓDULO 1120_ Gestión Administrativa y Financiera/Capítulo_VI_NACIONAL.sav',
-            '../../../datasets/20201001/02. Información Censos (01-10-2020)/03 CENSO NACIONAL DE MERCADOS DE ABASTO/01 MÓDULO 1116_ Localización del Mercado/Capítulo_I_NACIONAL.sav',
-            ]
-        
+            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "03 CENSO NACIONAL DE MERCADOS DE ABASTO", "03 MÓDULO 1118_ Características del Mercado", "Capítulo_IV_NACIONAL.dta"),
+            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "03 CENSO NACIONAL DE MERCADOS DE ABASTO", "04 MÓDULO 1119_ Infraestructura, Instalaciones, Equipamiento y Otros", "Capítulo_V_NACIONAL.sav"),
+            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "03 CENSO NACIONAL DE MERCADOS DE ABASTO", "05 MÓDULO 1120_ Gestión Administrativa y Financiera", "Capítulo_VI_NACIONAL.sav"),
+            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "03 CENSO NACIONAL DE MERCADOS DE ABASTO", "01 MÓDULO 1116_ Localización del Mercado", "Capítulo_I_NACIONAL.sav"),
+        ]
+
         df = [pd.read_spss(x) if x != list_name[0] else pd.read_stata(x) for x in list_name]
 
         for i in range(len(df)):
             df[i].columns = df[i].columns.str.lower()
-        
+
         #choose columns
         df[0] = df[0][['id', 'ccdd', 'ccpp', 'ccdi', 'p30_1', 'p30_2', 'p30_3', 'p30_4','p31_1', 'p31_2', 'p34a','p36_1', 'p36_2', 
                        'p36_3', 'p37', 'p38','p39_1', 'p39_2', 'p39_3', 'p39_4', 'p39_5', 'p39_6', 'p39_7', 'p39_8', 'p40_1', 'p40_2', 
@@ -35,7 +41,7 @@ class TransformStep(PipelineStep):
         
         df[1] = df[1][['id', 'ccdd', 'ccpp', 'ccdi', 'p47_1', 'p47_2', 'p47_3', 'p49_5', 'p49_7', 'p49_8', 'p49b_1', 'p49c_1', 'p49c_2', 
                        'p49_9', 'p49_10', 'p49_13', 'p50', 'p51', 'p54_1', 'p54_2', 'p54_3']]
-        
+
         df[2] = df[2][['id', 'ccdd', 'ccpp', 'ccdi', 'p55_1', 'p55_2', 'p55_3', 'p55_4', 'p56_1e_total', 'p56_2e_total', 'p56_3e_total', 
                        'p56_4e_total', 'p56_5e_total', 'p56_6e_total', 'p56_7e_total', 'p56a_1a', 'p56a_1b', 'p56a_1c', 'p56a_1d', 'p56a_2a', 
                        'p56a_2b', 'p56a_2c', 'p56a_2d', 'p56a_3a', 'p56a_3b', 'p56a_3c', 'p56a_3d', 'p56a_4a', 'p56a_4b', 'p56a_4c', 'p56a_4d', 
@@ -120,21 +126,34 @@ class TransformStep(PipelineStep):
     
         return df_final
 
+
 class CENAMAPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        table_name = "inei_cenama"
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         transform_step = TransformStep()
-    
-        load_step = LoadStep('inei_cenama', db_connector, if_exists='drop', 
+
+        agg_step = AggregatorStep(table_name, measures=[])
+
+        load_step = LoadStep(table_name, db_connector, if_exists='drop', 
                              pk=['district_id', 'province_id', 'department_id',
                                  'nation_id', 'market_id', 'year'], dtype=DTYPE,
                              nullable_list=LIST_NULL)
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+
+def run_pipeline(params: dict):
+    pp = CENAMAPipeline()
+    pp.run(params)
+
 
 if __name__ == "__main__":
-    pp = CENAMAPipeline()
-    pp.run({})
+    import sys
+
+    run_pipeline({
+        "connector": "../../conns.yaml",
+        "datasets": sys.argv[1]
+    })

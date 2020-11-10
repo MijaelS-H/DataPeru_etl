@@ -1,16 +1,23 @@
-import numpy as np
 import os
+
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
 from static import DTYPES, SELECTED_COLUMNS, VARIABLES_DICT, COLUMNS_DICT
 
-path = grab_parent_dir('../../../') + "/datasets/20201001/02. Información Censos (01-10-2020)/01 RENAMU - MUNICIPALIDADES/"
+from .static import DTYPES, SELECTED_COLUMNS, VARIABLES_DICT
+
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
+        path = os.path.join(
+            params["datasets"],
+            "20201001",
+            "02. Información Censos (01-10-2020)",
+            "01 RENAMU - MUNICIPALIDADES",
+        )
 
         # Open all RENAMU files and creates a DataFrame
 
@@ -1131,6 +1138,16 @@ class RENAMUPipeline(EasyPipeline):
 
         return [transform_step, load_step]
 
-if __name__ == "__main__":
+
+def run_pipeline(params: dict):
     pp = RENAMUPipeline()
-    pp.run({})
+    pp.run(params)
+
+
+if __name__ == "__main__":
+    import sys
+
+    run_pipeline({
+        "connector": "../../conns.yaml",
+        "datasets": sys.argv[1]
+    })

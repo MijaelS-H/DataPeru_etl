@@ -1,16 +1,17 @@
+from os import path
 import pandas as pd
+from etl.helpers import clean_tables
 from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
-path = grab_parent_dir("../../") + "/datasets/20200318"
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
+from .itp_indicators_y_act_dept_pipeline_data import datalist
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         data_object = params.get("data")
+
         depto_dict = {
             "Amazonas": 1,
             "Ancash": 2,
@@ -56,11 +57,11 @@ class TransformStep(PipelineStep):
         # Creating inicial empty dataframe
         df = pd.DataFrame(columns=["ubigeo", "year", "act_economica", "valor_agregado_bruto_2007", "valor_agregado_bruto_cte"])
 
-        left = pd.read_excel(io = "{}/{}/{}".format(path, data_object["path"], data_object["filename"]),
+        left = pd.read_excel(io = path.join(params["datasets"], "20200318", data_object["path"], data_object["filename"]),
                         sheet_name = data_object["sheet_name_1"],
                         usecols = data_object["cols"],
                         skiprows = data_object["skiprows_"])[0:27]
-        right = pd.read_excel(io = "{}/{}/{}".format(path, data_object["path"], data_object["filename"]),
+        right = pd.read_excel(io = path.join(params["datasets"], "20200318", data_object["path"], data_object["filename"]),
                         sheet_name = data_object["sheet_name_2"],
                         usecols = data_object["cols"],
                         skiprows = data_object["skiprows_"])[0:27]
@@ -74,7 +75,7 @@ class TransformStep(PipelineStep):
                     var_name = "year", value_name = data_object["var_name_1"])
         df_r = pd.melt(right, id_vars =["ubigeo"], value_vars = data_object["melt_"],
                     var_name = "year", value_name = data_object["var_name_2"])
-        
+
         # Creating key column for merge step
         df_l["code"] = df_l["ubigeo"].astype("str") + df_l["year"].astype("str")
         df_r["code"] = df_r["ubigeo"].astype("str") + df_r["year"].astype("str")
@@ -103,7 +104,7 @@ class itp_ind_year_Pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                                 "String",
@@ -114,9 +115,26 @@ class itp_ind_year_Pipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_y_act_dept", db_connector, if_exists="append", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=[]
-        )
+        agg_step = AggregatorStep("itp_indicators_y_act_dept", measures=["valor_agregado_bruto_2007", "valor_agregado_bruto_cte"])
+        load_step = LoadStep("itp_indicators_y_act_dept", db_connector, if_exists="append", pk=["ubigeo"], dtype=dtype)
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    table="itp_indicators_y_act_dept"
+    try:
+        clean_tables(table)
+    except:
+        print('Table: {} does not exist'.format(table))
+
+    for i in datalist:
+        pp = itp_ind_year_Pipeline()
+        pp.run({'data': i, **params})
+
+if __name__ == "__main__":
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })

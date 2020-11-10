@@ -1,23 +1,20 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
-path = grab_parent_dir("../../") + "/datasets/20200318"
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
         range_ = list(range(0, 4)) + list(range(6,39))
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.3.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.4.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
-        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.5.xlsx"), usecols = "B:T", skiprows = range_, reset_index = True)
-        df4 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.6.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
-        df5 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.7.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
-        df6 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.8.xlsx"), usecols = "A,F", skiprows = range(0,6), reset_index = True)
+        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.3.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
+        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.4.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
+        df3 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.5.xlsx"), usecols = "B:T", skiprows = range_, reset_index = True)
+        df4 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.6.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
+        df5 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.7.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
+        df6 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.8.xlsx"), usecols = "A,F", skiprows = range(0,6), reset_index = True)
 
         # Dropping unused rows from datasets
         df1.drop([0,66,67,68], axis = 0, inplace = True)
@@ -81,7 +78,7 @@ class itp_ind_quarter_n_nat_pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                                                     "String",
@@ -131,13 +128,19 @@ class itp_ind_quarter_n_nat_pipeline(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_q_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["poblacion_anual"]
-        )
+        agg_step = AggregatorStep("itp_indicators_q_n_nat", measures=["producto_bruto_interno_2007", "gasto_consumo_final_privado_2007", "gasto_consumo_gobierno_2007", "formacion_bruta_capital_2007", "formacion_bruta_capital_fijo_2007", "exportaciones_2007", "importaciones_2007", "producto_bruto_interno_nominal", "gasto_consumo_final_privado_nominal", "gasto_consumo_gobierno_nominal", "formacion_bruta_capital_nominal", "formacion_bruta_capital_fijo_nominal", "exportaciones_nominal", "importaciones_nominal", "producto_interno_bruto", "derechos_importacion_otros_impuestos", "valor_agregado_bruto_total", "agricultura_ganaderia_caza_silvicultura", "pesca_acuicultura", "extraccion_petroleo_gas_minerales_servicios_conexos", "manufactura", "construccion", "electricidad_gas_agua", "comercio_mantenimiento_reparacion_vehiculos", "transporte_almacenamiento_correo_mensajeria", "alojamiento_restaurantes", "telecomunicaciones_otros_servicios_informacion", "servicios_financieros_seguros_pensiones", "servicios_prestados_empresas", "administracion_publica_defensa", "otros_servicios", "formacion_bruta_cap_fijo_publico_2007", "formacion_bruta_cap_fijo_privado_2007", "formacion_bruta_cap_fijo_construccion_2007", "formacion_bruta_cap_fijo_maq_nac_2007", "formacion_bruta_cap_fijo_maq_imp_2007", "formacion_bruta_cap_fijo_publico_nom", "formacion_bruta_cap_fijo_privado_nom", "formacion_bruta_cap_fijo_construccion_nom", "formacion_bruta_cap_fijo_maq_nac_nom", "formacion_bruta_cap_fijo_maq_imp_nom", "poblacion_anual"])
+        load_step = LoadStep("itp_indicators_q_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["poblacion_anual"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = itp_ind_quarter_n_nat_pipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = itp_ind_quarter_n_nat_pipeline()
-    pp.run({})
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })

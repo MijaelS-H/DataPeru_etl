@@ -1,12 +1,10 @@
+from os import path
+
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
-path = grab_parent_dir("../../") + "/datasets/20200318"
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
 
 continents_ = ["América del Norte", "América del Centro", "América del Sur", "Europa", "Asia", "África", "Oceanía", "Otros"]
 pivotes_ = [[1,2], [5,6], [9,10], [13,14], [17,18], [21,22], [25,26], [29,30]]
@@ -18,8 +16,8 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame(columns = ["year", "continente", "inmigration_flow", "hombre", "mujer"])
 
         # Loading data
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.25.xls"), skiprows = (0,1,3,4,5))[0:31]
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "B. Población y Vivienda", "B.26.xls"), skiprows = (0,1,3,4,5))[0:31]
+        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda","B.25.xls"), skiprows = (0,1,3,4,5))[0:31]
+        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda","B.26.xls"), skiprows = (0,1,3,4,5))[0:31]
 
         # Transpose dataframes and deleting NaN columns
         df_1 = df1.T
@@ -64,7 +62,7 @@ class inei_population_y_gender_nat_travel_Pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                        "String",
@@ -76,13 +74,19 @@ class inei_population_y_gender_nat_travel_Pipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "inei_population_y_gender_nat_travel", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-        )
+        agg_step = AggregatorStep("inei_population_y_gender_nat_travel", measures=["poblacion"])
+        load_step = LoadStep("inei_population_y_gender_nat_travel", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype)
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
+def run_pipeline(params: dict):
+    pp = inei_population_y_gender_nat_travel_Pipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = inei_population_y_gender_nat_travel_Pipeline()
-    pp.run({})
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })

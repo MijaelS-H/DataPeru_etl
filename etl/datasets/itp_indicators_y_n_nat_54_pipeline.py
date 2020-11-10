@@ -1,19 +1,16 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
-path = grab_parent_dir("../../") + "/datasets/20200318"
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
         years_ = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018]
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.14.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.21.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
+        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.14.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
+        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.21.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
 
         # For cycle to repeated step for the 2 datasets
         for item in [df1, df2]: 
@@ -57,7 +54,7 @@ class itp_indicators_y_n_nat_54(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                                    "String",
@@ -68,12 +65,19 @@ class itp_indicators_y_n_nat_54(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_y_n_nat_54", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-        )
+        agg_step = AggregatorStep("itp_indicators_y_n_nat_54", measures=["pib_54_2007", "pib_54_cte"])
+        load_step = LoadStep("itp_indicators_y_n_nat_54", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype)
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = itp_indicators_y_n_nat_54()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = itp_indicators_y_n_nat_54()
-    pp.run({})
+    import sys
+
+    run_pipeline({
+        "connector": params["connector"],
+        "datasets": sys.argv[1]
+    })
