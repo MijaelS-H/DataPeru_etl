@@ -75,7 +75,7 @@ class TransformStep(PipelineStep):
                     var_name = "year", value_name = data_object["var_name_1"])
         df_r = pd.melt(right, id_vars =["ubigeo"], value_vars = data_object["melt_"],
                     var_name = "year", value_name = data_object["var_name_2"])
-        
+
         # Creating key column for merge step
         df_l["code"] = df_l["ubigeo"].astype("str") + df_l["year"].astype("str")
         df_r["code"] = df_r["ubigeo"].astype("str") + df_r["year"].astype("str")
@@ -124,7 +124,6 @@ def run_pipeline(params: dict):
     table="itp_indicators_y_act_dept"
     try:
         clean_tables(table)
-        print('Table droped'.format(table))
     except:
         print('Table: {} does not exist'.format(table))
 
@@ -139,6 +138,3 @@ if __name__ == "__main__":
         "connector": params["connector"],
         "datasets": sys.argv[1]
     })
-
-
-

@@ -9,6 +9,7 @@ from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
+from etl.consistency import AggregatorStep
 
 CARPETAS_DICT = {
     1: "01 INFORMACIÓN INSTITUCIONAL",
@@ -59,13 +60,13 @@ class CiteContribuyentePipeline(EasyPipeline):
             'empresas':               'Float32',
          }
 
-        transform_step = TransformStep()  
-        load_step = LoadStep(
-          'itp_cite_empresas_contribuyente', connector=db_connector, if_exists='drop',
-          pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
+        transform_step = TransformStep()
+        agg_step = AggregatorStep('itp_cite_empresas_contribuyente', measures=['empresas'])
+        load_step = LoadStep('itp_cite_empresas_contribuyente', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes,
+                            nullable_list=['empresas'])
 
         if params.get("ingest")==True:
-            steps = [transform_step, load_step]
+            steps = [transform_step, agg_step, load_step]
         else:
             steps = [transform_step]
 
