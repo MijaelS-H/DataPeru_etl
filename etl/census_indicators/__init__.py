@@ -9,14 +9,15 @@ from .renamu_populated_centers import \
 def run_pipeline(params: dict):
     run_pipeline_cenama(params)
     run_pipeline_concytec(params)
-    # run_pipeline_renamu_municipalities(params)
+    run_pipeline_renamu_municipalities(params)
     run_pipeline_renamu_populated_centers(params)
 
 
 if __name__ == "__main__":
     import sys
-
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
-        "connector": "../conns.yaml", 
+        "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })

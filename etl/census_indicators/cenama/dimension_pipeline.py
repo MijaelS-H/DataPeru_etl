@@ -5,7 +5,6 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from etl.consistency import AggregatorStep
 
 
 class TransformStep(PipelineStep):
@@ -38,13 +37,11 @@ class MarketPipeline(EasyPipeline):
 
         transform_step = TransformStep()
 
-        agg_step = AggregatorStep(table_name, measures=[])
-
         load_step = LoadStep(table_name, db_connector, if_exists='drop', 
                              pk=['market_id'], dtype=dtype,
                              nullable_list=[])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 
 def run_pipeline(params: dict):
@@ -54,8 +51,9 @@ def run_pipeline(params: dict):
 
 if __name__ == "__main__":
     import sys
-    
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
-        "connector": "../../conns.yaml",
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
