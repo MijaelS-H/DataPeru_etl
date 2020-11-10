@@ -108,7 +108,17 @@ class CONCYTECPipeline(EasyPipeline):
 
         transform_step = TransformStep()
 
-        agg_step = AggregatorStep(table_name, measures=[])
+        agg_step = AggregatorStep(table_name, measures=[
+            'CONCYTEC_1', 'CONCYTEC_2', 'CONCYTEC_3', 'CONCYTEC_4', 'CONCYTEC_5', 'CONCYTEC_6', 'CONCYTEC_7', 'CONCYTEC_8', 'CONCYTEC_9', 'CONCYTEC_10', 
+            'CONCYTEC_11', 'CONCYTEC_12', 'CONCYTEC_13', 'CONCYTEC_14', 'CONCYTEC_15', 'CONCYTEC_16', 'CONCYTEC_17', 'CONCYTEC_18', 'CONCYTEC_19', 'CONCYTEC_20', 
+            'CONCYTEC_21', 'CONCYTEC_22', 'CONCYTEC_23', 'CONCYTEC_24', 'CONCYTEC_25', 'CONCYTEC_26', 'CONCYTEC_27', 'CONCYTEC_28', 'CONCYTEC_29', 'CONCYTEC_30', 
+            'CONCYTEC_31', 'CONCYTEC_32', 'CONCYTEC_33', 'CONCYTEC_34', 'CONCYTEC_35', 'CONCYTEC_36', 'CONCYTEC_37', 'CONCYTEC_38', 'CONCYTEC_39', 'CONCYTEC_40', 
+            'CONCYTEC_41', 'CONCYTEC_42', 'CONCYTEC_43', 'CONCYTEC_44', 'CONCYTEC_45', 'CONCYTEC_46', 'CONCYTEC_47', 'CONCYTEC_48', 'CONCYTEC_49', 'CONCYTEC_50', 
+            'CONCYTEC_51', 'CONCYTEC_52', 'CONCYTEC_53', 'CONCYTEC_54', 'CONCYTEC_55', 'CONCYTEC_56', 'CONCYTEC_57', 'CONCYTEC_58', 'CONCYTEC_59', 'CONCYTEC_60', 
+            'CONCYTEC_61', 'CONCYTEC_62', 'CONCYTEC_63', 'CONCYTEC_64', 'CONCYTEC_65', 'CONCYTEC_66', 'CONCYTEC_67', 'CONCYTEC_68', 'CONCYTEC_69', 'CONCYTEC_70', 
+            'CONCYTEC_71', 'CONCYTEC_72', 'CONCYTEC_73', 'CONCYTEC_74', 'CONCYTEC_75', 'CONCYTEC_76', 'CONCYTEC_77', 'CONCYTEC_78', 'CONCYTEC_79', 'CONCYTEC_80', 
+            'CONCYTEC_81', 'CONCYTEC_82'
+        ])
 
         load_step = LoadStep(table_name, db_connector, if_exists='drop', 
                              pk=['district_id', 'province_id', 'department_id',
@@ -125,8 +135,9 @@ def run_pipeline(params: dict):
 
 if __name__ == "__main__":
     import sys
-    
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
-        "connector": "../../conns.yaml", 
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
