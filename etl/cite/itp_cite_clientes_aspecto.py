@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from os import path
 import os
+from os import path
 from functools import reduce
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
@@ -65,8 +65,11 @@ def run_pipeline(params: dict):
 
 if __name__ == "__main__":
     import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
 
     run_pipeline({
-        "connector": params["connector"],
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
