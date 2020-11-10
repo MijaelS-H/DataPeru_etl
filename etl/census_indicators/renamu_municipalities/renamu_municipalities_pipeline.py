@@ -1,5 +1,4 @@
 import os
-
 import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
@@ -1110,7 +1109,7 @@ class RENAMUPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         transform_step = TransformStep()
 
@@ -1172,6 +1171,6 @@ if __name__ == "__main__":
     from os import path
     __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
-        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
