@@ -4,7 +4,7 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
 from etl.survey_indicators.enaho.enaho_pipeline import TransformStep
-from shared import ReplaceStep
+from .shared import ReplaceStep
 
 
 class ProcessingStep(PipelineStep):
@@ -31,7 +31,7 @@ class ProcessingStep(PipelineStep):
             df.dropna(inplace=True)
             return df
 
-class DimsPipeline(EasyPipeline):
+class DimENAHOPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return[
@@ -42,7 +42,7 @@ class DimsPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dtype = {
             params.get('pk'): 'UInt8'
@@ -56,11 +56,31 @@ class DimsPipeline(EasyPipeline):
 
         return [transform_step, replace_step, processing_step, load_step]
 
+def run_pipeline(params: dict):
+
+    pp = DimENAHOPipeline()
+
+    levels = {
+        'category_id':  'dim_category_ene',
+        'indicator_id': 'dim_indicator_ene',
+        'region_id': 'dim_region_ene', 
+        'geo_id': 'dim_geo_ene'}
+
+    for k, v in levels.items():
+
+        pp_params = {
+            'pk': k,
+            'table_name': v}
+
+        pp_params.update(params)
+        pp.run(pp_params)
+
+
 if __name__ == "__main__":
-    pp = DimIndustryPipeline()
-    for k, v in {'category_id':  'dim_category_ene',
-                 'indicator_id': 'dim_indicator_ene',
-                 'region_id': 'dim_region_ene', 
-                 'geo_id': 'dim_geo_ene'}.items():
-        pp.run({'pk': k,
-                'table_name': v})
+    import sys
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })
