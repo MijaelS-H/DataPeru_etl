@@ -1,6 +1,6 @@
 
 from bamboo_lib.models import PipelineStep
-from static import INDUSTRY_REPLACE
+from .static import INDUSTRY_REPLACE
 
 class ReplaceStep(PipelineStep):
     def run_step(self, prev, params):

@@ -3,8 +3,8 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
-from ene_pipeline import TransformStep
-from shared import ReplaceStep
+from etl.survey_indicators.ene.ene_pipeline import TransformStep
+from .shared import ReplaceStep
 
 
 class ProcessingStep(PipelineStep):
@@ -20,7 +20,7 @@ class ProcessingStep(PipelineStep):
             df.columns = ['indicator_name', 'indicator_id']
             return df
 
-class DimIndustryPipeline(EasyPipeline):
+class DimENEPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return[
@@ -31,7 +31,7 @@ class DimIndustryPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dtype = {
             params.get('pk'): 'UInt8'
@@ -45,9 +45,28 @@ class DimIndustryPipeline(EasyPipeline):
 
         return [transform_step, replace_step, processing_step, load_step]
 
+def run_pipeline(params: dict):
+
+    pp = DimENEPipeline()
+
+    levels = {
+        'category_id':  'dim_category_ene',
+        'indicator_id': 'dim_indicator_ene'}
+
+    for k, v in levels.items():
+
+        pp_params = {'pk': k, 'table_name': v}
+        pp_params.update(params)
+        pp.run(pp_params)
+
+
+
 if __name__ == "__main__":
-    pp = DimIndustryPipeline()
-    for k, v in {'category_id':  'dim_category_ene',
-                 'indicator_id': 'dim_indicator_ene'}.items():
-        pp.run({'pk': k,
-                'table_name': v})
+    import sys
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })
+
