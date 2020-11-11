@@ -62,7 +62,7 @@ class FormatStep(PipelineStep):
        'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id', 'cantidad_miembros']].astype(float).fillna(0)
 
         df['inscrita_sunarp_id'] = df['inscrita_sunarp_id'].astype(int).replace({0: 2})
-        df['anio_fundacion'] = df['anio_fundacion'].astype(float).astype(pd.Int32Dtype())
+        df['anio_fundacion'] = df['anio_fundacion'].astype(float).fillna(0)
 
         df[[
         'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
@@ -71,8 +71,6 @@ class FormatStep(PipelineStep):
         'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
         'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id',
         'cantidad_asociacion', 'cantidad_miembros']].astype(int)
-
-        print(df.manifestacion_n_3_id.unique())
 
         return df
 
