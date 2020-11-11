@@ -26,11 +26,9 @@ class TransformStep(PipelineStep):
 
             for j in range(1, file_count + 1 ):
                 file_dir = path.join(params["datasets"], "20201001", "01. Información ITP red CITE  (01-10-2020)", "01 INFORMACIÓN INSTITUCIONAL","TABLA_01_N0{}.csv".format(j))
-                print(file_dir)
                 df[k] = pd.read_csv(file_dir)
                 k = k + 1
 
-        print(df[3].columns)
         df_list = [df[i] for i in range(1, file_count + 1)]
         df = reduce(lambda df1,df2: pd.merge(df1,df2,on=['cite'],how='outer'), df_list)
 
