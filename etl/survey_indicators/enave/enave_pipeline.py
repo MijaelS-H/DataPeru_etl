@@ -1,16 +1,19 @@
 import re
+import os
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
 from etl.survey_indicators.helpers import join_files
-from static import COLUMNS_RENAME
-from shared import ReplaceStep
+from .static import COLUMNS_RENAME
+from .shared import ReplaceStep
+
+from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        data = pd.ExcelFile('../../../datasets/20201007/03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))/04  Encuesta Nacional de Victimización a Empresas (ENAVE) (07-10-2020)/071020 Indicadores_ENAVE.xlsx')
+        data = pd.ExcelFile(os.path.join(params['datasets'], '20201007', '03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))', '04  Encuesta Nacional de Victimización a Empresas (ENAVE) (07-10-2020)', '071020 Indicadores_ENAVE.xlsx'))
 
         nation = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
         department = [x for x in data.sheet_names if re.findall('IND_.*_B', x) != []]
@@ -47,7 +50,7 @@ class ENAVEPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dtype = {
             'nation_id':        'String',
@@ -65,13 +68,25 @@ class ENAVEPipeline(EasyPipeline):
         transform_step = TransformStep()
         replace_step = ReplaceStep()
         format_step = FormatStep()
+
+        agg_step = AggregatorStep('inei_enave', measures=['estimate', 'coef_var', 'popul_size'])
+
         load_step = LoadStep('inei_enave', db_connector, if_exists='drop', 
                              pk=['nation_id', 'department_id', 'industry_id', 'size_id', 'year'], dtype=dtype,
                              nullable_list=['coef_var'])
 
-        return [transform_step, replace_step, format_step, load_step]
+        return [transform_step, replace_step, format_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = ENAVEPipeline()
+    pp.run(params)
+
 
 if __name__ == "__main__":
-    pp = ENAVEPipeline()
-    pp.run({})
-        
+    import sys
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })
