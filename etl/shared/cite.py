@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
+from os import path
 from functools import reduce
 from unidecode import unidecode
 from bamboo_lib.connectors.models import Connector
@@ -20,14 +21,16 @@ class TransformStep(PipelineStep):
         k = 1
         df = {}
         for i in range(1,1 +1):
-            path, dirs, files = next(os.walk("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/01 INFORMACIÓN INSTITUCIONAL/"))
+            _a,_b,files = next(os.walk(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "01 INFORMACIÓN INSTITUCIONAL")))
             file_count = len(files)
 
             for j in range(1, file_count + 1 ):
-                file_dir = "../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/01 INFORMACIÓN INSTITUCIONAL/TABLA_0{}_N0{}.csv".format(i,j)
+                file_dir = path.join(params["datasets"], "20201001", "01. Información ITP red CITE  (01-10-2020)", "01 INFORMACIÓN INSTITUCIONAL","TABLA_01_N0{}.csv".format(j))
+                print(file_dir)
                 df[k] = pd.read_csv(file_dir)
                 k = k + 1
 
+        print(df[3].columns)
         df_list = [df[i] for i in range(1, file_count + 1)]
         df = reduce(lambda df1,df2: pd.merge(df1,df2,on=['cite'],how='outer'), df_list)
 
