@@ -16,7 +16,7 @@ class ProcessingStep(PipelineStep):
 
         return df
 
-class DimIndustryPipeline(EasyPipeline):
+class DimEEAPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return[
@@ -43,7 +43,7 @@ class DimIndustryPipeline(EasyPipeline):
 
 def run_pipeline(params: dict):
 
-    pp = DimIndustryPipeline()
+    pp = DimEEAPipeline()
 
     levels = {'indicator_id': 'dim_indicator_eea'}
 
