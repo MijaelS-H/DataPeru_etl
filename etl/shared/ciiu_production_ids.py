@@ -18,6 +18,12 @@ class TransformStep(PipelineStep):
 
         df = df.drop_duplicates()
 
+        print(df.columns)
+
+        df = df.rename(columns={
+            "descibr ": "division_id"
+        })
+
         return df
 
 class CIIU_Production_Pipeline(EasyPipeline):
