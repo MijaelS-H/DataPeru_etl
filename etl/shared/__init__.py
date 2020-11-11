@@ -8,7 +8,7 @@ from .ciiu_production_ids import run_pipeline as run_pipeline_ciiu_prod_ids
 from .ciiu_rev3 import run_pipeline as run_pipeline_ciiu_rev
 from .ciiu_section import run_pipeline as run_pipeline_ciiu_section
 from .ciiu import run_pipeline as run_pipeline_ciiu
-# from .cite import run_pipeline as run_pipeline_cite
+from .cite import run_pipeline as run_pipeline_cite
 
 from .contribuyente_cite import run_pipeline as run_pipeline_contribuyente_cite
 from .countries import run_pipeline as run_pipeline_countries
@@ -40,7 +40,7 @@ def run_pipeline(params: dict):
     run_pipeline_ciiu_rev(params)
     run_pipeline_ciiu_section(params)
     run_pipeline_ciiu(params)
-    # run_pipeline_cite(params)
+    run_pipeline_cite(params)
 
     run_pipeline_contribuyente_cite(params)
     run_pipeline_countries(params)
