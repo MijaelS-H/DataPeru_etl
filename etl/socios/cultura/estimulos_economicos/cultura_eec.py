@@ -1,20 +1,21 @@
 import re
 import pandas as pd
+from os import path
 from bamboo_lib.helpers import query_to_df
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from shared import ReplaceStep
+from .shared import ReplaceStep
+from etl.consistency import AggregatorStep
 
 COUNTRY_DICT = {
     "Eeuu": "Estados Unidos"
 }
 
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        
-        data = pd.ExcelFile("../../../../datasets/20201018/05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)/01. Información Dirección de Industrias Culturales (18-10-2020)/03.  EEC_2019_DATAPERU.xlsx")
+
+        data = pd.ExcelFile(path.join(params["datasets"],"20201018", "05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)", "01. Información Dirección de Industrias Culturales (18-10-2020)", "03.  EEC_2019_DATAPERU.xlsx"))
         sheet = data.sheet_names[1]
         df = pd.read_excel(data, data.sheet_names[1])
 
@@ -23,10 +24,10 @@ class TransformStep(PipelineStep):
        'Tipo de Postulante', 'Postulante',
        'País',
        'Distrito', 'Estado revisado']]
-     
+
         df = df.rename(columns={'EEC' : 'estimulo_economico_id', 'Fase de cadena de valor_E' : "fase_cadena_valor_id", "Nombre del proyecto" : "nombre_proyecto_id", 
         "Tipo de Postulante" :  "tipo_postulante_id","Postulante" : "postulante_id","Distrito" : "district_id", 'Estado revisado' :  "estado_id", "País": "pais_procedencia"})
-        
+
         df['pais_procedencia'] = df['pais_procedencia'].str.title()
 
         df['pais_procedencia'] = df['pais_procedencia'].replace(COUNTRY_DICT)
@@ -80,7 +81,7 @@ class EECPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             'estimulo_economico_id':                'UInt16',
@@ -97,12 +98,23 @@ class EECPipeline(EasyPipeline):
         transform_step = TransformStep()
         replace_step = ReplaceStep(connector=db_connector)
         format_step = FormatStep()
+        agg_step = AggregatorStep('cultura_eec', measures=["cantidad_postulante"])
         load_step = LoadStep('cultura_eec', db_connector, if_exists='drop', 
                              pk=['estimulo_economico_id', 'fase_cadena_valor_id', 'nombre_proyecto_id'], dtype=dtype)
 
-        return [transform_step, replace_step, format_step, load_step]
+        return [transform_step, replace_step, format_step, agg_step, load_step]
 
+def run_pipeline(params: dict):
+    pp = EECPipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = EECPipeline()
-    pp.run({})
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

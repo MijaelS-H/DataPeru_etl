@@ -2,8 +2,8 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
-from cultura_eec import TransformStep
-from shared import ReplaceStep
+from .cultura_eec import TransformStep
+from .shared import ReplaceStep
 
 
 class ProcessingStep(PipelineStep):
@@ -47,11 +47,11 @@ class DimEECPipeline(EasyPipeline):
             dtype = {
                 params.get('pk'): 'UInt16'
             }
-        else: 
+        else:
             dtype = {
                 params.get('pk'): 'UInt16'
             }
-       
+
         transform_step = TransformStep()
         replace_step = ReplaceStep(connector=db_connector)
         processing_step = ProcessingStep()
@@ -60,11 +60,25 @@ class DimEECPipeline(EasyPipeline):
 
         return [transform_step, replace_step, processing_step, load_step]
 
-if __name__ == "__main__":
+
+def run_pipeline(params: dict):
     pp = DimEECPipeline()
-    for k, v in {'estimulo_economico_id': 'dim_eec_estimulo_economico',
+    levels = {'estimulo_economico_id': 'dim_eec_estimulo_economico',
                 'nombre_proyecto_id': 'dim_eec_nombre_proyecto',
-                'postulante_id': 'dim_eec_postulante'
-                 }.items():
-        pp.run({'pk': k,
-                'table_name': v})
+                'postulante_id': 'dim_eec_postulante'}
+
+    for k, v in levels.items():
+        pp_params = {'pk': k, 'table_name': v}
+        pp_params.update(params)
+        pp.run(pp_params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })
