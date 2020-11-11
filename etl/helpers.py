@@ -17,6 +17,6 @@ def clean_tables(table):
     db_connector = Connector.fetch('clickhouse-database', open(conns_path))
     query = 'DROP TABLE {}'.format(table)
     query_to_df(db_connector, raw_query=query)
-    print('Success! {}'.format(table))
+    print('Table {} dropped!'.format(table))
 
     return 0

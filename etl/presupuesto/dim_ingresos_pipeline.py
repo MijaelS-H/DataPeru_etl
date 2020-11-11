@@ -1,10 +1,9 @@
 import glob
-
+import os
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import LoadStep
-from etl.consistency import AggregatorStep
 
 from .static import DATA_FOLDER
 
@@ -14,7 +13,7 @@ class TransformStep(PipelineStep):
         dimension = params["dimension"]
         dimension_nombre = '{}_nombre'.format(dimension)
         
-        filelist = glob.glob('{}/ING_*.csv'.format(DATA_FOLDER))
+        filelist = glob.glob(os.path.join('{}'.format(DATA_FOLDER), 'ING_*.csv'))
 
         df = pd.DataFrame()
         for filename in filelist:
@@ -52,13 +51,12 @@ class DimensionsPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         transform_step = TransformStep()
-        agg_step = AggregatorStep(table_name, measures=["pia", "pim", "monto_recaudado"])
         load_step = LoadStep(table_name, db_connector, 
                              if_exists='drop', 
                              pk=[dimension],
                              dtype={dimension: params["dim_type"]})
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 
 def run_pipeline(params: dict):
@@ -78,8 +76,9 @@ def run_pipeline(params: dict):
 
 if __name__ == "__main__":
     import sys
-
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
-        "connector": "../conns.yaml",
+        "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })

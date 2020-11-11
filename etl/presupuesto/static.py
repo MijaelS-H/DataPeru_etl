@@ -1,7 +1,9 @@
+import os
+
 
 FOLDER = 'dimensions'
 
-DATA_FOLDER = '../../../datasets/download/'
+DATA_FOLDER = os.path.join("..", "datasets", "download")
 
 TIPO_GOBIERNO = {
     'GOBIERNO NACIONAL': 1,
