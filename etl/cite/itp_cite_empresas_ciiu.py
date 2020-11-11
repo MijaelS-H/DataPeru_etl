@@ -50,7 +50,7 @@ class CiteEmpresas2Pipeline(EasyPipeline):
          }
 
         transform_step = TransformStep()
-        agg_step = AggregatorStep('itp_cite_empresas_ciiu', measures=['cantidad_cite'])
+        agg_step = AggregatorStep('itp_cite_empresas_ciiu', measures=['empresas'])
         load_step = LoadStep('itp_cite_empresas_ciiu', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
 
         return [transform_step, agg_step, load_step]
