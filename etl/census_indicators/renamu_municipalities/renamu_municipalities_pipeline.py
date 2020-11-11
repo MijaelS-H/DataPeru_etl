@@ -306,7 +306,7 @@ class TransformStep(PipelineStep):
 
         # Drops departments rows at district level
 
-        df = df[~df['district_id'].isin(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '1,', '|', 'Fuente: Instituto'])]
+        df = df[~df['district_id'].isin(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '1,', '|', 'Fuente: Instituto', 'Fuente: Inst', 'Fuente', 'Fuente: Instituto Nacional de Estadística e Informática - Registro Nacional de Municipalidades 2015.'])]
 
         # Creates aggregated DataFrames for provinces, departments and nation levels
 
