@@ -1,7 +1,7 @@
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.helpers import query_to_df
-from static import INDUSTRY_EXCEPTIONS 
+from .static import INDUSTRY_EXCEPTIONS 
 
 class ReplaceStep(PipelineStep):
     def run_step(self, prev, params):
@@ -17,7 +17,7 @@ class ReplaceStep(PipelineStep):
 
         dim_industry_query = 'SELECT division_id, division_name FROM dim_shared_ciiu'
 
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dim_industry = query_to_df(db_connector, raw_query=dim_industry_query)
         dim_industry.drop_duplicates(subset=['division_id', 'division_name'], inplace=True)
