@@ -14,7 +14,9 @@ class TransformStep(PipelineStep):
         df = pd.read_excel("https://docs.google.com/spreadsheets/d/e/2PACX-1vSbmzp9T0M00_33PROWDT5t4MwHhS-DGFJg1MD8MuFZnGy0ytOxDeWgP-xxDKUX78O5cRIlFfcw2vi9/pub?output=xlsx")
 
         for item in df.columns:
-            df[item] = df[item].astype(str)
+            df[item] = df[item].astype(str).str.strip()
+
+        df = df.drop_duplicates()
 
         return df
 

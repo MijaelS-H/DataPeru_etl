@@ -27,6 +27,9 @@ class TransformStep(PipelineStep):
         df = df_1.append(df_2, sort=False)
         df = df.append(df_3, sort=False)
 
+        df['product_name'] = df['product_name'].str.strip()
+        df['product_name'] = df['product_name'].str.replace("  ", " ")
+
         df["group_id"] = df["group_id"].astype(str)
         df["year"] = df["year"].astype(int)
         df["produccion_industrial_anual"] = df["produccion_industrial_anual"].astype(float)
