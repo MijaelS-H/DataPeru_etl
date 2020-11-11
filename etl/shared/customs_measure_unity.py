@@ -1,5 +1,6 @@
 import pandas as pd
 import nltk
+from os import path
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
@@ -12,7 +13,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Read Customs unities file
-        df = pd.read_csv('../../../datasets/anexos/UnidMedida.txt', sep='\t')
+        df = pd.read_csv(path.join(params["datasets"],"anexos", "UnidMedida.txt"),  sep='\t')
 
         # Rename file columns
         df = df.reset_index()
@@ -45,8 +46,8 @@ class TransformStep(PipelineStep):
 class CustomsMeasuresPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             'measure_unit_id':       'String',
@@ -55,12 +56,21 @@ class CustomsMeasuresPipeline(EasyPipeline):
 
         transform_step = TransformStep()
         load_step = LoadStep('dim_shared_customs_unities', db_connector, if_exists='drop', pk=['measure_unit_id'], 
-            dtype=dtype, engine='ReplacingMergeTree', 
-            nullable_list=[]
-        )
+            dtype=dtype, engine='ReplacingMergeTree')
 
         return [transform_step, load_step]
 
-if __name__ == '__main__':
+def run_pipeline(params: dict):
     pp = CustomsMeasuresPipeline()
-    pp.run({})
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

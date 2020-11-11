@@ -11,18 +11,18 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 
-TIPO_CITE_DICT = {'Centro de Innovación Productiva y Transferencia Tecnológica (CITE)' : 'CITE',
-                  'Unidad Técnica (UT)': 'UT'}
+TIPO_CITE_DICT = {'Centro de Innovación Productiva y Transferencia Tecnológica (CITE)' : 'CITE', 'Unidad Técnica (UT)': 'UT'}
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
+#         df = pd.read_csv(path.join(params["datasets"],"anexos", "ISIC_Rev_4_spanish_structure.txt"), encoding='latin-1')
         k = 1
         df = {}
         for i in range(1,1 +1):
             path, dirs, files = next(os.walk("../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/01 INFORMACIÓN INSTITUCIONAL/"))
             file_count = len(files)
-    
+
             for j in range(1, file_count + 1 ):
                 file_dir = "../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/01 INFORMACIÓN INSTITUCIONAL/TABLA_0{}_N0{}.csv".format(i,j)
                 df[k] = pd.read_csv(file_dir)
@@ -61,16 +61,12 @@ class TransformStep(PipelineStep):
         df['lista_miembros'] = df['lista_miembros'].str.replace('\n•',',')
         df['lista_miembros'] = df['lista_miembros'].str.replace('• ','')
 
-
-        
         df.rename(columns={'ubigeo' : 'district_id'}, inplace = True)
 
         return df
 
-
 class FormatStep(PipelineStep):
     def run_step(self, prev, params):
-       
         df = prev
 
         df['cite_id'] = df['cite_id'].astype(int)
@@ -82,52 +78,48 @@ class FormatStep(PipelineStep):
 class CiteInfoPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
-        return [
-            Parameter("output-db", dtype=str),
-            Parameter("ingest", dtype=bool)
-        ]
+        return []
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtypes = {
-            'cite_id':               'UInt8',  
+            'cite_id':               'UInt8',
             'tipo':                  'String',
             'director':              'String',
             'coordinador_ut':        'String',
             'lista_miembros':        'String',
-            'ambito':                'String',          
+            'ambito':                'String',
             'district_id' :          'String',
-            'direccion':             'String',  
-            'latitud':               'String',  
-            'longitud':              'String',  
+            'direccion':             'String',
+            'latitud':               'String',
+            'longitud':              'String',
             'descriptivo':           'String',
             'cadena_atencion':       'String',
             'cadena_pip':            'String',
             'cadena_resolucion':     'String',
-            'cite_slug':             'String',
-         }
+            'cite_slug':             'String'
+        }
 
         transform_step = TransformStep()
         format_step = FormatStep()
 
-        load_step = LoadStep(
-          'dim_shared_cite', connector=db_connector, if_exists='drop',
-          pk=['cite_id'], dtype=dtypes, nullable_list=[])
+        load_step = LoadStep('dim_shared_cite', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes)
 
-        if params.get("ingest")==True:
-            steps = [transform_step, format_step,  load_step]
-        else:
-            steps = [transform_step, format_step]
+        return [transform_step, format_step, load_step]
 
-        return steps
+def run_pipeline(params: dict):
+    pp = CiteInfoPipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    cite_info_pipeline = CiteInfoPipeline()
-    cite_info_pipeline.run(
-        {
-            "output-db": "clickhouse-local",
-            "ingest": True
-        }
-    )
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

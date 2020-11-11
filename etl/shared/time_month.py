@@ -49,7 +49,7 @@ class DimTimeQuarterPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
         # Use of connectors specified in the conns.yaml file
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "quarter_id":       "UInt16",
@@ -62,9 +62,20 @@ class DimTimeQuarterPipeline(EasyPipeline):
         # Definition of each step
         create_step = CreateStep()
         load_step = LoadStep("dim_shared_date_month", db_connector, if_exists="drop", pk=["month_id"], dtype=dtype)
-        
+
         return [create_step, load_step]
 
-if __name__ == '__main__':
-   pp = DimTimeQuarterPipeline()
-   pp.run({})
+def run_pipeline(params: dict):
+    pp = DimTimeQuarterPipeline()
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

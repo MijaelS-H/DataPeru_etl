@@ -14,7 +14,6 @@ from etl.consistency import AggregatorStep
 
 CARPETAS_DICT = {1: "01 INFORMACIÓN INSTITUCIONAL", 2: "02 CLIENTES ATENDIDOS", 3: "03 SERVICIOS BRINDADOS", 4: "04 PROYECTOS DE INVERSIÓN PÚBLICA", 5: "05 EJECUCIÓN PRESUPUESTAL", 6: "06 RECURSOS HUMANOS", 7: "07 PARTIDAS ARANCELARIAS"}
 
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         k = 1
@@ -23,7 +22,6 @@ class TransformStep(PipelineStep):
             for j in range(3, 3 + 1 ):
                 file_dir = path.join(params["datasets"], "20201001", "01. Información ITP red CITE  (01-10-2020)", "{}".format(CARPETAS_DICT[i]),"TABLA_0{}_N0{}.csv".format(i,j))
                 df = pd.read_csv(file_dir)
-                print(file_dir)
                 k = k + 1
 
         df= df[['cod_ciiu', 'anio', 'empresas']]

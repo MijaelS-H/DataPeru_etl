@@ -19,20 +19,28 @@ class TransformStep(PipelineStep):
 class TradeFlowPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
         dtype = {
             'trade_flow_id':    'UInt8',
             'trade_flow':       'String'
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-        "dim_shared_trade_flow", db_connector, if_exists="drop", pk=["trade_flow_id"], dtype=dtype
-        )
-        
+        load_step = LoadStep("dim_shared_trade_flow", db_connector, if_exists="drop", pk=["trade_flow_id"], dtype=dtype)
+
         return [transform_step, load_step]
 
-if __name__ == "__main__":
-
+def run_pipeline(params: dict):
     pp = TradeFlowPipeline()
-    pp.run({})
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

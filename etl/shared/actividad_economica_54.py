@@ -1,16 +1,12 @@
 import pandas as pd
 import nltk
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
 from etl.helpers import format_text
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-
         # Read econimic activity excel file
         df = pd.read_excel("https://docs.google.com/spreadsheets/d/e/2PACX-1vThTmtmBix54JYBgx7p4dnd9iZwlAtp-gMndb2ZAGcpbrxSnjv8lFTo7XS09P-l9AphgGHsREaPGUst/pub?output=xlsx")
 
@@ -23,8 +19,8 @@ class TransformStep(PipelineStep):
 class ActividadEconomica54Pipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             "actividad_economica":                      "String",
@@ -34,12 +30,22 @@ class ActividadEconomica54Pipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep('dim_shared_actividad_economica_54', db_connector, if_exists='drop', pk=['actividad_economica_id'], 
-            dtype=dtype
-        )
+        load_step = LoadStep('dim_shared_actividad_economica_54', db_connector, if_exists='drop', pk=['actividad_economica_id'],
+                            dtype=dtype)
 
         return [transform_step, load_step]
 
-if __name__ == '__main__':
+def run_pipeline(params: dict):
     pp = ActividadEconomica54Pipeline()
-    pp.run({})
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

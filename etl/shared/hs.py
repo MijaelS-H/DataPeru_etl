@@ -1,5 +1,6 @@
 import pandas as pd
 import nltk
+from os import path
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
@@ -12,10 +13,10 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Read HS files
-        hs_codes = pd.read_excel('../../../datasets/anexos/DataExport_11_2_2019__2_56_41.xlsx', sheet_name="Aplicados_NMF", header=4, usecols="B,C,E,R", names=["year", "hs_level", "id", "hs_name"], dtype={"hs_level": "int", "id": "str", "hs_name": "str"})
-        chapter = pd.read_csv('../../../datasets/anexos/hs_2017.csv', dtype={"Parent.1": "str", "Code.1": "str"})
-        chapter_names = pd.read_excel('../../../datasets/anexos/hs6_2012.xlsx', sheet_name="chapter", usecols="A,D", names=["chapter_id", "chapter_name"], dtype={"chapter_id": "str"})
-        hs_2012 = pd.read_excel('../../../datasets/anexos/hs6_2012.xlsx', sheet_name="hs6", usecols="A,D,E", names=["id", "hs6_name_large", "hs6_name"], dtype={"id": "str"})
+        hs_codes = pd.read_excel(path.join(params["datasets"],"anexos", "DataExport_11_2_2019__2_56_41.xlsx"), sheet_name="Aplicados_NMF", header=4, usecols="B,C,E,R", names=["year", "hs_level", "id", "hs_name"], dtype={"hs_level": "int", "id": "str", "hs_name": "str"})
+        chapter = pd.read_csv(path.join(params["datasets"],"anexos", "hs_2017.csv"), dtype={"Parent.1": "str", "Code.1": "str"})
+        chapter_names = pd.read_excel(path.join(params["datasets"],"anexos", "hs6_2012.xlsx"), sheet_name="chapter", usecols="A,D", names=["chapter_id", "chapter_name"], dtype={"chapter_id": "str"})
+        hs_2012 = pd.read_excel(path.join(params["datasets"],"anexos", "hs6_2012.xlsx"), sheet_name="hs6", usecols="A,D,E", names=["id", "hs6_name_large", "hs6_name"], dtype={"id": "str"})
 
         # Rename columns
         chapter = chapter[chapter["Level"] == 2][["Parent.1", "Code.1"]].rename(columns={"Parent.1": "chapter_id", "Code.1": "hs2_id"})
@@ -261,8 +262,8 @@ class TransformStep(PipelineStep):
         # Join Chapters, HS2, HS4 and HS6 dataframes
 
         ran = {
-            "hs2": hs2, 
-            "hs4": hs4,            
+            "hs2": hs2,
+            "hs4": hs4,
             "chapter": chapter
         }
 
@@ -288,29 +289,36 @@ class TransformStep(PipelineStep):
 class HSPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             'chapter_id':       'UInt8',
-            'chapter_name':     'String',    
-            'hs2_id':           'String',          
-            'hs2_name':         'String',        
-            'hs4_id':           'String',          
-            'hs4_name':         'String',        
-            'hs6_id':           'String',          
-            'hs6_name':         'String'        
+            'chapter_name':     'String',
+            'hs2_id':           'String',
+            'hs2_name':         'String',
+            'hs4_id':           'String',
+            'hs4_name':         'String',
+            'hs6_id':           'String',
+            'hs6_name':         'String'
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep('dim_shared_hs', db_connector, if_exists='drop', pk=['hs6_id'], 
-            dtype=dtype, 
-            nullable_list=[]
-        )
+        load_step = LoadStep('dim_shared_hs', db_connector, if_exists='drop', pk=['hs6_id'], dtype=dtype)
 
         return [transform_step, load_step]
 
-if __name__ == '__main__':
+def run_pipeline(params: dict):
     pp = HSPipeline()
-    pp.run({})
-    
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

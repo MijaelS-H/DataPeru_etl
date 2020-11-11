@@ -1,5 +1,6 @@
 import pandas as pd
 import nltk
+from os import path
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
@@ -12,8 +13,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Read customs file
-        df = pd.read_excel('../../../datasets/anexos/codigos_aduana.xls', header=2)
-
+        df = pd.read_excel(path.join(params["datasets"],"anexos", "codigos_aduana.xls"), header=2)
         df.rename(columns={
             '    N°': 'aduana_id',
             '                      DESCRIPCIÓN': 'aduana'
@@ -28,8 +28,8 @@ class TransformStep(PipelineStep):
 class CustomsPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             'aduana_id':        'UInt16',
@@ -38,13 +38,21 @@ class CustomsPipeline(EasyPipeline):
 
         transform_step = TransformStep()
         load_step = LoadStep('dim_shared_aduanas', db_connector, if_exists='drop', pk=['aduana_id'], 
-            dtype=dtype, engine='ReplacingMergeTree', 
-            nullable_list=[]
-        )
+                            dtype=dtype, engine='ReplacingMergeTree')
 
         return [transform_step, load_step]
 
-if __name__ == '__main__':
+def run_pipeline(params: dict):
     pp = CustomsPipeline()
-    pp.run({})
-    
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

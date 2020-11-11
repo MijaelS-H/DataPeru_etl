@@ -22,7 +22,7 @@ class CIIU_Production_Pipeline(EasyPipeline):
     @staticmethod
     def steps(params):
         
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             "division":                       "String",
@@ -33,12 +33,21 @@ class CIIU_Production_Pipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep('dim_shared_ciiu_production', db_connector, if_exists='drop', pk=['product_name'], 
-            dtype=dtype
-        )
+        load_step = LoadStep('dim_shared_ciiu_production', db_connector, if_exists='drop', pk=['product_name'], dtype=dtype)
 
         return [transform_step, load_step]
 
-if __name__ == '__main__':
+def run_pipeline(params: dict):
     pp = CIIU_Production_Pipeline()
-    pp.run({})
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })
