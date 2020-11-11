@@ -60,7 +60,6 @@ def run_pipeline(params: dict):
         pp.run(pp_params)
 
 
-
 if __name__ == "__main__":
     import sys
     from os import path
