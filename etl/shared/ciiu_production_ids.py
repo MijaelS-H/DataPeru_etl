@@ -18,8 +18,6 @@ class TransformStep(PipelineStep):
 
         df = df.drop_duplicates()
 
-        print(df.columns)
-
         df = df.rename(columns={
             "descibr ": "division_id"
         })
@@ -56,6 +54,6 @@ if __name__ == "__main__":
     __dirname = path.dirname(path.realpath(__file__))
 
     run_pipeline({
-        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
