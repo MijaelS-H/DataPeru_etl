@@ -2,8 +2,8 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
-from enapres_pipeline import TransformStep
-from shared import ReplaceStep
+from etl.survey_indicators.enapres.enapres_pipeline import TransformStep
+from .shared import ReplaceStep
 
 class ProcessingStep(PipelineStep):
     def run_step(self, prev, params):
@@ -18,7 +18,7 @@ class ProcessingStep(PipelineStep):
             df.columns = ['indicator_name', 'indicator_id']
             return df
 
-class DimIndicatorPipeline(EasyPipeline):
+class DimENAPRESPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return[
@@ -29,7 +29,7 @@ class DimIndicatorPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dtype = {
             params.get('pk'): 'UInt8'
@@ -43,9 +43,26 @@ class DimIndicatorPipeline(EasyPipeline):
 
         return [transform_step, replace_step, processing_step, load_step]
 
+def run_pipeline(params: dict):
+
+    pp = DimENAPRESPipeline()
+
+    levels = {
+        'category_id':  'dim_category_enapres',
+        'indicator_id': 'dim_indicator_enapres'
+        }
+
+    for k, v in levels.items():
+
+        pp_params = {'pk': k, 'table_name': v}
+        pp_params.update(params)
+        pp.run(pp_params)
+
 if __name__ == "__main__":
-    pp = DimIndicatorPipeline()
-    for k, v in {'category_id':  'dim_category_enapres',
-                 'indicator_id': 'dim_indicator_enapres'}.items():
-        pp.run({'pk': k,
-                'table_name': v})
+    import sys
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

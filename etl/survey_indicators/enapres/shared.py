@@ -1,7 +1,7 @@
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.helpers import query_to_df
-from static import SECTOR_DICT, LOCATION_DICT
+from .static import SECTOR_DICT, LOCATION_DICT
 
 class ReplaceStep(PipelineStep):
     def run_step(self, prev, params):
@@ -20,7 +20,7 @@ class ReplaceStep(PipelineStep):
         
         dim_department_query = 'SELECT department_id, department_name FROM dim_shared_ubigeo_department'
 
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dim_department = query_to_df(db_connector, raw_query=dim_department_query)
         dim_department.drop_duplicates(subset=['department_id', 'department_name'], inplace=True)
