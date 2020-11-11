@@ -3,8 +3,7 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
 from cultura_agentes import TransformStep
-from shared import ReplaceStep
-
+from .shared import ReplaceStep
 
 class ProcessingStep(PipelineStep):
     def run_step(self, prev, params):
@@ -28,23 +27,35 @@ class DimAgentesPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
-            params.get('pk'): 'UInt16'
+            params.get('pk'):       'UInt16'
         }
 
         transform_step = TransformStep()
         replace_step = ReplaceStep(connector=db_connector)
         processing_step = ProcessingStep()
-        load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
-                            pk=[params.get('pk')], dtype=dtype)
+        load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', pk=[params.get('pk')], dtype=dtype)
 
         return [transform_step, replace_step, processing_step, load_step]
 
-if __name__ == "__main__":
+def run_pipeline(params: dict):
     pp = DimAgentesPipeline()
-    for k, v in {'razon_social_id':  'dim_razon_social_agentes',
-                 }.items():
-        pp.run({'pk': k,
-                'table_name': v})
+    levels = {'razon_social_id':  'dim_razon_social_agentes'}
+
+    for k, v in levels.items():
+        pp_params = {'pk': k, 'table_name': v}
+        pp_params.update(params)
+        pp.run(pp_params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })
