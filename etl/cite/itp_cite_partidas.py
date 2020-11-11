@@ -21,7 +21,7 @@ class TransformStep(PipelineStep):
         df['descripcion_partida'] = df['descripcion_partida'].str.capitalize()
         df['tipo_exportacion'] = df['tipo_exportacion'].str.capitalize()
         df['sector'] = df['sector'].str.capitalize()
-        df['hs6_id'] = df['partida_id'].astype(str).str[:-6].str.zfill(6)
+        df['hs10_id'] = df['partida_id'].astype(int).astype(str).str.zfill(10)
         df['cantidad_cite'] = 1
         df['cadena_productiva'] = df['cadena_productiva'].str.strip()
         
@@ -43,7 +43,7 @@ class TransformStep(PipelineStep):
         df['cad_prod_id'] = df['cadena_productiva'].map(cadena_productiva_map)
 
         df[['cite_id','sector_id','cad_prod_id','tipo_exp_id','cantidad_cite']] = df[['cite_id','sector_id','cad_prod_id','tipo_exp_id','cantidad_cite']].astype(int)
-        df = df[['cite_id','sector_id','cad_prod_id','hs6_id','tipo_exp_id','cantidad_cite']]
+        df = df[['cite_id','sector_id','cad_prod_id','hs10_id','tipo_exp_id','cantidad_cite']]
 
     
         return df
@@ -61,7 +61,7 @@ class CitePartidasPipeline(EasyPipeline):
             'cite_id':                'UInt8',
             'sector_id':              'UInt8',
             'cad_prod_id':            'UInt8',
-            'hs6_id':                 'String',
+            'hs10_id':                 'String',
             'tipo_exp_id':            'UInt8',
             'cantidad_cite':          'UInt8',
          }

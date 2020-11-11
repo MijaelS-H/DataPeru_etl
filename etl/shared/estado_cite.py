@@ -22,6 +22,8 @@ class TransformStep(PipelineStep):
 
         df = df[['estado','estado_id']]
 
+        df = df.drop_duplicates()
+
         return df
 
 class CiteAspectoPipeline(EasyPipeline):
