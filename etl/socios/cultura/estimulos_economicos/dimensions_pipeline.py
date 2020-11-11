@@ -2,8 +2,8 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
-from .cultura_eec import TransformStep
-from .shared import ReplaceStep
+from etl.socios.cultura.estimulos_economicos.cultura_eec import TransformStep
+from etl.socios.cultura.estimulos_economicos.shared import ReplaceStep
 
 
 class ProcessingStep(PipelineStep):
@@ -41,9 +41,9 @@ class DimEECPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
-        if (k == 'estimulo_economico_id'):
+        if (params['pk'] == 'estimulo_economico_id'):
             dtype = {
                 params.get('pk'): 'UInt16'
             }

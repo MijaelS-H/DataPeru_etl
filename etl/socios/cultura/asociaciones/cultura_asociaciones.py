@@ -4,7 +4,8 @@ from os import path
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from .shared import ReplaceStep
+from etl.socios.cultura.asociaciones.shared import ReplaceStep
+from etl.consistency import AggregatorStep
 
 
 class TransformStep(PipelineStep):

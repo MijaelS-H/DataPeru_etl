@@ -2,8 +2,8 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
-from cultura_agentes import TransformStep
-from .shared import ReplaceStep
+from etl.socios.cultura.agentes_libro.cultura_agentes import TransformStep
+from etl.socios.cultura.agentes_libro.shared import ReplaceStep
 
 class ProcessingStep(PipelineStep):
     def run_step(self, prev, params):

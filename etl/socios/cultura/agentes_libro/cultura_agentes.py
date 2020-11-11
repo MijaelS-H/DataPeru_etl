@@ -4,12 +4,12 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from .shared import ReplaceStep
+from etl.socios.cultura.agentes_libro.shared import ReplaceStep
 from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"],"20201018", "05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)", "01. Información Dirección de Industrias Culturales (18-10-2020)", "04. Agentes del libro_2020_PNYPJ_DATAPERU.xlsx"))
+        data = pd.ExcelFile(path.join(params["datasets"],"20201018", "05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)", "01. Información Dirección de Industrias Culturales (18-10-2020)", "04. Agentes del libro_2020_PNYPJ_DATAPERU.xlsx"))
 
         sheet = data.sheet_names[1]
         df = pd.read_excel(data, data.sheet_names[1])
