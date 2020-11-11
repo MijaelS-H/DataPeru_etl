@@ -1,23 +1,26 @@
 import os
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.helpers import grab_parent_dir, query_to_df
+from bamboo_lib.helpers import query_to_df
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
-from static import COLUMNS_RENAME, COUNTRIES_DICT, HS_DICT, REGIMEN_DICT, UBIGEO_DICT, UNIT_DICT
 
-path = grab_parent_dir('../../') + "/datasets/20200318/180320 Inf. Administrativa SUNAT/"
+from etl.consistency import AggregatorStep
+
+from .static import COLUMNS_RENAME, COUNTRIES_DICT, HS_DICT, REGIMEN_DICT, UBIGEO_DICT, UNIT_DICT
+
+filelist = os.path.join("..", "datasets", "20200318", "180320 Inf. Administrativa SUNAT")
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = pd.DataFrame()
 
         # Open and read exports files in defined path
-        for file in os.listdir(path):
-            _df = pd.read_csv(path + file, sep='|', encoding='latin-1', low_memory=False, dtype={
+        for file in os.listdir(filelist):
+            _df = pd.read_csv(os.path.join(filelist, file), sep='|', encoding='latin-1', low_memory=False, dtype={
                 'ubigeo': 'str'
             })
     
@@ -34,17 +37,17 @@ class TransformStep(PipelineStep):
 
         # Replace
         dim_country_query = "SELECT iso2, iso3 FROM dim_shared_country"
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         countries = query_to_df(db_connector, raw_query=dim_country_query)
 
         DICT_COUNTRIES = dict(zip(countries['iso2'], countries['iso3']))
 
         df['country_id'] = df['country_id'].str.lower()
+        df['country_id'].replace(COUNTRIES_DICT, inplace=True)
         df['country_id'] = df['country_id'].replace(DICT_COUNTRIES)
 
         df['trade_flow_id'].replace(REGIMEN_DICT, inplace=True)
         df['unit'].replace(UNIT_DICT, inplace=True)
-        df['country_id'].replace(COUNTRIES_DICT, inplace=True)
         df['hs6_id'].replace(HS_DICT, inplace=True)
         df['ubigeo'].replace(UBIGEO_DICT, inplace=True)
 
@@ -60,7 +63,7 @@ class TransformStep(PipelineStep):
 class ExportsPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtypes = {
             'trade_flow_id':        'UInt8',
@@ -77,6 +80,9 @@ class ExportsPipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
+
+        agg_step = AggregatorStep('sunat_exports', measures=['trade_value', 'net_weight_value', 'quatity'])
+
         load_step = LoadStep(
             'sunat_exports', 
             connector = db_connector, 
@@ -86,9 +92,18 @@ class ExportsPipeline(EasyPipeline):
             nullable_list = []
         )
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
 
-if __name__ == '__main__':
+def run_pipeline(params):
+
    pp = ExportsPipeline()
-   pp.run({})
+   pp.run(params)
    
+if __name__ == "__main__":
+    import sys
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })
