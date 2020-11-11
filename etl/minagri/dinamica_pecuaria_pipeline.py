@@ -67,7 +67,7 @@ class MINAGRIPecuariaPipeline(EasyPipeline):
     def steps(params):
         level = params["level"]
         table_name = params["table_name"]
-        db_connector = Connector.fetch("clickhouse-database", params["connector"])
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         transform_step = TransformStep()
         agg_step = AggregatorStep(table_name, measures=["produccion"])
@@ -75,8 +75,13 @@ class MINAGRIPecuariaPipeline(EasyPipeline):
                              pk=PRIMARY_KEYS[level], dtype=DTYPES[level],
                              nullable_list=[])
 
-        return [transform_step, load_step]
+        if level == "fact_table":
 
+            return [transform_step, agg_step, load_step]
+
+        else:
+
+            return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = MINAGRIPecuariaPipeline()
@@ -93,8 +98,9 @@ def run_pipeline(params: dict):
 
 if __name__ == "__main__":
     import sys
-
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
-        "connector": "../conns.yaml",
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })

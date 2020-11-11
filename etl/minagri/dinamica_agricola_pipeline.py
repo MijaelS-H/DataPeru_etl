@@ -81,8 +81,13 @@ class MINAGRIAgricolaPipeline(EasyPipeline):
                              pk=PRIMARY_KEYS[level], dtype=DTYPES[level],
                              nullable_list=[])
 
-        return [transform_step, agg_step, load_step]
+        if level == 'fact_table':
+        
+            return [transform_step, agg_step, load_step]
 
+        else:
+
+            return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = MINAGRIAgricolaPipeline()
@@ -99,8 +104,9 @@ def run_pipeline(params: dict):
 
 if __name__ == "__main__":
     import sys
-
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
-        "connector": "../conns.yaml",
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
