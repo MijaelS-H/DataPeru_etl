@@ -1,6 +1,6 @@
 from .itp_cite_clientes_aspecto import run_pipeline as itp_pipeline_clientes_aspecto
 from .itp_cite_ejecucion_presupuestal import run_pipeline as itp_pipeline_ejecucion_presupuestal
-# itp_cite_empresas_ciiu_agg # Terminar
+from .itp_cite_empresas_ciiu_agg import run_pipeline as itp_pipeline_empresas_ciiu_agg
 from .itp_cite_empresas_ciiu import run_pipeline as itp_pipeline_empresas_ciiu
 from .itp_cite_empresas_contribuyente_agg import run_pipeline as itp_pipeline_emp_contribuyentes_agg
 
@@ -16,11 +16,10 @@ from .itp_cite_servicios_subcategorias import run_pipeline as itp_pipeline_subca
 from .itp_cite_trabajadores import run_pipeline as itp_pipeline_trabajadores
 
 
-
 def run_pipeline(params: dict):
     itp_pipeline_clientes_aspecto(params)
     itp_pipeline_ejecucion_presupuestal(params)
-    # placeholder(params)
+    itp_pipeline_empresas_ciiu_agg(params)
     itp_pipeline_empresas_ciiu(params)
     itp_pipeline_emp_contribuyentes_agg(params)
 
@@ -38,8 +37,11 @@ def run_pipeline(params: dict):
 
 if __name__ == "__main__":
     import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
 
     run_pipeline({
-        "connector": params["connector"],
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })

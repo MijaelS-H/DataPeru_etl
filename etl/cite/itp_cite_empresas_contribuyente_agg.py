@@ -27,7 +27,7 @@ class TransformStep(PipelineStep):
 
         return df
 
-class CiteContribuyentePipeline(EasyPipeline):
+class CiteContribuyentePipelineAgg(EasyPipeline):
     @staticmethod
     def parameter_list():
         return []
@@ -49,13 +49,16 @@ class CiteContribuyentePipeline(EasyPipeline):
         return [transform_step, agg_step, load_step]
 
 def run_pipeline(params: dict):
-    pp = CiteContribuyentePipeline()
+    pp = CiteContribuyentePipelineAgg()
     pp.run(params)
 
 if __name__ == "__main__":
     import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
 
     run_pipeline({
-        "connector": params["connector"],
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
