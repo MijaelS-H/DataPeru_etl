@@ -284,6 +284,8 @@ class TransformStep(PipelineStep):
         df['hs4_name'] = df['hs4_name'].apply(lambda x: x[0: -1] if x[-1] == '.' else x)
         df['hs6_name'] = df['hs6_name'].apply(lambda x: x[0: -1] if x[-1] == '.' else x)
 
+        df = df.drop_duplicates(subset=['hs6_id'])
+
         return df
 
 class HSPipeline(EasyPipeline):

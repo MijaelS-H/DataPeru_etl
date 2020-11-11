@@ -536,7 +536,8 @@ class TransformStep(PipelineStep):
         df['province_name'] = df['province_name'].str.strip()
         df['district_name'] = df['district_name'].str.strip()
 
-        df = df.append(MISSING_UBIGEO).drop_duplicates(subset=['district_id'])
+        df = df.append(MISSING_UBIGEO)
+        df = df.drop_duplicates(subset=['district_id'])
 
         provinces = df[['department_name', 'province_name', 'department_id', 'province_id']].copy()
         provinces = provinces.drop_duplicates()
