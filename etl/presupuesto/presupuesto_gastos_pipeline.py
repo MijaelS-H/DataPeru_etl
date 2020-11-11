@@ -1,11 +1,12 @@
 
 import glob
-
+import os
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import LoadStep
 from etl.consistency import AggregatorStep
+from etl.helpers import clean_tables
 
 from .helpers import return_dimension
 from .static import BASE, DATA_FOLDER, DIMENSIONS, DTYPE, FOLDER, TIPO_GOBIERNO
@@ -96,7 +97,7 @@ class PresupuestoPipeline(EasyPipeline):
         read_step = ReadStep()
         replace_step = ReplaceStep()
         transform_step = TransformStep()
-        agg_step = AggregatorStep(table_name, measures=[])
+        agg_step = AggregatorStep(table_name, measures=['pia', 'pim', 'devengado'])
         load_step = LoadStep(table_name, db_connector, if_exists='append', 
                              pk=['departamento_meta', 'year'], dtype=dtype, 
                              nullable_list=['pia', 'pim', 'devengado'])
@@ -105,10 +106,16 @@ class PresupuestoPipeline(EasyPipeline):
 
 
 def run_pipeline(params: dict):
+    table="mef_presupuesto_gastos"
+    try:
+        clean_tables(table)
+    except:
+        print('Table: {} does not exist'.format(table))
+
     pp = PresupuestoPipeline()
 
     for PREFIX in ['GN', 'GR', 'GL']:
-        filelist = glob.glob('{}/G_{}_*.csv'.format(DATA_FOLDER, PREFIX))
+        filelist = glob.glob(os.path.join('{}'.format(DATA_FOLDER), 'G_{}_*.csv'.format(PREFIX)))
 
         for filename in filelist:
             pp_params = {
@@ -122,8 +129,10 @@ def run_pipeline(params: dict):
 
 if __name__ == "__main__":
     import sys
-
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
-        "connector": "../conns.yaml",
+        "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
+
