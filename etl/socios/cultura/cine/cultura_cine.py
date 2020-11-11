@@ -45,7 +45,7 @@ class FormatStep(PipelineStep):
         'actividad_2_id','actividad_3_id','actividad_4_id',	'district_id', 'cantidad_org']].copy()
 
         # column types
-        df['year'] = df['year'].astype(float).astype(pd.Int32Dtype())
+        df['year'] = df['year'].astype(float).fillna(0)
 
         df[['actividad_1_id',	
         'actividad_2_id','actividad_3_id','actividad_4_id']] = df[['actividad_1_id',	
