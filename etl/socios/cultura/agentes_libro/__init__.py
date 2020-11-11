@@ -1,5 +1,5 @@
 from .cultura_agentes import run_pipeline as cultura_pipeline_agentes
-from .dimensions_pipeline import run_pipeline as dimensiones_cultura_pipeline
+from .dimensions_pipeline import run_pipeline as dim_agentes_pipeline
 
 
 def run_pipeline(params: dict):

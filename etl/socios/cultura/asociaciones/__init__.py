@@ -1,5 +1,5 @@
 from .cultura_asociaciones import run_pipeline as cultura_asociaciones_pipeline
-from .dimensions_pipeline import run_pipeline as cultura_dimensiones_pipeline
+from .dimensions_pipeline import run_pipeline as dim_asociaciones_pipeline
 
 
 def run_pipeline(params: dict):

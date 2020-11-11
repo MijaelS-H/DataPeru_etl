@@ -1,5 +1,5 @@
 from bamboo_lib.models import PipelineStep
-from static import DISTRICT_REPLACE_2
+from .static import DISTRICT_REPLACE_2
 from bamboo_lib.helpers import query_to_df
 class ReplaceStep(PipelineStep):
     def run_step(self, prev, params):
