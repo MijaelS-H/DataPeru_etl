@@ -1,6 +1,7 @@
 from bamboo_lib.models import PipelineStep
-from static import DISTRICT_REPLACE_4
 from bamboo_lib.helpers import query_to_df
+
+DISTRICT_REPLACE_4 = {'Cercado de Lima' : "Lima", 'Carabayllo ' : "Carabayllo", 'Huánuco ' : "Huanuco", 'Pueblo libre' : "Pueblo Libre", 'El Tambo ': "Huanuco", 'San Sebastián': "Huanuco", 'José Luis Bustamante y Rivero': "José Luis Bustamante Y Rivero", 'Trujillo ': "Trujillo", 'Villa el Salvador': "Villa El Salvador", 'Huancayo ': "Huancayo", 'Sin información': "Otro", 'Talara': "Chiclayo", 'Callería': "Calleria", 'Ancohuayllo Uripa': "Anco_Huallo"}
 
 class ReplaceStep(PipelineStep):
     def run_step(self, prev, params):
