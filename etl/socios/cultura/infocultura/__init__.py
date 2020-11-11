@@ -1,14 +1,14 @@
-from .dimensions_infocultura_month import run_pipeline as run_pipeline_dim_infocultura_month
-from .dimensions_infocultura_year import run_pipeline as run_pipeline_dim_infocultura_year
-from .cultura_infocultura_month import run_pipeline as run_pipeline_infocultura_month
-from .cultura_infocultura_year import run_pipeline as run_pipeline_infocultura_year
+from .dimensions_infocultura_month import run_pipeline as dim_infocultura_month
+from .dimensions_infocultura_year import run_pipeline as dim_infocultura_year
+from .cultura_infocultura_month import run_pipeline as infocultura_month
+from .cultura_infocultura_year import run_pipeline as infocultura_year
 
 
 def run_pipeline(params: dict):
-    run_pipeline_dim_infocultura_month(params)
-    run_pipeline_dim_infocultura_year(params)
-    run_pipeline_infocultura_month(params)
-    run_pipeline_infocultura_year(params)
+    dim_infocultura_month(params)
+    dim_infocultura_year(params)
+    infocultura_month(params)
+    infocultura_year(params)
 
 
 if __name__ == "__main__":

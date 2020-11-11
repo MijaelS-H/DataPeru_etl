@@ -6,10 +6,10 @@ from .cine.cultura_cine import run_pipeline as cultura_pipeline_cine
 from .cine.dimensions_pipeline import run_pipeline as dim_cine_pipeline
 from .estimulos_economicos.cultura_eec import run_pipeline as cultura_pipeline_estimulos_eco
 from .estimulos_economicos.dimensions_pipeline import run_pipeline as dim_estimulos_eco_pipeline
-from .infocultura.dimensions_infocultura_month import run_pipeline as run_pipeline_dim_infocultura_month
-from .infocultura.dimensions_infocultura_year import run_pipeline as run_pipeline_dim_infocultura_year
-from .infocultura.cultura_infocultura_month import run_pipeline as run_pipeline_infocultura_month
-from .infocultura.cultura_infocultura_year import run_pipeline as run_pipeline_infocultura_year
+from .infocultura.dimensions_infocultura_month import run_pipeline as dim_infocultura_month
+from .infocultura.dimensions_infocultura_year import run_pipeline as dim_infocultura_year
+from .infocultura.cultura_infocultura_month import run_pipeline as infocultura_month
+from .infocultura.cultura_infocultura_year import run_pipeline as infocultura_year
 
 def run_pipeline(params: dict):
     dim_agentes_pipeline(params)
@@ -20,10 +20,10 @@ def run_pipeline(params: dict):
     cultura_pipeline_cine(params)
     dim_estimulos_eco_pipeline
     cultura_pipeline_estimulos_eco
-    run_pipeline_dim_infocultura_month(params)
-    run_pipeline_dim_infocultura_year(params)
-    run_pipeline_infocultura_month(params)
-    run_pipeline_infocultura_year(params)
+    dim_infocultura_month(params)
+    dim_infocultura_year(params)
+    infocultura_month(params)
+    infocultura_year(params)
 
 if __name__ == "__main__":
     import sys
