@@ -22,6 +22,10 @@ class TransformStep(PipelineStep):
         df["year"] = df["year"].astype(int)
         df["ubigeo"] = "per"
 
+        list_ = ["n_arribos_nacionales", "n_arribos_extranjeros", "n_pernoctaciones_nacionales", "n_pernoctaciones_extranjeros", "permanencia_prom_nacionales", "permanencia_prom_extranjeros", "tasa_ocupacion_hab", "tasa_ocupacion_camas", "year"]
+        for item in list_:
+            df[item] = df[item].astype(float)
+
         return df
 
 class itp_indicators_y_n_tourism_capacity_pipeline(EasyPipeline):
@@ -67,3 +71,5 @@ if __name__ == "__main__":
         "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
+
+
