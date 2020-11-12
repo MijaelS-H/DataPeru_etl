@@ -106,11 +106,7 @@ class PresupuestoPipeline(EasyPipeline):
 
 
 def run_pipeline(params: dict):
-    table="mef_presupuesto_gastos"
-    try:
-        clean_tables(table)
-    except:
-        print('Table: {} does not exist'.format(table))
+    clean_tables("mef_presupuesto_gastos", params["connector"])
 
     pp = PresupuestoPipeline()
 

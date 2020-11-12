@@ -1,12 +1,14 @@
 import re
-import pandas as pd
 from os import path
-from bamboo_lib.helpers import query_to_df
+
+import pandas as pd
 from bamboo_lib.connectors.models import Connector
+from bamboo_lib.helpers import query_to_df
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from etl.socios.cultura.estimulos_economicos.shared import ReplaceStep
 from etl.consistency import AggregatorStep
+
+from .shared import ReplaceStep
 
 COUNTRY_DICT = {
     "Eeuu": "Estados Unidos"
@@ -33,7 +35,7 @@ class TransformStep(PipelineStep):
         df['pais_procedencia'] = df['pais_procedencia'].replace(COUNTRY_DICT)
 
         dim_country_query = 'SELECT country_name_es, iso3 FROM dim_shared_country'
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
         countries = query_to_df(db_connector, raw_query=dim_country_query)
 
         SHARED_DIM_COUNTRY = dict(zip(countries['country_name_es'], countries['iso3']))

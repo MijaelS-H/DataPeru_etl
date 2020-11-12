@@ -121,11 +121,7 @@ class itp_ind_year_Pipeline(EasyPipeline):
         return [transform_step, agg_step, load_step]
 
 def run_pipeline(params: dict):
-    table="itp_indicators_y_act_dept"
-    try:
-        clean_tables(table)
-    except:
-        print('Table: {} does not exist'.format(table))
+    clean_tables("itp_indicators_y_act_dept", params["connector"])
 
     for i in datalist:
         pp = itp_ind_year_Pipeline()
