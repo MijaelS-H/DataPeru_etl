@@ -214,6 +214,10 @@ class TransformStep(PipelineStep):
         for item in ["desnutricion_5yrs_perc", "sup_agr_en_descanso_hect", "n_personas_detenidas_delitos", "n_victimas_femicidios", "n_denuncias_robo_vehiculos"]:
             df[item].replace({"-": pd.np.nan}, inplace = True)
 
+        list_ = ["year", "nacimientos", "defunciones", "inmigrantes", "emigrantes", "peao_afiliada_pensiones", "nbi_1_o_mas_perc_pob", "mbpa_1_o_mas_members_perc_hog", "mbpa_1_o_mas_members_perc_hog_pob", "n_medicos_colegiados", "n_habitantes_por_medico", "n_enfermeras_os_colegiados", "n_habitantes_por_enfermera_os", "desnutricion_5yrs_perc", "enfermedades_ra_5yrs_perc", "estudios_prom_15yrs", "superficie_agricola_hect", "superficie_no_agricola_hect", "sup_agr_cultivos_hect", "sup_agr_en_barbencho_hect", "sup_agr_no_trabajadas_hect", "sup_agr_en_descanso_hect", "sup_bosque_humedo_amazonico_hect", "hogares_tecn_informacion_perc", "hogares_television_perc", "hogares_cable_perc", "hogares_telefono_fijo_perc", "hogares_telefono_movil_perc", "hogares_computadora_perc", "hogares_internet_perc", "n_faltas_registradas", "n_comision_delitos", "n_personas_detenidas_delitos", "n_bandas_delictuales_desarticuladas", "n_victimas_femicidios", "n_denuncias_violencia_familiar_fisica", "n_denuncias_violencia_familiar_sicolo", "n_denuncias_robo_vehiculos", "enfer_diarreicas_5yrs", "huespedes_nacionales", "huespedes_extranjeros", "visitantes_nacionales_museos_arqueologia", "visitantes_extranjeros_museos_arqueologia"]
+        for item in list_:
+            df[item] = df[item].astype(float)
+
         return df
 
 class inei_population_y_n_dep(EasyPipeline):
@@ -302,3 +306,6 @@ if __name__ == "__main__":
         "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
+
+
+
