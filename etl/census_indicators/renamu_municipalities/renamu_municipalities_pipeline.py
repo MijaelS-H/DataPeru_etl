@@ -23,8 +23,10 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame()
         renamu_versions = {}
 
+        year = 2015
+
         for folder in os.listdir(path):
-            if int(folder[-4:]) > 2014:
+            if int(folder[-4:]) == year and year <= 2019:
                 print('Current year: {}'.format(int(folder[-4:])))
                 _df = pd.DataFrame()
                 for subfolder in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder))):
@@ -270,6 +272,8 @@ class TransformStep(PipelineStep):
                     _df.rename(columns=COLUMNS_DICT[int(folder[-4:])], inplace=True)
 
                 renamu_versions[int(folder[-4:])] = _df
+
+                year += 1
 
         for item in renamu_versions:
             df = df.append(renamu_versions[item], sort=True)
