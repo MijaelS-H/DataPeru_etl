@@ -7,8 +7,8 @@ from .presupuesto_ingresos_pipeline import run_pipeline as run_pipeline_presupue
 
 
 def run_pipeline(params: dict):
-    run_pipeline_download()
-    run_pipeline_temp_dims()
+    run_pipeline_download(params)
+    run_pipeline_temp_dims(params)
     run_pipeline_dim_gastos(params)
     run_pipeline_dim_ingresos(params)
     run_pipeline_presupuesto_gastos(params)
@@ -23,4 +23,3 @@ if __name__ == "__main__":
         "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
-
