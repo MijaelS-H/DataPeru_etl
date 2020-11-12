@@ -15,37 +15,6 @@ import numpy as np
 import pandas as pd
 from bamboo_lib.models import PipelineStep
 
-REPORT = {}
-
-def dump_report(target_file: str):
-    """Saves the generated reports to a pickle file.
-
-    Arguments:
-        target_file {str} --
-            A path to save the pickle file.
-
-    Returns:
-        {void}
-
-    Raises:
-        IOError --
-            If the `target_file` argument points to a file that already
-            exists.
-    """
-    
-    target_path = Path(target_file).resolve()
-    with target_path.open("w+b") as fileio:
-        pickle.dump(REPORT, fileio)
-
-def load_report(target_file: str):
-    global REPORT
-
-    target_path = Path(target_file).resolve()
-    if not target_path.exists():
-        dump_report(target_file)
-
-    with target_path.open("r+b") as fileio:
-        REPORT = pickle.load(fileio)
 
 class AggregatorStep(PipelineStep):
     """Generate aggregation reports for datasets passed through a bamboo-lib Pipeline."""
@@ -62,10 +31,9 @@ class AggregatorStep(PipelineStep):
                 If this list is empty, this step does nothing.
         """
 
-        super().__init__(table_name=table_name)
+        super().__init__()
         self.table_name = table_name
-        self.measures = set(measures) if measures is not None else set()
-        self.levels = set()
+        self.measure_cols = set(measures) if measures is not None else set()
 
     def run_step(self, prev_result: pd.DataFrame, params: dict):
         """Executes the main function of the step.
@@ -84,20 +52,19 @@ class AggregatorStep(PipelineStep):
                 in the `prev_result` argument.
         """
 
+        df = prev_result
+        measure_cols = self.measure_cols
+        table_name = self.table_name
+
         # skip step if no measures were set
-        if len(self.measures) == 0:
+        if len(measure_cols) == 0:
             return prev_result
 
-        df = prev_result
-        columns = set(df.columns.values.tolist())
-        self.levels = columns - self.measures
-
-        levels = list(self.levels)
-        measures = list(self.measures)
+        level_cols = set(df.columns.values.tolist()) - measure_cols
 
         reports = {}
-        for level in levels:
-            frame = [level, *measures]
+        for level in level_cols:
+            frame = [level, *measure_cols]
             grouped = df[frame].groupby(level)
             grouped_sum = grouped.sum()
             reports[level] = {
@@ -106,25 +73,27 @@ class AggregatorStep(PipelineStep):
                 "sum": grouped_sum.describe(),
             }
 
-        REPORT[self.table_name] = {
+        table_report = {
             "reports": reports,
-            "levels": levels,
-            "measures": measures,
-            "table": self.table_name,
+            "levels": level_cols,
+            "measures": measure_cols,
+            "table": table_name,
             "total_count": df.size,
             # "total_mean": df[measures].mean(skipna=True).to_dict(),
             # "total_sum": df[measures].sum().to_dict(),
         }
 
+        report_path = Path(params.get("reports", "./reports"))
+        if not report_path.exists():
+            report_path.mkdir()
+
+        with report_path.joinpath(f"df_{table_name}.pickle").open("w+b") as fileio:
+            pickle.dump(df, fileio)
+
+        with report_path.joinpath(f"report_{table_name}.pickle").open("w+b") as fileio:
+            pickle.dump(table_report, fileio)
+
         return df
-
-    @staticmethod
-    def load_report(target_file: str):
-        load_report(target_file)
-
-    @staticmethod
-    def dump_report(target_file: str):
-        dump_report(target_file)
 
 
 class CubeTester:
@@ -312,7 +281,7 @@ if __name__ == "__main__":
     argparser.add_argument(
         "--report",
         help="The path to the folder containing the ingestion aggregator reports.",
-        metavar="path/to/report.pickle",
+        metavar="path/to/reports/",
         required=True,
         type=Path,
     )
@@ -339,9 +308,9 @@ if __name__ == "__main__":
     )
     args = argparser.parse_args()
 
-    report_path = args.report.resolve()
-    if not report_path.exists() or not report_path.is_file():
-        print("The specified report file is not valid: %s" % report_path)
+    report_folder = args.report.resolve()
+    if not report_folder.exists() or not report_folder.is_dir():
+        print("The specified report folder is not valid: %s" % report_folder)
         sys.exit()
 
     schema_path = args.schema.resolve()
@@ -354,7 +323,6 @@ if __name__ == "__main__":
         print("The specified output file already exists: %s" % output_path)
         sys.exit()
 
-    reports = pickle.load(file=report_path.open("rb"))
     sys.stdout = output_path.open("w+")
 
     tree = ET.parse(schema_path)
@@ -365,11 +333,11 @@ if __name__ == "__main__":
     print("Iniciando tests de consistencia")
     for cube in schema.findall("Cube"):
         table_name = cube.find("Table").get("name")
-        try:
-            report = reports[table_name]
-        except KeyError:
-            print("ERROR: El cubo %s no aparece en el reporte de ingestión." % cube.get("name"))
+        report_path = report_folder.joinpath("report_%s.pickle" % table_name)
+        if not report_path.exists():
+            print("ERROR: No existe reporte de ingestión para el cubo", cube.get("name"))
             continue
+        report = pickle.load(file=report_path.open("rb"))
 
         tester = CubeTester(cube, shared_dims)
         tester.test_report("http://localhost:7777", report)
