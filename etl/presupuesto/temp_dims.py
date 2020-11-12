@@ -8,7 +8,7 @@ import pandas as pd
 from bamboo_lib.logger import logger
 
 from .helpers import get_dimension, process_exceptions
-from .static import BASE, DATA_FOLDER, DIMENSIONS, FOLDER
+from .static import BASE, DIMENSIONS, FOLDER
 
 
 def run_pipeline(params: dict):

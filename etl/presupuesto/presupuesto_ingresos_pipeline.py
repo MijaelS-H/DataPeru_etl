@@ -1,7 +1,8 @@
-
 import glob
-import re
 import os
+import re
+from pathlib import Path
+
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.helpers import query_to_df
@@ -10,8 +11,7 @@ from bamboo_lib.steps import LoadStep
 from etl.consistency import AggregatorStep
 from etl.helpers import clean_tables
 
-from .helpers import return_dimension
-from .static import BASE, DATA_FOLDER, DTYPE, TIPO_GOBIERNO
+from .static import BASE, DTYPE, TIPO_GOBIERNO
 
 
 class ReadStep(PipelineStep):
@@ -32,9 +32,7 @@ class ReadStep(PipelineStep):
             df.columns = base + ['pia', 'pim', 'monto_recaudado'] + ['year']
             temp = temp.append(df)
 
-        temp.rename(columns={
-            'fuente_financ_nombre': 'fuente_financiamiento'
-        }, inplace=True)
+        temp.rename(columns={'fuente_financ_nombre': 'fuente_financiamiento'}, inplace=True)
 
         return temp
 
@@ -101,14 +99,12 @@ def run_pipeline(params: dict):
 
     pp = PresupuestoPipeline()
 
-    filelist = glob.glob(os.path.join('{}'.format(DATA_FOLDER), 'ING_*.csv'))
+    download_folder = Path(params["datasets"]).joinpath("download")
+    download_folder.mkdir(exist_ok=True)
 
+    filelist = glob.glob(os.path.join(download_folder, 'ING_*.csv'))
     for filename in filelist:
-        pp_params = {
-            'data': filename
-        }
-        pp_params.update(params)
-        pp.run(pp_params)
+        pp.run({'data': filename, **params})
 
 
 if __name__ == "__main__":

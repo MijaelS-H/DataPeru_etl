@@ -1,6 +1,8 @@
 
 import glob
 import os
+from pathlib import Path
+
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
@@ -9,11 +11,11 @@ from etl.consistency import AggregatorStep
 from etl.helpers import clean_tables
 
 from .helpers import return_dimension
-from .static import BASE, DATA_FOLDER, DIMENSIONS, DTYPE, FOLDER, TIPO_GOBIERNO
+from .static import BASE, DIMENSIONS, DTYPE, TIPO_GOBIERNO
 
 
 class ReadStep(PipelineStep):
-    def run_step(self, prev, params):
+    def run_step(self, prev_result, params):
         prefix = params["prefix"]
         data = params["data"]
 
@@ -98,8 +100,8 @@ class PresupuestoPipeline(EasyPipeline):
         replace_step = ReplaceStep()
         transform_step = TransformStep()
         agg_step = AggregatorStep(table_name, measures=['pia', 'pim', 'devengado'])
-        load_step = LoadStep(table_name, db_connector, if_exists='append', 
-                             pk=['departamento_meta', 'year'], dtype=dtype, 
+        load_step = LoadStep(table_name, db_connector, if_exists='append',
+                             pk=['departamento_meta', 'year'], dtype=dtype,
                              nullable_list=['pia', 'pim', 'devengado'])
 
         return [read_step, replace_step, transform_step, agg_step, load_step]
@@ -110,8 +112,11 @@ def run_pipeline(params: dict):
 
     pp = PresupuestoPipeline()
 
+    download_folder = Path(params["datasets"]).joinpath("download")
+    download_folder.mkdir(exist_ok=True)
+
     for PREFIX in ['GN', 'GR', 'GL']:
-        filelist = glob.glob(os.path.join('{}'.format(DATA_FOLDER), 'G_{}_*.csv'.format(PREFIX)))
+        filelist = glob.glob(os.path.join(download_folder, 'G_{}_*.csv'.format(PREFIX)))
 
         for filename in filelist:
             pp_params = {
@@ -126,9 +131,9 @@ def run_pipeline(params: dict):
 if __name__ == "__main__":
     import sys
     from os import path
+
     __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
         "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
-
