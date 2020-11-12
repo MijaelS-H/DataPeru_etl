@@ -8,7 +8,6 @@ from os import path
 from pathlib import Path
 
 from etl import run_pipeline
-from etl.consistency import AggregatorStep
 
 __dirname = path.realpath(path.dirname(__file__))
 
@@ -27,10 +26,10 @@ argparser.add_argument(
     type=Path,
 )
 argparser.add_argument(
-    "-o",
-    "--output",
-    default="./report.pickle",
-    help="The path to the file to store the ingestion report.",
+    "-r",
+    "--reports",
+    default="./reports/",
+    help="The path to the folder to store the ingestion reports.",
 )
 
 if __name__ == "__main__":
@@ -41,12 +40,9 @@ if __name__ == "__main__":
     if not args.datasets.is_dir():
         raise IOError("Path %s is not a directory." % args.datasets)
 
-    AggregatorStep.load_report(args.output)
-
     params = {
         "connector": args.connector,
         "datasets": args.datasets,
+        "reports": args.reports,
     }
     run_pipeline(params)
-
-    AggregatorStep.dump_report(args.output)
