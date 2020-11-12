@@ -1,16 +1,24 @@
-import numpy as np
 import os
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.helpers import grab_parent_dir, query_to_df
+from bamboo_lib.helpers import query_to_df
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from static import COLUMNS_DICT, DTYPES, NULLABLE_LISTS, PRIMARY_KEYS, SELECTED_COLUMNS, VARIABLES_DICT
+from etl.consistency import AggregatorStep
 
-path = grab_parent_dir('../../../') + "/datasets/20201001/02. Información Censos (01-10-2020)/02  RENAMU - CENTROS POBLADOS/"
+from .static import (COLUMNS_DICT, DTYPES, NULLABLE_LISTS, PRIMARY_KEYS,
+                     SELECTED_COLUMNS, VARIABLES_DICT)
+
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
+        path = os.path.join(
+            params["datasets"],
+            "20201001",
+            "02. Información Censos (01-10-2020)",
+            "02  RENAMU - CENTROS POBLADOS",
+        )
 
         # Open all RENAMU files and creates a DataFrame
 
@@ -19,10 +27,10 @@ class TransformStep(PipelineStep):
 
         for folder in os.listdir(path):
             _df = pd.DataFrame()
-            for subfolder in os.listdir('{}{}'.format(path, folder)):
-                for filename in os.listdir('{}{}/{}'.format(path, folder, subfolder)):
+            for subfolder in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder))):
+                for filename in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder), '{}'.format(subfolder))):
                      if filename.endswith('.sav'):
-                        temp = pd.read_spss('{}{}/{}/{}'.format(path, folder, subfolder, filename))
+                        temp = pd.read_spss(os.path.join('{}'.format(path), '{}'.format(folder), '{}'.format(subfolder), '{}'.format(filename)))
                         temp = temp.replace('', np.nan).dropna(how='all')
                         temp.rename(
                             columns = {
@@ -70,7 +78,7 @@ class TransformStep(PipelineStep):
             df = df.drop_duplicates()
 
             dim_geo_query = 'SELECT * FROM dim_shared_ubigeo_province'
-            db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+            db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
             dim_geo = query_to_df(db_connector, raw_query=dim_geo_query)
 
             df = pd.merge(df, dim_geo, on='province_id')
@@ -486,27 +494,58 @@ class TransformStep(PipelineStep):
 
         return output
 
+
 class RENAMUCCPPPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        table_name = params["table_name"]
+        level = params["level"]
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         transform_step = TransformStep()
-        load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
-                             pk=PRIMARY_KEYS[params.get('level')], dtype=DTYPES[params.get('level')],
-                             nullable_list=NULLABLE_LISTS[params.get('level')])
 
-        return [transform_step, load_step]
+        agg_step = AggregatorStep(table_name, measures=[
+            'CCPP_1', 'CCPP_2', 'CCPP_3', 'CCPP_4', 'CCPP_5', 'CCPP_6', 'CCPP_7', 'CCPP_8', 'CCPP_9', 'CCPP_10', 'CCPP_11', 
+            'CCPP_12', 'CCPP_13', 'CCPP_14', 'CCPP_15', 'CCPP_16', 'CCPP_17', 'CCPP_18', 'CCPP_19', 'CCPP_20', 'CCPP_21', 'CCPP_22', 
+            'CCPP_23', 'CCPP_24', 'CCPP_25', 'CCPP_26', 'CCPP_27', 'CCPP_28', 'CCPP_29', 'CCPP_30', 'CCPP_31', 'CCPP_32', 'CCPP_33', 
+            'CCPP_34', 'CCPP_35', 'CCPP_36', 'CCPP_37', 'CCPP_38', 'CCPP_39', 'CCPP_40', 'CCPP_41', 'CCPP_42', 'CCPP_43', 'CCPP_44', 
+            'CCPP_45', 'CCPP_46', 'CCPP_47', 'CCPP_48', 'CCPP_49', 'CCPP_50', 'CCPP_51', 'CCPP_52', 'CCPP_53', 'CCPP_54', 'CCPP_55', 
+            'CCPP_56', 'CCPP_57', 'CCPP_58', 'CCPP_59', 'CCPP_60', 'CCPP_61', 'CCPP_62', 'CCPP_63', 'CCPP_64', 'CCPP_65', 'CCPP_66', 
+            'CCPP_67', 'CCPP_68', 'CCPP_69', 'CCPP_70', 'CCPP_71', 'CCPP_72', 'CCPP_73', 'CCPP_74', 'CCPP_75', 'CCPP_76', 'CCPP_77', 
+            'CCPP_78', 'CCPP_79', 'CCPP_80', 'CCPP_81', 'CCPP_82', 'CCPP_83', 'CCPP_84', 'CCPP_85', 'CCPP_86', 'CCPP_87', 'CCPP_88', 
+            'CCPP_89', 'CCPP_90'
+        ])
+
+        load_step = LoadStep(table_name, db_connector, if_exists='drop',
+                             pk=PRIMARY_KEYS[level], dtype=DTYPES[level],
+                             nullable_list=NULLABLE_LISTS[level])
+
+        if level == "fact_table":
+
+            return [transform_step, agg_step, load_step]
+
+        else:
+
+            return [transform_step, load_step]
+
+
+def run_pipeline(params):
+    pp = RENAMUCCPPPipeline()
+    levels = {
+        "dimension_table": "dim_shared_populated_centers",
+        "fact_table": "inei_renamu_populated_centers",
+    }
+
+    for k, v in levels.items():
+        pp_params = {"level": k, "table_name": v}
+        pp_params.update(params)
+        pp.run(pp_params)
 
 if __name__ == "__main__":
-    pp = RENAMUCCPPPipeline()
-
-    for k, v in {
-        'dimension_table':  'dim_shared_populated_centers',
-        'fact_table': 'inei_renamu_populated_centers'
-            }.items():
-        pp.run({
-            'level': k,
-            'table_name': v
-        })
+    import sys
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

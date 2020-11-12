@@ -1,16 +1,19 @@
 import re
 import pandas as pd
+import os
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
 from etl.survey_indicators.helpers import join_files
-from static import COLUMNS_RENAME, REPLACE_DICT
-from shared import ReplaceStep
+from .static import COLUMNS_RENAME, REPLACE_DICT
+from .shared import ReplaceStep
+
+from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        data = pd.ExcelFile('../../../datasets/20201007/03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))/01 Encuesta Nacional de Habilidades al Trabajo (ENHAT) (06-10-2020)/061020 ENHAT_Indicadores.xlsx')
+        data = pd.ExcelFile(os.path.join(params['datasets'], '20201007', '03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))', '01 Encuesta Nacional de Habilidades al Trabajo (ENHAT) (06-10-2020)', '061020 ENHAT_Indicadores.xlsx'))
 
         nation = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
         nation.remove('IND_66_A')
@@ -51,7 +54,7 @@ class ENHATPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dtype = {
             'nation_id':        'String',
@@ -69,13 +72,25 @@ class ENHATPipeline(EasyPipeline):
         transform_step = TransformStep()
         replace_step = ReplaceStep()
         format_step = FormatStep()
+
+        agg_step = AggregatorStep('inei_enhat', measures=['estimate', 'coef_var', 'popul_size'])
+
         load_step = LoadStep('inei_enhat', db_connector, if_exists='drop', 
                              pk=['nation_id', 'industry_id', 'size_id', 'workforce_id', 'year'], dtype=dtype,
                              nullable_list=['coef_var'])
 
-        return [transform_step, replace_step, format_step, load_step]
+        return [transform_step, replace_step, format_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = ENHATPipeline()
+    pp.run(params)
+
 
 if __name__ == "__main__":
-    pp = ENHATPipeline()
-    pp.run({})
-        
+    import sys
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

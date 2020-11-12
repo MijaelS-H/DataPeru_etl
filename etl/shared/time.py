@@ -50,7 +50,7 @@ class DimTimeDatePipeline(EasyPipeline):
     @staticmethod
     def steps(params):
         # Use of connectors specified in the conns.yaml file
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "quarter_id":       "UInt16",
@@ -69,8 +69,17 @@ class DimTimeDatePipeline(EasyPipeline):
         
         return [create_step, load_step]
 
-if __name__ == "__main__":
-
+def run_pipeline(params: dict):
     pp = DimTimeDatePipeline()
-    pp.run({})
-    
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

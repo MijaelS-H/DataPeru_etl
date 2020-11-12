@@ -9,15 +9,15 @@ from bamboo_lib.steps import LoadStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        
+
         df = pd.DataFrame({'nation_id': ['per'], 'nation_name': ['Perú']})
 
         return df
 
-class UbigeoPipeline(EasyPipeline):
+class Ubigeo_Nation_Pipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             'nation_id': 'String',
@@ -31,7 +31,17 @@ class UbigeoPipeline(EasyPipeline):
 
         return [transform_step, load_step]
 
-if __name__ == "__main__":
+def run_pipeline(params: dict):
+    pp = Ubigeo_Nation_Pipeline()
+    pp.run(params)
 
-    pp = UbigeoPipeline()
-    pp.run({})
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

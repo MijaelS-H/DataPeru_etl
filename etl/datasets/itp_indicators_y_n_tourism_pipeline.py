@@ -1,30 +1,23 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir, query_to_df
+from bamboo_lib.helpers import query_to_df
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
-path1 = grab_parent_dir("../../") + "/datasets/20200318"
-path2 = grab_parent_dir("../../") + "/datasets/anexos"
-
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-
         dim_country_query = "SELECT * FROM dim_shared_country"
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         countries = query_to_df(db_connector, raw_query=dim_country_query)
 
-        df1_1 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.147.xls"), sheet_name = "19.2 (c)", skiprows = (0,1,2,3), usecols = "A:K")[3:44]
-        df1_2 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.147.xls"), sheet_name = "19.2 (d)", skiprows = (0,1,2,3), usecols = "A:K")[2:45]
-
-        df2_1 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.149.xls"), sheet_name = "cap22005c", skiprows = (0,1,2,3))[3:45]
-        df2_2 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.149.xls"), sheet_name = "cap22005d", skiprows = (0,1,2,3))[2:37]
-
-        df_3 = pd.read_excel(io = "{}/{}/{}".format(path1, "A. Economía", "A.154.xls"), skiprows = (0,1,2), usecols = "A:D,F:H,J:L,N:P,R:T,V:X,Z:AB")[5:52]
+        df1_1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.147.xls"), sheet_name = "19.2 (c)", skiprows = (0,1,2,3), usecols = "A:K")[3:44]
+        df1_2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.147.xls"), sheet_name = "19.2 (d)", skiprows = (0,1,2,3), usecols = "A:K")[2:45]
+        df2_1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.149.xls"), sheet_name = "cap22005c", skiprows = (0,1,2,3))[3:45]
+        df2_2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.149.xls"), sheet_name = "cap22005d", skiprows = (0,1,2,3))[2:37]
+        df_3 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.154.xls"), skiprows = (0,1,2), usecols = "A:D,F:H,J:L,N:P,R:T,V:X,Z:AB")[5:52]
 
         df1 = df1_1.append(df1_2, sort = True)
         df2 = df2_1.append(df2_2, sort = True)
@@ -47,8 +40,8 @@ class TransformStep(PipelineStep):
             df_[i]["year"] = 2012 + i
             df3 = df3.append(df_[i])
 
-        df1.rename(columns ={"Zona Geográfica y": "country_name_es"}, inplace = True)
-        df2.rename(columns ={"Zona Geográfica y": "country_name_es"}, inplace = True)
+        df1.rename(columns = {"Zona Geográfica y": "country_name_es"}, inplace = True)
+        df2.rename(columns = {"Zona Geográfica y": "country_name_es"}, inplace = True)
 
         df1.iloc[16, df1.columns.get_loc("country_name_es")] = "Otros C"
         df1.iloc[27, df1.columns.get_loc("country_name_es")] = "Otros S"
@@ -108,7 +101,7 @@ class itp_indicators_y_n_tourism_pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
             "ubigeo":                                                 "String",
@@ -122,14 +115,24 @@ class itp_indicators_y_n_tourism_pipeline(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_y_n_tourism", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["iso3", "n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros",
-            "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]
-        )
+        agg_step = AggregatorStep("itp_indicators_y_n_tourism", measures=["n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"])
+        load_step = LoadStep("itp_indicators_y_n_tourism", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+                    nullable_list=["iso3", "n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros",
+                    "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = itp_indicators_y_n_tourism_pipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = itp_indicators_y_n_tourism_pipeline()
-    pp.run({})
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

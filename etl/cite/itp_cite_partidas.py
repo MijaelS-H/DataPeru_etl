@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
+from os import path
 from functools import reduce
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
@@ -9,18 +10,18 @@ from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
+from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-
-        df = pd.read_excel('../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/07 PARTIDAS ARANCELARIAS/TABLA_08_N01 (18-10-2020).xlsx')
+        df = pd.read_excel(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "07 PARTIDAS ARANCELARIAS", "TABLA_08_N01 (18-10-2020).xlsx"))
 
         df = df[df['cite'].notna()]
         df = df.rename(columns={'descripcion_partida ' : 'descripcion_partida','partida_arancelaria' : 'partida_id','tipo_exportación' : 'tipo_exportacion'})
         df['descripcion_partida'] = df['descripcion_partida'].str.capitalize()
         df['tipo_exportacion'] = df['tipo_exportacion'].str.capitalize()
         df['sector'] = df['sector'].str.capitalize()
-        df['hs6_id'] = df['partida_id'].astype(str).str[:-6].str.zfill(6)
+        df['hs10_id'] = df['partida_id'].astype(int).astype(str).str.zfill(10)
         df['cantidad_cite'] = 1
         df['cadena_productiva'] = df['cadena_productiva'].str.strip()
         
@@ -42,7 +43,7 @@ class TransformStep(PipelineStep):
         df['cad_prod_id'] = df['cadena_productiva'].map(cadena_productiva_map)
 
         df[['cite_id','sector_id','cad_prod_id','tipo_exp_id','cantidad_cite']] = df[['cite_id','sector_id','cad_prod_id','tipo_exp_id','cantidad_cite']].astype(int)
-        df = df[['cite_id','sector_id','cad_prod_id','hs6_id','tipo_exp_id','cantidad_cite']]
+        df = df[['cite_id','sector_id','cad_prod_id','hs10_id','tipo_exp_id','cantidad_cite']]
 
     
         return df
@@ -50,41 +51,38 @@ class TransformStep(PipelineStep):
 class CitePartidasPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
-        return [
-            Parameter("output-db", dtype=str),
-            Parameter("ingest", dtype=bool)
-        ]
+        return []
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtypes = {
             'cite_id':                'UInt8',
             'sector_id':              'UInt8',
             'cad_prod_id':            'UInt8',
-            'hs6_id':                 'String',
+            'hs10_id':                 'String',
             'tipo_exp_id':            'UInt8',
             'cantidad_cite':          'UInt8',
          }
 
-        transform_step = TransformStep()  
-        load_step = LoadStep(
-          'itp_cite_partidas', connector=db_connector, if_exists='drop',
-          pk=['cite_id'], dtype=dtypes, nullable_list=[])
+        transform_step = TransformStep()
+        agg_step = AggregatorStep('itp_cite_partidas', measures=['cantidad_cite'])
+        load_step = LoadStep('itp_cite_partidas', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes)
 
-        if params.get("ingest")==True:
-            steps = [transform_step, load_step]
-        else:
-            steps = [transform_step]
+        return [transform_step, agg_step, load_step]
 
-        return steps
+def run_pipeline(params: dict):
+    pp = CitePartidasPipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    cite_partidas_pipeline = CitePartidasPipeline()
-    cite_partidas_pipeline.run(
-        {
-            "output-db": "clickhouse-local",
-            "ingest": True
-        }
-    )
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

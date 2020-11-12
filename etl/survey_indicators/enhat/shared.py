@@ -23,7 +23,7 @@ class ReplaceStep(PipelineStep):
         
         dim_industry_query = 'SELECT section_id, section_name FROM dim_shared_ciiu'
 
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dim_industry = query_to_df(db_connector, raw_query=dim_industry_query)
         dim_industry.drop_duplicates(subset=['section_id', 'section_name'], inplace=True)

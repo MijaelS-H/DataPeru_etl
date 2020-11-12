@@ -1,26 +1,21 @@
+from os import path
 import pandas as pd
-from bamboo_lib.helpers import grab_parent_dir
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
-from bamboo_lib.steps import LoadStep
-path = grab_parent_dir("../../") + "/datasets/20200318"
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
+from bamboo_lib.steps import DownloadStep, LoadStep
+from etl.consistency import AggregatorStep
 
+month_dict = {"Enero": "01", "Febrero": "02", "Marzo": "03", "Abril": "04", "Mayo": "05", "Junio": "06", "Julio": "07", "Agosto": "08", "Septiembre": "09", "Setiembre": "09", "Octubre": "10", "Noviembre": "11", "Diciembre": "12", "Ene": "01", "Feb": "02", "Mar": "03", "Abr": "04", "May": "05", "Jun": "06", "Jul": "07", "Ago": "08", "Set": "09", "Set": "09", "Oct": "10", "Nov": "11", "Dic": "12"}
+df_columns = ["year", "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac", "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal", "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"]
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-
-        month_dict = {"Enero": "01", "Febrero": "02", "Marzo": "03", "Abril": "04", "Mayo": "05", "Junio": "06", "Julio": "07", "Agosto": "08", "Septiembre": "09", "Setiembre": "09", "Octubre": "10", "Noviembre": "11", "Diciembre": "12", "Ene": "01", "Feb": "02", "Mar": "03", "Abr": "04", "May": "05", "Jun": "06", "Jul": "07", "Ago": "08", "Set": "09", "Set": "09", "Oct": "10", "Nov": "11", "Dic": "12"}
-        df_columns = ["year", "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac", "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal", "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"]
-
         # Loading data
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.158.xlsx"), skiprows = (0,1,2))
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.159.xlsx"), skiprows = (0,1,2))
+        df1 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.158.xlsx"), skiprows = (0,1,2))
+        df2 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.159.xlsx"), skiprows = (0,1,2))
 
-        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.166.xlsx"), skiprows = (0,1,2,4), usecols = "A:O")[0:12]
-        df4 = pd.read_excel(io = "{}/{}/{}".format(path, "A. Economía", "A.156.xls"), skiprows = (0,1,2), usecols = "A,C:F,H:P")[24:102]
+        df3 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.166.xlsx"), skiprows = (0,1,2,4), usecols = "A:O")[0:12]
+        df4 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.156.xls"), skiprows = (0,1,2), usecols = "A,C:F,H:P")[24:102]
 
         # Common steps
         for item in [df1,df2]:
@@ -57,7 +52,6 @@ class TransformStep(PipelineStep):
         df = pd.merge(df,  df3[["month_id", "perc_morosidad_credi_banca_mult"]], on = "month_id", how = "left")
         df = pd.merge(df,  df4[["month_id", "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac", "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal", "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"]], on = "month_id", how = "left")
 
-
         for i in df.columns:
             df[i] = df[i].astype(float)
 
@@ -73,7 +67,7 @@ class itp_indicators_m_n_nat_pipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
             "ubigeo":                                           "String",
             "month_id":                                         "UInt16",
@@ -101,17 +95,27 @@ class itp_indicators_m_n_nat_pipeline(EasyPipeline):
             }
 
         transform_step = TransformStep()
-        load_step = LoadStep(
-            "itp_indicators_m_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
-            nullable_list=["ipc_base_2011_observado", "ipc_base_2011_var_mes_anterior", "ipc_base_2011_var_acumulado", "ipc_base_2011_var_anio_anterior", 
-            "ipm_base_2013_observado", "ipm_base_2013_var_mes_anterior", "ipm_base_2013_var_acumulado", "perc_morosidad_credi_banca_mult",
-            "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac",
-            "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal",
-            "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"]
-        )
+        agg_step = AggregatorStep("itp_indicators_m_n_nat", measures=["ipc_base_2011_observado", "ipc_base_2011_var_mes_anterior", "ipc_base_2011_var_acumulado", "ipc_base_2011_var_anio_anterior", "ipm_base_2013_observado", "ipm_base_2013_var_mes_anterior", "ipm_base_2013_var_acumulado", "perc_morosidad_credi_banca_mult", "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac", "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal", "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"])
+        load_step = LoadStep("itp_indicators_m_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+                    nullable_list=["ipc_base_2011_observado", "ipc_base_2011_var_mes_anterior", "ipc_base_2011_var_acumulado", "ipc_base_2011_var_anio_anterior", 
+                    "ipm_base_2013_observado", "ipm_base_2013_var_mes_anterior", "ipm_base_2013_var_acumulado", "perc_morosidad_credi_banca_mult",
+                    "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac",
+                    "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal",
+                    "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"])
 
-        return [transform_step, load_step]
+        return [transform_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = itp_indicators_m_n_nat_pipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = itp_indicators_m_n_nat_pipeline()
-    pp.run({})
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

@@ -1,5 +1,7 @@
 import pandas as pd
-from static import FOLDER
+import os
+from .static import FOLDER
+
 
 def get_dimension(df, target_column):
     dimension = df[[target_column]].drop_duplicates().copy()
@@ -11,11 +13,11 @@ def get_dimension(df, target_column):
     return dimension
 
 def return_dimension(prefix, target_column):
-    df = pd.read_csv('{}/G_{}_dim_{}.csv'.format(FOLDER, prefix, target_column))
+    df = pd.read_csv(os.path.join('etl', 'presupuesto', '{}'.format(FOLDER), 'G_{}_dim_{}.csv'.format(prefix, target_column)))
     return df
 
 def process_exceptions(target_column, levels, folder):
-    df = pd.read_csv('{}/dim_{}.csv'.format(folder, target_column))
+    df = pd.read_csv(os.path.join('{}'.format(folder), 'dim_{}.csv'.format(target_column)))
     df['name'] = df[target_column]
     temp = df[['name', target_column]].copy()
     temp.drop_duplicates(inplace=True)
@@ -23,5 +25,5 @@ def process_exceptions(target_column, levels, folder):
         .str.replace('ã', 'ñ').str.replace('ã', 'ó').str.replace('ã', 'á').str.title()
     temp['id'] = range(1, len(temp['name']) + 1)
     for prefix in levels:
-        temp.to_csv('{}/G_{}_dim_{}.csv'.format(folder, prefix, target_column), index=False)
+        temp.to_csv(os.path.join('{}'.format(folder), 'G_{}_dim_{}.csv'.format(prefix, target_column)), index=False)
     print('Success!: {}'.format(target_column))

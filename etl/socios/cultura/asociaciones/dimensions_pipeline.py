@@ -2,8 +2,8 @@ import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import LoadStep
-from cultura_asociaciones import TransformStep
-from shared import ReplaceStep
+from etl.socios.cultura.asociaciones.cultura_asociaciones import TransformStep
+from etl.socios.cultura.asociaciones.shared import ReplaceStep
 
 
 class ProcessingStep(PipelineStep):
@@ -13,24 +13,25 @@ class ProcessingStep(PipelineStep):
         if params.get('pk') == 'codigo_asociacion':
             df = pd.DataFrame.from_dict(asociacion_dim, orient='index').reset_index()
             df.columns = ['codigo_asociacion', 'asociacion_name']
-            
+
             return df
+
         elif (params.get('pk') == 'manifestacion_n_1_id'):
             df = pd.DataFrame.from_dict(manifestacion_n_1_dim, orient='index').reset_index()
             df.columns = ['manifestacion_n_1_name', 'manifestacion_n_1_id']
-            
+
             return df
-        
+
         elif (params.get('pk') == 'manifestacion_n_2_id'):
             df = pd.DataFrame.from_dict(manifestacion_n_2_dim, orient='index').reset_index()
             df.columns = ['manifestacion_n_2_name', 'manifestacion_n_2_id']
-            
+
             return df
-        
+
         elif (params.get('pk') == 'manifestacion_n_3_id'):
             df = pd.DataFrame.from_dict(manifestacion_n_3_dim, orient='index').reset_index()
             df.columns = ['manifestacion_n_3_name', 'manifestacion_n_3_id']
-            
+
             return df
 
 class DimAsociacionesPipeline(EasyPipeline):
@@ -44,9 +45,9 @@ class DimAsociacionesPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
-        if (k == 'codigo_asociacion'):
+        if (params['pk'] == 'codigo_asociacion'):
             dtype = {
                 params.get('pk'): 'String'
             }
@@ -63,12 +64,26 @@ class DimAsociacionesPipeline(EasyPipeline):
 
         return [transform_step, replace_step, processing_step, load_step]
 
-if __name__ == "__main__":
+def run_pipeline(params: dict):
     pp = DimAsociacionesPipeline()
-    for k, v in {'codigo_asociacion':    'dim_asociaciones_culturales',
+    levels = {'codigo_asociacion':    'dim_asociaciones_culturales',
                 'manifestacion_n_1_id':  'dim_asociaciones_culturales_manifestacion_n_1',
                 'manifestacion_n_2_id':  'dim_asociaciones_culturales_manifestacion_n_2',
-                'manifestacion_n_3_id':  'dim_asociaciones_culturales_manifestacion_n_3',
-                 }.items():
-        pp.run({'pk': k,
-                'table_name': v})
+                'manifestacion_n_3_id':  'dim_asociaciones_culturales_manifestacion_n_3'}
+
+    for k, v in levels.items():
+        pp_params = {'pk': k, 'table_name': v}
+        pp_params.update(params)
+        pp.run(pp_params)
+
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

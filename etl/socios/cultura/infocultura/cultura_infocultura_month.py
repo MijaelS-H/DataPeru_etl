@@ -7,8 +7,10 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
 from pandas.io.json import json_normalize
-from static import MONTHS_DICT, query, parameters
-from shared_month import ReplaceStep
+from .static import MONTHS_DICT, query, parameters
+from etl.socios.cultura.infocultura.shared_month import ReplaceStep
+
+from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -203,11 +205,11 @@ class FormatStep(PipelineStep):
         df['nation_id'] = df['nation_id'].astype(str)
         return df
 
-class InfoCulturaPipeline(EasyPipeline):
+class InfoCulturaMonthPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dtype = {
             'month_id':                'UInt32',
@@ -222,14 +224,24 @@ class InfoCulturaPipeline(EasyPipeline):
         transform_step = TransformStep()
         replace_step = ReplaceStep()
         format_step = FormatStep()
+
+        agg_step = AggregatorStep('cultura_infocultura_month', measures=["response"])
         
         load_step = LoadStep('cultura_infocultura_month', db_connector, if_exists='drop', 
                             pk=['department_id'], dtype=dtype, nullable_list = ['subcategory_id', 'response'])
 
-        return [transform_step, replace_step, format_step, load_step]
+        return [transform_step, replace_step, format_step, agg_step, load_step]
 
 
+def run_pipeline(params: dict):
+    pp = InfoCulturaMonthPipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = InfoCulturaPipeline()
-    pp.run({})
+    import sys
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

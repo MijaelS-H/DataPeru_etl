@@ -263,9 +263,7 @@ class TransformStep(PipelineStep):
 
         df = df[['id', 'country', 'continent', 'oecd']].copy()
 
-        df.rename(columns={'continent': 'continent_id',
-                        'country': 'country_name',
-                        'id': 'iso3'}, inplace=True)
+        df.rename(columns={'continent': 'continent_id', 'country': 'country_name', 'id': 'iso3'}, inplace=True)
 
         df['continent'] = df['continent_id']
         df['continent_es'] = df['continent_id']
@@ -311,27 +309,38 @@ class TransformStep(PipelineStep):
 class CountryPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
-            'iso2':            'String',
-            'iso3':            'String', 
-            'country_name':    'String',
-            'country_name_es': 'String',
-            'continent_id':    'String',
-            'continent':       'String',
-            'continent_es':    'String',
-            'oecd':            'UInt8'
+            'iso2':                 'String',
+            'iso3':                 'String',
+            'country_name':         'String',
+            'country_name_es':      'String',
+            'continent_id':         'String',
+            'continent':            'String',
+            'continent_es':         'String',
+            'oecd':                 'UInt8'
         }
-        
+
         transform_step = TransformStep()
-        load_step = LoadStep('dim_shared_country', db_connector, if_exists='drop', pk=['iso3', 'continent_id'], 
-                            dtype=dtype, engine='ReplacingMergeTree', 
+        load_step = LoadStep('dim_shared_country', db_connector, if_exists='drop', pk=['iso3', 'continent_id'],
+                            dtype=dtype, engine='ReplacingMergeTree',
                             nullable_list=['iso2', 'id_num', 'continent', 'continent_es'])
 
         return [transform_step, load_step]
 
-if __name__ == '__main__':
+def run_pipeline(params: dict):
     pp = CountryPipeline()
-    pp.run({})
+    pp.run(params)
+
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

@@ -1,15 +1,17 @@
 import re
 import pandas as pd
+from os import path
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from shared import ReplaceStep
+from etl.socios.cultura.asociaciones.shared import ReplaceStep
+from etl.consistency import AggregatorStep
 
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        
-        data = pd.ExcelFile("../../../../datasets/20201018/05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)/01. Información Dirección de Industrias Culturales (18-10-2020)/01. Puntos de Cultura_2020_DataPeru.xlsx")
+
+        data = pd.ExcelFile(path.join(params["datasets"],"20201018", "05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)", "01. Información Dirección de Industrias Culturales (18-10-2020)", "01. Puntos de Cultura_2020_DataPeru.xlsx"))
         sheet = data.sheet_names[1]
         df = pd.read_excel(data, data.sheet_names[1])
 
@@ -29,7 +31,7 @@ class TransformStep(PipelineStep):
             ]:
 
             df[column] = df[column].str.strip()
-    
+
         df  = df.rename(columns = {"Código" : "codigo_asociacion", "¿La organización está inscrita en SUNARP?" : "inscrita_sunarp_id", 
         "Actividad realizada N° 1" : "actividad_n_1_id",  "Actividad realizada N° 2" : "actividad_n_2_id", "Manifestación artística cultural N° 1": "manifestacion_n_1_id", 
         "Manifestación artística cultural N° 2": "manifestacion_n_2_id", "Manifestación artística cultural N° 3": "manifestacion_n_3_id","Distrito" : 
@@ -55,13 +57,12 @@ class FormatStep(PipelineStep):
        'cantidad_asociacion', 'anio_fundacion', 'cantidad_miembros']].copy()
 
         # column types
-
         df[['inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
        'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id', 'cantidad_miembros']] = df[['inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
-       'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id', 'cantidad_miembros']].fillna(0)
+       'manifestacion_n_1_id', 'manifestacion_n_2_id', 'manifestacion_n_3_id', 'cantidad_miembros']].astype(float).fillna(0)
 
         df['inscrita_sunarp_id'] = df['inscrita_sunarp_id'].astype(int).replace({0: 2})
-        df['anio_fundacion'] = df['anio_fundacion'].astype(float).astype(pd.Int32Dtype())
+        df['anio_fundacion'] = df['anio_fundacion'].astype(float).fillna(0)
 
         df[[
         'inscrita_sunarp_id', 'actividad_n_1_id', 'actividad_n_2_id',
@@ -77,7 +78,7 @@ class AsociacionPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             'codigo_asociacion':                    'String',
@@ -95,12 +96,24 @@ class AsociacionPipeline(EasyPipeline):
 
         transform_step = TransformStep()
         replace_step = ReplaceStep(connector=db_connector)
+        agg_step = AggregatorStep('cultura_asociaciones', measures=['cantidad_asociacion', 'cantidad_miembros'])
         format_step = FormatStep()
-        load_step = LoadStep('cultura_asociaciones', db_connector, if_exists='drop', 
-                             pk=['district_id'], dtype=dtype, nullable_list=['anio_fundacion'])
+        load_step = LoadStep('cultura_asociaciones', db_connector, if_exists='drop', pk=['district_id'], dtype=dtype,
+                            nullable_list=['anio_fundacion'])
 
-        return [transform_step, replace_step, format_step, load_step]
+        return [transform_step, replace_step, format_step, agg_step, load_step]
+
+def run_pipeline(params: dict):
+    pp = AsociacionPipeline()
+    pp.run(params)
 
 if __name__ == "__main__":
-    pp = AsociacionPipeline()
-    pp.run({})
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

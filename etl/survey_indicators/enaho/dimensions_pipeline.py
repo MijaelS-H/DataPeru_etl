@@ -1,10 +1,10 @@
-
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import LoadStep
-from etl.survey_indicators.enaho.enaho_pipeline import TransformStep
-from shared import ReplaceStep
+
+from .enaho_pipeline import TransformStep
+from .shared import ReplaceStep
 
 
 class ProcessingStep(PipelineStep):
@@ -31,7 +31,7 @@ class ProcessingStep(PipelineStep):
             df.dropna(inplace=True)
             return df
 
-class DimsPipeline(EasyPipeline):
+class DimENAHOPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return[
@@ -42,7 +42,7 @@ class DimsPipeline(EasyPipeline):
     @staticmethod
     def steps(params):
 
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params['connector']))
 
         dtype = {
             params.get('pk'): 'UInt8'
@@ -51,16 +51,30 @@ class DimsPipeline(EasyPipeline):
         transform_step = TransformStep()
         replace_step = ReplaceStep(connector=db_connector)
         processing_step = ProcessingStep()
-        load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop', 
+        load_step = LoadStep(params.get('table_name'), db_connector, if_exists='drop',
                              pk=[params.get('pk')], dtype=dtype)
 
         return [transform_step, replace_step, processing_step, load_step]
 
+
+def run_pipeline(params: dict):
+    pp = DimENAHOPipeline()
+    levels = {
+        'category_id':  'dim_category_enaho',
+        'indicator_id': 'dim_indicator_enaho',
+        'region_id': 'dim_region_enaho',
+        'geo_id': 'dim_geo_enaho',
+    }
+
+    for k, v in levels.items():
+        pp.run({'pk': k, 'table_name': v, **params})
+
+
 if __name__ == "__main__":
-    pp = DimIndustryPipeline()
-    for k, v in {'category_id':  'dim_category_ene',
-                 'indicator_id': 'dim_indicator_ene',
-                 'region_id': 'dim_region_ene', 
-                 'geo_id': 'dim_geo_ene'}.items():
-        pp.run({'pk': k,
-                'table_name': v})
+    import sys
+    from os import path
+    __dirname = path.dirname(path.realpath(__file__))
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

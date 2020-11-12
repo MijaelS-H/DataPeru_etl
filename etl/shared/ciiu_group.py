@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from os import path
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
@@ -10,8 +11,8 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_csv('../../../datasets/anexos/ISIC_Rev_4_spanish_structure.txt', encoding='latin-1')
-        
+        df = pd.read_csv(path.join(params["datasets"],"anexos", "ISIC_Rev_4_spanish_structure.txt"), encoding='latin-1')
+
         sections = [
             ['A', 1, 3],
             ['B', 5, 9],
@@ -86,10 +87,10 @@ class TransformStep(PipelineStep):
 
         return df
 
-class CIIUPipeline(EasyPipeline):
+class CIIU_Group_Pipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             'section_id': 'String',
@@ -101,13 +102,21 @@ class CIIUPipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-
-        load_step = LoadStep(
-            "dim_shared_ciiu_group", db_connector, if_exists="drop", pk=["group_id"], dtype=dtype)
+        load_step = LoadStep("dim_shared_ciiu_group", db_connector, if_exists="drop", pk=["group_id"], dtype=dtype)
 
         return [transform_step, load_step]
 
-if __name__ == "__main__":
+def run_pipeline(params: dict):
+    pp = CIIU_Group_Pipeline()
+    pp.run(params)
 
-    pp = CIIUPipeline()
-    pp.run({})
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })

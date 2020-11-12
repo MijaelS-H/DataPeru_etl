@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from os import path
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
@@ -10,8 +11,9 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_excel('../../../datasets/anexos/2.Ubigeo_descripción.xlsx', header=2, usecols='B,E,F')
-        
+        # df = pd.read_excel('../../../datasets/anexos/2.Ubigeo_descripción.xlsx', header=2, usecols='B,E,F')
+        df = pd.read_excel(path.join(params["datasets"],"anexos", "2.Ubigeo_descripción.xlsx"), header=2, usecols='B,E,F')
+
         df.replace(' ', np.nan, inplace=True)
         df.dropna(inplace=True)
         df = df[df['DEPARTAMENTO'] != 'DEPARTAMENTO'].copy()
@@ -37,10 +39,10 @@ class TransformStep(PipelineStep):
 
         return df
 
-class UbigeoPipeline(EasyPipeline):
+class Ubigeo_Province_Pipeline(EasyPipeline):
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch('clickhouse-database', open('../conns.yaml'))
+        db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
             'nation_id': 'String',
@@ -58,7 +60,17 @@ class UbigeoPipeline(EasyPipeline):
 
         return [transform_step, load_step]
 
-if __name__ == "__main__":
+def run_pipeline(params: dict):
+    pp = Ubigeo_Province_Pipeline()
+    pp.run(params)
 
-    pp = UbigeoPipeline()
-    pp.run({})
+if __name__ == "__main__":
+    import sys
+    from os import path
+
+    __dirname = path.dirname(path.realpath(__file__))
+
+    run_pipeline({
+        "connector": path.join(__dirname, "..", "conns.yaml"),
+        "datasets": sys.argv[1]
+    })
