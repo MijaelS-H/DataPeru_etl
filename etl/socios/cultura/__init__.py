@@ -11,6 +11,7 @@ from .infocultura.dimensions_infocultura_year import run_pipeline as dim_infocul
 from .infocultura.cultura_infocultura_month import run_pipeline as infocultura_month
 from .infocultura.cultura_infocultura_year import run_pipeline as infocultura_year
 
+
 def run_pipeline(params: dict):
     dim_agentes_pipeline(params)
     cultura_pipeline_agentes(params)
@@ -18,18 +19,20 @@ def run_pipeline(params: dict):
     cultura_asociaciones_pipeline(params)
     dim_cine_pipeline(params)
     cultura_pipeline_cine(params)
-    dim_estimulos_eco_pipeline
-    cultura_pipeline_estimulos_eco
+    dim_estimulos_eco_pipeline(params)
+    cultura_pipeline_estimulos_eco(params)
     dim_infocultura_month(params)
     dim_infocultura_year(params)
     infocultura_month(params)
     infocultura_year(params)
 
+
 if __name__ == "__main__":
     import sys
     from os import path
+
     __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
         "connector": path.join(__dirname, "..", "..", "conns.yaml"),
-        "datasets": sys.argv[1]
+        "datasets": sys.argv[1],
     })
