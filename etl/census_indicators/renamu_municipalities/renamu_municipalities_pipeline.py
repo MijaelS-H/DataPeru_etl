@@ -1,4 +1,3 @@
-import sys
 import os
 import numpy as np
 import pandas as pd
@@ -1172,6 +1171,7 @@ def run_pipeline(params: dict):
 
 
 if __name__ == "__main__":
+    import sys
     from os import path
     __dirname = path.dirname(path.realpath(__file__))
     run_pipeline({
