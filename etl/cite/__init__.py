@@ -3,6 +3,7 @@ from .itp_cite_ejecucion_presupuestal import run_pipeline as itp_pipeline_ejecuc
 from .itp_cite_empresas_ciiu_agg import run_pipeline as itp_pipeline_empresas_ciiu_agg
 from .itp_cite_empresas_ciiu import run_pipeline as itp_pipeline_empresas_ciiu
 from .itp_cite_empresas_contribuyente_agg import run_pipeline as itp_pipeline_emp_contribuyentes_agg
+from .itp_cite_empresas_contribuyente import run_pipeline as itp_pipeline_emp_contribuyentes
 
 from .itp_cite_empresas_tipo_agg import run_pipeline as itp_pipeline_emp_tipo_agg
 from .itp_cite_empresas_tipo import run_pipeline as itp_pipeline_emp_tipo
@@ -22,6 +23,7 @@ def run_pipeline(params: dict):
     itp_pipeline_empresas_ciiu_agg(params)
     itp_pipeline_empresas_ciiu(params)
     itp_pipeline_emp_contribuyentes_agg(params)
+    itp_pipeline_emp_contribuyentes(params)
 
     itp_pipeline_emp_tipo_agg(params)
     itp_pipeline_emp_tipo(params)
