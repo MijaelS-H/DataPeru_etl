@@ -35,7 +35,9 @@ source venv/bin/activate
 
 Una vez generado el entorno virtual, es necesaria la instalacción de las dependencias requeridas:
 
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 
 ### run.py
 
@@ -57,7 +59,9 @@ El comando previamente mencionado, realizará una descarga del código actualmen
 
 Para acceder al contenido mediante la terminal previamente utilizada durante el proceso de clonación del repositorio es necesario ejecutar el siguiente comando, el cual modificará la ruta hacia la cual está apuntando actualmente la terminal en proceso.
 
-`cd dataperu-etl/`
+```
+cd dataperu-etl/
+```
 
 ### Creación de entorno virtual de Python
 
@@ -65,7 +69,7 @@ Comúnmente durante el proceso de desarrollo de aplicaciones o exploración de d
 
 Para la generación del entorno virtual se recomienda la ejecución de los siguientes comandos, posterior a la instalación de Python 3.7.9 en la terminal correspondiente, preferentemente de Ubuntu 18.04 LTS.
 
-```bash
+```
 sudo apt-get install python3-pip
 sudo pip3 install virtualenv
 
