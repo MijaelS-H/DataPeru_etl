@@ -23,10 +23,8 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame()
         renamu_versions = {}
 
-        year = 2015
-
         for folder in os.listdir(path):
-            if int(folder[-4:]) == year and year <= 2019:
+            if int(folder[-4:]) <= 2019:
                 print('Current year: {}'.format(int(folder[-4:])))
                 _df = pd.DataFrame()
                 for subfolder in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder))):
@@ -59,6 +57,7 @@ class TransformStep(PipelineStep):
                                 _df = _df.iloc[:, ~_df.columns.str.contains('_drop')]
                             else:
                                 _df = temp
+
 
                 _df['year'] = int(folder[-4:])
 
@@ -273,10 +272,9 @@ class TransformStep(PipelineStep):
 
                 renamu_versions[int(folder[-4:])] = _df
 
-                year += 1
-
         for item in renamu_versions:
             df = df.append(renamu_versions[item], sort=True)
+
 
         # Creates aditional geo levels
 
@@ -655,7 +653,7 @@ class TransformStep(PipelineStep):
         output_province['RENAMU_138'] = np.nan
         output_province['RENAMU_139'] = df_province['_RENAMU_138'] * 100 / df_province['count']
         output_province['RENAMU_140'] = np.nan
-        output_province['RENAMU_141'] = df_province['P56'] * 100 / df_province['count']
+        output_province['RENAMU_141'] = df_province['_RENAMU_140'] * 100 / df_province['count']
         output_province['RENAMU_142'] = df_province['P52_1']
         output_province['RENAMU_143'] = df_province['P53A_1']
         output_province['RENAMU_144'] = np.nan
@@ -849,7 +847,7 @@ class TransformStep(PipelineStep):
         output_department['RENAMU_138'] = np.nan
         output_department['RENAMU_139'] = df_department['_RENAMU_138'] * 100 / df_department['count']
         output_department['RENAMU_140'] = np.nan
-        output_department['RENAMU_141'] = df_department['P56'] * 100 / df_department['count']
+        output_department['RENAMU_141'] = df_department['_RENAMU_140'] * 100 / df_department['count']
         output_department['RENAMU_142'] = df_department['P52_1']
         output_department['RENAMU_143'] = df_department['P53A_1']
         output_department['RENAMU_144'] = np.nan
@@ -1043,7 +1041,7 @@ class TransformStep(PipelineStep):
         output_nation['RENAMU_138'] = np.nan
         output_nation['RENAMU_139'] = df_nation['_RENAMU_138'] * 100 / df_nation['count']
         output_nation['RENAMU_140'] = np.nan
-        output_nation['RENAMU_141'] = df_nation['P56'] * 100 / df_nation['count']
+        output_nation['RENAMU_141'] = df_nation['_RENAMU_140'] * 100 / df_nation['count']
         output_nation['RENAMU_142'] = df_nation['P52_1']
         output_nation['RENAMU_143'] = df_nation['P53A_1']
         output_nation['RENAMU_144'] = np.nan
