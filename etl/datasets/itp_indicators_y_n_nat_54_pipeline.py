@@ -58,7 +58,7 @@ class itp_indicators_y_n_nat_54(EasyPipeline):
 
         dtype = {
             "ubigeo":                                    "String",
-            "year":                                      "UInt8",
+            "year":                                      "UInt16",
             "sub_actividad_economica_id":                "String",
             "pib_54_2007":                               "UInt32",
             "pib_54_cte":                                "UInt32"
