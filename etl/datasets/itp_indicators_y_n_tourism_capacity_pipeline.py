@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
         df.dropna(axis=0, how="any", inplace = True)
         df["categoria"].replace({'5 Estrellas': 5, '4 Estrellas': 4, '3 Estrellas': 3, '2 Estrellas': 2,'1 Estrella': 1, 'Albergue': 6, 'Ecolodge': 7, 'No Categorizados': 8 }, inplace = True)
         df["year"] = df["year"].astype(int)
-        df["ubigeo"] = "per"
+        df["nation_id"] = "per"
 
         list_ = ["n_arribos_nacionales", "n_arribos_extranjeros", "n_pernoctaciones_nacionales", "n_pernoctaciones_extranjeros", "permanencia_prom_nacionales", "permanencia_prom_extranjeros", "tasa_ocupacion_hab", "tasa_ocupacion_camas", "year"]
         for item in list_:
@@ -38,7 +38,7 @@ class itp_indicators_y_n_tourism_capacity_pipeline(EasyPipeline):
     def steps(params):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
-            "ubigeo":                                   "String",
+            "nation_id":                                   "String",
             "categoria":                                "UInt8",
             'n_arribos_nacionales':                     "UInt32",
             'n_arribos_extranjeros':                    "UInt32",
@@ -53,7 +53,7 @@ class itp_indicators_y_n_tourism_capacity_pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         agg_step = AggregatorStep("itp_indicators_y_n_tourism_capacity", measures=["n_arribos_nacionales", "n_arribos_extranjeros", "n_pernoctaciones_nacionales", "n_pernoctaciones_extranjeros", "permanencia_prom_nacionales", "permanencia_prom_extranjeros", "tasa_ocupacion_hab", "tasa_ocupacion_camas"])
-        load_step = LoadStep("itp_indicators_y_n_tourism_capacity", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype)
+        load_step = LoadStep("itp_indicators_y_n_tourism_capacity", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
         return [transform_step, agg_step, load_step]
 

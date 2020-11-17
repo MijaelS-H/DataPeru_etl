@@ -42,7 +42,7 @@ class TransformStep(PipelineStep):
         df["pib_54_2007"] = df["pib_54_2007"].astype(int)
         df["pib_54_cte"] = df["pib_54_cte"].astype(int)
 
-        df["ubigeo"] = "per"
+        df["nation_id"] = "per"
         return df
 
 class itp_indicators_y_n_nat_54(EasyPipeline):
@@ -57,7 +57,7 @@ class itp_indicators_y_n_nat_54(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
-            "ubigeo":                                    "String",
+            "nation_id":                                    "String",
             "year":                                      "UInt16",
             "sub_actividad_economica_id":                "String",
             "pib_54_2007":                               "UInt32",
@@ -66,7 +66,7 @@ class itp_indicators_y_n_nat_54(EasyPipeline):
 
         transform_step = TransformStep()
         agg_step = AggregatorStep("itp_indicators_y_n_nat_54", measures=["pib_54_2007", "pib_54_cte"])
-        load_step = LoadStep("itp_indicators_y_n_nat_54", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype)
+        load_step = LoadStep("itp_indicators_y_n_nat_54", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
         return [transform_step, agg_step, load_step]
 

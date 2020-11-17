@@ -34,7 +34,7 @@ class TransformStep(PipelineStep):
         df["year"] = df["year"].astype(int)
         df["produccion_industrial_anual"] = df["produccion_industrial_anual"].astype(float)
 
-        df["ubigeo"] = "per"
+        df["nation_id"] = "per"
 
         return df
 
@@ -48,7 +48,7 @@ class itp_indicators_y_n_prod_ciiu_group_pipeline(EasyPipeline):
     def steps(params):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
-            "ubigeo":                                   "String",
+            "nation_id":                                   "String",
             "group_id":                                 "String",
             "product_name":                             "String",
             "unit":                                     "String",
@@ -58,7 +58,7 @@ class itp_indicators_y_n_prod_ciiu_group_pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         agg_step = AggregatorStep("itp_indicators_y_n_prod_ciiu_group", measures=["produccion_industrial_anual"])
-        load_step = LoadStep("itp_indicators_y_n_prod_ciiu_group", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["produccion_industrial_anual"])
+        load_step = LoadStep("itp_indicators_y_n_prod_ciiu_group", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype, nullable_list=["produccion_industrial_anual"])
 
         return [transform_step, agg_step, load_step]
 

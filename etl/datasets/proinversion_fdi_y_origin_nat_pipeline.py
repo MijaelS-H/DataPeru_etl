@@ -38,9 +38,9 @@ class TransformStep(PipelineStep):
         # Changing types to certain columns
         df["year"] = df["year"].astype(int)
         df["ied_millones_USD"] = df["ied_millones_USD"].astype(float)
-        df["ubigeo"] = "per"
+        df["nation_id"] = "per"
 
-        df = df[["ubigeo", "year", "ied_millones_USD", "iso3"]]
+        df = df[["nation_id", "year", "ied_millones_USD", "iso3"]]
 
         return df
 
@@ -55,7 +55,7 @@ class proinversion_fdi_y_origin_nat_pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
-            "ubigeo":                             "String",
+            "nation_id":                          "String",
             "year":                               "UInt16",
             "ied_millones_USD":                   "Float32",
             "iso3":                               "String"
@@ -63,7 +63,7 @@ class proinversion_fdi_y_origin_nat_pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         agg_step = AggregatorStep("proinversion_fdi_y_origin_nat", measures=["ied_millones_USD"])
-        load_step = LoadStep("proinversion_fdi_y_origin_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["iso3"])
+        load_step = LoadStep("proinversion_fdi_y_origin_nat", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype, nullable_list=["iso3"])
 
         return [transform_step, agg_step, load_step]
 

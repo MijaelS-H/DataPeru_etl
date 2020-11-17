@@ -55,7 +55,7 @@ class TransformStep(PipelineStep):
         for i in df.columns:
             df[i] = df[i].astype(float)
 
-        df["ubigeo"] = "per"
+        df["nation_id"] = "per"
 
         return df
 
@@ -69,7 +69,7 @@ class itp_indicators_m_n_nat_pipeline(EasyPipeline):
     def steps(params):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
-            "ubigeo":                                           "String",
+            "nation_id":                                           "String",
             "month_id":                                         "UInt16",
             "ipc_base_2011_observado":                          "Float32",
             "ipc_base_2011_var_mes_anterior":                   "Float32",
@@ -96,7 +96,7 @@ class itp_indicators_m_n_nat_pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         agg_step = AggregatorStep("itp_indicators_m_n_nat", measures=["ipc_base_2011_observado", "ipc_base_2011_var_mes_anterior", "ipc_base_2011_var_acumulado", "ipc_base_2011_var_anio_anterior", "ipm_base_2013_observado", "ipm_base_2013_var_mes_anterior", "ipm_base_2013_var_acumulado", "perc_morosidad_credi_banca_mult", "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac", "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal", "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"])
-        load_step = LoadStep("itp_indicators_m_n_nat", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+        load_step = LoadStep("itp_indicators_m_n_nat", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype, 
                     nullable_list=["ipc_base_2011_observado", "ipc_base_2011_var_mes_anterior", "ipc_base_2011_var_acumulado", "ipc_base_2011_var_anio_anterior", 
                     "ipm_base_2013_observado", "ipm_base_2013_var_mes_anterior", "ipm_base_2013_var_acumulado", "perc_morosidad_credi_banca_mult",
                     "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion", "museo_de_arte_italiano", "m_de_la_cultura_peruana", "z_arqueologica_m_sitio_Pachacamac",

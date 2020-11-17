@@ -21,7 +21,7 @@ class TransformStep(PipelineStep):
         df = pd.melt(df_, id_vars = ["sub_actividad_economica_id"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = 'year', value_name = "valor_agregado_bruto_cte_2007")
 
         df["year"] = df["year"].astype(int)
-        df["ubigeo"] = "per"
+        df["nation_id"] = "per"
 
         return df
 
@@ -35,7 +35,7 @@ class itp_indicators_y_n_manu_mill_soles_2007_pipeline(EasyPipeline):
     def steps(params):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
-            "ubigeo":                                   "String",
+            "nation_id":                                "String",
             "sub_actividad_economica_id":               "String",
             "valor_agregado_bruto_cte_2007":            "Float64",
             "year":                                     "UInt16",
@@ -43,7 +43,7 @@ class itp_indicators_y_n_manu_mill_soles_2007_pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         agg_step = AggregatorStep("itp_indicators_y_n_manu_mill_soles_2007", measures=["valor_agregado_bruto_cte_2007"])
-        load_step = LoadStep("itp_indicators_y_n_manu_mill_soles_2007", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype)
+        load_step = LoadStep("itp_indicators_y_n_manu_mill_soles_2007", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
         return [transform_step, agg_step, load_step]
 

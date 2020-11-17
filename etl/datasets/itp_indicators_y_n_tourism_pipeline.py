@@ -88,8 +88,8 @@ class TransformStep(PipelineStep):
         df = pd.merge(df, df_3[["code", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]], on = "code", how = "left", suffixes=("", "_drop"))
 
         df.replace("-", 0, inplace = True)
-        df["ubigeo"] = "per"
-        df = df[["ubigeo", "year", "iso3", "n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]]
+        df["nation_id"] = "per"
+        df = df[["nation_id", "year", "iso3", "n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"]]
 
         return df
 
@@ -104,7 +104,7 @@ class itp_indicators_y_n_tourism_pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
-            "ubigeo":                                                 "String",
+            "nation_id":                                                 "String",
             "year":                                                   "UInt16",
             "n_ingresos_turistas_internacionales":                    "UInt32",
             "n_salidas_turistas_internacionales":                     "UInt32",
@@ -116,7 +116,7 @@ class itp_indicators_y_n_tourism_pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         agg_step = AggregatorStep("itp_indicators_y_n_tourism", measures=["n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros", "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"])
-        load_step = LoadStep("itp_indicators_y_n_tourism", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, 
+        load_step = LoadStep("itp_indicators_y_n_tourism", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype, 
                     nullable_list=["iso3", "n_ingresos_turistas_internacionales", "n_salidas_turistas_internacionales", "arribos_turistas_extranjeros",
                     "prenoctacion_turistas_extranjeros", "permanencia_prom_noche_turistas_extranjeros"])
 

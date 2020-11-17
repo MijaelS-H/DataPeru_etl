@@ -52,7 +52,7 @@ class TransformStep(PipelineStep):
 
         df["sexo"].replace({"hombre": 1, "mujer": 2}, inplace = True)
 
-        df["ubigeo"] = "per"
+        df["nation_id"] = "per"
         return df
 
 class inei_population_y_gender_nat_travel_Pipeline(EasyPipeline):
@@ -65,7 +65,7 @@ class inei_population_y_gender_nat_travel_Pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
-            "ubigeo":                        "String",
+            "nation_id":                     "String",
             "year":                          "UInt16",
             "continente":                    "String",
             "inmigration_flow":              "UInt8",
@@ -75,7 +75,7 @@ class inei_population_y_gender_nat_travel_Pipeline(EasyPipeline):
 
         transform_step = TransformStep()
         agg_step = AggregatorStep("inei_population_y_gender_nat_travel", measures=["poblacion"])
-        load_step = LoadStep("inei_population_y_gender_nat_travel", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype)
+        load_step = LoadStep("inei_population_y_gender_nat_travel", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
         return [transform_step, agg_step, load_step]
 
