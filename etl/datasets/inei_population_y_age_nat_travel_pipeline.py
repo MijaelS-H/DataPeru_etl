@@ -5,6 +5,17 @@ from bamboo_lib.models import EasyPipeline , Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
 from etl.consistency import AggregatorStep
 
+CONTINENT_DICT = {
+    "América del Norte": "na",
+    "América del Centro": "ca",
+    "América del Sur": "sa",
+    "Europa": "eu",
+    "Asia": "as",
+    "África": "af",
+    "Oceanía": "oc",
+    "Otros": "xx"
+}
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
@@ -44,6 +55,8 @@ class TransformStep(PipelineStep):
         df["year"] = df["year"].astype(int)
         df.drop(df.loc[df["continente"] == "América"].index, inplace = True)
 
+        df.replace(CONTINENT_DICT, inplace=True)
+
         df["nation_id"] = "per"
         return df
 
@@ -57,7 +70,7 @@ class inei_population_y_age_nat_travel_Pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
-            "nation_id":                        "String",
+            "nation_id":                     "String",
             "year":                          "UInt16",
             "continente":                    "String",
             "inmigration_flow":              "UInt8",

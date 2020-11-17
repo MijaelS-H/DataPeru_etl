@@ -69,8 +69,8 @@ class itp_indicators_m_n_nat_pipeline(EasyPipeline):
     def steps(params):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
-            "nation_id":                                           "String",
-            "month_id":                                         "UInt16",
+            "nation_id":                                        "String",
+            "month_id":                                         "UInt32",
             "ipc_base_2011_observado":                          "Float32",
             "ipc_base_2011_var_mes_anterior":                   "Float32",
             "ipc_base_2011_var_acumulado":                      "Float32",

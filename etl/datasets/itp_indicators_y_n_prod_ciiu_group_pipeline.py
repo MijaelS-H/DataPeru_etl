@@ -48,7 +48,7 @@ class itp_indicators_y_n_prod_ciiu_group_pipeline(EasyPipeline):
     def steps(params):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
-            "nation_id":                                   "String",
+            "nation_id":                                "String",
             "group_id":                                 "String",
             "product_name":                             "String",
             "unit":                                     "String",

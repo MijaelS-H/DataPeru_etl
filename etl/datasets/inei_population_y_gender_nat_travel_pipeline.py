@@ -9,6 +9,17 @@ from etl.consistency import AggregatorStep
 continents_ = ["América del Norte", "América del Centro", "América del Sur", "Europa", "Asia", "África", "Oceanía", "Otros"]
 pivotes_ = [[1,2], [5,6], [9,10], [13,14], [17,18], [21,22], [25,26], [29,30]]
 
+CONTINENT_DICT = {
+    "América del Norte": "na",
+    "América del Centro": "ca",
+    "América del Sur": "sa",
+    "Europa": "eu",
+    "Asia": "as",
+    "África": "af",
+    "Oceanía": "oc",
+    "Otros": "xx"
+}
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
@@ -51,6 +62,8 @@ class TransformStep(PipelineStep):
         df = pd.melt(df, id_vars = ["year", "continente", "inmigration_flow"], value_vars = ["hombre", "mujer"], var_name = "sexo", value_name = "poblacion")
 
         df["sexo"].replace({"hombre": 1, "mujer": 2}, inplace = True)
+
+        df.replace(CONTINENT_DICT, inplace=True)
 
         df["nation_id"] = "per"
         return df

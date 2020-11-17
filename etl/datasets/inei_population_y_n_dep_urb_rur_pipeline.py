@@ -43,19 +43,19 @@ class TransformStep(PipelineStep):
             df4[i] = df4[i] * 1000
 
         # Type of value for each table
-        df1["measure"] = "evo_pob_censada_urb"
-        df2["measure"] = "evo_pob_censada_rur"
-        df3["measure"] = "matriculados_sist_educa_urb"
-        df4["measure"] = "matriculados_sist_educa_rur"
+        df1["medida"] = 1
+        df2["medida"] = 2
+        df3["medida"] = 3
+        df4["medida"] = 4
 
         # Melt step for each table
-        df_1 = pd.melt(df1, id_vars = ["ubigeo", "measure"], value_vars = evo_years, var_name = "year", value_name = "poblacion")
-        df_2 = pd.melt(df2, id_vars = ["ubigeo", "measure"], value_vars = evo_years, var_name = "year", value_name = "poblacion")
-        df_3 = pd.melt(df3, id_vars = ["ubigeo", "measure"], value_vars = edu_years, var_name = "year", value_name = "poblacion")
-        df_4 = pd.melt(df4, id_vars = ["ubigeo", "measure"], value_vars = edu_years, var_name = "year", value_name = "poblacion")
+        df_1 = pd.melt(df1, id_vars = ["ubigeo", "medida"], value_vars = evo_years, var_name = "year", value_name = "poblacion")
+        df_2 = pd.melt(df2, id_vars = ["ubigeo", "medida"], value_vars = evo_years, var_name = "year", value_name = "poblacion")
+        df_3 = pd.melt(df3, id_vars = ["ubigeo", "medida"], value_vars = edu_years, var_name = "year", value_name = "poblacion")
+        df_4 = pd.melt(df4, id_vars = ["ubigeo", "medida"], value_vars = edu_years, var_name = "year", value_name = "poblacion")
 
         # Append tables to df
-        df = pd.DataFrame(columns=["ubigeo", "measure", "year", "poblacion"])
+        df = pd.DataFrame(columns=["ubigeo", "medida", "year", "poblacion"])
         for item in [df_1, df_2, df_3, df_4]:
             df = df.append(item)
 
@@ -75,7 +75,7 @@ class inei_population_y_n_dep_urb_rur_pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
             "ubigeo":                         "String",
-            "measure":                        "String",
+            "medida":                         "UInt8",
             "year":                           "UInt16",
             "poblacion":                      "Float32"
         }
