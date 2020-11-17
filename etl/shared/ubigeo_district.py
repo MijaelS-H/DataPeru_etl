@@ -522,29 +522,33 @@ class TransformStep(PipelineStep):
             'PROVINCIA': 'province_name',
             'DISTRITO': 'district_name'
         }, inplace=True)
-
+        
+        
+        df = df.replace(' ', np.nan)
+        df.dropna(how='any', inplace=True)
+                
         columns = df.columns
-
+        
         for column in columns:
             df['{}_id'.format(column.split('_')[0])] = df[column].astype(str).str[0:2]
             df[column] = df[column].astype(str).str[3:]
-
+        
         df['province_id'] = df['department_id'] + df['province_id']
         df['district_id'] = df['province_id'] + df['district_id']
-
+        
         df['department_name'] = df['department_name'].str.strip()
         df['province_name'] = df['province_name'].str.strip()
         df['district_name'] = df['district_name'].str.strip()
-
+        
         df = df.append(MISSING_UBIGEO)
         df = df.drop_duplicates(subset=['district_id'])
-
+        
         provinces = df[['department_name', 'province_name', 'department_id', 'province_id']].copy()
         provinces = provinces.drop_duplicates()
         provinces['district_name'] = provinces.apply(lambda x: 'Otros distritos de la provincia de {}'.format(x['province_name']) if x['province_name'] != "Otros" else 'Otros distritos', axis=1)
         provinces['district_id'] = provinces['province_id'] + '00'
         provinces = provinces[['department_name', 'province_name', 'district_name', 'department_id', 'province_id', 'district_id']].copy()
-        
+                
         departments = df[['department_name', 'department_id']].copy()
         departments = departments.drop_duplicates()
         departments['province_name'] = departments.apply(lambda x: 'Otras provincias del departamento de {}'.format(x['department_name']) if x['department_name'] != "Otros" else "Otras provincias", axis=1)
@@ -552,15 +556,22 @@ class TransformStep(PipelineStep):
         departments['province_id'] = departments['department_id'] + '00'
         departments['district_id'] = departments['province_id'] + '00'
         departments = departments[['department_name', 'province_name', 'district_name', 'department_id', 'province_id', 'district_id']].copy()
-        
+                
         df = df.append(provinces)
         df = df.append(departments)
         df = df.append(MISSING_MANC)
-
+        
         df['nation_id'] = 'per'
         df['nation_name'] = 'Perú'
-
+        
+        df = df.reset_index(drop=True)
+        
         df = df.drop_duplicates()
+        df.drop([43, 1887, 2081], inplace=True)
+        
+        df.replace({
+            'Anco_Huallo': 'Anco-Huallo'
+        }, inplace=True)
 
         return df
 
