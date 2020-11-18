@@ -1,6 +1,7 @@
 import os
 import time
 from pathlib import Path
+from selenium import webdriver
 
 import pandas as pd
 import requests
@@ -39,20 +40,32 @@ def download_gastos(download_folder: Path):
 
 def download_ingresos(download_folder: Path):
     """Descarga datos del presupuesto de ingresos."""
-    urls = {
-        'ING_comparacion_2014_2020_gn_sectores.csv': 'https://datosabiertos.mef.gob.pe/datasets/185602-comparacion-de-ingreso-del-gobierno-nacional-2014-2020.download',
-        'ING_comparacion_2014_2020_gob_regionales.csv': 'https://datosabiertos.mef.gob.pe/datasets/185603-comparacion-de-ingreso-de-los-gobiernos-regionales-2014-2020.download',
-        'ING_comparacion_2014_2020_gob_locales.csv': 'https://datosabiertos.mef.gob.pe/datasets/185604-comparacion-de-ingreso-de-los-gobiernos-locales-2014-2020.download'
-    }
+    urls = [
+        'https://datosabiertos.mef.gob.pe/datasets/185602-comparacion-de-ingreso-del-gobierno-nacional-2014-2020.download',
+        'https://datosabiertos.mef.gob.pe/datasets/185603-comparacion-de-ingreso-de-los-gobiernos-regionales-2014-2020.download',
+        'https://datosabiertos.mef.gob.pe/datasets/185604-comparacion-de-ingreso-de-los-gobiernos-locales-2014-2020.download'
+    ]
 
-    for filename, url in urls.items():
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0"}
-        res = requests.get(url, headers=headers)
+    executable_path = os.getcwd().split('/etl/')[0] + '/chromedriver'
+
+    for url in urls:
         try:
-            res.raise_for_status()
-            target_path = download_folder.joinpath(filename)
-            with target_path.open('w+b') as fio:
-                fio.write(res.content)
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--window-size=800, 640")
+            chrome_options.add_argument("--disable-notifications")
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--verbose')
+            chrome_options.add_experimental_option("prefs", {
+                    "download.default_directory": download_folder,
+                    "download.prompt_for_download": False,
+                    "download.directory_upgrade": True,
+                    "safebrowsing_for_trusted_sources_enabled": False,
+                    "safebrowsing.enabled": False
+            })
+
+            driver = webdriver.Chrome(options=chrome_options, executable_path=executable_path)
+            driver.get(ele)
             logger.debug("DOWNLOAD SUCCESS: %s", url)
         except Exception as err:
             logger.error("DOWNLOAD ERROR: %s\n  %s", err, url)
