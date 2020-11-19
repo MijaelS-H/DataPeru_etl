@@ -12,6 +12,8 @@ class TransformStep(PipelineStep):
         df2 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.96.xlsx"), skiprows = (0,1,2,3))[2:83]
         df3 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.99.xlsx"), skiprows = (0,1,2,3))[2:40]
 
+        ciiu = pd.read_csv(path.join(params["datasets"],"anexos", "CIIU_yearly_production.tsv"), sep="\t")
+
         # Common steps
         for item in [df1,df2, df3]:
             item.rename(columns = {"División": "group_id", "Producto": "product_name", "Unnamed: 2" : "unit", "de" : "unit", "   2015": 2015, "2018 P/": 2018}, inplace = True)
@@ -27,12 +29,19 @@ class TransformStep(PipelineStep):
         df = df_1.append(df_2, sort=False)
         df = df.append(df_3, sort=False)
 
-        df['product_name'] = df['product_name'].str.strip()
-        df['product_name'] = df['product_name'].str.replace("  ", " ")
+        df["product_name"] = df["product_name"].str.strip()
+        df["product_name"].replace({"Alimento balanceado para  mascota": "Alimento balanceado para mascota"}, inplace = True)
+        df = df[["product_name", "unit", "year", "produccion_industrial_anual"]]
 
-        df["group_id"] = df["group_id"].astype(str)
+        df = pd.merge(df,ciiu[["product_name", "product_id"]], on = "product_name", how = "left")
+
+        df.drop("product_name", axis=1, inplace = True)
+
         df["year"] = df["year"].astype(int)
+        df["product_id"] = df["product_id"].astype(str)
         df["produccion_industrial_anual"] = df["produccion_industrial_anual"].astype(float)
+
+        df = df.drop_duplicates()
 
         df["nation_id"] = "per"
 
@@ -49,8 +58,7 @@ class itp_indicators_y_n_prod_ciiu_group_pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
             "nation_id":                                "String",
-            "group_id":                                 "String",
-            "product_name":                             "String",
+            "product_id":                               "String",
             "unit":                                     "String",
             "year":                                     "UInt16",
             "produccion_industrial_anual":              "Float64"
