@@ -110,7 +110,7 @@ class Dimension_Ubigeo_Pipeline(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        load_step = LoadStep("dimemsion_ubigeo_district", db_connector, if_exists="drop", pk=["district_id"], dtype=dtype)
+        load_step = LoadStep("dimension_ubigeo_district", db_connector, if_exists="drop", pk=["district_id"], dtype=dtype)
 
         return [transform_step, load_step]
 
