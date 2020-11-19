@@ -27,7 +27,7 @@ class CIIU_Production_Pipeline(EasyPipeline):
             "division_id":                    "String",
             "group":                          "String",
             "group_id":                       "String",
-            "product":                        "String",
+            "product_name":                   "String",
             "product_id":                     "String"
         }
 
