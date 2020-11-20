@@ -1,8 +1,10 @@
 from .dimension_ubigeo import run_pipeline as run_dimension_ubigeo_pipeline
+from .dimension_ciiu import run_pipeline as run_dimension_ciiu_pipeline
 
 
 def run_pipeline(params: dict):
     run_dimension_ubigeo_pipeline(params)
+    run_dimension_ciiu_pipeline(params)
 
 
 if __name__ == "__main__":
