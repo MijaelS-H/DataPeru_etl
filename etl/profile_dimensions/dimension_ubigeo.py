@@ -91,10 +91,6 @@ class TransformStep(PipelineStep):
 
         df.replace({'Anco_Huallo': 'Anco-Huallo'}, inplace=True)
 
-        df['department_name'] = df['department_name'] + ' dpto'
-        df['province_name'] = df['province_name'] + ' prov'
-        df['district_name'] = df['district_name'] + ' dist'
-
         return df
 
 class Dimension_Ubigeo_Pipeline(EasyPipeline):
