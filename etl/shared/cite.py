@@ -42,7 +42,7 @@ class TransformStep(PipelineStep):
         #df['descriptivo'] = df['descriptivo'].str.replace('CITE','')
         #df['descriptivo'] = df['descriptivo'].str.replace('La ','')
         df['descriptivo'] = df['descriptivo'].str.lstrip()
-        df['descriptivo'] = df['descriptivo'].str.capitalize()
+        #df['descriptivo'] = df['descriptivo'].str.capitalize()
 
         cite_list = list(df['cite'].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
