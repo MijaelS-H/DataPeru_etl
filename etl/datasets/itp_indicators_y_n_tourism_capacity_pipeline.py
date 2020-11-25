@@ -18,7 +18,7 @@ class TransformStep(PipelineStep):
         df["year"].fillna(method = "ffill", inplace = True)
 
         df.dropna(axis=0, how="any", inplace = True)
-        df["categoria"].replace({'5 Estrellas': 5, '4 Estrellas': 4, '3 Estrellas': 3, '2 Estrellas': 2,'1 Estrella': 1, 'Albergue': 6, 'Ecolodge': 7, 'No Categorizados': 8 }, inplace = True)
+        df["categoria"].replace({"5 Estrellas": 5, "4 Estrellas": 4, "3 Estrellas": 3, "2 Estrellas": 2,"1 Estrella": 1, "Albergue": 6, "Ecolodge": 7, "No Categorizados": 8 }, inplace = True)
         df["year"] = df["year"].astype(int)
         df["nation_id"] = "per"
 
@@ -38,16 +38,16 @@ class itp_indicators_y_n_tourism_capacity_pipeline(EasyPipeline):
     def steps(params):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         dtype = {
-            "nation_id":                                   "String",
+            "nation_id":                                "String",
             "categoria":                                "UInt8",
-            'n_arribos_nacionales':                     "UInt32",
-            'n_arribos_extranjeros':                    "UInt32",
-            'n_pernoctaciones_nacionales':              "UInt32",
-            'n_pernoctaciones_extranjeros':             "UInt32",
-            'permanencia_prom_nacionales':              "Float32",
-            'permanencia_prom_extranjeros':             "Float32",
-            'tasa_ocupacion_hab':                       "Float32",
-            'tasa_ocupacion_camas':                     "Float32",
+            "n_arribos_nacionales":                     "Float32",
+            "n_arribos_extranjeros":                    "Float32",
+            "n_pernoctaciones_nacionales":              "Float32",
+            "n_pernoctaciones_extranjeros":             "Float32",
+            "permanencia_prom_nacionales":              "Float32",
+            "permanencia_prom_extranjeros":             "Float32",
+            "tasa_ocupacion_hab":                       "Float32",
+            "tasa_ocupacion_camas":                     "Float32",
             "year":                                     "UInt16",
             }
 

@@ -65,6 +65,8 @@ class TransformStep(PipelineStep):
 
         df.replace(CONTINENT_DICT, inplace=True)
 
+        df["poblacion"] = df["poblacion"].astype(int)
+
         df["nation_id"] = "per"
         return df
 
