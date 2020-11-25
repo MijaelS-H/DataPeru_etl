@@ -47,14 +47,14 @@ class TransformStep(PipelineStep):
         cite_list = list(df['cite'].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
         df['cite_id'] = df['cite'].map(cite_map)
-        df['cite'] = df['cite'].str.replace("CITE","")
-        df['cite_slug'] = df['cite'].str.replace("CITE","")
+        # df['cite'] = df['cite'].str.replace("CITE","")
+        # df['cite_slug'] = df['cite'].str.replace("CITE","")
 
-        df['cite'] = df['cite'].str.replace("UT","")
-        df['cite'] = df['cite'].str.capitalize()
+        # df['cite'] = df['cite'].str.replace("UT","")
+        df['cite'] = df['cite'].str.title().str.replace("Cite", "CITE").str.replace("Ut", "UT").str.replace("Y", "y").str.replace("De", "de")
         df['cite'] = df['cite'].apply(unidecode)
-        df['cite_slug'] = df['cite_slug'].str.replace("UT","")
-        df['cite_slug'] = df['cite_slug'].str.lower()
+        # df['cite_slug'] = df['cite_slug'].str.replace("UT","")
+        df['cite_slug'] = df['cite'].str.lower()
         df['cite_slug'] = df['cite_slug'].apply(unidecode)
         df['cite_slug'] = df['cite_slug'].str.replace(" ", "_")
 
