@@ -104,7 +104,7 @@ class itp_indicators_y_n_tourism_pipeline(EasyPipeline):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
 
         dtype = {
-            "nation_id":                                                 "String",
+            "nation_id":                                              "String",
             "year":                                                   "UInt16",
             "n_ingresos_turistas_internacionales":                    "UInt32",
             "n_salidas_turistas_internacionales":                     "UInt32",

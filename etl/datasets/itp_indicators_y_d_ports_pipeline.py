@@ -49,7 +49,7 @@ class itp_indicators_y_d_ports_Pipeline(EasyPipeline):
             "ubigeo":                                   "String",
             "year":                                     "UInt16",
             "puerto":                                   "UInt8",
-            "desembarque_recursos_marinos":             "UInt32"
+            "desembarque_recursos_marinos":             "Float64"
         }
 
         transform_step = TransformStep()
