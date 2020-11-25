@@ -37,10 +37,10 @@ class TransformStep(PipelineStep):
 
         df['tipo'] = df['tipo'].replace(TIPO_CITE_DICT)
         df['coordinador_ut'] = df['coordinador_ut'].fillna("No disponible")
-        df['descriptivo'] = df['descriptivo'].str.replace("UT",'')
-        df['descriptivo'] = df['descriptivo'].str.replace('El ','')
-        df['descriptivo'] = df['descriptivo'].str.replace('CITE','')
-        df['descriptivo'] = df['descriptivo'].str.replace('La ','')
+        #df['descriptivo'] = df['descriptivo'].str.replace("UT",'')
+        #df['descriptivo'] = df['descriptivo'].str.replace('El ','')
+        #df['descriptivo'] = df['descriptivo'].str.replace('CITE','')
+        #df['descriptivo'] = df['descriptivo'].str.replace('La ','')
         df['descriptivo'] = df['descriptivo'].str.lstrip()
         df['descriptivo'] = df['descriptivo'].str.capitalize()
 
