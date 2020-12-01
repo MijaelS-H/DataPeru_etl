@@ -57,6 +57,16 @@ class TransformStep(PipelineStep):
 
         df.replace(CONTINENT_DICT, inplace=True)
 
+        df["age_group"].replace({'0 - 9': 1,
+                                '10 - 19': 2,
+                                '20 - 29': 3,
+                                '30 - 39': 4,
+                                '40 - 49': 5,
+                                '50 - 59': 6,
+                                '60 - 69': 7,
+                                '70 - 79': 8,
+                                '80 y más': 9}, inplace = True)
+
         df["nation_id"] = "per"
         return df
 
@@ -74,7 +84,7 @@ class inei_population_y_age_nat_travel_Pipeline(EasyPipeline):
             "year":                          "UInt16",
             "continente":                    "String",
             "inmigration_flow":              "UInt8",
-            "age_group":                     "String",
+            "age_group":                     "UInt8",
             "poblacion":                     "UInt32"
         }
 
