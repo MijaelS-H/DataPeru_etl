@@ -17,7 +17,7 @@ from .itp_indicators_y_n_tourism_pipeline import run_pipeline as run_pipeline_ye
 from .proinversion_fdi_y_origin_nat_pipeline import run_pipeline as run_pipeline_fdi_national
 
 from .itp_indicators_y_act_dept_pipeline import run_pipeline as run_pipeline_activity_department
-
+from .inei_population_y_n_gender_age_urb_rur_pipeline import run_pipeline as run_pipeline_gender_age_urb_rur_nat
 
 def run_pipeline(params: dict):
     run_pipeline_age_travel(params)
@@ -39,6 +39,7 @@ def run_pipeline(params: dict):
     run_pipeline_fdi_national(params)
 
     run_pipeline_activity_department(params)
+    run_pipeline_gender_age_urb_rur_nat(params)
 
 if __name__ == "__main__":
     import sys
