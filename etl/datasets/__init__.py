@@ -18,6 +18,7 @@ from .proinversion_fdi_y_origin_nat_pipeline import run_pipeline as run_pipeline
 
 from .itp_indicators_y_act_dept_pipeline import run_pipeline as run_pipeline_activity_department
 from .inei_population_y_n_gender_age_urb_rur_pipeline import run_pipeline as run_pipeline_gender_age_urb_rur_nat
+from .proinversion_fdi_y_origin_sector_pipeline import run_pipeline as run_pipeline_fdi_sector
 
 def run_pipeline(params: dict):
     run_pipeline_age_travel(params)
@@ -40,6 +41,7 @@ def run_pipeline(params: dict):
 
     run_pipeline_activity_department(params)
     run_pipeline_gender_age_urb_rur_nat(params)
+    run_pipeline_fdi_sector(params)
 
 if __name__ == "__main__":
     import sys
