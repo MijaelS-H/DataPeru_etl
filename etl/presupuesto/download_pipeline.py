@@ -2,6 +2,7 @@ import os
 import time
 from pathlib import Path
 from selenium import webdriver
+from etl.helpers import wait_for_downloads
 
 import pandas as pd
 import requests
@@ -57,7 +58,7 @@ def download_ingresos(download_folder: Path):
             chrome_options.add_argument('--no-sandbox')
             chrome_options.add_argument('--verbose')
             chrome_options.add_experimental_option("prefs", {
-                    "download.default_directory": download_folder,
+                    "download.default_directory": os.path.abspath(download_folder),
                     "download.prompt_for_download": False,
                     "download.directory_upgrade": True,
                     "safebrowsing_for_trusted_sources_enabled": False,
@@ -65,7 +66,8 @@ def download_ingresos(download_folder: Path):
             })
 
             driver = webdriver.Chrome(options=chrome_options, executable_path=executable_path)
-            driver.get(ele)
+            driver.get(url)
+            wait_for_downloads(os.path.abspath(download_folder))
             logger.debug("DOWNLOAD SUCCESS: %s", url)
         except Exception as err:
             logger.error("DOWNLOAD ERROR: %s\n  %s", err, url)
