@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
 
         # For each sheet, adding year columns and corrections to dataframe
         for i in list(range(0,6)):
-            pivote = pd.read_excel(xls, sheets[i], dtype=str, skiprows = (0,1,2,4,5,6))[0:24]
+            pivote = pd.read_excel(xls, sheets[i], dtype=str, skiprows = (0,1,2,4,5,6))[0:25]
             pivote.columns = pivote.columns.str.strip()
             pivote_1 = pivote[["Unnamed: 0", "Hombre", "Mujer"]].copy()
             pivote_2 = pivote[["Unnamed: 0", "Hombre.1", "Mujer.1"]].copy()
