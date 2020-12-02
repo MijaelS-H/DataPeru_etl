@@ -19,6 +19,7 @@ from .estado_cite import run_pipeline as run_pipeline_estado_cite
 from .hs import run_pipeline as run_pipeline_hs
 from .hs10 import run_pipeline as run_pipeline_hs10
 from .itp_ports import run_pipeline as run_pipeline_itp_ports
+from .time_quarter import run_pipeline as run_pipeline_time_quarter
 from .time_month import run_pipeline as run_pipeline_time_month
 from .time import run_pipeline as run_pipeline_time
 
@@ -51,6 +52,7 @@ def run_pipeline(params: dict):
     run_pipeline_hs(params)
     run_pipeline_hs10(params)
     run_pipeline_itp_ports(params)
+    run_pipeline_time_quarter(params)
     run_pipeline_time_month(params)
     run_pipeline_time(params)
 
