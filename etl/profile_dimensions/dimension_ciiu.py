@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from os import path
 from bamboo_lib.connectors.models import Connector
@@ -8,36 +9,36 @@ from bamboo_lib.steps import DownloadStep, LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_excel(path.join(params["datasets"],"anexos", "CIIU-REV.3 (es).xls"), encoding='latin-1', header=4, usecols="A,B")[0:528]
+        df = pd.read_csv(path.join(params["datasets"],"anexos", "ISIC_Rev_4_spanish_structure.txt"), encoding='latin-1')
 
         sections = [
-            ['A', 1, 2],
-            ['B', 5, 5],
-            ['C', 10, 14],
-            ['D', 15, 37],
-            ['E', 40, 41],
-            ['F', 45, 45],
-            ['G', 50, 52],
-            ['H', 55, 55],
-            ['I', 60, 64],
-            ['J', 65, 67],
-            ['K', 70, 74],
-            ['L', 75, 75],
-            ['M', 80, 80],
-            ['N', 85, 85],
-            ['O', 90, 93],
-            ['P', 95, 95],
-            ['Q', 99, 99]
+            ['A', 1, 3],
+            ['B', 5, 9],
+            ['C', 10, 33],
+            ['D', 35, 35],
+            ['E', 36, 39],
+            ['F', 41, 43],
+            ['G', 45, 47],
+            ['H', 49, 53],
+            ['I', 55, 56],
+            ['J', 58, 63],
+            ['K', 64, 66],
+            ['L', 68, 68],
+            ['M', 69, 75],
+            ['N', 77, 82],
+            ['O', 84, 84],
+            ['P', 85, 85],
+            ['Q', 86, 88],
+            ['R', 90, 93],
+            ['S', 94, 96],
+            ['T', 97, 98],
+            ['U', 99, 99]
         ]
 
         sections = pd.DataFrame(sections, columns=['section_id', 'interval_lower', 'interval_upper'])
 
-        df.rename(columns={'—': 'Code', 'Unnamed: 1': 'Title'}, inplace = True)
-
-        df = df.dropna()
-
-        df['group_id'] = df.apply(lambda x: x['Code'][0:3] if len(x['Code']) == 4 else pd.np.nan, axis=1)
-        df['division_id'] = df.apply(lambda x: x['Code'][0:2] if len(x['Code']) >= 3 else pd.np.nan, axis=1)
+        df['group_id'] = df.apply(lambda x: x['Code'][0:3] if len(x['Code']) == 4 else np.nan, axis=1)
+        df['division_id'] = df.apply(lambda x: x['Code'][0:2] if len(x['Code']) >= 3 else np.nan, axis=1)
         df['section_id'] = df.apply(lambda x: float(x['division_id']), axis=1)
 
         for section in df.section_id.unique():
@@ -77,6 +78,10 @@ class TransformStep(PipelineStep):
 
         df = df[['section_name', 'division_name', 'group_name', 'class_name', 'section_id', 'division_id', 'group_id', 'class_id']]
 
+        additional_df = pd.DataFrame(data=[['No determinado', 'No determinado', 'No determinado', 'No determinado', 'Z', '00', '000', '0000']], columns=df.columns)
+
+        df = df.append(additional_df)
+
         return df
 
 class Dimension_CIIU_Pipeline(EasyPipeline):
@@ -85,14 +90,14 @@ class Dimension_CIIU_Pipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtype = {
-            'section_name':                  'String',
-            'division_name':                 'String',
-            'group_name':                    'String',
-            'class_name':                    'String',
-            'section_id':                    'String',
-            'division_id':                   'String',
-            'group_id':                      'String',
-            'class_id':                      'String'
+            'section_id': 'String',
+            'section_name': 'String',
+            'division_id': 'String',
+            'division_name': 'String',
+            'group_id': 'String',
+            'group_name': 'String',
+            'class_id': 'String',
+            'class_name': 'String'
         }
 
         transform_step = TransformStep()
