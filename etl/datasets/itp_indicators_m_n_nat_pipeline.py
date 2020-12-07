@@ -30,6 +30,7 @@ class TransformStep(PipelineStep):
 
         # Morosity dataset
         df3 = pd.melt(df3, id_vars = ["Mes"], value_vars = [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014,2015, 2016, 2017, 2018, 2019], var_name = "year", value_name = "perc_morosidad_credi_banca_mult")
+        df3["Mes"].replace(month_dict, inplace = True)
         df3["month_id"] = df3["year"].astype(str) + df3["Mes"]
 
         # Monthly tourism dataset
