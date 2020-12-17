@@ -9,6 +9,17 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from etl.helpers import format_text
 
+CUSTOM_MEASURES = [
+    {
+        "measure_unit_id": "XX",
+        "measure_unit_name": "Otros"
+    },
+    {
+        "measure_unit_id": "DOC",
+        "measure_unit_name": "Documento"
+    }
+]
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
@@ -24,6 +35,8 @@ class TransformStep(PipelineStep):
             inplace=True
         )
 
+        df = df.append(CUSTOM_MEASURES)
+
         # Select usable columns
         df = df[['measure_unit_id', 'measure_unit_name']].copy()
         df['measure_unit_id'] = df['measure_unit_id'].str.strip()
@@ -37,8 +50,7 @@ class TransformStep(PipelineStep):
 
         df.replace({
             'Unidad Po 10**6': 'Unidad por 10**6'
-            }, 
-            inplace=True
+        }, inplace=True
         )
 
         return df

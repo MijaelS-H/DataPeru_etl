@@ -243,6 +243,26 @@ COUNTRIES = [
     "continent_es": "Europa",
     "id_num": None,
     "oecd": 0},
+
+    {"iso2": "va",
+    "iso3": "vat",
+    "country_name": "Holy See",
+    "country_name_es": "Vaticano",
+    "continent_id": "eu",
+    "continent": "Europe",
+    "continent_es": "Europa",
+    "id_num": None,
+    "oecd": 0},
+
+    {"iso2": "tp",
+    "iso3": "tmp",
+    "country_name": "East Timor",
+    "country_name_es": "Timor Oriental",
+    "continent_id": "as",
+    "continent": "Asia",
+    "continent_es": "Asia",
+    "id_num": None,
+    "oecd": 0},
 ]
 
 class TransformStep(PipelineStep):
