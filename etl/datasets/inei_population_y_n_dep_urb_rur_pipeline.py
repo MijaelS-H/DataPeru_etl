@@ -16,8 +16,8 @@ class TransformStep(PipelineStep):
         # Data load
         df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.4.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
         df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.5.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
-        df3 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.43.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26]
-        df4 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.42.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26]
+        df3 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.43.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Rural
+        df4 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.42.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Urbano
 
         # Renaming columns from datasets
         df1.columns = header_pop
@@ -45,8 +45,8 @@ class TransformStep(PipelineStep):
         # Type of value for each table
         df1["medida"] = 1
         df2["medida"] = 2
-        df3["medida"] = 3
-        df4["medida"] = 4
+        df3["medida"] = 4
+        df4["medida"] = 3
 
         # Melt step for each table
         df_1 = pd.melt(df1, id_vars = ["ubigeo", "medida"], value_vars = evo_years, var_name = "year", value_name = "poblacion")
