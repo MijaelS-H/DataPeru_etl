@@ -3,18 +3,28 @@ COLUMNS_RENAME = {
     'cadu': 'aduana_id',
     'cpaides': 'country_id',
     'femb': 'shipment_date_id',
-    'freg': 'registry_date_id',
+    'freg': 'report_date_id',
     'cnan': 'hs6_id',
     'vfobserdol': 'trade_value',
     'vpesnet': 'net_weight_value',
     'tunifis': 'unit',
-    'qunifis': 'quantity'
+    'qunifis': 'quantity',
+    'codi_aduan': 'aduana_id',
+    'pais_orige': 'country_id',
+    'fech_embar': 'shipment_date_id',
+    'fech_ingsi': 'report_date_id',
+    'part_nandi': 'hs6_id',
+    'fob_dolpol': 'trade_value',
+    'peso_neto': 'net_weight_value',
+    'tunicom': 'unit',
+    'qunicom': 'quantity'
 }
 
 COUNTRIES_DICT = {
     'fx': 'fr',
     'gf': 'fr',
     'gp': 'fr',
+    'yt': 'fr',
     'l': 'pa',
     'mq': 'fr',
     'sx': 'nl',
@@ -23,10 +33,20 @@ COUNTRIES_DICT = {
     '99': '1w',
     'an': 'nl',
     'um': 'us',
+    ' ': 'xx', 
     '  ': 'xx',  
     '1c': 'xx',
     '1p': 'bz',
-    'yu': 'xx'
+    'yu': 'xx',
+    'nan': 'xx',
+    '1k': 'ci',
+    '1e': 'xx',
+    'sj': 'no',
+    'bv': 'no',
+    'eh': 'ma',
+    'gs': 'gb',
+    'ax': 'fi',
+    'hm': 'au'
 }
 
 HS_DICT = {
@@ -49,5 +69,6 @@ UNIT_DICT = {
     'KIG': 'KI6',
     'UU6': 'U6',
     'LT': 'L',
-    'UNI': 'U'
+    'UNI': 'U',
+    '}U': 'U'
 }

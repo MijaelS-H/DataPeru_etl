@@ -39,7 +39,7 @@ class TransformStep(PipelineStep):
         # Replace NANDINA code by HS code at 6-digit level
         df["hs6_id"] = df["hs6_id"].str.replace(".", "").str[:-4]
 
-        # Replace
+        # Replace countries iso2 to iso3
         dim_country_query = "SELECT iso2, iso3 FROM dim_shared_country"
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         countries = query_to_df(db_connector, raw_query=dim_country_query)

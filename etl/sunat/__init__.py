@@ -1,8 +1,8 @@
-from .exports_pipeline import run_pipeline as run_pipeline_exports
+from .subnat_trade_pipeline import run_pipeline as run_pipeline_sunat
 
 def run_pipeline(params: dict):
 
-    run_pipeline_exports(params)
+    run_pipeline_sunat(params)
 
 
 if __name__ == "__main__":

@@ -80,6 +80,11 @@ class TransformStep(PipelineStep):
                 'hs_level': 6,
                 'id': '846900',
                 'hs6_name': 'Máquinas de escribir, excepto las impresoras de la partida 8443; maquinas procesadoras de textos'
+            },
+            {
+                'hs_level': 6,
+                'id': '293980',
+                'hs6_name': 'Alcaloide no vegetales'
             }
         ]
 
@@ -106,6 +111,12 @@ class TransformStep(PipelineStep):
                 "id": "98",
                 "hs2_name": "Mercancías con tratamiento especial",
                 "chapter_id": 99
+            },
+            {
+                'hs_level': 2,
+                'id': '00',
+                'hs2_name': 'No definido',
+                'chapter_id': 0
             }
         ]).reset_index(drop=True)
 
@@ -175,6 +186,12 @@ class TransformStep(PipelineStep):
                 "id": "8469",
                 "hs4_name": "Máquinas de escribir, excepto las impresoras de la partida 8443; maquinas procesadoras de textos",
                 "chapter_id": 16
+            },
+            {
+                'hs_level': 4,
+                'id': '0000',
+                'hs4_name': 'No definido',
+                'chapter_id': 0
             }
         ]).reset_index(drop=True)
 
@@ -226,6 +243,12 @@ class TransformStep(PipelineStep):
                 "hs_level": 6,
                 "id": "980900",
                 "hs6_name": "Envíos de entrega rápida"
+            },
+            {
+                'chapter_id': 0,
+                'hs_level': 6,
+                'id': '000000',
+                'hs6_name': 'No definido'
             }
         ]).reset_index(drop=True)
 
@@ -249,6 +272,10 @@ class TransformStep(PipelineStep):
             {
                 "chapter_id": 99,
                 "chapter_name": "Complementario Nacional"
+            },
+            {
+                "chapter_id": 0,
+                "chapter_name": "No definido"
             }
         ]).reset_index(drop=True)
 

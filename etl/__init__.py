@@ -3,6 +3,7 @@ from .cite import run_pipeline as run_pipeline_cite
 from .datasets import run_pipeline as run_pipeline_datasets
 from .minagri import run_pipeline as run_pipeline_minagri
 from .presupuesto import run_pipeline as run_pipeline_presupuesto
+from .profile_dimensions import run_pipeline as run_pipeline_profile_dimensions
 from .shared import run_pipeline as run_pipeline_shared
 from .socios import run_pipeline as run_pipeline_socios
 from .sunat import run_pipeline as run_pipeline_sunat
@@ -16,6 +17,7 @@ def run_pipeline(params: dict):
     run_pipeline_datasets(params)
     run_pipeline_minagri(params)
     run_pipeline_presupuesto(params)
+    run_pipeline_profile_dimensions(params)
     run_pipeline_socios(params)
     run_pipeline_sunat(params)
     run_pipeline_survey_indicators(params)
