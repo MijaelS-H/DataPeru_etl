@@ -11,7 +11,7 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
-from static import HS_DICT
+from .static import HS_DICT
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -62,6 +62,7 @@ class CitePartidasPipeline(EasyPipeline):
         dtypes = {
             'cite_id':                        'UInt8',
             'hs10_id':                        'String',
+            'hs6_id':                        'String',
             'cadena_atencion_id':             'UInt8',
             'cadena_pip_id':                  'UInt8',
             'cadena_resolucion_id':           'UInt8',
