@@ -46,7 +46,7 @@ class TransformStep(PipelineStep):
 
         df['cantidad_cite'] = 1
 
-        df = df[['cite_id', 'hs10_id', 'cadena_atencion_id', 'cadena_pip_id', 'cadena_resolucion_id', 'cantidad_cite']]
+        df = df[['cite_id', 'hs10_id', 'hs6_id', 'cadena_atencion_id', 'cadena_pip_id', 'cadena_resolucion_id', 'cantidad_cite']]
 
         return df
 
@@ -62,7 +62,7 @@ class CitePartidasPipeline(EasyPipeline):
         dtypes = {
             'cite_id':                        'UInt8',
             'hs10_id':                        'String',
-            'hs6_id':                        'String',
+            'hs6_id':                         'String',
             'cadena_atencion_id':             'UInt8',
             'cadena_pip_id':                  'UInt8',
             'cadena_resolucion_id':           'UInt8',
