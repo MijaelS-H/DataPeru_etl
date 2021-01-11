@@ -27,7 +27,7 @@ class TransformStep(PipelineStep):
         df['sector'] = df['sector'].str.capitalize()
         
         df['hs10_id'] = df['partida_id'].astype(int).astype(str).str.zfill(10)
-        df['hs6_id'] = df['partida_arancelaria'].astype(int).astype(str).str.zfill(10).str[:-4]
+        df['hs6_id'] = df['partida_id'].astype(int).astype(str).str.zfill(10).str[:-4]
         df['hs6_id'] = df['hs6_id'].replace(HS_DICT)
         
         df['cantidad_cite'] = 1
