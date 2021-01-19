@@ -1,3 +1,5 @@
+import os
+import time
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.helpers import query_to_df
 from bamboo_lib.logger import logger
@@ -20,3 +22,9 @@ def clean_tables(table_name: str, connector_path: str):
         logger.info(f"Table {table_name} dropped!")
     except:
         pass
+
+def wait_for_downloads(folder_path):
+    print("Waiting for downloads", end="")
+    while any([filename.endswith(".crdownload") for filename in os.listdir(folder_path)]):
+        time.sleep(10)
+        print(".", end="")

@@ -16,3 +16,8 @@ etl/presupuesto/dimensions/
 etl/datasets/minsa_health_y_gender_age_nat_pipeline.py
 etl/datasets/met_education_y_level_dep_pipeline.py
 etl/datasets/healthcare_attention.py
+
+# chromedriver
+chromedriver
+chromedriver_linux64.zip
+google-chrome-stable_current_amd64.deb
