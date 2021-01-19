@@ -11,6 +11,7 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
+from bamboo_lib.helpers import query_to_df
 
 MONTHS_DICT = {'mes_01' :'1', 'mes_02' :'2', 'mes_03' :'3', 'mes_04' :'4','mes_05' :'5', 'mes_06' :'6', 'mes_07' :'7', 'mes_08' :'8', 'mes_09' :'9', 'mes_10' :'10', 'mes_11' :'11','mes_12':'12'}
 
@@ -27,14 +28,14 @@ class TransformStep(PipelineStep):
         subcategory_list = list(df["subcategoria"].unique())
         subcategory_map = {k:v for (k,v) in zip(sorted(subcategory_list), list(range(1, len(subcategory_list) + 1)))}
 
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
 
         df = df.rename(columns={'variable':'month_id','value': "servicios"})
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
         df['time'] = df['anio'].astype(str) + df['month_id'].str.zfill(2)
         
-        df['cite_id'] = df['cite'].map(cite_map)
         df['subcategoria_id'] = df['subcategoria'].map(subcategory_map)
 
         df[['cite_id', 'subcategoria_id', 'time']] = df[['cite_id', 'subcategoria_id', 'time']].astype(int)

@@ -11,6 +11,7 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
+from bamboo_lib.helpers import query_to_df
 
 CARPETAS_DICT = {
     1: "01 INFORMACIÓN INSTITUCIONAL",
@@ -29,10 +30,10 @@ class TransformStep(PipelineStep):
         contribuyente_list = list(df["tipo_contribuyente"].unique())
         contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(1, len(contribuyente_list) +1)))}
 
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
 
-        df['cite_id'] = df['cite'].map(cite_map).astype(int)
         df['contribuyente_id'] = df['tipo_contribuyente'].map(contribuyente_map).astype(int)
         df['anio'] = df['anio'].astype(int)
         df['empresas'] = df['empresas'].astype(float)

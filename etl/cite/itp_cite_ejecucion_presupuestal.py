@@ -9,6 +9,7 @@ from bamboo_lib.models import Parameter
 from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
+from bamboo_lib.helpers import query_to_df
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
 
@@ -21,9 +22,6 @@ class TransformStep(PipelineStep):
         ## rows 78 and foward are only ",,,,,,"
         df = df[0:77]
 
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
-
         df = df.drop(columns=['fuente','fecha'])
         df = pd.melt(df, id_vars=['cite','anio'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
                'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
@@ -33,7 +31,11 @@ class TransformStep(PipelineStep):
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
         df['time_id'] = df['anio'].astype(int).astype(str) + df['month_id'].str.zfill(2)
         df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].replace(',','', regex=True)
-        df['cite_id'] = df['cite'].map(cite_map).astype(int)
+        
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
+
         df['time'] = df['time_id'].astype(int)
         df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].astype(float)
         df = df[['cite_id', 'time', 'ejecucion_presupuestal']]

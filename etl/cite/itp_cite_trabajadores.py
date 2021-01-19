@@ -11,7 +11,7 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
-
+from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -22,8 +22,9 @@ class TransformStep(PipelineStep):
         df["tipo_trabajador"] = df["tipo_trabajador"].str.capitalize()
 
         ## cite dim
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
 
         ## modalidad dim
         modalidad_list = list(df["modalidad"].unique())
@@ -33,7 +34,6 @@ class TransformStep(PipelineStep):
         tipo_trabajador_list = list(df["tipo_trabajador"].unique())
         tipo_trabajador_map = {k:v for (k,v) in zip(sorted(tipo_trabajador_list), list(range(1, len(tipo_trabajador_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map)
         df['modalidad_id'] = df['modalidad'].map(modalidad_map)
         df['tipo_trabajador_id'] = df['tipo_trabajador'].map(tipo_trabajador_map)
 

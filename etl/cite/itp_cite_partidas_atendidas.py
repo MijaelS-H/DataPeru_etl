@@ -12,6 +12,7 @@ from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
 from .static import HS_DICT
+from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -23,10 +24,10 @@ class TransformStep(PipelineStep):
         for column in ['cadena_atencion','cadena_pip','cadena_resolucion']:
             df[column] = df[column].replace(1, df['cadena_productiva'])
 
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
-        df['cite_id'] = df['cite'].map(cite_map)
-        df[['cite_id']] = df[['cite_id']].fillna(0).astype(int)
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
+
         df['hs6_id'] = df['partida_arancelaria'].astype(int).astype(str).str.zfill(10).str[:-4]
         df['hs6_id'] = df['hs6_id'].replace(HS_DICT)
 

@@ -85,6 +85,7 @@ class CiteInfoPipeline(EasyPipeline):
 
         dtypes = {
             'cite_id':                      'UInt8',
+            'cite':                         'String',
             'categoria':                    'String',
             'tipo':                         'String',
             'estado':                       'String',
