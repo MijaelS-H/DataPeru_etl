@@ -29,6 +29,9 @@ from .ubigeo_district import run_pipeline as run_pipeline_ubigeo_district
 from .ubigeo_nation import run_pipeline as run_pipeline_ubigeo_nation
 from .ubigeo_province import run_pipeline as run_pipeline_ubigeo_province
 
+from .inei_producto_cuero import run_pipeline as run_pipeline_producto_cuero
+from .inei_producto_desembarco import run_pipeline as run_pipeline_producto_desembarco
+from .minagri_producto_camelido import run_pipeline as run_pipeline_producto_camelido
 
 def run_pipeline(params: dict):
     run_pipeline_acti_eco_54(params)
@@ -62,6 +65,9 @@ def run_pipeline(params: dict):
     run_pipeline_ubigeo_nation(params)
     run_pipeline_ubigeo_province(params)
 
+    run_pipeline_producto_cuero(params)
+    run_pipeline_producto_desembarco(params)
+    run_pipeline_producto_camelido(params)
 
 if __name__ == "__main__":
     import sys
