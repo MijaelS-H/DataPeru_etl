@@ -16,6 +16,11 @@ from .itp_cite_servicios_subcategorias_agg import run_pipeline as itp_pipeline_s
 from .itp_cite_servicios_subcategorias import run_pipeline as itp_pipeline_subcategorias
 from .itp_cite_trabajadores import run_pipeline as itp_pipeline_trabajadores
 
+from .itp_cite_mercado_interno_agroindustrial import run_pipeline as itp_pipeline_mercado_interno_agroindustrial
+from .itp_cite_mercado_interno_camelido import run_pipeline as itp_pipeline_mercado_interno_camelido
+from .itp_cite_mercado_interno_cuero import run_pipeline as itp_pipeline_mercado_interno_cuero
+from .itp_cite_mercado_interno_pesquero import run_pipeline as itp_pipeline_mercado_interno_pesquero
+
 
 def run_pipeline(params: dict):
     itp_pipeline_clientes_aspecto(params)
@@ -35,6 +40,12 @@ def run_pipeline(params: dict):
     itp_pipeline_subcategorias_agg(params)
     itp_pipeline_subcategorias(params)
     itp_pipeline_trabajadores(params)
+    
+    itp_pipeline_mercado_interno_agroindustrial(params)
+    itp_pipeline_mercado_interno_camelido(params)
+    itp_pipeline_mercado_interno_cuero(params)
+    itp_pipeline_mercado_interno_pesquero(params)
+
 
 
 if __name__ == "__main__":
