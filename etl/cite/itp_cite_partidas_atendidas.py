@@ -23,7 +23,7 @@ class TransformStep(PipelineStep):
 
         for column in ['cadena_atencion','cadena_pip','cadena_resolucion']:
             df[column] = df[column].replace(1, df['cadena_productiva'])
-
+        
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
         df = df.merge(dim_cite, on="cite")
@@ -70,7 +70,7 @@ class CitePartidasPipeline(EasyPipeline):
             'cantidad_cite':                  'UInt8'
          }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_partidas_atendidas', measures=['cantidad_cite'])
         load_step = LoadStep('itp_cite_partidas_atendidas', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['hs10_id'])
 

@@ -10,6 +10,7 @@ from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import query_to_df
+from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
@@ -20,19 +21,20 @@ class TransformStep(PipelineStep):
 
         aspecto_list = list(df['aspecto'].unique())
         aspecto_map = {k:v for (k,v) in zip(sorted(aspecto_list), list(range(1, len(aspecto_list) + 1)))}
-
-        estado_list = list(df['estado'].dropna().unique())
-        estado_map = {k:v for (k,v) in zip(sorted(estado_list), list(range(1, len(estado_list) +1)))}
-
+        
+        dim_estado_query = 'SELECT estado, estado_id FROM dim_shared_cite_estado'
+        dim_estado = query_to_df(self.connector, raw_query=dim_estado_query)
+        df = df.merge(dim_estado, on="estado")
+        
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        
         df = df.merge(dim_cite, on="cite")
         
         df['aspecto_id'] = df['aspecto'].map(aspecto_map).astype(int)
-        df['estado_id'] = df['estado'].map(estado_map)
 
         df['cantidad_cite'] = 1
-
+        
         df = df[['cite_id','aspecto_id','estado_id','cantidad_cite']]
 
         return df
@@ -53,7 +55,7 @@ class CiteAspectoPipeline(EasyPipeline):
             'cantidad_cite':          'UInt8'
         }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_clientes_aspecto', measures=['cantidad_cite'])
         load_step = LoadStep('itp_cite_clientes_aspecto', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes)
 

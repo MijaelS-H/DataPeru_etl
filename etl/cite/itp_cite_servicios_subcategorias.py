@@ -27,11 +27,11 @@ class TransformStep(PipelineStep):
         df['subcategoria'] = df['subcategoria'].str.strip()
         subcategory_list = list(df["subcategoria"].unique())
         subcategory_map = {k:v for (k,v) in zip(sorted(subcategory_list), list(range(1, len(subcategory_list) + 1)))}
-
+        
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
         df = df.merge(dim_cite, on="cite")
-
+        
         df = df.rename(columns={'variable':'month_id','value': "servicios"})
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
         df['time'] = df['anio'].astype(str) + df['month_id'].str.zfill(2)
@@ -61,7 +61,7 @@ class CiteSubcategoryPipeline(EasyPipeline):
             'servicios':              'Float32'
          }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_servicios_subcategorias', measures=['servicios'])
         load_step = LoadStep('itp_cite_servicios_subcategorias', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes,
                             nullable_list=['servicios'])

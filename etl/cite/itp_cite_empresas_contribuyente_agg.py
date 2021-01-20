@@ -11,15 +11,17 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
+from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = pd.read_csv(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "02 CLIENTES ATENDIDOS", "TABLA_02_N06.csv"))
-
-        contribuyente_list = list(df["tipo_contribuyente"].unique())
-        contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(1, len(contribuyente_list) +1)))}
-        df['contribuyente_id'] = df['tipo_contribuyente'].map(contribuyente_map).astype(int)
-
+        
+        df["contribuyente"] = df["tipo_contribuyente"].str.capitalize() 
+        dim_contribuyente_query = 'SELECT contribuyente, contribuyente_id FROM dim_shared_cite_contribuyente'
+        dim_contribuyente = query_to_df(self.connector, raw_query=dim_contribuyente_query)
+        df = df.merge(dim_contribuyente, on="contribuyente")
+        
         df = df[['contribuyente_id', 'anio', 'empresas']]
 
         df['anio'] = df['anio'].astype(int)
@@ -42,7 +44,7 @@ class CiteContribuyentePipelineAgg(EasyPipeline):
             'empresas':               'Float32',
         }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_empresas_contribuyente_agg', measures=['empresas'])
         load_step = LoadStep('itp_cite_empresas_contribuyente_agg', connector=db_connector, if_exists='drop', pk=['contribuyente_id'], dtype=dtypes, nullable_list=['empresas'])
 

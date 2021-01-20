@@ -20,12 +20,12 @@ class TransformStep(PipelineStep):
         df = pd.melt(df, id_vars=['cite','anio','modalidad'], value_vars=['directivo', 'tecnico', 'operativo', 'administrativo', 'practicante'])
         df = df.rename(columns={'variable':'tipo_trabajador','value':'cantidad'})
         df["tipo_trabajador"] = df["tipo_trabajador"].str.capitalize()
-
+        
         ## cite dim
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
         df = df.merge(dim_cite, on="cite")
-
+        
         ## modalidad dim
         modalidad_list = list(df["modalidad"].unique())
         modalidad_map = {k:v for (k,v) in zip(sorted(modalidad_list), list(range(1, len(modalidad_list) +1)))}
@@ -61,7 +61,7 @@ class CiteContratosPipeline(EasyPipeline):
             'cantidad':                                'Float32'
          }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_trabajadores', measures=['cantidad'])
         load_step = LoadStep('itp_cite_trabajadores', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['cantidad'])
 

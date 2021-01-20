@@ -35,7 +35,7 @@ class TransformStep(PipelineStep):
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
         df = df.merge(dim_cite, on="cite")
-
+        
         df['time'] = df['time_id'].astype(int)
         df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].astype(float)
         df = df[['cite_id', 'time', 'ejecucion_presupuestal']]
@@ -57,7 +57,7 @@ class CitePimPipeline(EasyPipeline):
             'ejecucion_presupuestal':              'Float32',
         }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_ejecucion_presupuestal', measures=['ejecucion_presupuestal'])
         load_step = LoadStep('itp_cite_ejecucion_presupuestal', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['ejecucion_presupuestal'])
 

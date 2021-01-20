@@ -37,7 +37,7 @@ class TransformStep(PipelineStep):
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
         df = df.merge(dim_cite, on="cite")
-
+        
         sector_list = list(df["sector"].unique())
         sector_map = {k:v for (k,v) in zip(sorted(sector_list), list(range(1, len(sector_list) +1)))}
         df['sector_id'] = df['sector'].map(sector_map)
@@ -46,9 +46,9 @@ class TransformStep(PipelineStep):
         tipo_exp_map = {k:v for (k,v) in zip(sorted(tipo_exp_list), list(range(1, len(tipo_exp_list) +1)))}
         df['tipo_exp_id'] = df['tipo_exportacion'].map(tipo_exp_map)
 
-        cadena_productiva_list = list(df["cadena_productiva"].unique())
-        cadena_productiva_map = {k:v for (k,v) in zip(sorted(cadena_productiva_list), list(range(1, len(cadena_productiva_list) +1)))}
-        df['cad_prod_id'] = df['cadena_productiva'].map(cadena_productiva_map)
+        dim_cadena_query = 'SELECT cadena_productiva, cad_prod_id FROM dim_shared_cite_cad_prod'
+        dim_cadena = query_to_df(self.connector, raw_query=dim_cadena_query)
+        df = df.merge(dim_cadena, on="cadena_productiva")
 
         df[['cite_id','sector_id','cad_prod_id','tipo_exp_id','cantidad_cite']] = df[['cite_id','sector_id','cad_prod_id','tipo_exp_id','cantidad_cite']].astype(int)
         df = df[['cite_id','sector_id','cad_prod_id','hs10_id', 'hs6_id', 'tipo_exp_id','cantidad_cite']]
@@ -75,7 +75,7 @@ class CitePartidasPipeline(EasyPipeline):
             'cantidad_cite':          'UInt8',
          }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_partidas', measures=['cantidad_cite'])
         load_step = LoadStep('itp_cite_partidas', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes)
 

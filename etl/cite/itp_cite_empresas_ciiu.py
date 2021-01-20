@@ -17,11 +17,11 @@ from etl.consistency import AggregatorStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = pd.read_csv(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "02 CLIENTES ATENDIDOS", "TABLA_02_N03.csv"))
-
+        
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
         df = df.merge(dim_cite, on="cite")
-
+        
         df = df[['cite_id','cod_ciiu','anio','empresas']]
 
         df = df.rename(columns={'cod_ciiu' :'class_id'})
@@ -48,7 +48,7 @@ class CiteEmpresas2Pipeline(EasyPipeline):
             'empresas':              'Float32'
          }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_empresas_ciiu', measures=['empresas'])
         load_step = LoadStep('itp_cite_empresas_ciiu', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
 

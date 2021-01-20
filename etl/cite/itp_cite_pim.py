@@ -18,7 +18,7 @@ class TransformStep(PipelineStep):
         df = pd.read_csv(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "05 EJECUCIÓN PRESUPUESTAL", "TABLA_05_N01.csv"))
 
         df = df[['cite','anio','pim']]
-   
+        
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
         df = df.merge(dim_cite, on="cite")
@@ -46,7 +46,7 @@ class CitePimPipeline(EasyPipeline):
             'pim':                  'Float32'
         }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_pim', measures=['pim'])
         load_step = LoadStep('itp_cite_pim', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['pim'])
 

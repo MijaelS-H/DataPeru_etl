@@ -44,8 +44,6 @@ class TransformStep(PipelineStep):
         cite_list = list(df['cite'].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
         df['cite_id'] = df['cite'].map(cite_map)
-
-        df['cite'] = df['cite'].apply(unidecode)
  
         df['cite_slug'] = df['cite'].str.lower()
         df['cite_slug'] = df['cite_slug'].apply(unidecode)
@@ -72,7 +70,7 @@ class FormatStep(PipelineStep):
             'fecha_director', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_ambito', 'resolucion_calificacion', 
             'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
             'district_id', 'direccion', 'latitud', 'longitud', 'descriptivo']].astype(str)
-            
+        df.to_excel('dim_cite.xlsx')
         return df
 
 class CiteInfoPipeline(EasyPipeline):
