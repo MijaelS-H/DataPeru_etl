@@ -70,7 +70,7 @@ class FormatStep(PipelineStep):
             'fecha_director', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_ambito', 'resolucion_calificacion', 
             'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
             'district_id', 'direccion', 'latitud', 'longitud', 'descriptivo']].astype(str)
-        df.to_excel('dim_cite.xlsx')
+    
         return df
 
 class CiteInfoPipeline(EasyPipeline):
