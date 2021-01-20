@@ -64,14 +64,15 @@ class FormatStep(PipelineStep):
         df = prev
 
         df['cite_id'] = df['cite_id'].astype(int)
-        df['district_id'] = df['district_id'].astype(str).str.zfill(6) 
+        df['district_id'] = df['district_id'].astype(str).str.zfill(6)
         df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_director', 
             'fecha_director', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_ambito', 'resolucion_calificacion', 
             'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
-            'ubigeo', 'direccion', 'latitud', 'longitud', 'descriptivo']] = df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_director', 
+            'district_id', 'direccion', 'latitud', 'longitud', 'descriptivo']] = df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_director', 
             'fecha_director', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_ambito', 'resolucion_calificacion', 
             'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
-            'ubigeo', 'direccion', 'latitud', 'longitud', 'descriptivo']].astype(str)
+            'district_id', 'direccion', 'latitud', 'longitud', 'descriptivo']].astype(str)
+            
         return df
 
 class CiteInfoPipeline(EasyPipeline):
@@ -118,7 +119,10 @@ class CiteInfoPipeline(EasyPipeline):
         transform_step = TransformStep()
         format_step = FormatStep()
 
-        load_step = LoadStep('dim_shared_cite', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes)
+        load_step = LoadStep('dim_shared_cite', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['estado', 'patrocinador',
+        'resolucion_director', 'fecha_director', 'lista_miembros', 'resolucion_mod', 'fecha_mod', 'nota', 'resolucion_ambito', 'resolucion_calificacion',
+        'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip', 'cadena_resolucion', 'cadena_privados', 'direccion', 'latitud',
+        'longitud'])
 
         return [transform_step, format_step, load_step]
 
