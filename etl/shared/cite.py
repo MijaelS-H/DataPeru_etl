@@ -62,15 +62,15 @@ class FormatStep(PipelineStep):
         df = prev
 
         df['cite_id'] = df['cite_id'].astype(int)
-        df['district_id'] = df['district_id'].astype(str).str.zfill(6)
+        df['district_id'] = df['district_id'].fillna(0).astype(int).astype(str).str.zfill(6)
         df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_director', 
             'fecha_director', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_ambito', 'resolucion_calificacion', 
             'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
             'district_id', 'direccion', 'latitud', 'longitud', 'descriptivo']] = df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_director', 
             'fecha_director', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_ambito', 'resolucion_calificacion', 
             'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
-            'district_id', 'direccion', 'latitud', 'longitud', 'descriptivo']].astype(str)
-    
+            'district_id', 'direccion', 'latitud', 'longitud', 'descriptivo']].fillna(np.nan)
+        df[['latitud', 'longitud']] = df[['latitud', 'longitud']].astype(str)
         return df
 
 class CiteInfoPipeline(EasyPipeline):
