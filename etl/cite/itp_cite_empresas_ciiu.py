@@ -10,23 +10,22 @@ from bamboo_lib.models import PipelineStep
 from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
+from bamboo_lib.helpers import query_to_df
 from etl.consistency import AggregatorStep
 
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = pd.read_csv(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "02 CLIENTES ATENDIDOS", "TABLA_02_N03.csv"))
-
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
-
-        df['cite_id'] = df['cite'].map(cite_map)
-
+        
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
+        
         df = df[['cite_id','cod_ciiu','anio','empresas']]
 
         df = df.rename(columns={'cod_ciiu' :'class_id'})
 
-        df['cite_id'] = df['cite_id'].astype(int)
         df['anio'] = df['anio'].astype(int)
         df['empresas'] = df['empresas'].astype(float)
         df['class_id'] = df['class_id'].str[:-1].replace({"No determinado" : "0000"}).astype(str)
@@ -49,7 +48,7 @@ class CiteEmpresas2Pipeline(EasyPipeline):
             'empresas':              'Float32'
          }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_empresas_ciiu', measures=['empresas'])
         load_step = LoadStep('itp_cite_empresas_ciiu', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
 

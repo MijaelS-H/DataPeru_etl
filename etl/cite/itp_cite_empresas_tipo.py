@@ -11,6 +11,7 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
+from bamboo_lib.helpers import query_to_df
 
 MONTHS_DICT = {'mes_01' :'1', 'mes_02' :'2', 'mes_03' :'3', 'mes_04' :'4','mes_05' :'5', 'mes_06' :'6', 'mes_07' :'7', 'mes_08' :'8', 'mes_09' :'9', 'mes_10' :'10', 'mes_11' :'11','mes_12':'12'}
 
@@ -23,7 +24,7 @@ class TransformStep(PipelineStep):
                'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
                'mes_12'])
         df = df.rename(columns={'variable':'month_id','anio':'year','value':'empresas','tipo':'empresa_name'})
-
+        
         df['month_id'] = df['month_id'].map(MONTHS_DICT)
         df['time'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
 
@@ -31,10 +32,10 @@ class TransformStep(PipelineStep):
         empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(1, len(empresas_list) +1)))}
         df['empresa_id'] = df['empresa_name'].map(empresas_map)
         
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
-        df['cite_id'] = df['cite'].map(cite_map)
-
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
+        
         df[['cite_id','time','empresa_id']] = df[['cite_id','time','empresa_id']].astype(int)
         df[['empresas']] = df[['empresas']].astype(float)
 
@@ -58,7 +59,7 @@ class CiteEmpresasPipeline(EasyPipeline):
             'empresas':              'Float32',
         }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_empresas_tipo', measures=['empresas'])
         load_step = LoadStep('itp_cite_empresas_tipo', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
 

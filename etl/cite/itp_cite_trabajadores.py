@@ -11,7 +11,7 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
-
+from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -20,11 +20,12 @@ class TransformStep(PipelineStep):
         df = pd.melt(df, id_vars=['cite','anio','modalidad'], value_vars=['directivo', 'tecnico', 'operativo', 'administrativo', 'practicante'])
         df = df.rename(columns={'variable':'tipo_trabajador','value':'cantidad'})
         df["tipo_trabajador"] = df["tipo_trabajador"].str.capitalize()
-
+        
         ## cite dim
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
-
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
+        
         ## modalidad dim
         modalidad_list = list(df["modalidad"].unique())
         modalidad_map = {k:v for (k,v) in zip(sorted(modalidad_list), list(range(1, len(modalidad_list) +1)))}
@@ -33,7 +34,6 @@ class TransformStep(PipelineStep):
         tipo_trabajador_list = list(df["tipo_trabajador"].unique())
         tipo_trabajador_map = {k:v for (k,v) in zip(sorted(tipo_trabajador_list), list(range(1, len(tipo_trabajador_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map)
         df['modalidad_id'] = df['modalidad'].map(modalidad_map)
         df['tipo_trabajador_id'] = df['tipo_trabajador'].map(tipo_trabajador_map)
 
@@ -61,7 +61,7 @@ class CiteContratosPipeline(EasyPipeline):
             'cantidad':                                'Float32'
          }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_trabajadores', measures=['cantidad'])
         load_step = LoadStep('itp_cite_trabajadores', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['cantidad'])
 

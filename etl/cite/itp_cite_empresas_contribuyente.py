@@ -11,6 +11,7 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
+from bamboo_lib.helpers import query_to_df
 
 CARPETAS_DICT = {
     1: "01 INFORMACIÓN INSTITUCIONAL",
@@ -25,15 +26,16 @@ CARPETAS_DICT = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = pd.read_csv(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "02 CLIENTES ATENDIDOS", "TABLA_02_N05.csv"))
-
-        contribuyente_list = list(df["tipo_contribuyente"].unique())
-        contribuyente_map = {k:v for (k,v) in zip(sorted(contribuyente_list), list(range(1, len(contribuyente_list) +1)))}
-
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
-
-        df['cite_id'] = df['cite'].map(cite_map).astype(int)
-        df['contribuyente_id'] = df['tipo_contribuyente'].map(contribuyente_map).astype(int)
+        
+        df["contribuyente"] = df["tipo_contribuyente"].str.capitalize() 
+        dim_contribuyente_query = 'SELECT contribuyente, contribuyente_id FROM dim_shared_cite_contribuyente'
+        dim_contribuyente = query_to_df(self.connector, raw_query=dim_contribuyente_query)
+        df = df.merge(dim_contribuyente, on="contribuyente")
+        
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
+        
         df['anio'] = df['anio'].astype(int)
         df['empresas'] = df['empresas'].astype(float)
         df = df[['cite_id', 'contribuyente_id', 'anio', 'empresas']]
@@ -56,7 +58,7 @@ class CiteContribuyentePipeline(EasyPipeline):
             'empresas':               'Float32',
          }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_empresas_contribuyente', measures=['empresas'])
         load_step = LoadStep('itp_cite_empresas_contribuyente', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['empresas'])
 

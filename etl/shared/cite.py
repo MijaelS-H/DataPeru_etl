@@ -31,29 +31,20 @@ class TransformStep(PipelineStep):
 
         df_list = [df[i] for i in range(1, file_count + 1)]
         df = reduce(lambda df1,df2: pd.merge(df1,df2,on=['cite'],how='outer'), df_list)
-
-        df = df[['cite', 'tipo', 'director', 'coordinador_ut', 'lista_miembros','ambito',
-                  'ubigeo', 'direccion', 'latitud', 'longitud', 'cadena_atencion','cadena_pip','cadena_resolucion','descriptivo']]
+        
+        df = df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_x', 
+            'fecha', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_y', 'resolucion_calificacion', 
+            'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
+            'ubigeo', 'direccion', 'latitud', 'longitud', 'descriptivo']]
 
         df['tipo'] = df['tipo'].replace(TIPO_CITE_DICT)
         df['coordinador_ut'] = df['coordinador_ut'].fillna("No disponible")
-        #df['descriptivo'] = df['descriptivo'].str.replace("UT",'')
-        #df['descriptivo'] = df['descriptivo'].str.replace('El ','')
-        #df['descriptivo'] = df['descriptivo'].str.replace('CITE','')
-        #df['descriptivo'] = df['descriptivo'].str.replace('La ','')
         df['descriptivo'] = df['descriptivo'].str.lstrip()
-        #df['descriptivo'] = df['descriptivo'].str.capitalize()
 
         cite_list = list(df['cite'].unique())
         cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
         df['cite_id'] = df['cite'].map(cite_map)
-        # df['cite'] = df['cite'].str.replace("CITE","")
-        # df['cite_slug'] = df['cite'].str.replace("CITE","")
-
-        # df['cite'] = df['cite'].str.replace("UT","")
-        df['cite'] = df['cite'].str.title().str.replace("Cite", "CITE").str.replace("Ut", "UT").str.replace("Y", "y").str.replace("De", "de")
-        df['cite'] = df['cite'].apply(unidecode)
-        # df['cite_slug'] = df['cite_slug'].str.replace("UT","")
+ 
         df['cite_slug'] = df['cite'].str.lower()
         df['cite_slug'] = df['cite_slug'].apply(unidecode)
         df['cite_slug'] = df['cite_slug'].str.replace(" ", "_")
@@ -62,7 +53,7 @@ class TransformStep(PipelineStep):
         df['lista_miembros'] = df['lista_miembros'].str.replace('\n•',',')
         df['lista_miembros'] = df['lista_miembros'].str.replace('• ','')
 
-        df.rename(columns={'ubigeo' : 'district_id'}, inplace = True)
+        df.rename(columns={'ubigeo' : 'district_id', 'resolucion_x' : 'resolucion_director', 'fecha' : 'fecha_director', 'resolucion_y' : 'resolucion_ambito'}, inplace = True)
 
         return df
 
@@ -71,9 +62,15 @@ class FormatStep(PipelineStep):
         df = prev
 
         df['cite_id'] = df['cite_id'].astype(int)
-        df['district_id'] = df['district_id'].astype(str).str.zfill(6) 
-        df['latitud'] = df['latitud'].astype(str)
-        df['longitud'] = df['longitud'].astype(str)
+        df['district_id'] = df['district_id'].fillna(0).astype(int).astype(str).str.zfill(6)
+        df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_director', 
+            'fecha_director', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_ambito', 'resolucion_calificacion', 
+            'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
+            'district_id', 'direccion', 'latitud', 'longitud', 'descriptivo']] = df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_director', 
+            'fecha_director', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_ambito', 'resolucion_calificacion', 
+            'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
+            'district_id', 'direccion', 'latitud', 'longitud', 'descriptivo']].fillna(np.nan)
+        df[['latitud', 'longitud']] = df[['latitud', 'longitud']].astype(str)
         return df
 
 class CiteInfoPipeline(EasyPipeline):
@@ -86,27 +83,44 @@ class CiteInfoPipeline(EasyPipeline):
         db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
         dtypes = {
-            'cite_id':               'UInt8',
-            'tipo':                  'String',
-            'director':              'String',
-            'coordinador_ut':        'String',
-            'lista_miembros':        'String',
-            'ambito':                'String',
-            'district_id' :          'String',
-            'direccion':             'String',
-            'latitud':               'String',
-            'longitud':              'String',
-            'descriptivo':           'String',
-            'cadena_atencion':       'String',
-            'cadena_pip':            'String',
-            'cadena_resolucion':     'String',
-            'cite_slug':             'String'
+            'cite_id':                      'UInt8',
+            'cite':                         'String',
+            'categoria':                    'String',
+            'tipo':                         'String',
+            'estado':                       'String',
+            'patrocinador':                 'String',
+            'director':                     'String',
+            'coordinador_ut':               'String',
+            'resolucion_director':          'String',
+            'fecha_director':               'String',
+            'lista_miembros':               'String',
+            'resolucion_mod':               'String',
+            'fecha_mod':                    'String',
+            'nota':                         'String',
+            'ambito':                       'String',
+            'resolucion_ambito':            'String',
+            'resolucion_calificacion':      'String',
+            'resolucion_adecuacion':        'String',
+            'resolucion_cambio_nombre':     'String',
+            'cadena_atencion':              'String',
+            'cadena_pip':                   'String',
+            'cadena_resolucion':            'String',
+            'cadena_privados':              'String',
+            'district_id':                  'String',
+            'direccion':                    'String',
+            'latitud':                      'String',
+            'longitud':                     'String',
+            'descriptivo':                  'String',
+            'cite_slug':                    'String'
         }
 
         transform_step = TransformStep()
         format_step = FormatStep()
 
-        load_step = LoadStep('dim_shared_cite', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes)
+        load_step = LoadStep('dim_shared_cite', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['estado', 'patrocinador',
+        'resolucion_director', 'fecha_director', 'lista_miembros', 'resolucion_mod', 'fecha_mod', 'nota', 'resolucion_ambito', 'resolucion_calificacion',
+        'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip', 'cadena_resolucion', 'cadena_privados', 'direccion', 'latitud',
+        'longitud'])
 
         return [transform_step, format_step, load_step]
 

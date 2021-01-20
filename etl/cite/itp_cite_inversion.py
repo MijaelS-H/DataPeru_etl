@@ -11,20 +11,21 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
+from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = pd.read_csv(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "04 PROYECTOS DE INVERSIÓN PÚBLICA", "TABLA_04_N03.csv"))
 
         df = df[df['componente'] != "Total"]
-
-        cite_list = list(df["cite"].unique())
-        cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
-
+        
+        dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
+        dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+        df = df.merge(dim_cite, on="cite")
+        
         componente_list = list(df["componente"].unique())
         componente_map = {k:v for (k,v) in zip(sorted(componente_list), list(range(1, len(componente_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map).astype(int)
         df['componente_id'] = df['componente'].map(componente_map).astype(int)
         df['inversion'] = df['inversion'].replace(',','', regex=True).astype(float)
         df['ejecucion'] = df['ejecucion'].replace(',','', regex=True).astype(float)
@@ -49,7 +50,7 @@ class CiteEjecucionPipeline(EasyPipeline):
             'ejecucion':               'Float32'
         }
 
-        transform_step = TransformStep()
+        transform_step = TransformStep(connector=db_connector)
         agg_step = AggregatorStep('itp_cite_inversion', measures=['inversion', 'ejecucion'])
         load_step = LoadStep('itp_cite_inversion', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['inversion','ejecucion'])
 
