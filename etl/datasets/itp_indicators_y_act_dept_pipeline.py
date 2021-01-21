@@ -44,14 +44,15 @@ class TransformStep(PipelineStep):
             "Agricultura, ganaderia, caza y silvicultura": 1,
             "Pesca y acuicultura": 2,
             "Extraccion de petroleo, gas, minerales y servicios conexos": 3,
-            "Electricidad, gas y agua": 4,
-            "Construccion": 5,
-            "Comercio, mantenimiento y reparacion de vehiculos automotores y motocicletas": 6,
-            "Transporte, almacenamiento, correo y mensajeria": 7,
-            "Alojamiento y restaurantes": 8,
-            "Telecomunicaciones y otros servicos de informacion": 9,
-            "Administración publica y defensa": 10,
-            "Otros servicios": 11
+            "Manufactura": 4,
+            "Electricidad, gas y agua": 5,
+            "Construccion": 6,
+            "Comercio, mantenimiento y reparacion de vehiculos automotores y motocicletas": 7,
+            "Transporte, almacenamiento, correo y mensajeria": 8,
+            "Alojamiento y restaurantes": 9,
+            "Telecomunicaciones y otros servicos de informacion": 10,
+            "Administración publica y defensa": 11,
+            "Otros servicios": 12
         }
 
         # Creating inicial empty dataframe

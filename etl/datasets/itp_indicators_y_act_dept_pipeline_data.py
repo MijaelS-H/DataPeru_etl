@@ -101,7 +101,26 @@ datalist = [
             '2017P/': 2017,
             '2018E/': 2018
         }
-    }, {
+    },   {
+        'path': 'A. Economía',
+        'name': 'Manufactura',
+        'filename': 'A.32.xlsx',
+        'sheet_name_1': 'cuadro1',
+        'sheet_name_2': 'cuadro4',
+        'skiprows_': [0,1,2,3,4,5,7],
+        'cols': 'A:M',
+        'melt_' : [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018],
+        'var_name_1' : 'valor_agregado_bruto_2007',
+        'var_name_2' : 'valor_agregado_bruto_cte',
+        'rename_columns': {
+            'Departamentos': 'ubigeo',
+            '2016P/': 2016,
+            '2017P/': 2017,
+            '2018E/': 2018
+        }
+    },
+    
+     {
         'path': 'A. Economía',
         'name': 'Transporte, almacenamiento, correo y mensajeria',
         'filename': 'A.33.xlsx',
