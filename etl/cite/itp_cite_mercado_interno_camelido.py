@@ -26,7 +26,7 @@ class TransformStep(PipelineStep):
         }, inplace=True)
 
         df["cadena_productiva"] = df["cadena_productiva"].str.capitalize().str.strip()
-        df["cite"] = df["cite"].str.replace("camélidos", "camelidos")
+        #df["cite"] = df["cite"].str.replace("camélidos", "camelidos")
 
         db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
