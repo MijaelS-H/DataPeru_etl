@@ -29,7 +29,7 @@ class TransformStep(PipelineStep):
             ["Pesca Marítima, Consumo Humano Indirecto, Otras Especies", "010202"],
             ["Pesca Continental, Consumo Humano Directo, Curado", "020101"],
             ["Pesca Continental, Consumo Humano Directo, Fresco", "020102"],
-            ["Pesca Continental, Consumo Humano Directo, Curado", "020103"]
+            ["Pesca Continental, Consumo Humano Directo, Congelado", "020103"]
         ]
 
         # Generación de dataframe a partir de los datos construídos anteriormente.
