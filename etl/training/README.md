@@ -10,12 +10,14 @@ Cada pipeline desarrollado posee comentarios internos que permitirán comprender
 ## Comandos a ejecutar
 
 ### Ingestión de tabla de dimensiones
-python -m etl.training.dimensions.training_dimensions_pipeline ../../datasets
+`python -m etl.training.dimensions.training_dimensions_pipeline ../../datasets`
 
 ### Ingestión de tabla de hechos
-python -m etl.training.training_pipeline ../datasets
+`python -m etl.training.training_pipeline ../datasets`
 
 ## Revisión de tablas en Clickhouse
+```
 clickhouse-client -d dataperuv2
 select * from dim_training
 select * from fact_training
+```
