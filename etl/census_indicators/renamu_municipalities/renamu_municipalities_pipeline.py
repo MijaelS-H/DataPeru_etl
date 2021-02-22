@@ -297,7 +297,7 @@ class TransformStep(PipelineStep):
         df['P41_1_2_AUX'] = df.apply(lambda x: 1 if x['_P41_1'] == 2 else 0, axis=1)
         df['P41_1_3_AUX'] = df.apply(lambda x: 1 if x['_P41_1'] == 3 else 0, axis=1)
         df['P41_1_4_AUX'] = df.apply(lambda x: 1 if x['_P41_1'] == 4 else 0, axis=1)
-        df['P43_1_1_AUX'] = df.apply(lambda x: 1 if x['_P43_1'] == 1 else 0, axis=1)
+        df['P43_1_1_AUX'] = df.apply(lambda x: 1 if x['_P43_1'] <= 1 else 0, axis=1)
         df['P43_1_2_AUX'] = df.apply(lambda x: 1 if x['_P43_1'] == 2 else 0, axis=1)
         df['P43_1_3_AUX'] = df.apply(lambda x: 1 if x['_P43_1'] == 3 else 0, axis=1)
         df['P43_1_4_AUX'] = df.apply(lambda x: 1 if x['_P43_1'] == 4 else 0, axis=1)
