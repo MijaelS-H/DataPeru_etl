@@ -53,8 +53,8 @@ class inei_population_y_nat_nbi(EasyPipeline):
         }
 
         transform_step = TransformStep()
-        agg_step = AggregatorStep("inei_population_y_nat_nbi_pipeline", measures=["at_less_1_nbi_perc"])
-        load_step = LoadStep("inei_population_y_nat_nbi_pipeline", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
+        agg_step = AggregatorStep("inei_population_y_nat_nbi", measures=["at_less_1_nbi_perc"])
+        load_step = LoadStep("inei_population_y_nat_nbi", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
         return [transform_step, agg_step, load_step]
 
