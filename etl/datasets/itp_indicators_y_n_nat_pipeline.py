@@ -15,7 +15,7 @@ class TransformStep(PipelineStep):
         df5 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.1.xls"), skiprows = (0,1,2,3,4,6,7), usecols = "A:F")[0:8]
         df6 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.13.xlsx"), skiprows = (0,1,2,4,5), usecols = "A:M")[0:41]
         df7 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.14.xlsx"), skiprows = (0,1,2,3), usecols = "A:M")[3:5]
-        df8 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.5.xlsx"), skiprows = (0,1), usecols = "A:J")[3:12]
+        df8 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.5.xlsx"), skiprows = (0,1), usecols = "A:K")[3:12]
         df9 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.6.xlsx"), skiprows = (0,1,2,4,6), usecols = "A:K")[0:7]
         df10 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.36.xlsx"), skiprows = range(0,7), usecols = "A:D")[0:25]
         df11 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.57.xlsx"), skiprows = (0,1,2,3,5,6,7,8,9), usecols = "A:O")[0:32]
