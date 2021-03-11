@@ -72,5 +72,3 @@ if __name__ == "__main__":
         "connector": path.join(__dirname, "..", "conns.yaml"),
         "datasets": sys.argv[1]
     })
-
-
