@@ -32,13 +32,12 @@ class TransformStep(PipelineStep):
         df['hs6_id'] = df['partida_arancelaria'].astype(int).astype(str).str.zfill(10).str[:-4]
         df['hs6_id'] = df['hs6_id'].replace(HS_DICT)
 
-
         dim_cadenas_atendidas_query = 'SELECT cadena_productiva, cadena_productiva_id FROM dim_shared_cadenas_productivas_atendidas'
         cadena_dim = query_to_df(self.connector, raw_query=dim_cadenas_atendidas_query)
 
-        cadena_dim_dict = dict(zip(cadena_dim['cadena_productiva'].dropna().unique(), range(1, len(cadena_dim['cadena_productiva'].unique()) + 1 )))
-        cadena_dim_dict.update({'No Aplica' : 0})    
-        
+        cadena_dim_dict = dict(zip(cadena_dim['cadena_productiva'].dropna().unique(), range(0, len(cadena_dim['cadena_productiva'].unique()) + 1 )))
+        cadena_dim_dict.update({'No Aplica' : 0})
+
         df['cadena_atencion_id'] = df['cadena_atencion'].map(cadena_dim_dict)
         df['cadena_pip_id'] = df['cadena_pip'].map(cadena_dim_dict)
         df['cadena_resolucion_id'] = df['cadena_resolucion'].map(cadena_dim_dict)
