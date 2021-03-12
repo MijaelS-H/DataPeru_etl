@@ -21,6 +21,7 @@ from .inei_population_y_n_gender_age_urb_rur_pipeline import run_pipeline as run
 from .proinversion_fdi_y_origin_sector_pipeline import run_pipeline as run_pipeline_fdi_sector
 from .inei_population_y_nat_nbi_pipeline import run_pipeline as run_pipeline_national_nbi
 from .inei_population_y_n_illiteracy_pipeline import run_pipeline as run_pipeline_illiteracy
+from .inei_population_y_gender_geo_eap_pipeline import run_pipeline as run_pipeline_geography_eap
 
 def run_pipeline(params: dict):
     run_pipeline_age_travel(params)
@@ -46,6 +47,7 @@ def run_pipeline(params: dict):
     run_pipeline_fdi_sector(params)
     run_pipeline_national_nbi(params)
     run_pipeline_illiteracy(params)
+    run_pipeline_geography_eap(params)
 
 if __name__ == "__main__":
     import sys
