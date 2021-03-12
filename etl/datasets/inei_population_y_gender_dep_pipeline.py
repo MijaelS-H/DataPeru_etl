@@ -37,6 +37,13 @@ class TransformStep(PipelineStep):
         df.rename(columns = {"Unnamed: 0": "ubigeo", "Hombre": "poblacion_masculina", "Mujer": "poblacion_femenina"}, inplace = True)
         df["ubigeo"] = df["ubigeo"].str.slice(0,2)
 
+        # Step to add 2018 year missing from data
+        for i in list(range(1,26)):
+            pivote = pd.DataFrame({"ubigeo" : i, "poblacion_masculina" : [pd.np.nan], "poblacion_femenina" : [pd.np.nan], "year" : 2018})
+            df = df.append(pivote)
+
+        df["ubigeo"] = df["ubigeo"].astype("str").str.zfill(2)
+
         # Second reading step
         df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
         df3 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
