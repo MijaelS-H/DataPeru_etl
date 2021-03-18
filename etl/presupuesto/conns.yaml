@@ -1,0 +1,3 @@
+mef:
+  driver: bamboo_lib.connectors.drivers.http.HttpDriver
+  uri: https://www.datosabiertos.gob.pe/sites/default/files/<url>
