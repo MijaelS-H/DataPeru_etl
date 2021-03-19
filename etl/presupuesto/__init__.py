@@ -1,5 +1,5 @@
 from .download_mef_gastos import run_pipeline as run_pipeline_download_gastos
-from .dim_mef_ingresos import run_pipeline as run_pipeline_download_ingresos
+from .download_mef_ingresos import run_pipeline as run_pipeline_download_ingresos
 from .dim_mef_gastos import run_pipeline as run_pipeline_dim_gastos
 from .dim_mef_ingresos import run_pipeline as run_pipeline_dim_ingresos
 from .mef_gastos_pipeline import run_pipeline as run_pipeline_presupuesto_gastos
