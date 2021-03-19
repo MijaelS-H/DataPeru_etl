@@ -8,7 +8,7 @@ from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, UnzipStep, LoadStep
 from bamboo_lib.helpers import query_to_df
 from etl.helpers import clean_tables
-from static import URL_GASTO
+from .static import URL_GASTO
 
 class ReadStep(PipelineStep):
     def run_step(self, prev, params):

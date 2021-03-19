@@ -5,7 +5,7 @@ from io import StringIO
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, UnzipStep, LoadStep
-from static import URL_INGRESO, INGRESO_DTYPES_COLS
+from .static import URL_INGRESO, INGRESO_DTYPES_COLS
 from etl.helpers import clean_tables
 
 class TransformStep(PipelineStep):

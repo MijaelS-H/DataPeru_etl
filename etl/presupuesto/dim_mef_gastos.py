@@ -5,7 +5,7 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, UnzipToFolderStep, LoadStep
 from bamboo_lib.helpers import query_to_df
-from static import GASTO_DIMENSIONS_COLS, GASTO_DTYPES_COLS
+from .static import GASTO_DIMENSIONS_COLS, GASTO_DTYPES_COLS
 
 
 class TransformStep(PipelineStep):
