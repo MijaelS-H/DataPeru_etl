@@ -42,13 +42,19 @@ INGRESO_DTYPES_COLS = {
     "version":                       "String"
 }
 
-GASTO_DIMENSIONS_COLS = ["tipo_gobierno", "sector", "programa_ppto", "producto_proyecto", "funcion"]
+GASTO_DIMENSIONS_COLS = ["tipo_gobierno", "sector", "pliego", "ejecutora", "division_funcional", "programa_ppto", "producto_proyecto", "funcion"]
 
 GASTO_DTYPES_COLS = {
     "tipo_gobierno":                 "String",
     "tipo_gobierno_nombre":          "String",
     "sector":                        "UInt8",
     "sector_nombre":                 "String",
+    "division_funcional":            "UInt8",
+    "division_funcional_nombre":     "String",
+    "pliego":                        "UInt16",
+    "pliego_nombre":                 "String",
+    "ejecutora":                     "UInt16",
+    "ejecutora_nombre":              "String",
     "programa_ppto":                 "UInt16",
     "programa_ppto_nombre":          "String",
     "producto_proyecto":             "UInt32",

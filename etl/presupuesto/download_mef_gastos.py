@@ -23,8 +23,10 @@ class TransformStep(PipelineStep):
         df.dropna(subset=["tipo_gobierno_nombre"], inplace=True)
         assert old_shape - 1 == df.shape[0], "DROPNA ERROR!"
 
-        df = df[["ano_eje", "mes_eje", "tipo_gobierno", "tipo_gobierno_nombre", 
-                "sector", "sector_nombre", "departamento_ejecutora", "provincia_ejecutora", "distrito_ejecutora",
+        df = df[["ano_eje", "mes_eje", "tipo_gobierno", "tipo_gobierno_nombre",
+                "division_funcional", "division_funcional_nombre",
+                "sector", "sector_nombre", "pliego", "pliego_nombre", "ejecutora", "ejecutora_nombre",
+                "departamento_ejecutora", "provincia_ejecutora", "distrito_ejecutora",
                 "programa_ppto", "programa_ppto_nombre", "producto_proyecto", "producto_proyecto_nombre",
                 "funcion", "funcion_nombre", "departamento_meta", "departamento_meta_nombre",
                 "monto_pia", "monto_pim", "monto_devengado"]].copy()

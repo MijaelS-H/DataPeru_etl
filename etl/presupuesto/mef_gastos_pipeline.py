@@ -15,7 +15,7 @@ class ReadStep(PipelineStep):
 
         column = params.get("dimension")
         query = """SELECT tipo_gobierno, sector, programa_ppto, producto_proyecto, 
-                funcion, departamento_meta, monto_pia, monto_pim, monto_devengado, 
+                funcion, division_funcional, pliego, ejecutora, departamento_meta, monto_pia, monto_pim, monto_devengado, 
                 district_id, month_id FROM {} where version = '{}'""".format(params.get("temp-table"), params.get("url"))
         df = query_to_df(self.connector, raw_query=query)
 
@@ -32,7 +32,7 @@ class IngresosPipeline(EasyPipeline):
 
     @staticmethod
     def steps(params):
-        db_connector = Connector.fetch("clickhouse-database", open("../../conns.yaml"))
+        db_connector = Connector.fetch("clickhouse-database", open(params.get("connector")))
 
         dtypes = {
             "tipo_gobierno":                 "String",
@@ -40,6 +40,9 @@ class IngresosPipeline(EasyPipeline):
             "programa_ppto":                 "UInt16",
             "producto_proyecto":             "UInt32",
             "funcion":                       "UInt8",
+            "division_funcional":            "UInt8",
+            "pliego":                        "UInt16",
+            "ejecutora":                     "UInt16",
             "departamento_meta":             "UInt8",
             "monto_pia":                     "Int64",
             "monto_pim":                     "Int64",
