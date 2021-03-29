@@ -75,7 +75,7 @@ class DownloadPipeline(EasyPipeline):
 
 def run_pipeline(params: dict):
     # drop table before run all
-    clean_tables("temp_mef_gastos", params.get("connector"))
+    clean_tables("temp_mef_ingresos", params.get("connector"))
 
     pp = DownloadPipeline()
     for url in URL_INGRESO[:-2]:
