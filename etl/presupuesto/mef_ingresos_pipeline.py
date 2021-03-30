@@ -38,9 +38,9 @@ class IngresosPipeline(EasyPipeline):
             "pliego":                        "UInt16",
             "fuente_financ":                 "UInt8",
             "rubro":                         "UInt8",
-            "monto_pia":                     "Int64",
-            "monto_pim":                     "Int64",
-            "monto_recaudado":               "Int64",
+            "monto_pia":                     "Float64",
+            "monto_pim":                     "Float64",
+            "monto_recaudado":               "Float64",
             "district_id":                   "String",
             "month_id":                      "UInt32"
         }

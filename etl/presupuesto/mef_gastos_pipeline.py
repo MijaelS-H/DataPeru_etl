@@ -47,9 +47,9 @@ class IngresosPipeline(EasyPipeline):
             "pliego":                        "UInt16",
             "ejecutora":                     "UInt16",
             "departamento_meta":             "UInt8",
-            "monto_pia":                     "Int64",
-            "monto_pim":                     "Int64",
-            "monto_devengado":               "Int64",
+            "monto_pia":                     "Float64",
+            "monto_pim":                     "Float64",
+            "monto_devengado":               "Float64",
             "district_id":                   "String",
             "month_id":                      "UInt32",
             "year":                          "UInt16"
