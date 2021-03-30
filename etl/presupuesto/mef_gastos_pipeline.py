@@ -19,6 +19,9 @@ class ReadStep(PipelineStep):
                 district_id, month_id FROM {} where version = '{}'""".format(params.get("temp-table"), params.get("url"))
         df = query_to_df(self.connector, raw_query=query)
 
+        df['year'] =  df['month_id'].map(lambda x: str(x)[:4] if str(x)[4:] == '00' else '0')
+        df['month_id'] = df['month_id'].map(lambda x: '0' if str(x)[4:] == '00' else x)
+
         return df
 
 class IngresosPipeline(EasyPipeline):
@@ -48,7 +51,8 @@ class IngresosPipeline(EasyPipeline):
             "monto_pim":                     "Int64",
             "monto_devengado":               "Int64",
             "district_id":                   "String",
-            "month_id":                      "UInt32"
+            "month_id":                      "UInt32",
+            "year":                          "UInt16"
         }
 
         read_step = ReadStep(connector=db_connector)
