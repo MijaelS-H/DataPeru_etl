@@ -14,13 +14,20 @@ class ReadStep(PipelineStep):
     def run_step(self, prev, params):
 
         column = params.get("dimension")
+
         query = """SELECT tipo_gobierno, sector, programa_ppto, producto_proyecto, 
                 funcion, division_funcional, pliego, ejecutora, departamento_meta, monto_pia, monto_pim, monto_devengado, 
                 district_id, month_id FROM {} where version = '{}'""".format(params.get("temp-table"), params.get("url"))
         df = query_to_df(self.connector, raw_query=query)
 
-        df['year'] =  df['month_id'].map(lambda x: str(x)[:4] if str(x)[4:] == '00' else '0')
-        df['month_id'] = df['month_id'].map(lambda x: '0' if str(x)[4:] == '00' else x)
+        query_last_period = "SELECT max(month_id) FROM {} where version = '{}'".format(params.get("temp-table"), params.get("url"))
+        last_period = query_to_df(self.connector, raw_query=query_last_period).iloc[0].to_list()[0]
+        print("Max current period:", last_period)
+
+        df['year'] =  df['month_id'].map(lambda x: str(x)[:4])
+        df['month_id'] = df['month_id'].map(lambda x: 0 if str(x)[4:] == '00' else x)
+        df['latest'] = 0
+        df.loc[df['month_id'] == last_period, 'latest'] = 1
 
         return df
 
@@ -52,7 +59,8 @@ class IngresosPipeline(EasyPipeline):
             "monto_devengado":               "Float64",
             "district_id":                   "String",
             "month_id":                      "UInt32",
-            "year":                          "UInt16"
+            "year":                          "UInt16",
+            "latest":                        "UInt8"
         }
 
         read_step = ReadStep(connector=db_connector)
