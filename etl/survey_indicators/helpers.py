@@ -1,5 +1,5 @@
-
 import pandas as pd
+import xlrd
 
 def join_files(excel_file, excel_sheets, target_dim, target_dim_replace, encoding=None):
     # files
