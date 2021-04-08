@@ -1,4 +1,5 @@
 from os import path
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
@@ -11,11 +12,11 @@ df_columns = ["year", "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.158.xlsx"), skiprows = (0,1,2))
-        df2 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.159.xlsx"), skiprows = (0,1,2))
+        df1 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.158.xlsx"), skiprows = (0,1,2))
+        df2 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.159.xlsx"), skiprows = (0,1,2))
 
-        df3 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.166.xlsx"), skiprows = (0,1,2,4), usecols = "A:O")[0:12]
-        df4 = pd.read_excel(io = path.join(params["datasets"], "20200318", "A. Economía", "A.156.xls"), skiprows = (0,1,2), usecols = "A,C:F,H:P")[24:102]
+        df3 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.166.xlsx"), skiprows = (0,1,2,4), usecols = "A:O")[0:12]
+        df4 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.156.xls"), skiprows = (0,1,2), usecols = "A,C:F,H:P")[24:102]
 
         # Common steps
         for item in [df1,df2]:
@@ -36,17 +37,17 @@ class TransformStep(PipelineStep):
         # Monthly tourism dataset
         df4.columns = df_columns
         df4["year"] = df4["year"].astype(str)
-        df4["month"] = pd.np.nan
+        df4["month"] = np.nan
         df4.loc[df4["year"].str.contains("a|e|i|o|u|A|O"), "month"] = df4["year"]
-        df4.loc[df4["year"].str.contains("a|e|i|o|u|A|O"), "year"] = pd.np.nan
+        df4.loc[df4["year"].str.contains("a|e|i|o|u|A|O"), "year"] = np.nan
         df4["month"].replace(month_dict, inplace = True)
         df4["year"].fillna(method = "ffill", inplace = True)
         df4.dropna(axis=0, how="any", inplace = True)
         df4["month_id"] = df4["year"].astype(str) + df4["month"]
-        df4.replace({"-": pd.np.nan, " -": pd.np.nan}, inplace = True)
+        df4.replace({"-": np.nan, " -": np.nan}, inplace = True)
 
         # Formatting data
-        df1["ipc_base_2011_var_anio_anterior"].replace("-", pd.np.nan, inplace = True)
+        df1["ipc_base_2011_var_anio_anterior"].replace("-", np.nan, inplace = True)
         df1 = df1[["month_id", "ipc_base_2011_observado", "ipc_base_2011_var_mes_anterior", "ipc_base_2011_var_acumulado", "ipc_base_2011_var_anio_anterior"]]
 
         df = pd.merge(df1, df2[["month_id", "ipm_base_2013_observado", "ipm_base_2013_var_mes_anterior", "ipm_base_2013_var_acumulado"]], on = "month_id", how = "left")

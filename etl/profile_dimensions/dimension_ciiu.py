@@ -9,7 +9,8 @@ from bamboo_lib.steps import DownloadStep, LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_csv(path.join(params["datasets"],"anexos", "ISIC_Rev_4_spanish_structure.txt"), encoding='latin-1')
+        with open(path.join(params["datasets"],"anexos", "ISIC_Rev_4_spanish_structure.txt"), 'r', encoding='latin-1') as f:
+            df = pd.read_csv(f)
 
         sections = [
             ['A', 1, 3],

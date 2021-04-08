@@ -12,7 +12,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Loading data
-        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.188.xlsx"), skiprows = (0,1,2,4))[0:41]
+        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.188.xlsx"), skiprows = (0,1,2,4))[0:41]
 
         dim_country_query = "SELECT * FROM dim_shared_country"
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))

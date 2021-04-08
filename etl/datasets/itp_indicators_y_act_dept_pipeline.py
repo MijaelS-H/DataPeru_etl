@@ -58,11 +58,11 @@ class TransformStep(PipelineStep):
         # Creating inicial empty dataframe
         df = pd.DataFrame(columns=["ubigeo", "year", "act_economica", "valor_agregado_bruto_2007", "valor_agregado_bruto_cte"])
 
-        left = pd.read_excel(io = path.join(params["datasets"], "20200318", data_object["path"], data_object["filename"]),
+        left = pd.read_excel(path.join(params["datasets"], "20200318", data_object["path"], data_object["filename"]),
                         sheet_name = data_object["sheet_name_1"],
                         usecols = data_object["cols"],
                         skiprows = data_object["skiprows_"])[0:27]
-        right = pd.read_excel(io = path.join(params["datasets"], "20200318", data_object["path"], data_object["filename"]),
+        right = pd.read_excel(path.join(params["datasets"], "20200318", data_object["path"], data_object["filename"]),
                         sheet_name = data_object["sheet_name_2"],
                         usecols = data_object["cols"],
                         skiprows = data_object["skiprows_"])[0:27]

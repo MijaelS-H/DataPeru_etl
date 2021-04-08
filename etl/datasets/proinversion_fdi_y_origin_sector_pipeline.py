@@ -28,7 +28,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Loading data
-        df = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.187.xlsx"), skiprows = (0,1,2,4))[0:15]
+        df = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.187.xlsx"), skiprows = (0,1,2,4))[0:15]
 
         df.dropna(axis=1, how="all", inplace = True)
 

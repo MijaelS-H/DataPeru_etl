@@ -39,9 +39,9 @@ depto_dict = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.37.xlsx"), skiprows = (0,1,2))[4:117]
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.38.xlsx"), skiprows = (0,1,2))[1:114]
-        df3 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.39.xlsx"), skiprows = (0,1,2))[1:88]
+        df1 = pd.read_excel("{}/{}/{}".format(path, "D. Sociales", "D.37.xlsx"), skiprows = (0,1,2))[4:117]
+        df2 = pd.read_excel("{}/{}/{}".format(path, "D. Sociales", "D.38.xlsx"), skiprows = (0,1,2))[1:114]
+        df3 = pd.read_excel("{}/{}/{}".format(path, "D. Sociales", "D.39.xlsx"), skiprows = (0,1,2))[1:88]
 
         dframes_ = [df1, df2, df3]
         np_rows_ = [{0:59, 1:64}, {0:59, 1:64}, {0:45, 1:51}]

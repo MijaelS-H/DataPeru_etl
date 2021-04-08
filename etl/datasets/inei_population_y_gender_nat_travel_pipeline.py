@@ -27,8 +27,8 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame(columns = ["year", "continente", "inmigration_flow", "hombre", "mujer"])
 
         # Loading data
-        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda","B.25.xls"), skiprows = (0,1,3,4,5))[0:31]
-        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda","B.26.xls"), skiprows = (0,1,3,4,5))[0:31]
+        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda","B.25.xls"), skiprows = (0,1,3,4,5))[0:31]
+        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda","B.26.xls"), skiprows = (0,1,3,4,5))[0:31]
 
         # Transpose dataframes and deleting NaN columns
         df_1 = df1.T

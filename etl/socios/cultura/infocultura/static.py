@@ -1,6 +1,6 @@
 import requests
 import pandas as pd 
-from pandas.io.json import json_normalize
+# from pandas.io.json import json_normalize
 
 MONTHS_DICT = {
     'Enero' : '01',

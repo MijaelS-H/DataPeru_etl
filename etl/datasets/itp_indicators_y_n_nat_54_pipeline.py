@@ -9,8 +9,11 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
         years_ = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018]
-        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.14.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
-        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.21.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9), reset_index = True)
+        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.14.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9))
+        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.21.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9))
+
+        df1 = df1.reset_index(drop=True)
+        df2 = df2.reset_index(drop=True)
 
         # For cycle to repeated step for the 2 datasets
         for item in [df1, df2]: 
