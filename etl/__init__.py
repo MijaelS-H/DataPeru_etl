@@ -11,16 +11,16 @@ from .survey_indicators import run_pipeline as run_pipeline_survey_indicators
 
 
 def run_pipeline(params: dict):
-    run_pipeline_shared(params) #refactored
-    run_pipeline_census_indicators(params) #no changes required
-    run_pipeline_cite(params) #refactored
-    run_pipeline_datasets(params) #refactored
-    run_pipeline_minagri(params) #no changes required
-    run_pipeline_presupuesto(params) #refactored
-    run_pipeline_profile_dimensions(params) #refactored
-    run_pipeline_socios(params) #refactored
-    run_pipeline_sunat(params) #refactored
-    run_pipeline_survey_indicators(params) #refactored
+    run_pipeline_shared(params)
+    run_pipeline_census_indicators(params)
+    run_pipeline_cite(params)
+    run_pipeline_datasets(params)
+    run_pipeline_minagri(params)
+    run_pipeline_presupuesto(params)
+    run_pipeline_profile_dimensions(params)
+    run_pipeline_socios(params)
+    run_pipeline_sunat(params)
+    run_pipeline_survey_indicators(params)
 
 
 if __name__ == "__main__":
