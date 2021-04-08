@@ -233,8 +233,12 @@ class TransformStep(PipelineStep):
         df25['year'] = df25.index
 
         # Merge of the 13 datasets
-        df = pd.merge(df1, df2[["year", "agricultura_ganaderia_caza_silvicultura_miles_soles", "pesca_miles_soles", "mineria_miles_soles", "industria_manufacturera_miles_soles", "electricidad_gas_agua_miles_soles", "construccion_miles_soles", "comercio_miles_soles", "hoteles_restaurantes_miles_soles", "transporte_almacenamiento_comunicaciones_miles_soles", "intermediacion_financiera_miles_soles", "actividad_inmobiliarias_empresariales_alquiler_miles_soles", "administracion_publica_defensa_miles_soles", "ensenianza_miles_soles", "servicios_sociales_salud_miles_soles", "otras_actividades_servicios_comunitarios_miles_soles", "hogares_privados_organizaciones_extraterritoriales_miles_soles", "creditos_hipotecariosvivienda_miles_soles", "creditos_consumo_miles_soles"]], on = "year", how = "left")
-        df = pd.merge(df,  df3[["year", "exportaciones_mill_dolares", "importaciones_mill_dolares", "balanza_comercial_mill_dolares", "balanza_pagos_mill_dolares", "activos_externos_netos_corto_plazo_mill_dolares", "deuda_publica_externa_mill_dolares"]], on = "year", how = "left")
+        df = pd.merge(df3, df1[["year", "producto_interno_bruto_mill_n_soles", "remuneraciones_mill_n_soles", "derechos_importacion_mill_n_soles", "impuestos_productos_mill_n_soles", "otros_impuestos_mill_n_soles", "ingreso_explotacion_mill_n_soles", "excedente_explotacion_bruto_mill_n_soles", "ingreso_mixto_mill_n_soles"]], on = "year", how = "left")
+        df = pd.merge(df, df2[["year", "agricultura_ganaderia_caza_silvicultura_miles_soles", "pesca_miles_soles", "mineria_miles_soles", "industria_manufacturera_miles_soles", "electricidad_gas_agua_miles_soles", "construccion_miles_soles", "comercio_miles_soles", "hoteles_restaurantes_miles_soles", "transporte_almacenamiento_comunicaciones_miles_soles", "intermediacion_financiera_miles_soles", "actividad_inmobiliarias_empresariales_alquiler_miles_soles", "administracion_publica_defensa_miles_soles", "ensenianza_miles_soles", "servicios_sociales_salud_miles_soles", "otras_actividades_servicios_comunitarios_miles_soles", "hogares_privados_organizaciones_extraterritoriales_miles_soles", "creditos_hipotecariosvivienda_miles_soles", "creditos_consumo_miles_soles"]], on = "year", how = "left")
+
+        #df = pd.merge(df1, df2[["year", "agricultura_ganaderia_caza_silvicultura_miles_soles", "pesca_miles_soles", "mineria_miles_soles", "industria_manufacturera_miles_soles", "electricidad_gas_agua_miles_soles", "construccion_miles_soles", "comercio_miles_soles", "hoteles_restaurantes_miles_soles", "transporte_almacenamiento_comunicaciones_miles_soles", "intermediacion_financiera_miles_soles", "actividad_inmobiliarias_empresariales_alquiler_miles_soles", "administracion_publica_defensa_miles_soles", "ensenianza_miles_soles", "servicios_sociales_salud_miles_soles", "otras_actividades_servicios_comunitarios_miles_soles", "hogares_privados_organizaciones_extraterritoriales_miles_soles", "creditos_hipotecariosvivienda_miles_soles", "creditos_consumo_miles_soles"]], on = "year", how = "left")
+        #df = pd.merge(df,  df3[["year", "exportaciones_mill_dolares", "importaciones_mill_dolares", "balanza_comercial_mill_dolares", "balanza_pagos_mill_dolares", "activos_externos_netos_corto_plazo_mill_dolares", "deuda_publica_externa_mill_dolares"]], on = "year", how = "left")
+
         df = pd.merge(df,  df4[["year", "act_reserva_BCRP_mill_dolares", "act_sist_financiero_sin_BCRP_mill_dolares", "act_otros_activos_mill_dolares", "pas_med_lar_sector_privado_mill_dolares", "pas_med_lar_sector_publico_mill_dolares", "pas_cort_sist_financiero_sin_BCRP_mill_dolares", "pas_cort_BCRP_mill_dolares", "pas_cort_otros_mill_dolares", "pas_inversion_directa_mill_dolares", "pas_participacion_capital_mill_dolares"]], on = "year", how = "left")
         df = pd.merge(df,  df5[["year", "poblacion_total", "poblacion_censada", "poblacion_omitida"]], on = "year", how = "left")
         df = pd.merge(df,  df6[["year", "pea_hombres", "pea_mujeres", "pea_14_24_yrs", "pea_25_44_yrs", "pea_45_64_yrs", "pea_65_o_mas_yrs", "pea_primaria_o_inferior", "pea_secundaria", "pea_superior_no_universitaria", "pea_universitaria", "pea_empresa_1_10_empleados", "pea_empresa_11_50_empleados", "pea_empresa_50_o_mas_empleados", "pea_agricultura_pesca_mineria", "pea_manufactura", "pea_construccion", "pea_comercio", "pea_transporte_comunicaciones", "pea_otros_servicios"]], on = "year", how = "left")
@@ -280,14 +284,14 @@ class itp_indicators_y_n_nat_pipeline(EasyPipeline):
         dtype = {
             "nation_id":                                                                    "String",
             "year":                                                                         "UInt16",
-            "producto_interno_bruto_mill_n_soles":                                          "UInt32",
-            "remuneraciones_mill_n_soles":                                                  "UInt16",
-            "derechos_importacion_mill_n_soles":                                            "UInt16",
-            "impuestos_productos_mill_n_soles":                                             "UInt16",
-            "otros_impuestos_mill_n_soles":                                                 "UInt16",
-            "ingreso_explotacion_mill_n_soles":                                             "UInt32",
-            "excedente_explotacion_bruto_mill_n_soles":                                     "UInt32",
-            "ingreso_mixto_mill_n_soles":                                                   "UInt32",
+            "producto_interno_bruto_mill_n_soles":                                          "Float32",
+            "remuneraciones_mill_n_soles":                                                  "Float32",
+            "derechos_importacion_mill_n_soles":                                            "Float32",
+            "impuestos_productos_mill_n_soles":                                             "Float32",
+            "otros_impuestos_mill_n_soles":                                                 "Float32",
+            "ingreso_explotacion_mill_n_soles":                                             "Float32",
+            "excedente_explotacion_bruto_mill_n_soles":                                     "Float32",
+            "ingreso_mixto_mill_n_soles":                                                   "Float32",
             "agricultura_ganaderia_caza_silvicultura_miles_soles":                          "Float32",
             "pesca_miles_soles":                                                            "Float32",
             "mineria_miles_soles":                                                          "Float32",
@@ -359,8 +363,8 @@ class itp_indicators_y_n_nat_pipeline(EasyPipeline):
             "gasto_social_asistencia_social_mill_soles":                                    "UInt16",
             "gasto_social_salud_colectiva_mill_soles":                                      "UInt16",
             "gasto_social_salud_individual_mill_soles":                                     "UInt16",
-            "gasto_gobierno_sector_publico_mill_soles":                                     "UInt32",
-            "gasto_gobierno_sector_privado_mill_soles":                                     "UInt32",
+            "gasto_gobierno_sector_publico_mill_soles":                                     "Float32",
+            "gasto_gobierno_sector_privado_mill_soles":                                     "Float32",
             "analfabetismo_total_15_19":                                                    "Float32",
             "analfabetismo_total_20_29":                                                    "Float32",
             "analfabetismo_total_30_39":                                                    "Float32",
@@ -583,7 +587,9 @@ class itp_indicators_y_n_nat_pipeline(EasyPipeline):
             "ing_tur_intern_aeropuerto_Jorge_Chavez", "ing_tur_intern_puesto_control_Santa_Rosa", "ing_tur_intern_otros_puntos",
             "turismo_arribo_turistas_nacionales", "turismo_arribo_turistas_extranjeros",
             "turismo_pernoctacion_turistas_nacionales", "turismo_pernoctacion_turistas_extranjeros",
-            "turismo_permanencia_prom_turistas_nacionales", "turismo_permanencia_prom_turistas_extranjeros"])
+            "turismo_permanencia_prom_turistas_nacionales", "turismo_permanencia_prom_turistas_extranjeros",
+
+            ])
 
         return [transform_step, agg_step, load_step]
 
