@@ -13,5 +13,5 @@ simpledbf
 sklearn
 tables
 unidecode
-xlrd
+xlrd==1.2.0
 selenium
