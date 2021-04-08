@@ -1,5 +1,6 @@
 from os import path
 import pandas as pd
+import numpy as np
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
@@ -8,13 +9,13 @@ from etl.consistency import AggregatorStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.153.xls"), skiprows = (0,1,2,3), usecols = "A,C,D,G,H,K,L,N,O")[0:108]
+        df = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.153.xls"), skiprows = (0,1,2,3), usecols = "A,C,D,G,H,K,L,N,O")[0:108]
         df.columns = ["categoria", "n_arribos_nacionales", "n_arribos_extranjeros", "n_pernoctaciones_nacionales", "n_pernoctaciones_extranjeros", "permanencia_prom_nacionales", "permanencia_prom_extranjeros", "tasa_ocupacion_hab", "tasa_ocupacion_camas"]
         df["categoria"] = df["categoria"].astype(str)
 
-        df["year"] = pd.np.nan
+        df["year"] = np.nan
         df.loc[df["categoria"].str.contains("00|01"), "year"] = df["categoria"]
-        df.loc[df["categoria"].str.contains("00|01"), "categoria"] = pd.np.nan
+        df.loc[df["categoria"].str.contains("00|01"), "categoria"] = np.nan
         df["year"].fillna(method = "ffill", inplace = True)
 
         df.dropna(axis=0, how="any", inplace = True)

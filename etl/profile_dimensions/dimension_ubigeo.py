@@ -1,5 +1,6 @@
 import pandas as pd
 from os import path
+import numpy as np
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
@@ -65,7 +66,7 @@ class TransformStep(PipelineStep):
             'PROVINCIA': 'province_name',
             'DISTRITO': 'district_name'}, inplace=True)
 
-        df = df.replace(' ', pd.np.nan)
+        df = df.replace(' ', np.nan)
         df.dropna(how = "any", axis = 0, inplace=True)
 
         df.drop(df.loc[df["department_name"] == "DEPARTAMENTO"].index, inplace = True)

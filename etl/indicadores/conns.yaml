@@ -1,7 +1,0 @@
-##clickhouse-database:
-##  driver: bamboo_lib.connectors.drivers.clickhouse.ClickhouseDriver
-##  uri: clickhouse://$CLICKHOUSE_USERNAME:$CLICKHOUSE_PASSWORD@$CLICKHOUSE_URL/$CLICKHOUSE_DATABASE
-
- clickhouse-local:
-  driver: bamboo_lib.connectors.drivers.clickhouse.ClickhouseDriver
-  uri: clickhouse://$DB_USER:$DB_PW@$DB_URL/$DB_NAME 

@@ -1,5 +1,6 @@
 from os import path
 import pandas as pd
+import numpy as np
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
@@ -12,7 +13,7 @@ output = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRsfSo_N9dGWqzuCAoSEbC
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.73.xlsx"), skiprows = (0,1,2,4,5))[0:31]
+        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.73.xlsx"), skiprows = (0,1,2,4,5))[0:31]
         ports = pd.read_excel(output, usecols ="A,D")
 
         df1.rename(columns = {'2018 P/': 2018}, inplace = True)
@@ -28,7 +29,7 @@ class TransformStep(PipelineStep):
         df["ubigeo"].replace(depto_dict, inplace = True)
         df["puerto"].replace(puerto_dict, inplace = True)
 
-        df["desembarque_recursos_marinos"].replace({"-": pd.np.nan}, inplace = True)
+        df["desembarque_recursos_marinos"].replace({"-": np.nan}, inplace = True)
 
         df["ubigeo"].fillna("99", inplace = True)
         df["year"] = df["year"].astype(int)

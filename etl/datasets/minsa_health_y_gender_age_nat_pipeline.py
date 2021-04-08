@@ -11,8 +11,8 @@ path = grab_parent_dir("../../") + "/datasets/20200318"
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.25.xlsx"), skiprows = range(0,5))[2:131]
-        df2 = pd.read_excel(io = "{}/{}/{}".format(path, "D. Sociales", "D.26.xlsx"), skiprows = (0,1,2))[2:124]
+        df1 = pd.read_excel("{}/{}/{}".format(path, "D. Sociales", "D.25.xlsx"), skiprows = range(0,5))[2:131]
+        df2 = pd.read_excel("{}/{}/{}".format(path, "D. Sociales", "D.26.xlsx"), skiprows = (0,1,2))[2:124]
 
         # For each dataframe, 
         for item in [df1, df2]:

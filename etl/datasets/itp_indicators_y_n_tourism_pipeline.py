@@ -13,11 +13,11 @@ class TransformStep(PipelineStep):
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
         countries = query_to_df(db_connector, raw_query=dim_country_query)
 
-        df1_1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.147.xls"), sheet_name = "19.2 (c)", skiprows = (0,1,2,3), usecols = "A:K")[3:44]
-        df1_2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.147.xls"), sheet_name = "19.2 (d)", skiprows = (0,1,2,3), usecols = "A:K")[2:45]
-        df2_1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.149.xls"), sheet_name = "cap22005c", skiprows = (0,1,2,3))[3:45]
-        df2_2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.149.xls"), sheet_name = "cap22005d", skiprows = (0,1,2,3))[2:37]
-        df_3 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.154.xls"), skiprows = (0,1,2), usecols = "A:D,F:H,J:L,N:P,R:T,V:X,Z:AB")[5:52]
+        df1_1 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.147.xls"), sheet_name = "19.2 (c)", skiprows = (0,1,2,3), usecols = "A:K")[3:44]
+        df1_2 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.147.xls"), sheet_name = "19.2 (d)", skiprows = (0,1,2,3), usecols = "A:K")[2:45]
+        df2_1 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.149.xls"), sheet_name = "cap22005c", skiprows = (0,1,2,3))[3:45]
+        df2_2 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.149.xls"), sheet_name = "cap22005d", skiprows = (0,1,2,3))[2:37]
+        df_3 =  pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.154.xls"), skiprows = (0,1,2), usecols = "A:D,F:H,J:L,N:P,R:T,V:X,Z:AB")[5:52]
 
         df1 = df1_1.append(df1_2, sort = True)
         df2 = df2_1.append(df2_2, sort = True)

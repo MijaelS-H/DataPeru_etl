@@ -16,7 +16,8 @@ class TransformStep(PipelineStep):
 
         df = pd.DataFrame()
         for filename in glob.glob(filelist):
-            temp = pd.read_csv(filename, encoding="latin-1")
+            with open(filename, 'r', encoding='latin-1') as f:
+                temp = pd.read_csv(f)
             temp.rename(columns={"fuente_financ": "fuente_financiamiento"}, inplace=True)
             df = df.append(temp, sort=False)
 

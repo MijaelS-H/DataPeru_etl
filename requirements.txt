@@ -7,7 +7,7 @@ h5py
 nltk
 numexpr
 numpy
-pandas==0.25
+pandas
 pyreadstat
 simpledbf
 sklearn

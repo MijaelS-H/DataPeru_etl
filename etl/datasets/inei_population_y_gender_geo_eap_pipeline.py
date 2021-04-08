@@ -1,5 +1,5 @@
 from os import path
-
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
@@ -15,12 +15,12 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame(columns = ["Unnamed: 0", "Hombre", "Mujer", "year"])
 
         # Reading step
-        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[3:11]
-        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[3:11]
+        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[3:11]
+        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[3:11]
 
         # For each dataset, apply common steps
         for item in [df1,df2]:
-            item["ambito_geografico"] = pd.np.nan
+            item["ambito_geografico"] = np.nan
             item.rename(columns={"Ámbito geográfico": "sub_ambito_geografico"}, inplace = True)
             item["sub_ambito_geografico"].replace({"Área de residencia":"area_residencia",
                                             "Región natural": "region_natural",
@@ -30,10 +30,10 @@ class TransformStep(PipelineStep):
                                             "Costa ": "costa",
                                             "Sierra": "sierra",
                                             "Selva": "selva"}, inplace = True)
-            item["ambito_geografico"] = pd.np.nan
+            item["ambito_geografico"] = np.nan
             item.dropna(axis = 0, how = "all", inplace = True)
             item.loc[item["sub_ambito_geografico"].str.contains("area_residencia|region_natural"), "ambito_geografico"] = item["sub_ambito_geografico"]
-            item.loc[item["sub_ambito_geografico"].str.contains("area_residencia|region_natural"), "sub_ambito_geografico"] = pd.np.nan
+            item.loc[item["sub_ambito_geografico"].str.contains("area_residencia|region_natural"), "sub_ambito_geografico"] = np.nan
             item["ambito_geografico"].fillna(method="ffill", inplace = True)
             item.dropna(axis = 0, thresh = 2, inplace = True)
             item["nation_id"] = "per"

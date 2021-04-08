@@ -26,7 +26,8 @@ def run_pipeline(params: dict):
         temp = pd.DataFrame()
         for filename in data:
             logger.debug('current file: %s / current level: %s', filename, PREFIX)
-            df = pd.read_csv(filename, encoding='latin-1')
+            with open(filename, 'r', encoding='latin-1') as f:
+                df = pd.read_csv(f)
             df.columns = df.columns.str.lower()
             df = df[base].copy()
             temp = temp.append(df)

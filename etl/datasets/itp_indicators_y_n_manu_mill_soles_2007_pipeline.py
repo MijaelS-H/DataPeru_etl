@@ -8,7 +8,7 @@ from etl.consistency import AggregatorStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df_ = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.94.xlsx"), skiprows = (0,1,2,3,5,6), usecols = "A:M")[0:31]
+        df_ = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.94.xlsx"), skiprows = (0,1,2,3,5,6), usecols = "A:M")[0:31]
 
         # Renaming columns + removing " " strings elements
         df_.rename(columns = {'Actividad Económica': 'sub_actividad_economica_id', '2014': 2014, '2015 P/': 2015, '2016 P/': 2016, '2017 E/': 2017, '2018 E/': 2018}, inplace = True)

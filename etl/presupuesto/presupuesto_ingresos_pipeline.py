@@ -23,7 +23,8 @@ class ReadStep(PipelineStep):
         temp = pd.DataFrame()
 
         for year in range(2014, 2020 + 1):
-            df = pd.read_csv(data, encoding='latin-1')
+            with open(data, 'r', encoding='latin-1') as f:
+                df = pd.read_csv(f)
             df.columns = df.columns.str.lower()
             df = df[base + ['monto_pia_{}'.format(year), 'monto_pim_{}'.format(year), 'monto_recaudado_{}'.format(year)]].copy()
 

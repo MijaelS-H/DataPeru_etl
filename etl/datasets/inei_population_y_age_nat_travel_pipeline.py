@@ -1,5 +1,6 @@
 from os import path
 import pandas as pd
+import numpy as np
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline , Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
@@ -19,8 +20,8 @@ CONTINENT_DICT = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.27.xls"), skiprows = (0,1,2))[2:171]
-        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.28.xls"), skiprows = (0,1,2))[2:171]
+        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.27.xls"), skiprows = (0,1,2))[2:171]
+        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.28.xls"), skiprows = (0,1,2))[2:171]
 
         # For each dataframe
         for item in [df1, df2]:
@@ -45,8 +46,8 @@ class TransformStep(PipelineStep):
         df2 = pd.melt(df2, id_vars = ["year", "continente", "inmigration_flow"], value_vars = ["0 - 9", "10 - 19", "20 - 29", "30 - 39", "40 - 49", "50 - 59", "60 - 69", "70 - 79", "80 y más"], var_name = "age_group", value_name = "poblacion")
 
         # Replacing non number values
-        df1["poblacion"].replace({"-": pd.np.nan}, inplace = True)
-        df2["poblacion"].replace({"-": pd.np.nan}, inplace = True)
+        df1["poblacion"].replace({"-": np.nan}, inplace = True)
+        df2["poblacion"].replace({"-": np.nan}, inplace = True)
 
         # Append the 2 datasets
         df = df1.append(df2)

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import xlrd
 from os import path
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
@@ -11,7 +12,8 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_excel(path.join(params["datasets"],"anexos", "CIIU-REV.3 (es).xls"), encoding='latin-1', header=4, usecols="A,B")
+        wb = xlrd.open_workbook(path.join(params["datasets"],"anexos", "CIIU-REV.3 (es).xls"), encoding_override='latin1')
+        df = pd.read_excel(wb, header=4, usecols="A,B")
 
         sections = [
             ['A', 1, 2],
