@@ -1,6 +1,6 @@
 from os import path
 import pandas as pd
-
+import xlrd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
@@ -13,10 +13,10 @@ from bamboo_lib.helpers import grab_connector
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
+        wb = xlrd.open_workbook(path.join(params["datasets"], "20210119", "08 CADENAS PRODUCTIVAS Y MERCADO INTERNO", "TABLA_08_N04.xlsx"), encoding_override='latin1')
         df = pd.read_excel(
-            path.join(params["datasets"], "20210119", "08 CADENAS PRODUCTIVAS Y MERCADO INTERNO", "TABLA_08_N04.xlsx"),
-            dtype='str',
-            encoding="latin-1"
+            wb,
+            dtype='str'
         )
 
         df.dropna(how="any", inplace=True)

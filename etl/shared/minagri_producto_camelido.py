@@ -9,12 +9,12 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_csv(
-            path.join(params["datasets"], "20210119", "08 CADENAS PRODUCTIVAS Y MERCADO INTERNO", "TABLA_08_N04.csv"),
-            dtype='str',
-            sep=";",
-            encoding="latin-1"
-        )
+        with open(path.join(params["datasets"], "20210119", "08 CADENAS PRODUCTIVAS Y MERCADO INTERNO", "TABLA_08_N04.csv"), 'r', encoding='latin-1') as f:
+            df = pd.read_csv(
+                f,
+                dtype='str',
+                sep=";"
+            )
 
         df.rename(columns={
             "descripcion_producto ": "descripcion_producto"
