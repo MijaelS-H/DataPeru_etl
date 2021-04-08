@@ -32,7 +32,8 @@ def download_gastos(download_folder: Path):
                 continue
 
         try:
-            temp = pd.read_csv(url, encoding='latin-1')
+            with open(url, 'r', encoding='latin-1') as f:
+                temp = pd.read_csv(f)
             temp.to_csv(target_path, index=False)
             logger.debug("DOWNLOAD SUCCESS: %s %s", item['source'], url)
         except Exception as err:

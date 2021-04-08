@@ -17,7 +17,6 @@ TIPO_CITE_DICT = {'Centro de Innovación Productiva y Transferencia Tecnológica
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-#         df = pd.read_csv(path.join(params["datasets"],"anexos", "ISIC_Rev_4_spanish_structure.txt"), encoding='latin-1')
         k = 1
         df = {}
         for i in range(1,1 +1):

@@ -17,7 +17,8 @@ class TransformStep(PipelineStep):
 
         df = pd.DataFrame()
         for filename in filelist:
-            temp = pd.read_csv(filename, encoding='latin-1')
+            with open(filename, 'r', encoding='latin-1') as f:
+                temp = pd.read_csv(f)
             df = df.append(temp)
 
         df.drop_duplicates(subset=[dimension], inplace=True)
