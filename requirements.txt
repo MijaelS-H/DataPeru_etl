@@ -7,7 +7,7 @@ h5py
 nltk
 numexpr
 numpy
-pandas==0.25
+pandas
 pyreadstat
 simpledbf
 sklearn
@@ -15,3 +15,4 @@ tables
 unidecode
 xlrd==1.2.0
 selenium
+zipfile37
