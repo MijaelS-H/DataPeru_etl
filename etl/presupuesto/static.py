@@ -1,139 +1,76 @@
-import os
 
+URL_INGRESO = [
+    "2014-Ingreso.zip",
+    "2015-Ingreso.zip",
+    "2016-Ingreso.zip",
+    "2017-Ingreso.zip",
+    "2018-Ingreso.zip",
+    "2019-Ingreso.zip",
+    "2020-Ingreso.zip",
+    "2021-Ingreso.zip"
+]
 
-FOLDER = 'dimensions'
+URL_GASTO = [
+    "2014-Gasto.zip",
+    "2015-Gasto.zip",
+    "2016-Gasto.zip",
+    "2017-Gasto.zip",
+    "2018-Gasto.zip",
+    "2019-Gasto.zip",
+    "2020.zip",
+    "2021.zip"
+]
 
-DATA_FOLDER = os.path.join("..", "datasets", "download")
+INGRESO_DIMENSIONS_COLS = ["tipo_gobierno", "sector", "pliego", "fuente_financ", "rubro", "ejecutora"]
 
-TIPO_GOBIERNO = {
-    'GOBIERNO NACIONAL': 1,
-    'GOBIERNOS REGIONALES': 2,
-    'GOBIERNOS LOCALES': 3
+INGRESO_DTYPES_COLS = {
+    "tipo_gobierno":                 "String",
+    "tipo_gobierno_nombre":          "String",
+    "sector":                        "UInt8",
+    "sector_nombre":                 "String",
+    "pliego":                        "String",
+    "pliego_nombre":                 "String",
+    "sec_ejec":                      "UInt32",
+    "ejecutora":                     "UInt32",
+    "ejecutora_nombre":              "String",
+    "fuente_financ":                 "UInt8",
+    "fuente_financ_nombre":          "String",
+    "rubro":                         "UInt8",
+    "rubro_nombre":                  "String",
+    "monto_pia":                     "Float64",
+    "monto_pim":                     "Float64",
+    "monto_recaudado":               "Float64",
+    "district_id":                   "String",
+    "month_id":                      "UInt32",
+    "version":                       "String"
 }
 
-BASE = {
-    'GN': ['tipo_gobierno', 'sector', 'pliego', 'ejecutora', 
-           'sec_ejec', 'programa_ppto', 'producto_proyecto', 
-           'funcion', 'division_funcional', 'departamento_meta'],
-    'GR': ['tipo_gobierno', 'pliego', 'ejecutora', 
-           'sec_ejec', 'programa_ppto', 'producto_proyecto', 
-           'funcion', 'division_funcional', 'departamento_meta'],
-    'GL': ['ubigeo', 'tipo_gobierno', 'ejecutora', 
-           'sec_ejec', 'programa_ppto', 'producto_proyecto', 
-           'funcion', 'division_funcional', 'departamento_meta'],
-    'gn_sectores': ['nivel_gobierno', 'sector_nombre', 'pliego_nombre', 'ubigeo', 'fuente_financiamiento_nombre', 'rubro_nombre'],
-    'gob_regionales': ['nivel_gobierno', 'pliego_nombre', 'fuente_financ_nombre', 'rubro_nombre'],
-    'gob_locales': ['nivel_gobierno', 'fuente_financiamiento_nombre', 'rubro_nombre', 'ubigeo']
-}
+GASTO_DIMENSIONS_COLS = ["tipo_gobierno", "sector", "pliego", "ejecutora", "division_funcional", "programa_ppto", "producto_proyecto", "funcion"]
 
-DIMENSIONS = {
-    'GN': {
-        'dim_sector.csv': 'sector',
-        'dim_pliego.csv': 'pliego',
-        'dim_ejecutora.csv': 'ejecutora',
-        'dim_funcion.csv': 'funcion',
-        'dim_division_funcional.csv': 'division_funcional',
-        'dim_programa_ppto.csv': 'programa_ppto',
-        'dim_producto_proyecto.csv': 'producto_proyecto'
-    },
-    'GR': {
-        'dim_pliego.csv': 'pliego',
-        'dim_ejecutora.csv': 'ejecutora',
-        'dim_funcion.csv': 'funcion',
-        'dim_division_funcional.csv': 'division_funcional',
-        'dim_programa_ppto.csv': 'programa_ppto',
-        'dim_producto_proyecto.csv': 'producto_proyecto'
-    },
-    'GL': {
-        'dim_ejecutora.csv': 'ejecutora',
-        'dim_funcion.csv': 'funcion',
-        'dim_division_funcional.csv': 'division_funcional',
-        'dim_programa_ppto.csv': 'programa_ppto',
-        'dim_producto_proyecto.csv': 'producto_proyecto'
-    }
-}
-
-DTYPE = {
-    'GN': {
-        'sector':               'UInt8',
-        'pliego':               'UInt8',
-        'tipo_gobierno':        'UInt8',
-        'ejecutora':            'UInt16',
-        'sec_ejec':             'UInt32',
-        'programa_ppto':        'UInt8',
-        'producto_proyecto':    'UInt32',
-        'funcion':              'UInt8',
-        'division_funcional':   'UInt8',
-        'departamento_meta':    'String',
-        'pia':                  'Float64',
-        'pim':                  'Float64',
-        'devengado':            'Float64',
-        'year':                 'UInt16'
-    },
-    'GR': {
-        'pliego':               'UInt8',
-        'tipo_gobierno':        'UInt8',
-        'ejecutora':            'UInt16',
-        'sec_ejec':             'UInt32',
-        'programa_ppto':        'UInt8',
-        'producto_proyecto':    'UInt32',
-        'funcion':              'UInt8',
-        'division_funcional':   'UInt8',
-        'departamento_meta':    'String',
-        'pia':                  'Float64',
-        'pim':                  'Float64',
-        'devengado':            'Float64',
-        'year':                 'UInt16'
-    },
-    'GL': {
-        'tipo_gobierno':        'UInt8',
-        'ubigeo':               'String',
-        'ejecutora':            'UInt16',
-        'sec_ejec':             'UInt32',
-        'programa_ppto':        'UInt8',
-        'producto_proyecto':    'UInt32',
-        'funcion':              'UInt8',
-        'division_funcional':   'UInt8',
-        'departamento_meta':    'String',
-        'pia':                  'Float64',
-        'pim':                  'Float64',
-        'devengado':            'Float64',
-        'year':                 'UInt16'
-    },
-    'gn_sectores': {
-        'nivel_gobierno':       'UInt8',
-        'sector':               'UInt8',
-        'pliego':               'UInt16',
-        'rubro':                'UInt8',
-        'ubigeo':               'String',
-        'fuente_financiamiento':'UInt8',
-        'pia':                  'Float64',
-        'pim':                  'Float64',
-        'monto_recaudado':      'Float64',
-        'year':                 'UInt16'
-    },
-    'gob_regionales': {
-        'nivel_gobierno':       'UInt8',
-        'sector':               'UInt8',
-        'pliego':               'UInt16',
-        'rubro':                'UInt8',
-        'ubigeo':               'String',
-        'fuente_financiamiento':'UInt8',
-        'pia':                  'Float64',
-        'pim':                  'Float64',
-        'monto_recaudado':      'Float64',
-        'year':                 'UInt16'
-    },
-    'gob_locales': {
-        'nivel_gobierno':       'UInt8',
-        'sector':               'UInt8',
-        'pliego':               'UInt16',
-        'rubro':                'UInt8',
-        'ubigeo':               'String',
-        'fuente_financiamiento':'UInt8',
-        'pia':                  'Float64',
-        'pim':                  'Float64',
-        'monto_recaudado':      'Float64',
-        'year':                 'UInt16'
-    }
+GASTO_DTYPES_COLS = {
+    "tipo_gobierno":                 "String",
+    "tipo_gobierno_nombre":          "String",
+    "sector":                        "UInt8",
+    "sector_nombre":                 "String",
+    "division_funcional":            "UInt8",
+    "division_funcional_nombre":     "String",
+    "pliego":                        "String",
+    "pliego_nombre":                 "String",
+    "sec_ejec":                      "UInt32",
+    "ejecutora":                     "UInt32",
+    "ejecutora_nombre":              "String",
+    "programa_ppto":                 "UInt16",
+    "programa_ppto_nombre":          "String",
+    "producto_proyecto":             "UInt32",
+    "producto_proyecto_nombre":      "String",
+    "funcion":                       "UInt8",
+    "funcion_nombre":                "String",
+    "departamento_meta":             "UInt8",
+    "departamento_meta_nombre":      "String",
+    "monto_pia":                     "Float64",
+    "monto_pim":                     "Float64",
+    "monto_devengado":               "Float64",
+    "district_id":                   "String",
+    "month_id":                      "UInt32",
+    "version":                       "String"
 }

@@ -1,14 +1,14 @@
-from .download_pipeline import run_pipeline as run_pipeline_download
-from .temp_dims import run_pipeline as run_pipeline_temp_dims
-from .dim_gastos_pipeline import run_pipeline as run_pipeline_dim_gastos
-from .dim_ingresos_pipeline import run_pipeline as run_pipeline_dim_ingresos
-from .presupuesto_gastos_pipeline import run_pipeline as run_pipeline_presupuesto_gastos
-from .presupuesto_ingresos_pipeline import run_pipeline as run_pipeline_presupuesto_ingresos
+from .download_mef_gastos import run_pipeline as run_pipeline_download_gastos
+from .download_mef_ingresos import run_pipeline as run_pipeline_download_ingresos
+from .dim_mef_gastos import run_pipeline as run_pipeline_dim_gastos
+from .dim_mef_ingresos import run_pipeline as run_pipeline_dim_ingresos
+from .mef_gastos_pipeline import run_pipeline as run_pipeline_presupuesto_gastos
+from .mef_ingresos_pipeline import run_pipeline as run_pipeline_presupuesto_ingresos
 
 
 def run_pipeline(params: dict):
-    run_pipeline_download(params)
-    run_pipeline_temp_dims(params)
+    run_pipeline_download_gastos(params)
+    run_pipeline_download_ingresos(params)
     run_pipeline_dim_gastos(params)
     run_pipeline_dim_ingresos(params)
     run_pipeline_presupuesto_gastos(params)
