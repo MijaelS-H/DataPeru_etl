@@ -103,45 +103,67 @@ def run_pipeline(params: dict):
     pp2 = TempIngresosPipeline()
 
     for url in URL_INGRESO[:-2]:
-        pp_params = {"url": url, "force_download": False}
-        pp_params.update(params)
-        pp.run(pp_params)
+        remaining_download_tries = 5
+        while remaining_download_tries > 0:
+            try:
+                pp_params = {"url": url, "force_download": False}
+                pp_params.update(params)
+                pp.run(pp_params)
+        
+                data = os.path.join(params.get("datasets"), "downloads", "{}.csv".format(url[:-4]))
 
-        data = os.path.join(params.get("datasets"), "downloads", "{}.csv".format(url[:-4]))
+                print("Ingesting {}".format(data))
 
-        print("Ingesting {}".format(data))
+                for chunk in pd.read_csv(data, iterator=True, chunksize=10**4):
+                    pp2_params = {"chunk": chunk, "url": url}
+                    pp2_params.update(params)
+                    pp2.run(
+                    pp2_params
+                    )
 
-        for chunk in pd.read_csv(data, iterator=True, chunksize=10**4):
-            pp2_params = {"chunk": chunk, "url": url}
-            pp2_params.update(params)
-            pp2.run(
-                pp2_params
-            )
+                print("Removing {}".format(data))
 
-        print("Removing {}".format(data))
+                os.remove(data)
 
-        os.remove(data)
+            except:
+                print("Error downloading {} file. Attempt {}/5".format(url, 6 - remaining_download_tries))
+                remaining_download_tries = remaining_download_tries - 1
+                continue
+
+            else:
+                break
 
     # force download on the last 2 files
     for url in URL_INGRESO[-2::]:
-        pp_params = {"url": url, "force_download": False}
-        pp_params.update(params)
-        pp.run(pp_params)
+        remaining_download_tries = 5
+        while remaining_download_tries > 0:
+            try:
+                pp_params = {"url": url, "force_download": True}
+                pp_params.update(params)
+                pp.run(pp_params)
+        
+                data = os.path.join(params.get("datasets"), "downloads", "{}.csv".format(url[:-4]))
 
-        data = os.path.join(params.get("datasets"), "downloads", "{}.csv".format(url[:-4]))
+                print("Ingesting {}".format(data))
 
-        print("Ingesting {}".format(data))
+                for chunk in pd.read_csv(data, iterator=True, chunksize=10**4):
+                    pp2_params = {"chunk": chunk, "url": url}
+                    pp2_params.update(params)
+                    pp2.run(
+                    pp2_params
+                    )
 
-        for chunk in pd.read_csv(data, iterator=True, chunksize=10**4):
-            pp2_params = {"chunk": chunk, "url": url}
-            pp2_params.update(params)
-            pp2.run(
-                pp2_params
-         )
+                print("Removing {}".format(data))
 
-        print("Removing {}".format(data))
+                os.remove(data)
 
-        os.remove(data)
+            except:
+                print("Error downloading {} file. Attempt {}/5".format(url, 6 - remaining_download_tries))
+                remaining_download_tries = remaining_download_tries - 1
+                continue
+
+            else:
+                break
 
 
 if __name__ == "__main__":
