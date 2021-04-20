@@ -1,4 +1,5 @@
 from os import path
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
@@ -14,10 +15,10 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Data load
-        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.4.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
-        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.5.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
-        df3 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.43.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Rural
-        df4 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.42.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Urbano
+        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.4.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
+        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.5.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
+        df3 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.43.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Rural
+        df4 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.42.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Urbano
 
         # Renaming columns from datasets
         df1.columns = header_pop
@@ -35,7 +36,7 @@ class TransformStep(PipelineStep):
         # Replacing name for code of department
         for item in [df1, df2, df3, df4]:
             item["ubigeo"].replace(depto_dict,inplace = True)
-            item.replace("-", pd.np.nan, inplace = True)
+            item.replace("-", np.nan, inplace = True)
 
         # Exchanging values to 1.000 to prevent float errors
         for i in [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018]:

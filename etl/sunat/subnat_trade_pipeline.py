@@ -14,13 +14,13 @@ from .static import (COLUMNS_RENAME, COUNTRIES_DICT, HS_DICT, REGIMEN_DICT,
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Read file
-        df = pd.read_csv(
-            params["filename"],
-            sep="|",
-            encoding="latin-1",
-            low_memory=False,
-            dtype={"ubigeo": "str"},
-        )
+        with open(params["filename"], 'r', encoding='latin-1') as f:
+            df = pd.read_csv(
+                f,
+                sep="|",
+                low_memory=False,
+                dtype={"ubigeo": "str"},
+            )
 
         # Creates missing ubigeo if ubigeo column not in dataframe
         if "ubigeo" not in df.columns:

@@ -1,5 +1,6 @@
 from os import path
 import pandas as pd
+import numpy as np
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline , Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
@@ -11,18 +12,18 @@ ids_dict = {"area_residencia": 1, "region_natural": 2, "dominio_region": 3, "urb
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.3.xlsx"), skiprows = (0,1,2), usecols = "A:K")[6:20]
+        df = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.3.xlsx"), skiprows = (0,1,2), usecols = "A:K")[6:20]
 
         df.rename(columns={"Ámbito geográfico": "sub_ambito_geografico"}, inplace = True )
 
         df["sub_ambito_geografico"].replace(geography_dict, inplace = True)
 
-        df["ambito_geografico"] = pd.np.nan
+        df["ambito_geografico"] = np.nan
 
         df["nation_id"] = "per"
 
         df.loc[df["sub_ambito_geografico"].str.contains("area_residencia|region_natural|dominio_region"), "ambito_geografico"] = df["sub_ambito_geografico"]
-        df.loc[df["sub_ambito_geografico"].str.contains("area_residencia|region_natural|dominio_region"), "sub_ambito_geografico"] = pd.np.nan
+        df.loc[df["sub_ambito_geografico"].str.contains("area_residencia|region_natural|dominio_region"), "sub_ambito_geografico"] = np.nan
 
         df["ambito_geografico"].fillna(method="ffill", inplace = True)
 

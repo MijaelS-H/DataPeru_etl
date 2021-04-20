@@ -1,4 +1,5 @@
 from os import path
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
@@ -28,15 +29,15 @@ age_dict = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.10.xlsx"), skiprows = (0,1,2,3))[20:57]
-        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.11.xlsx"), skiprows = (0,1,2,3))[20:57]
+        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.10.xlsx"), skiprows = (0,1,2,3))[20:57]
+        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.11.xlsx"), skiprows = (0,1,2,3))[20:57]
 
         # Creating datasets by selecting specific columns related to gender, for both datasets, adding migration flow
         for item in [df1, df2]:
             item.drop(38, axis=0, inplace = True)
-            item["edad"] = pd.np.nan
+            item["edad"] = np.nan
             item.loc[item["Unnamed: 0"].str.contains("-|y"), "edad"] = item["Unnamed: 0"]
-            item.loc[item["Unnamed: 0"].str.contains("-|y"), "Unnamed: 0"] = pd.np.nan
+            item.loc[item["Unnamed: 0"].str.contains("-|y"), "Unnamed: 0"] = np.nan
             item["Unnamed: 0"].fillna(method="ffill", inplace = True)
             item.dropna(axis=0, how="any", inplace = True)
             item["Unnamed: 0"].replace({"Hombres": 1, "Mujeres": 2}, inplace = True)

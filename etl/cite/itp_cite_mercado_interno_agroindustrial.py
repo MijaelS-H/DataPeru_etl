@@ -1,6 +1,5 @@
 from os import path
 import pandas as pd
-
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
 from bamboo_lib.models import Parameter
@@ -13,12 +12,12 @@ from bamboo_lib.helpers import grab_connector
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_csv(
-            path.join(params["datasets"], "20210119", "08 CADENAS PRODUCTIVAS Y MERCADO INTERNO", "TABLA_08_N01.csv"),
-            dtype='str',
-            sep=";",
-            encoding="latin-1"
-        )
+        with open(path.join(params["datasets"], "20210119", "08 CADENAS PRODUCTIVAS Y MERCADO INTERNO", "TABLA_08_N01.csv"), 'r', encoding='latin-1') as f:
+            df = pd.read_csv(
+                f,
+                dtype='str',
+                sep=";"
+            )
 
         df.dropna(subset=["produccion"], inplace=True)
         df["cadena_productiva"] = df['cadena_productiva'].str.capitalize().str.strip()

@@ -1,5 +1,5 @@
 from os import path
-
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
@@ -16,7 +16,7 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame(columns = ["Unnamed: 0", "Hombre", "Mujer", "year"])
 
         # First reading step
-        xls = pd.ExcelFile(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.12.xls"))
+        xls = pd.ExcelFile(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.12.xls"))
 
         # For each sheet, adding year columns and corrections to dataframe
         for i in list(range(0,6)):
@@ -39,19 +39,19 @@ class TransformStep(PipelineStep):
 
         # Step to add 2018 year missing from data
         for i in list(range(1,26)):
-            pivote = pd.DataFrame({"ubigeo" : i, "poblacion_masculina" : [pd.np.nan], "poblacion_femenina" : [pd.np.nan], "year" : 2018})
+            pivote = pd.DataFrame({"ubigeo" : i, "poblacion_masculina" : [np.nan], "poblacion_femenina" : [np.nan], "year" : 2018})
             df = df.append(pivote)
 
         df["ubigeo"] = df["ubigeo"].astype("str").str.zfill(2)
 
         # Second reading step
-        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
-        df3 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
-        df4 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df5 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df6 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df7 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df8 = pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df3 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df4 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df5 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df6 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df7 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df8 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:41]
 
         for item in [df2, df3, df4, df5, df6 ,df7, df8]:
             item.rename(columns = {"Ámbito geográfico": "ubigeo"}, inplace = True)

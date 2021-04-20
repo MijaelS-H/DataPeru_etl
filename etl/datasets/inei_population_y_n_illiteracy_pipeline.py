@@ -1,4 +1,5 @@
 from os import path
+import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline , Parameter, PipelineStep
@@ -12,7 +13,7 @@ depto_dict = {"Amazonas": 1, "Áncash": 2, "Apurímac": 3, "Arequipa": 4, "Ayacu
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.56.xlsx"), skiprows = range(0,6), usecols = "A:N")[3:37]
+        df = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.56.xlsx"), skiprows = range(0,6), usecols = "A:N")[3:37]
 
         df.drop(df.loc[df["Ámbito geográfico"].str.contains("Provincia ")].index, inplace=True)
 
@@ -22,8 +23,8 @@ class TransformStep(PipelineStep):
 
         df["sub_ambito_geografico"].replace(depto_dict, inplace = True)
 
-        df["ambito_geografico"] = pd.np.nan
-        df["ubigeo"] = pd.np.nan
+        df["ambito_geografico"] = np.nan
+        df["ubigeo"] = np.nan
 
         df["sub_ambito_geografico"] = df["sub_ambito_geografico"].astype("str")
 
@@ -32,13 +33,13 @@ class TransformStep(PipelineStep):
 
         df["ambito_geografico"].fillna(method="ffill", inplace = True)
 
-        df.loc[df["sub_ambito_geografico"].str.contains("departamento|1|2|3|4|5|6|7|8|9"), "ambito_geografico"] = pd.np.nan
+        df.loc[df["sub_ambito_geografico"].str.contains("departamento|1|2|3|4|5|6|7|8|9"), "ambito_geografico"] = np.nan
 
-        df.loc[df["sub_ambito_geografico"].str.contains("area_residencia|region_natural|departamento|1|2|3|4|5|6|7|8|9"), "sub_ambito_geografico"] = pd.np.nan
+        df.loc[df["sub_ambito_geografico"].str.contains("area_residencia|region_natural|departamento|1|2|3|4|5|6|7|8|9"), "sub_ambito_geografico"] = np.nan
 
         df.dropna(axis = 0, thresh = 2, inplace = True)
 
-        df.replace("-", pd.np.nan, inplace=True)
+        df.replace("-", np.nan, inplace=True)
 
         df["id"] = range(1, 1+len(df))
 

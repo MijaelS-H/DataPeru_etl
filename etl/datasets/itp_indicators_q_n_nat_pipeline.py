@@ -1,5 +1,6 @@
 from os import path
 import pandas as pd
+import numpy as np
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
@@ -9,12 +10,19 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
         range_ = list(range(0, 4)) + list(range(6,39))
-        df1 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.3.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
-        df2 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.4.xlsx"), usecols = "B:J", skiprows = range_, reset_index = True)
-        df3 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.5.xlsx"), usecols = "B:T", skiprows = range_, reset_index = True)
-        df4 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.6.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
-        df5 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.7.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_, reset_index = True)
-        df6 = pd.read_excel(io = path.join(params["datasets"],"20200318",  "A. Economía","A.8.xlsx"), usecols = "A,F", skiprows = range(0,6), reset_index = True)
+        df1 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.3.xlsx"), usecols = "B:J", skiprows = range_)
+        df2 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.4.xlsx"), usecols = "B:J", skiprows = range_)
+        df3 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.5.xlsx"), usecols = "B:T", skiprows = range_)
+        df4 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.6.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_)
+        df5 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.7.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_)
+        df6 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.8.xlsx"), usecols = "A,F", skiprows = range(0,6))
+
+        df1 = df1.reset_index(drop=True)
+        df2 = df2.reset_index(drop=True)
+        df3 = df3.reset_index(drop=True)
+        df4 = df4.reset_index(drop=True)
+        df5 = df5.reset_index(drop=True)
+        df6 = df6.reset_index(drop=True)
 
         # Dropping unused rows from datasets
         df1.drop([0,66,67,68], axis = 0, inplace = True)
@@ -34,11 +42,11 @@ class TransformStep(PipelineStep):
 
         # For cycle to clean unused elements an NaN values + creating quarter_id code for merge step
         for item in [df1, df2, df3, df4, df5]:
-            item["year"].replace("Trimestre", pd.np.nan, inplace = True)
+            item["year"].replace("Trimestre", np.nan, inplace = True)
             item["year"].fillna(method="ffill", inplace = True)
             item["year"].fillna(2007, inplace = True)
             item["year"] = item["year"].astype(int)
-            item["quarter"].replace({pd.np.nan: 0, "I": 1,"II": 2,"III": 3,"IV": 4}, inplace = True)
+            item["quarter"].replace({np.nan: 0, "I": 1,"II": 2,"III": 3,"IV": 4}, inplace = True)
             item["quarter_id"] = item["year"].astype(str) + item["quarter"].astype(str)
 
         df6["year"].replace({"2016P/": 2016, "2017P/": 2017, "2018E/": 2018}, inplace = True)

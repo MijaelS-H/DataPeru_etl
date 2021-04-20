@@ -8,33 +8,36 @@ from etl.consistency import AggregatorStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.24.xlsx"), skiprows = (0,1,2,4,17,18), usecols = "A:I", reset_index = True)
-        df2 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.165.xlsx"), skiprows = (0,1,2,3,5,6,7), usecols = "A:K", reset_index = True)[0:19]
-        df3 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.175.xlsx"), skiprows = (0,1,2,3,5,6,7,8), usecols = "A:G")[0:36]
-        df4 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.186.xlsx"), skiprows = (0,1,2), usecols = "A:R")[0:17]
-        df5 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.1.xls"), skiprows = (0,1,2,3,4,6,7), usecols = "A:F")[0:8]
-        df6 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.13.xlsx"), skiprows = (0,1,2,4,5), usecols = "A:M")[0:41]
-        df7 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "C. Empleo", "C.14.xlsx"), skiprows = (0,1,2,3), usecols = "A:M")[3:5]
-        df8 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.5.xlsx"), skiprows = (0,1), usecols = "A:K")[3:12]
-        df9 =  pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.6.xlsx"), skiprows = (0,1,2,4,6), usecols = "A:K")[0:7]
-        df10 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.36.xlsx"), skiprows = range(0,7), usecols = "A:D")[0:25]
-        df11 = pd.read_excel(io = path.join(params["datasets"],"20200318", "D. Sociales", "D.57.xlsx"), skiprows = (0,1,2,3,5,6,7,8,9), usecols = "A:O")[0:32]
-        df12 = pd.read_excel(io = path.join(params["datasets"],"20200318", "E. Medio Ambiente", "E.39.xlsx"), skiprows = (0,1,2), usecols = "A:B")[0:21]
-        df13 = pd.read_excel(io = path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.3.xlsx"), skiprows = (0,1,2,3,4,6,7,8,9), usecols = "A,C:I")[0:20]
-        df14 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.182.xlsx"), skiprows = (0,1,2,3), usecols = "A,E:J,M,N")[8:20]
-        df15 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.164.xlsx"), skiprows = (0,1,2,3,5,6), usecols = "A,I:L,T:W")[0:8]
+        df1 =  pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.24.xlsx"), skiprows = (0,1,2,4,17,18), usecols = "A:I")
+        df2 =  pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.165.xlsx"), skiprows = (0,1,2,3,5,6,7), usecols = "A:K")[0:19]
+        df3 =  pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.175.xlsx"), skiprows = (0,1,2,3,5,6,7,8), usecols = "A:G")[0:36]
+        df4 =  pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.186.xlsx"), skiprows = (0,1,2), usecols = "A:R")[0:17]
+        df5 =  pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.1.xls"), skiprows = (0,1,2,3,4,6,7), usecols = "A:F")[0:8]
+        df6 =  pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.13.xlsx"), skiprows = (0,1,2,4,5), usecols = "A:M")[0:41]
+        df7 =  pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.14.xlsx"), skiprows = (0,1,2,3), usecols = "A:M")[3:5]
+        df8 =  pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.5.xlsx"), skiprows = (0,1), usecols = "A:K")[3:12]
+        df9 =  pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.6.xlsx"), skiprows = (0,1,2,4,6), usecols = "A:K")[0:7]
+        df10 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.36.xlsx"), skiprows = range(0,7), usecols = "A:D")[0:25]
+        df11 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.57.xlsx"), skiprows = (0,1,2,3,5,6,7,8,9), usecols = "A:O")[0:32]
+        df12 = pd.read_excel(path.join(params["datasets"],"20200318", "E. Medio Ambiente", "E.39.xlsx"), skiprows = (0,1,2), usecols = "A:B")[0:21]
+        df13 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.3.xlsx"), skiprows = (0,1,2,3,4,6,7,8,9), usecols = "A,C:I")[0:20]
+        df14 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.182.xlsx"), skiprows = (0,1,2,3), usecols = "A,E:J,M,N")[8:20]
+        df15 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.164.xlsx"), skiprows = (0,1,2,3,5,6), usecols = "A,I:L,T:W")[0:8]
 
-        df16 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.71.xlsx"), skiprows = range(0,7), usecols = "A:D,F:H,L,M")[11:23]
-        df17 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.72.xlsx"), skiprows = range(0,8), usecols = "A,G:J,M,N,Q:S")[12:24]
-        df18 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.74.xlsx"), skiprows = (0,1,2,4,5,6), usecols = "A,I:T")[0:50]
-        df19 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.75.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,J:U")[2:13]
-        df20 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.76.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,K:V")[2:10]
-        df21 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.77.xlsx"), skiprows = (0,1,2,3), usecols = "A,K:V")[2:12]
-        df22 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.80.xlsx"), skiprows = (0,1,2,3), usecols = "A,J:U")[1:14]
+        df16 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.71.xlsx"), skiprows = range(0,7), usecols = "A:D,F:H,L,M")[11:23]
+        df17 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.72.xlsx"), skiprows = range(0,8), usecols = "A,G:J,M,N,Q:S")[12:24]
+        df18 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.74.xlsx"), skiprows = (0,1,2,4,5,6), usecols = "A,I:T")[0:50]
+        df19 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.75.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,J:U")[2:13]
+        df20 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.76.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,K:V")[2:10]
+        df21 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.77.xlsx"), skiprows = (0,1,2,3), usecols = "A,K:V")[2:12]
+        df22 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.80.xlsx"), skiprows = (0,1,2,3), usecols = "A,J:U")[1:14]
 
-        df23 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.146.xls"), skiprows = range(0,6), usecols = "A:C,E,F,H,I")[14:26]
-        df24 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.148.xls"), skiprows = (0,1), usecols = "A,F:Q")[1:4]
-        df25 = pd.read_excel(io = path.join(params["datasets"],"20200318", "A. Economía", "A.151.xls"), skiprows = (0,1,2,3), usecols = "A,D:O")[3:14]
+        df23 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.146.xls"), skiprows = range(0,6), usecols = "A:C,E,F,H,I")[14:26]
+        df24 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.148.xls"), skiprows = (0,1), usecols = "A,F:Q")[1:4]
+        df25 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.151.xls"), skiprows = (0,1,2,3), usecols = "A,D:O")[3:14]
+
+        df1 = df1.reset_index(drop=True)
+        df2 = df2.reset_index(drop=True)
 
         # Starts transforming step for each table, given thepath.join(params["datasets"],"20200318"      # df1
         df1.rename(columns= {"Años": "year", "Producto Bruto Interno ": "producto_interno_bruto_mill_n_soles", "Remune-\nraciones": "remuneraciones_mill_n_soles", "Derechos \nde \nImportación": "derechos_importacion_mill_n_soles", "Impuestos \na los \nProductos": "impuestos_productos_mill_n_soles", "Otros Impuestos": "otros_impuestos_mill_n_soles", " Ingreso de explotación": "ingreso_explotacion_mill_n_soles", " Excedente de explotación bruto": "excedente_explotacion_bruto_mill_n_soles", " Ingreso mixto": "ingreso_mixto_mill_n_soles"}, inplace = True)
@@ -233,8 +236,12 @@ class TransformStep(PipelineStep):
         df25['year'] = df25.index
 
         # Merge of the 13 datasets
-        df = pd.merge(df1, df2[["year", "agricultura_ganaderia_caza_silvicultura_miles_soles", "pesca_miles_soles", "mineria_miles_soles", "industria_manufacturera_miles_soles", "electricidad_gas_agua_miles_soles", "construccion_miles_soles", "comercio_miles_soles", "hoteles_restaurantes_miles_soles", "transporte_almacenamiento_comunicaciones_miles_soles", "intermediacion_financiera_miles_soles", "actividad_inmobiliarias_empresariales_alquiler_miles_soles", "administracion_publica_defensa_miles_soles", "ensenianza_miles_soles", "servicios_sociales_salud_miles_soles", "otras_actividades_servicios_comunitarios_miles_soles", "hogares_privados_organizaciones_extraterritoriales_miles_soles", "creditos_hipotecariosvivienda_miles_soles", "creditos_consumo_miles_soles"]], on = "year", how = "left")
-        df = pd.merge(df,  df3[["year", "exportaciones_mill_dolares", "importaciones_mill_dolares", "balanza_comercial_mill_dolares", "balanza_pagos_mill_dolares", "activos_externos_netos_corto_plazo_mill_dolares", "deuda_publica_externa_mill_dolares"]], on = "year", how = "left")
+        df = pd.merge(df3, df1[["year", "producto_interno_bruto_mill_n_soles", "remuneraciones_mill_n_soles", "derechos_importacion_mill_n_soles", "impuestos_productos_mill_n_soles", "otros_impuestos_mill_n_soles", "ingreso_explotacion_mill_n_soles", "excedente_explotacion_bruto_mill_n_soles", "ingreso_mixto_mill_n_soles"]], on = "year", how = "left")
+        df = pd.merge(df, df2[["year", "agricultura_ganaderia_caza_silvicultura_miles_soles", "pesca_miles_soles", "mineria_miles_soles", "industria_manufacturera_miles_soles", "electricidad_gas_agua_miles_soles", "construccion_miles_soles", "comercio_miles_soles", "hoteles_restaurantes_miles_soles", "transporte_almacenamiento_comunicaciones_miles_soles", "intermediacion_financiera_miles_soles", "actividad_inmobiliarias_empresariales_alquiler_miles_soles", "administracion_publica_defensa_miles_soles", "ensenianza_miles_soles", "servicios_sociales_salud_miles_soles", "otras_actividades_servicios_comunitarios_miles_soles", "hogares_privados_organizaciones_extraterritoriales_miles_soles", "creditos_hipotecariosvivienda_miles_soles", "creditos_consumo_miles_soles"]], on = "year", how = "left")
+
+        #df = pd.merge(df1, df2[["year", "agricultura_ganaderia_caza_silvicultura_miles_soles", "pesca_miles_soles", "mineria_miles_soles", "industria_manufacturera_miles_soles", "electricidad_gas_agua_miles_soles", "construccion_miles_soles", "comercio_miles_soles", "hoteles_restaurantes_miles_soles", "transporte_almacenamiento_comunicaciones_miles_soles", "intermediacion_financiera_miles_soles", "actividad_inmobiliarias_empresariales_alquiler_miles_soles", "administracion_publica_defensa_miles_soles", "ensenianza_miles_soles", "servicios_sociales_salud_miles_soles", "otras_actividades_servicios_comunitarios_miles_soles", "hogares_privados_organizaciones_extraterritoriales_miles_soles", "creditos_hipotecariosvivienda_miles_soles", "creditos_consumo_miles_soles"]], on = "year", how = "left")
+        #df = pd.merge(df,  df3[["year", "exportaciones_mill_dolares", "importaciones_mill_dolares", "balanza_comercial_mill_dolares", "balanza_pagos_mill_dolares", "activos_externos_netos_corto_plazo_mill_dolares", "deuda_publica_externa_mill_dolares"]], on = "year", how = "left")
+
         df = pd.merge(df,  df4[["year", "act_reserva_BCRP_mill_dolares", "act_sist_financiero_sin_BCRP_mill_dolares", "act_otros_activos_mill_dolares", "pas_med_lar_sector_privado_mill_dolares", "pas_med_lar_sector_publico_mill_dolares", "pas_cort_sist_financiero_sin_BCRP_mill_dolares", "pas_cort_BCRP_mill_dolares", "pas_cort_otros_mill_dolares", "pas_inversion_directa_mill_dolares", "pas_participacion_capital_mill_dolares"]], on = "year", how = "left")
         df = pd.merge(df,  df5[["year", "poblacion_total", "poblacion_censada", "poblacion_omitida"]], on = "year", how = "left")
         df = pd.merge(df,  df6[["year", "pea_hombres", "pea_mujeres", "pea_14_24_yrs", "pea_25_44_yrs", "pea_45_64_yrs", "pea_65_o_mas_yrs", "pea_primaria_o_inferior", "pea_secundaria", "pea_superior_no_universitaria", "pea_universitaria", "pea_empresa_1_10_empleados", "pea_empresa_11_50_empleados", "pea_empresa_50_o_mas_empleados", "pea_agricultura_pesca_mineria", "pea_manufactura", "pea_construccion", "pea_comercio", "pea_transporte_comunicaciones", "pea_otros_servicios"]], on = "year", how = "left")
@@ -280,14 +287,14 @@ class itp_indicators_y_n_nat_pipeline(EasyPipeline):
         dtype = {
             "nation_id":                                                                    "String",
             "year":                                                                         "UInt16",
-            "producto_interno_bruto_mill_n_soles":                                          "UInt32",
-            "remuneraciones_mill_n_soles":                                                  "UInt16",
-            "derechos_importacion_mill_n_soles":                                            "UInt16",
-            "impuestos_productos_mill_n_soles":                                             "UInt16",
-            "otros_impuestos_mill_n_soles":                                                 "UInt16",
-            "ingreso_explotacion_mill_n_soles":                                             "UInt32",
-            "excedente_explotacion_bruto_mill_n_soles":                                     "UInt32",
-            "ingreso_mixto_mill_n_soles":                                                   "UInt32",
+            "producto_interno_bruto_mill_n_soles":                                          "Float32",
+            "remuneraciones_mill_n_soles":                                                  "Float32",
+            "derechos_importacion_mill_n_soles":                                            "Float32",
+            "impuestos_productos_mill_n_soles":                                             "Float32",
+            "otros_impuestos_mill_n_soles":                                                 "Float32",
+            "ingreso_explotacion_mill_n_soles":                                             "Float32",
+            "excedente_explotacion_bruto_mill_n_soles":                                     "Float32",
+            "ingreso_mixto_mill_n_soles":                                                   "Float32",
             "agricultura_ganaderia_caza_silvicultura_miles_soles":                          "Float32",
             "pesca_miles_soles":                                                            "Float32",
             "mineria_miles_soles":                                                          "Float32",
@@ -359,8 +366,8 @@ class itp_indicators_y_n_nat_pipeline(EasyPipeline):
             "gasto_social_asistencia_social_mill_soles":                                    "UInt16",
             "gasto_social_salud_colectiva_mill_soles":                                      "UInt16",
             "gasto_social_salud_individual_mill_soles":                                     "UInt16",
-            "gasto_gobierno_sector_publico_mill_soles":                                     "UInt32",
-            "gasto_gobierno_sector_privado_mill_soles":                                     "UInt32",
+            "gasto_gobierno_sector_publico_mill_soles":                                     "Float32",
+            "gasto_gobierno_sector_privado_mill_soles":                                     "Float32",
             "analfabetismo_total_15_19":                                                    "Float32",
             "analfabetismo_total_20_29":                                                    "Float32",
             "analfabetismo_total_30_39":                                                    "Float32",
@@ -583,7 +590,9 @@ class itp_indicators_y_n_nat_pipeline(EasyPipeline):
             "ing_tur_intern_aeropuerto_Jorge_Chavez", "ing_tur_intern_puesto_control_Santa_Rosa", "ing_tur_intern_otros_puntos",
             "turismo_arribo_turistas_nacionales", "turismo_arribo_turistas_extranjeros",
             "turismo_pernoctacion_turistas_nacionales", "turismo_pernoctacion_turistas_extranjeros",
-            "turismo_permanencia_prom_turistas_nacionales", "turismo_permanencia_prom_turistas_extranjeros"])
+            "turismo_permanencia_prom_turistas_nacionales", "turismo_permanencia_prom_turistas_extranjeros",
+
+            ])
 
         return [transform_step, agg_step, load_step]
 

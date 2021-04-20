@@ -6,7 +6,7 @@ from functools import reduce
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from pandas.io.json import json_normalize
+#from pandas.io.json import json_normalize
 from .static import MONTHS_DICT, query, parameters
 from etl.socios.cultura.infocultura.shared_month import ReplaceStep
 
@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
             df_1_query = query(parameters[3],year)
 
             for i in range(0, len(df_1_query)):
-                mini_df_1_query = pd.io.json.json_normalize(df_1_query[df_1_query.columns[2]][i],'CANTIDAD', 'NOMBRE')
+                mini_df_1_query = pd.json_normalize(df_1_query[df_1_query.columns[2]][i],'CANTIDAD', 'NOMBRE')
                 mini_df_1_query['department_id'] = df_1_query[df_1_query.columns[0]][i]
                 mini_df_1_query['year'] = df_1_query[df_1_query.columns[3]][i]
                 df_1 = df_1.append(mini_df_1_query)
@@ -58,7 +58,7 @@ class TransformStep(PipelineStep):
             df_3_query = query(parameters[6],year)
 
             for i in range(0, len(df_3_query)):
-                mini_df_3_query = pd.io.json.json_normalize(df_3_query[df_3_query.columns[2]][i])
+                mini_df_3_query = pd.json_normalize(df_3_query[df_3_query.columns[2]][i])
                 mini_df_3_query['department_id'] = df_3_query[df_3_query.columns[0]][i]
                 mini_df_3_query['year'] = df_3_query[df_3_query.columns[3]][i]
                 df_3 = df_3.append(mini_df_3_query)
@@ -94,7 +94,7 @@ class TransformStep(PipelineStep):
             df_5_query = query(parameters[10],year)
 
             for i in range(0, len(df_5_query)):
-                mini_df_5_query = pd.io.json.json_normalize(df_5_query[df_5_query.columns[2]][i], 'CANTIDAD', 'NOMBRE')
+                mini_df_5_query = pd.json_normalize(df_5_query[df_5_query.columns[2]][i], 'CANTIDAD', 'NOMBRE')
                 mini_df_5_query['department_id'] = df_5_query[df_5_query.columns[0]][i]
                 mini_df_5_query['year'] = df_5_query[df_5_query.columns[3]][i]
                 df_5 = df_5.append(mini_df_5_query)
@@ -113,7 +113,7 @@ class TransformStep(PipelineStep):
             df_6_query = query(parameters[13],year)
 
             for i in range(0, len(df_6_query)):
-                mini_df_6_query = pd.io.json.json_normalize(df_6_query[df_6_query.columns[2]][i], 'CANTIDAD', 'NOMBRE')
+                mini_df_6_query = pd.json_normalize(df_6_query[df_6_query.columns[2]][i], 'CANTIDAD', 'NOMBRE')
                 mini_df_6_query['department_id'] = df_6_query[df_6_query.columns[0]][i]
                 mini_df_6_query['year'] = df_6_query[df_6_query.columns[3]][i]
                 df_6 = df_6.append(mini_df_6_query)
@@ -131,7 +131,7 @@ class TransformStep(PipelineStep):
             df_7_query = query(parameters[14],year)
 
             for i in range(0, len(df_7_query)):
-                mini_df_7_query = pd.io.json.json_normalize(df_7_query[df_7_query.columns[2]][i], 'CANTIDAD', 'NOMBRE')
+                mini_df_7_query = pd.json_normalize(df_7_query[df_7_query.columns[2]][i], 'CANTIDAD', 'NOMBRE')
                 mini_df_7_query['department_id'] = df_7_query[df_7_query.columns[0]][i]
                 mini_df_7_query['year'] = df_7_query[df_7_query.columns[3]][i]
                 df_7 = df_7.append(mini_df_7_query)
@@ -150,7 +150,7 @@ class TransformStep(PipelineStep):
             df_query = query(parameters[19],year)
 
             for i in range(0, len(df_query)):
-                mini_df_query = pd.io.json.json_normalize(df_query[df_query.columns[2]][i])
+                mini_df_query = pd.json_normalize(df_query[df_query.columns[2]][i])
                 mini_df_query['month'] = df_query[df_query.columns[0]][i]
                 mini_df_query['year'] = df_query[df_query.columns[3]][i]
                 df_8 = df_8.append(mini_df_query)
@@ -169,8 +169,8 @@ class TransformStep(PipelineStep):
             df_9_query = query(parameters[20],year)
 
             for i in range(0, len(df_9_query)):
-                mini_df_9_query = pd.io.json.json_normalize(df_9_query[df_9_query.columns[2]][i]).rename(columns={'CANTIDAD' : 'TALLERES'})
-                mini_df_9_query['BENEFICIARIOS'] = pd.io.json.json_normalize(df_9_query[df_9_query.columns[3]][i])['CANTIDAD']
+                mini_df_9_query = pd.json_normalize(df_9_query[df_9_query.columns[2]][i]).rename(columns={'CANTIDAD' : 'TALLERES'})
+                mini_df_9_query['BENEFICIARIOS'] = pd.json_normalize(df_9_query[df_9_query.columns[3]][i])['CANTIDAD']
                 mini_df_9_query['department_id'] = df_9_query[df_9_query.columns[0]][i]
                 mini_df_9_query['year'] = df_9_query[df_9_query.columns[5]][i]
                 df_9 = df_9.append(mini_df_9_query)

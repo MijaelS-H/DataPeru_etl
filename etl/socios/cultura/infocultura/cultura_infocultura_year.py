@@ -6,7 +6,7 @@ from functools import reduce
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-from pandas.io.json import json_normalize
+#from pandas.io.json import json_normalize
 from .static import TOTALES_REPLACE_DICT, ACTIVIDADES_REPLACE_DICT, MONTHS_DICT, query, parameters
 from etl.socios.cultura.infocultura.shared_year import ReplaceStep
 
@@ -23,7 +23,7 @@ class TransformStep(PipelineStep):
             df_query.drop('index', axis = 1, inplace=True)
 
             for i in range(0, len(df_query)):
-                mini_df_query = pd.io.json.json_normalize(df_query[df_query.columns[3]][i])
+                mini_df_query = pd.json_normalize(df_query[df_query.columns[3]][i])
                 mini_df_query['department_id'] = df_query[df_query.columns[0]][i]
                 mini_df_query['year'] = df_query[df_query.columns[4]][i]
                 df_1 = df_1.append(mini_df_query)
@@ -195,7 +195,7 @@ class TransformStep(PipelineStep):
             df_query.drop('index', axis = 1, inplace=True)
 
             for i in range(0, len(df_query)):
-                mini_df_query = pd.io.json.json_normalize(df_query[df_query.columns[2]][i])
+                mini_df_query = pd.json_normalize(df_query[df_query.columns[2]][i])
                 mini_df_query.drop(['TIPO', 'ACTIVIDAD'], axis=1, inplace=True)
                 mini_df_query['department_id'] = df_query[df_query.columns[0]][i]
                 mini_df_query['year'] = df_query[df_query.columns[3]][i]
@@ -287,7 +287,7 @@ class TransformStep(PipelineStep):
         for year in [2016, 2017, 2018, 2019, 2020]:
             df_query = query(parameters[24],year)
             for i in range(0, len(df_query)):
-                mini_df_query = pd.io.json.json_normalize(df_query[df_query.columns[2]][i])
+                mini_df_query = pd.json_normalize(df_query[df_query.columns[2]][i])
                 mini_df_query = mini_df_query[['TITULO','CATEGORIA']]
                 mini_df_query['department_id'] = df_query[df_query.columns[0]][i]
                 mini_df_query['year'] = df_query[df_query.columns[4]][i]
