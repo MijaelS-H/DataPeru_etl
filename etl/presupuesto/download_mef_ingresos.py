@@ -157,6 +157,7 @@ def run_pipeline(params: dict):
                 print("Removing {}".format(data))
 
                 os.remove(data)
+                break
 
             except:
                 print("Error downloading {} file. Attempt {}/5".format(url, 6 - remaining_download_tries))
