@@ -13,11 +13,14 @@ class UnzipStep(PipelineStep):
 
         """" "prev" returns the url path from the downloaded file at previous """
 
+        print('Current file: {}'.format(prev))
+
         with ZipFile(prev, "r") as data:
             print("Extracting {}".format(params.get("url")))
             data.extractall(os.path.join(params.get("datasets"), "downloads"))
 
-        return True
+            if params.get("url") == "2014-Ingreso.zip":
+                os.rename(os.path.join(params.get("datasets"), "downloads", "2015-Ingreso.csv"), os.path.join(params.get("datasets"), "downloads", "2014-Ingreso.csv"))
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -35,6 +38,9 @@ class TransformStep(PipelineStep):
         df.dropna(subset=["tipo_gobierno_nombre"], inplace=True)
         #assert old_shape - 1 == df.shape[0], "DROPNA ERROR!"
 
+        # pliego
+        df["pliego"] = df["pliego"].astype("str")
+
         # month_id
         df["month_id"] = (df["ano_doc"].astype(int).astype(str) + \
                           df["mes_doc"].astype(int).astype(str).str.zfill(2)).astype(int)
@@ -50,7 +56,7 @@ class TransformStep(PipelineStep):
         df["version"] = params.get("url")
 
         df = df[["tipo_gobierno", "tipo_gobierno_nombre","sector", "sector_nombre", 
-                 "pliego", "pliego_nombre", "fuente_financ", "fuente_financ_nombre", 
+                 "pliego", "pliego_nombre", "sec_ejec", "ejecutora", "ejecutora_nombre", "fuente_financ", "fuente_financ_nombre", 
                  "rubro", "rubro_nombre", "monto_pia", "monto_pim", "monto_recaudado", 
                  "district_id", "month_id", "version"] ].copy()
 
@@ -131,7 +137,7 @@ def run_pipeline(params: dict):
             pp2_params.update(params)
             pp2.run(
                 pp2_params
-            )
+         )
 
         print("Removing {}".format(data))
 

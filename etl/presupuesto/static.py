@@ -21,15 +21,18 @@ URL_GASTO = [
     "2021.zip"
 ]
 
-INGRESO_DIMENSIONS_COLS = ["tipo_gobierno", "sector", "pliego", "fuente_financ", "rubro"]
+INGRESO_DIMENSIONS_COLS = ["tipo_gobierno", "sector", "pliego", "fuente_financ", "rubro", "ejecutora"]
 
 INGRESO_DTYPES_COLS = {
     "tipo_gobierno":                 "String",
     "tipo_gobierno_nombre":          "String",
     "sector":                        "UInt8",
     "sector_nombre":                 "String",
-    "pliego":                        "UInt16",
+    "pliego":                        "String",
     "pliego_nombre":                 "String",
+    "sec_ejec":                      "UInt32",
+    "ejecutora":                     "UInt32",
+    "ejecutora_nombre":              "String",
     "fuente_financ":                 "UInt8",
     "fuente_financ_nombre":          "String",
     "rubro":                         "UInt8",
@@ -51,9 +54,10 @@ GASTO_DTYPES_COLS = {
     "sector_nombre":                 "String",
     "division_funcional":            "UInt8",
     "division_funcional_nombre":     "String",
-    "pliego":                        "UInt16",
+    "pliego":                        "String",
     "pliego_nombre":                 "String",
-    "ejecutora":                     "UInt16",
+    "sec_ejec":                      "UInt32",
+    "ejecutora":                     "UInt32",
     "ejecutora_nombre":              "String",
     "programa_ppto":                 "UInt16",
     "programa_ppto_nombre":          "String",

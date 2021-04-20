@@ -1,7 +1,9 @@
 
 import os
+import csv
 import pandas as pd
 from zipfile import ZipFile
+from io import StringIO
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
@@ -13,11 +15,11 @@ class UnzipStep(PipelineStep):
 
         """" "prev" returns the url path from the downloaded file at previous """
 
+        print('Current file: {}'.format(prev))
+
         with ZipFile(prev, "r") as data:
             print("Extracting {}".format(params.get("url")))
             data.extractall(os.path.join(params.get("datasets"), "downloads"))
-
-        return True
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -37,7 +39,7 @@ class TransformStep(PipelineStep):
 
         df = df[["ano_eje", "mes_eje", "tipo_gobierno", "tipo_gobierno_nombre",
                 "division_funcional", "division_funcional_nombre",
-                "sector", "sector_nombre", "pliego", "pliego_nombre", "ejecutora", "ejecutora_nombre",
+                "sector", "sector_nombre", "pliego", "pliego_nombre", "sec_ejec", "ejecutora", "ejecutora_nombre",
                 "departamento_ejecutora", "provincia_ejecutora", "distrito_ejecutora",
                 "programa_ppto", "programa_ppto_nombre", "producto_proyecto", "producto_proyecto_nombre",
                 "funcion", "funcion_nombre", "departamento_meta", "departamento_meta_nombre",
@@ -51,6 +53,9 @@ class TransformStep(PipelineStep):
         df["district_id"] = df["departamento_ejecutora"].astype(int).astype(str).str.zfill(2) + \
                             df["provincia_ejecutora"].astype(int).astype(str).str.zfill(2) + \
                             df["distrito_ejecutora"].astype(int).astype(str).str.zfill(2)
+
+        # pliego
+        df["pliego"] = df["pliego"].astype("str")
 
         df.drop(columns=["ano_eje", "mes_eje", "departamento_ejecutora",
                          "provincia_ejecutora", "distrito_ejecutora"], inplace=True)

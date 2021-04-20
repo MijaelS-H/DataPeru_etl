@@ -14,10 +14,41 @@ class ReadStep(PipelineStep):
     def run_step(self, prev, params):
 
         column = params.get('dimension')
-        query = """SELECT tipo_gobierno, sector, pliego, fuente_financ, rubro,
+        query = """SELECT tipo_gobierno, sector, pliego_nombre, fuente_financ, rubro, sec_ejec AS ejecutora,
                 monto_pia, monto_pim, monto_recaudado, district_id, month_id
                 FROM {} where version = '{}'""".format(params.get("temp-table"), params.get("url"))
+
         df = query_to_df(self.connector, raw_query=query)
+
+        dim_query = """SELECT * FROM temp_dim_mef_ingresos_pliego"""
+
+        dim_df = query_to_df(self.connector, raw_query=dim_query)
+
+        dim_df['tipo_gobierno'] = dim_df.pliego.str.slice(0, 1)
+        dim_df['pliego_nombre_unique'] = dim_df.pliego.str.slice(0, 3)
+
+        df_nac = df[df.tipo_gobierno == 'E'].copy()
+        df_reg = df[df.tipo_gobierno == 'R'].copy()
+        df_mun = df[df.tipo_gobierno == 'M'].copy()
+
+        df_nac['pliego_nombre_unique'] = df_nac['tipo_gobierno'] + df_nac['sector'].astype(str).str.zfill(2)
+        df_reg['pliego_nombre_unique'] = df_reg['tipo_gobierno'] + df_reg['sector'].astype(str).str.zfill(2)
+        df_mun['pliego_nombre_unique'] = df_mun['tipo_gobierno'] + df_mun['sector'].astype(str).str.zfill(2)
+
+        dim_nac = dim_df[dim_df.tipo_gobierno == 'E'][['pliego', 'pliego_nombre', 'pliego_nombre_unique']]
+        dim_reg = dim_df[dim_df.tipo_gobierno == 'R'][['pliego', 'pliego_nombre', 'pliego_nombre_unique']]
+        dim_mun = dim_df[dim_df.tipo_gobierno == 'M'][['pliego', 'pliego_nombre', 'pliego_nombre_unique']]
+
+        df_nac = df_nac.merge(dim_nac, on=["pliego_nombre_unique", "pliego_nombre"], how="left")
+        df_reg = df_reg.merge(dim_reg, on=["pliego_nombre_unique", "pliego_nombre"], how="left")
+        df_mun = df_mun.merge(dim_mun, on=["pliego_nombre_unique", "pliego_nombre"], how="left")
+
+        df = df_nac.append([df_reg, df_mun])
+
+        df = df[[
+            'tipo_gobierno', 'sector', 'pliego', 'fuente_financ', 'rubro', 'ejecutora',
+            'monto_pia', 'monto_pim', 'monto_recaudado', 'district_id', 'month_id'
+        ]]
 
         return df
 
@@ -35,9 +66,10 @@ class IngresosPipeline(EasyPipeline):
         dtypes = {
             "tipo_gobierno":                 "String",
             "sector":                        "UInt8",
-            "pliego":                        "UInt16",
+            "pliego":                        "String",
             "fuente_financ":                 "UInt8",
             "rubro":                         "UInt8",
+            "ejecutora":                     "UInt32",
             "monto_pia":                     "Float64",
             "monto_pim":                     "Float64",
             "monto_recaudado":               "Float64",
