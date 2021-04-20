@@ -130,7 +130,7 @@ def run_pipeline(params: dict):
 
             except Exception as e:
                 print("Error downloading {} file. Attempt {}/5".format(url, 6 - remaining_download_tries))
-                print("Error: {}".format(e.message))
+                print("Error: {}".format(e))
                 remaining_download_tries = remaining_download_tries - 1
                 continue
 
@@ -164,7 +164,7 @@ def run_pipeline(params: dict):
 
             except Exception as e:
                 print("Error downloading {} file. Attempt {}/5".format(url, 6 - remaining_download_tries))
-                print("Error: {}".format(e.message))
+                print("Error: {}".format(e))
                 remaining_download_tries = remaining_download_tries - 1
                 continue
 
