@@ -21,7 +21,7 @@ class UnzipStep(PipelineStep):
             print("Extracting {}".format(params.get("url")))
             data.extractall(os.path.join(params.get("datasets"), "downloads"))
 
-        return True
+        pass
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -131,8 +131,9 @@ def run_pipeline(params: dict):
                 os.remove(data)
                 break
 
-            except:
+            except Exception as e:
                 print("Error downloading {} file. Attempt {}/5".format(url, 6 - remaining_download_tries))
+                print("Error: {}".format(e.message))
                 remaining_download_tries = remaining_download_tries - 1
                 continue
 
@@ -164,8 +165,9 @@ def run_pipeline(params: dict):
                 os.remove(data)
                 break
 
-            except:
+            except Exception as e:
                 print("Error downloading {} file. Attempt {}/5".format(url, 6 - remaining_download_tries))
+                print("Error: {}".format(e.message))
                 remaining_download_tries = remaining_download_tries - 1
                 continue
 

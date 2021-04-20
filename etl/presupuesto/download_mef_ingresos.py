@@ -22,7 +22,7 @@ class UnzipStep(PipelineStep):
             if params.get("url") == "2014-Ingreso.zip":
                 os.rename(os.path.join(params.get("datasets"), "downloads", "2015-Ingreso.csv"), os.path.join(params.get("datasets"), "downloads", "2014-Ingreso.csv"))
 
-        return True
+        pass
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -128,8 +128,9 @@ def run_pipeline(params: dict):
                 os.remove(data)
                 break
 
-            except:
+            except Exception as e:
                 print("Error downloading {} file. Attempt {}/5".format(url, 6 - remaining_download_tries))
+                print("Error: {}".format(e.message))
                 remaining_download_tries = remaining_download_tries - 1
                 continue
 
@@ -161,8 +162,9 @@ def run_pipeline(params: dict):
                 os.remove(data)
                 break
 
-            except:
+            except Exception as e:
                 print("Error downloading {} file. Attempt {}/5".format(url, 6 - remaining_download_tries))
+                print("Error: {}".format(e.message))
                 remaining_download_tries = remaining_download_tries - 1
                 continue
 
