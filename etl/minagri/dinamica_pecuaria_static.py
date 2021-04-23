@@ -22,7 +22,7 @@ RENAME_COLUMNS = {
     'UBIGEO': 'department_id',
     'AÑO': 'year',
     'MES': 'month',
-    'PRODUCCION MENSUAL': 'produccion',
+    'PRODUCCION': 'produccion',
     'UNIDAD': 'produccion_unidad'
 }
 
@@ -31,3 +31,7 @@ REPLACE_VALUES = {
         't': 1
     }
 }
+
+URL_PECUARIA = [
+    "MIDAGRI_DINAMICA_PECUARIA_02_2021.xlsx"
+]
