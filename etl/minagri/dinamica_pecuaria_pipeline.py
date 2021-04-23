@@ -1,5 +1,5 @@
 from os import path
-
+import shutil
 import nltk
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
@@ -7,19 +7,44 @@ from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
 from etl.consistency import AggregatorStep
 from etl.helpers import format_text
+from etl.helpers import clean_tables
 
 from .dinamica_pecuaria_static import (DTYPES, PRIMARY_KEYS, RENAME_COLUMNS,
-                                       REPLACE_VALUES)
+                                       REPLACE_VALUES, URL_PECUARIA)
 
+
+class MoveStep(PipelineStep):
+    def run_step(self, prev, params):
+        shutil.move(prev, path.join(params.get("datasets"), "downloads", params.get("url")))
+
+        pass
+
+class DownloadPipeline(EasyPipeline):
+    @staticmethod
+    def parameter_list():
+        return [
+            Parameter(name="url", dtype=str),
+            Parameter(name="force_download", dtype=bool)
+        ]
+        
+    @staticmethod
+    def steps(params):
+
+        download_step = DownloadStep(
+            connector="minagri",
+            connector_path="etl/minagri/conns.yaml",
+            force=params.get("force_download")
+        )
+
+        move_step = MoveStep()
+
+        return [download_step, move_step]
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Reads 02. DINAMICA PECUARIA file
-        df = pd.read_excel(
-            path.join(params["datasets"], "20201020", "07. Socios Estratégicos - Ministerio de Agricultura (20-10-2020)", "02. DINAMICA PECUARIA.xlsx"),
-            dtype='str'
-        )
+        df = pd.read_excel(path.join(params.get("datasets"), "downloads", params.get("url")), dtype='str')
 
         # Rename columns to unique name
         df.rename(columns=RENAME_COLUMNS, inplace=True)
@@ -44,7 +69,7 @@ class TransformStep(PipelineStep):
         df['produccion'] = df['produccion'].astype(float)
 
         if params.get('level') == 'dimension_table':
-            text_cols= ['producto_name']
+            text_cols = ['producto_name']
 
             nltk.download('stopwords')
             stopwords_es = nltk.corpus.stopwords.words('spanish')
@@ -60,7 +85,8 @@ class MINAGRIPecuariaPipeline(EasyPipeline):
     def parameter_list():
         return [
             Parameter(name='level', dtype=str),
-            Parameter(name='table_name', dtype=str)
+            Parameter(name='table_name', dtype=str),
+            Parameter(name='url', dtype=str)
         ]
 
     @staticmethod
@@ -71,7 +97,7 @@ class MINAGRIPecuariaPipeline(EasyPipeline):
 
         transform_step = TransformStep()
         agg_step = AggregatorStep(table_name, measures=["produccion"])
-        load_step = LoadStep(table_name, db_connector, if_exists='drop', 
+        load_step = LoadStep(table_name, db_connector, if_exists='append', 
                              pk=PRIMARY_KEYS[level], dtype=DTYPES[level],
                              nullable_list=[])
 
@@ -84,16 +110,26 @@ class MINAGRIPecuariaPipeline(EasyPipeline):
             return [transform_step, load_step]
 
 def run_pipeline(params: dict):
+    clean_tables("dim_shared_dinamica_pecuaria", params.get("connector"))
+    clean_tables("minagri_dinamica_pecuaria", params.get("connector"))
+
+    download_pp = DownloadPipeline()
     pp = MINAGRIPecuariaPipeline()
+
     levels = {
         "dimension_table": "dim_shared_dinamica_pecuaria",
         "fact_table": "minagri_dinamica_pecuaria"
     }
 
-    for k, v in levels.items():
-        pp_params = {"level": k, "table_name": v}
-        pp_params.update(params)
-        pp.run(pp_params)
+    for url in URL_PECUARIA:
+        for k, v in levels.items():
+            download_params = pp_params = {"url": url, "force_download": True}
+            download_params.update(params)
+            download_pp.run(download_params)
+
+            pp_params = {"level": k, "table_name": v, "url": url}
+            pp_params.update(params)
+            pp.run(pp_params)
 
 
 if __name__ == "__main__":
