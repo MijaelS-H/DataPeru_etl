@@ -111,7 +111,7 @@ def run_pipeline(params: dict):
         remaining_download_tries = 5
         while remaining_download_tries > 0:
             try:
-                pp_params = {"url": url, "force_download": False}
+                pp_params = {"url": url, "force_download": True}
                 pp_params.update(params)
                 pp.run(pp_params)
         
@@ -145,7 +145,7 @@ def run_pipeline(params: dict):
         remaining_download_tries = 5
         while remaining_download_tries > 0:
             try:
-                pp_params = {"url": url, "force_download": False}
+                pp_params = {"url": url, "force_download": True}
                 pp_params.update(params)
                 pp.run(pp_params)
         
