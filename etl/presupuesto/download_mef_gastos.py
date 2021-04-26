@@ -21,8 +21,6 @@ class UnzipStep(PipelineStep):
             print("Extracting {}".format(params.get("url")))
             data.extractall(os.path.join(params.get("datasets"), "downloads"))
 
-        pass
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 

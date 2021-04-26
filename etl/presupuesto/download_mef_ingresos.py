@@ -22,8 +22,6 @@ class UnzipStep(PipelineStep):
             if params.get("url") == "2014-Ingreso.zip":
                 os.rename(os.path.join(params.get("datasets"), "downloads", "2015-Ingreso.csv"), os.path.join(params.get("datasets"), "downloads", "2014-Ingreso.csv"))
 
-        pass
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
