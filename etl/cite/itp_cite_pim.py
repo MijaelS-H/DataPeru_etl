@@ -15,7 +15,7 @@ from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "05 EJECUCIÓN PRESUPUESTAL", "TABLA_05_N01.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "05_EJECUCION_PRESUPUESTAL", "TABLA_05_N01.csv"))
 
         df = df[['cite','anio','pim']]
         
@@ -50,7 +50,7 @@ class CitePimPipeline(EasyPipeline):
         agg_step = AggregatorStep('itp_cite_pim', measures=['pim'])
         load_step = LoadStep('itp_cite_pim', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['pim'])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = CitePimPipeline()

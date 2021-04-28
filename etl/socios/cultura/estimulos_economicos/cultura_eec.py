@@ -17,7 +17,7 @@ COUNTRY_DICT = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        data = pd.ExcelFile(path.join(params["datasets"],"20201018", "05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)", "01. Información Dirección de Industrias Culturales (18-10-2020)", "03.  EEC_2019_DATAPERU.xlsx"))
+        data = pd.ExcelFile(path.join(params["datasets"], "05_Socios_Estrategicos_Ministerio_de_Cultura", "01_Informacion_Direccion_de_Industrias_Culturales", "03_EEC_2019_DATAPERU.xlsx"))
         sheet = data.sheet_names[1]
         df = pd.read_excel(data, data.sheet_names[1])
 
@@ -104,7 +104,7 @@ class EECPipeline(EasyPipeline):
         load_step = LoadStep('cultura_eec', db_connector, if_exists='drop', 
                              pk=['estimulo_economico_id', 'fase_cadena_valor_id', 'nombre_proyecto_id'], dtype=dtype)
 
-        return [transform_step, replace_step, format_step, agg_step, load_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 def run_pipeline(params: dict):
     pp = EECPipeline()

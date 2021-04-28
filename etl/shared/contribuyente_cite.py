@@ -12,25 +12,20 @@ from bamboo_lib.steps import DownloadStep
 from bamboo_lib.steps import LoadStep
 
 CARPETAS_DICT = {
-    1: "01 INFORMACIÓN INSTITUCIONAL",
-    2: "02 CLIENTES ATENDIDOS",
-    3: "03 SERVICIOS BRINDADOS",
-    4: "04 PROYECTOS DE INVERSIÓN PÚBLICA",
-    5: "05 EJECUCIÓN PRESUPUESTAL",
-    6: "06 RECURSOS HUMANOS",
-    7: "07 PARTIDAS ARANCELARIAS",
+    1: "01_INFORMACIÓN_INSTITUCIONAL",
+    2: "02_CLIENTES_ATENDIDOS",
+    3: "03_SERVICIOS_BRINDADOS",
+    4: "04_PROYECTOS_DE_INVERSION_PUBLICA",
+    5: "05_EJECUCION_PRESUPUESTAL",
+    6: "06_RECURSOS_HUMANOS",
+    7: "07_PARTIDAS_ARANCELARIAS",
 }
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        k = 1
-        df = {}
-        for i in range(2,2 +1):
-            for j in range(5, 5 + 1 ):
-                # file_dir = "../../../datasets/20201001/01. Información ITP red CITE  (01-10-2020)/{}/TABLA_0{}_N0{}.csv".format(CARPETAS_DICT[i],i,j)
-                file_dir = path.join(params["datasets"], "20201001", "01. Información ITP red CITE  (01-10-2020)", "{}".format(CARPETAS_DICT[i]),"TABLA_0{}_N0{}.csv".format(i,j))
-                df = pd.read_csv(file_dir)
+        file_dir = path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "TABLA_02_N05.csv")
+        df = pd.read_csv(file_dir)
 
         df["tipo_contribuyente"] = df["tipo_contribuyente"].str.capitalize() 
         contribuyente_list = list(df["tipo_contribuyente"].unique())

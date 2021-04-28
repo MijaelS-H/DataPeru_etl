@@ -11,7 +11,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read dataframe
         df = pd.read_spss(
-            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "03 CENSO NACIONAL DE MERCADOS DE ABASTO", "02 MÓDULO 1117_ Identificación del Mercado e Informante", "Capítulo_II_NACIONAL.sav")
+            path.join(params["datasets"], "02_Informacion_Censos", "03_CENSO_NACIONAL_DE_MERCADOS_DE_ABASTO", "02_MODULO_1117_Identificacion_del_Mercado_e_Informante", "Capitulo_II_NACIONAL.sav")
         )
 
         df.columns = df.columns.str.lower()

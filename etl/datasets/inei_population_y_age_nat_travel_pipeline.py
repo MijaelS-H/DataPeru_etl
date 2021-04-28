@@ -20,8 +20,8 @@ CONTINENT_DICT = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.27.xls"), skiprows = (0,1,2))[2:171]
-        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.28.xls"), skiprows = (0,1,2))[2:171]
+        df1 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.27.xls"), skiprows = (0,1,2))[2:171]
+        df2 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.28.xls"), skiprows = (0,1,2))[2:171]
 
         # For each dataframe
         for item in [df1, df2]:
@@ -93,7 +93,7 @@ class inei_population_y_age_nat_travel_Pipeline(EasyPipeline):
         agg_step = AggregatorStep("inei_population_y_age_nat_travel", measures=["poblacion"])
         load_step = LoadStep("inei_population_y_age_nat_travel", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype, nullable_list=["poblacion"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = inei_population_y_age_nat_travel_Pipeline()

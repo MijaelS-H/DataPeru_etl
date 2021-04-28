@@ -103,7 +103,7 @@ class MINAGRIPecuariaPipeline(EasyPipeline):
 
         if level == "fact_table":
 
-            return [transform_step, agg_step, load_step]
+            return [transform_step, load_step]
 
         else:
 

@@ -1,5 +1,5 @@
 import os
-
+import glob
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.helpers import query_to_df
@@ -144,25 +144,17 @@ class SUNATPipeline(EasyPipeline):
             nullable_list=[],
         )
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     clean_tables("sunat_subnational_trade", params["connector"])
     pp = SUNATPipeline()
 
-    folders = [
-        os.path.join(params["datasets"], "20200318", "180320 Inf. Administrativa SUNAT"),
-        os.path.join(params["datasets"], "20201214", "Importaciones SUNAT")
-    ]
-
-    for filelist in folders:
-        for filename in os.listdir(filelist):
-
-            print('Ingesting: {}'.format(filename))
-
-            pp_params = {"filename": os.path.join(filelist, filename)}
-            pp_params.update(params)
-            pp.run(pp_params)
+    for filename in glob.glob(os.path.join(params["datasets"], "Inf_Administrativa_SUNAT", '*')):
+        print('Ingesting: {}'.format(filename))
+        pp_params = {"filename": filename}
+        pp_params.update(params)
+        pp.run(pp_params)
 
 if __name__ == "__main__":
     import sys

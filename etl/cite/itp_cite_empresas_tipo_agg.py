@@ -16,7 +16,7 @@ MONTHS_DICT = {'mes_01' :'1', 'mes_02' :'2', 'mes_03' :'3', 'mes_04' :'4','mes_0
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "02 CLIENTES ATENDIDOS", "TABLA_02_N02.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "TABLA_02_N02.csv"))
 
         empresas_list = list(df["tipo"].unique())
         empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(1, len(empresas_list) +1)))}
@@ -56,7 +56,7 @@ class CiteEmpresasPipeline(EasyPipeline):
         agg_step = AggregatorStep('itp_cite_empresas_tipo_agg', measures=['empresas'])
         load_step = LoadStep('itp_cite_empresas_tipo_agg', connector=db_connector, if_exists='drop', pk=['empresa_id'], dtype=dtypes, nullable_list=['empresas'])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = CiteEmpresasPipeline()

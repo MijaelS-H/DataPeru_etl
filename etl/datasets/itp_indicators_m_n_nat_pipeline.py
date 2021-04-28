@@ -12,11 +12,11 @@ df_columns = ["year", "m_nacional_arquelogia_historia_Peru", "museo_de_la_Nacion
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.158.xlsx"), skiprows = (0,1,2))
-        df2 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.159.xlsx"), skiprows = (0,1,2))
+        df1 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.158.xlsx"), skiprows = (0,1,2))
+        df2 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.159.xlsx"), skiprows = (0,1,2))
 
-        df3 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.166.xlsx"), skiprows = (0,1,2,4), usecols = "A:O")[0:12]
-        df4 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.156.xls"), skiprows = (0,1,2), usecols = "A,C:F,H:P")[24:102]
+        df3 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.166.xlsx"), skiprows = (0,1,2,4), usecols = "A:O")[0:12]
+        df4 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.156.xls"), skiprows = (0,1,2), usecols = "A,C:F,H:P")[24:102]
 
         # Common steps
         for item in [df1,df2]:
@@ -105,7 +105,7 @@ class itp_indicators_m_n_nat_pipeline(EasyPipeline):
                     "z_arqueologica_m_sitio_Puruchuco", "z_arqueologica_m_sitio_Huallamarca", "z_arqueologica_m_sitio_Otros", "m_sitio_cerro_San_Cristobal",
                     "m_sitio_centro_arqueologico_Pucllana", "casa_m_Jose_Carlos_Mariategui", "complejo_arqueologico_Mateo_Salado", "casa_gastronomia_peruana"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = itp_indicators_m_n_nat_pipeline()

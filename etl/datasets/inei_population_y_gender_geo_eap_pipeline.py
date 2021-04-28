@@ -15,8 +15,8 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame(columns = ["Unnamed: 0", "Hombre", "Mujer", "year"])
 
         # Reading step
-        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[3:11]
-        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[3:11]
+        df1 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[3:11]
+        df2 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[3:11]
 
         # For each dataset, apply common steps
         for item in [df1,df2]:
@@ -84,7 +84,7 @@ class inei_population_y_gender_geo_eap_Pipeline(EasyPipeline):
         agg_step = AggregatorStep("inei_population_y_gender_geo_eap", measures=["peac_masculina", "peac_femenina"])
         load_step = LoadStep("inei_population_y_gender_geo_eap", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = inei_population_y_gender_geo_eap_Pipeline()

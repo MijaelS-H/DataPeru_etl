@@ -11,7 +11,7 @@ from etl.consistency import AggregatorStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        data = pd.ExcelFile(path.join(params["datasets"],"20201018", "05. Socios Estratégicos - Ministerio de Cultura (18 y 19-10-2020)", "01. Información Dirección de Industrias Culturales (18-10-2020)", "01. Puntos de Cultura_2020_DataPeru.xlsx"))
+        data = pd.ExcelFile(path.join(params["datasets"], "05_Socios_Estrategicos_Ministerio_de_Cultura", "01_Informacion_Direccion_de_Industrias_Culturales", "01_Puntos_de_Cultura_2020_DataPeru.xlsx"))
         sheet = data.sheet_names[1]
         df = pd.read_excel(data, data.sheet_names[1])
 
@@ -101,7 +101,7 @@ class AsociacionPipeline(EasyPipeline):
         load_step = LoadStep('cultura_asociaciones', db_connector, if_exists='drop', pk=['district_id'], dtype=dtype,
                             nullable_list=['anio_fundacion'])
 
-        return [transform_step, replace_step, format_step, agg_step, load_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 def run_pipeline(params: dict):
     pp = AsociacionPipeline()

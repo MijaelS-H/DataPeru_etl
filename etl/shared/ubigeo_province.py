@@ -11,8 +11,8 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        # df = pd.read_excel('../../../datasets/anexos/2.Ubigeo_descripción.xlsx', header=2, usecols='B,E,F')
-        df = pd.read_excel(path.join(params["datasets"],"anexos", "2.Ubigeo_descripción.xlsx"), header=2, usecols='B,E,F')
+        # df = pd.read_excel('../../../datasets/anexos/2.Ubigeo_descripcion.xlsx', header=2, usecols='B,E,F')
+        df = pd.read_excel(path.join(params["datasets"], "anexos", "2.Ubigeo_descripcion.xlsx"), header=2, usecols='B,E,F')
 
         df.replace(' ', np.nan, inplace=True)
         df.dropna(inplace=True)

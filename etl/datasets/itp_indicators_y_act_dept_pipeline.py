@@ -58,11 +58,11 @@ class TransformStep(PipelineStep):
         # Creating inicial empty dataframe
         df = pd.DataFrame(columns=["ubigeo", "year", "act_economica", "valor_agregado_bruto_2007", "valor_agregado_bruto_cte"])
 
-        left = pd.read_excel(path.join(params["datasets"], "20200318", data_object["path"], data_object["filename"]),
+        left = pd.read_excel(path.join(params["datasets"], data_object["path"], data_object["filename"]),
                         sheet_name = data_object["sheet_name_1"],
                         usecols = data_object["cols"],
                         skiprows = data_object["skiprows_"])[0:27]
-        right = pd.read_excel(path.join(params["datasets"], "20200318", data_object["path"], data_object["filename"]),
+        right = pd.read_excel(path.join(params["datasets"], data_object["path"], data_object["filename"]),
                         sheet_name = data_object["sheet_name_2"],
                         usecols = data_object["cols"],
                         skiprows = data_object["skiprows_"])[0:27]
@@ -119,7 +119,7 @@ class itp_ind_year_Pipeline(EasyPipeline):
         agg_step = AggregatorStep("itp_indicators_y_act_dept", measures=["valor_agregado_bruto_2007", "valor_agregado_bruto_cte"])
         load_step = LoadStep("itp_indicators_y_act_dept", db_connector, if_exists="append", pk=["ubigeo"], dtype=dtype)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     clean_tables("itp_indicators_y_act_dept", params["connector"])

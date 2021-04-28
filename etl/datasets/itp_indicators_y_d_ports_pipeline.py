@@ -13,7 +13,7 @@ output = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRsfSo_N9dGWqzuCAoSEbC
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.73.xlsx"), skiprows = (0,1,2,4,5))[0:31]
+        df1 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.73.xlsx"), skiprows = (0,1,2,4,5))[0:31]
         ports = pd.read_excel(output, usecols ="A,D")
 
         df1.rename(columns = {'2018 P/': 2018}, inplace = True)
@@ -57,7 +57,7 @@ class itp_indicators_y_d_ports_Pipeline(EasyPipeline):
         agg_step = AggregatorStep("itp_indicators_y_d_ports", measures=["desembarque_recursos_marinos"])
         load_step = LoadStep("itp_indicators_y_d_ports", db_connector, if_exists="drop", pk=["ubigeo", "puerto"], dtype=dtype, nullable_list=["desembarque_recursos_marinos"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = itp_indicators_y_d_ports_Pipeline()

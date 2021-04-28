@@ -12,7 +12,7 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        wb = xlrd.open_workbook(path.join(params["datasets"],"anexos", "CIIU-REV.3 (es).xls"), encoding_override='latin1')
+        wb = xlrd.open_workbook(path.join(params["datasets"], "anexos", "CIIU-REV.3 (es).xls"), encoding_override='latin1')
         df = pd.read_excel(wb, header=4, usecols="A,B")
 
         sections = [

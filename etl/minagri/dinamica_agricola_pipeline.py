@@ -17,7 +17,7 @@ class TransformStep(PipelineStep):
 
         # Reads 01. DINAMICA AGRICOLA file
         df = pd.read_excel(
-            path.join(params["datasets"], "20201020", "07. Socios Estratégicos - Ministerio de Agricultura (20-10-2020)", "01. DINAMICA AGRICOLA.xlsx"),
+            path.join(params["datasets"], "07_Socios_Estrategicos_Ministerio_de_Agricultura", "01_DINAMICA_AGRICOLA.xlsx"),
             dtype='str'
         )
 
@@ -83,7 +83,7 @@ class MINAGRIAgricolaPipeline(EasyPipeline):
 
         if level == 'fact_table':
         
-            return [transform_step, agg_step, load_step]
+            return [transform_step, load_step]
 
         else:
 

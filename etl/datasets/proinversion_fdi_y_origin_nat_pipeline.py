@@ -12,7 +12,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Loading data
-        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.188.xlsx"), skiprows = (0,1,2,4))[0:41]
+        df1 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.188.xlsx"), skiprows = (0,1,2,4))[0:41]
 
         dim_country_query = "SELECT * FROM dim_shared_country"
         db_connector = Connector.fetch("clickhouse-database", open(params["connector"]))
@@ -65,7 +65,7 @@ class proinversion_fdi_y_origin_nat_pipeline(EasyPipeline):
         agg_step = AggregatorStep("proinversion_fdi_y_origin_nat", measures=["ied_millones_USD"])
         load_step = LoadStep("proinversion_fdi_y_origin_nat", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype, nullable_list=["iso3"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = proinversion_fdi_y_origin_nat_pipeline()

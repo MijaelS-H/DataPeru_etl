@@ -13,7 +13,7 @@ from bamboo_lib.helpers import grab_connector
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        wb = xlrd.open_workbook(path.join(params["datasets"], "20210119", "08 CADENAS PRODUCTIVAS Y MERCADO INTERNO", "TABLA_08_N04.xlsx"), encoding_override='latin1')
+        wb = xlrd.open_workbook(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "08_CADENAS_PRODUCTIVAS_Y_MERCADO_INTERNO", "TABLA_08_N04.xlsx"), encoding_override='latin1')
         df = pd.read_excel(
             wb,
             dtype='str'

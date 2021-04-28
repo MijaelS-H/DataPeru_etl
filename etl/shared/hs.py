@@ -13,10 +13,10 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Read HS files
-        hs_codes = pd.read_excel(path.join(params["datasets"],"anexos", "DataExport_11_2_2019__2_56_41.xlsx"), sheet_name="Aplicados_NMF", header=4, usecols="B,C,E,R", names=["year", "hs_level", "id", "hs_name"], dtype={"hs_level": "int", "id": "str", "hs_name": "str"})
-        chapter = pd.read_csv(path.join(params["datasets"],"anexos", "hs_2017.csv"), dtype={"Parent.1": "str", "Code.1": "str"})
-        chapter_names = pd.read_excel(path.join(params["datasets"],"anexos", "hs6_2012.xlsx"), sheet_name="chapter", usecols="A,D", names=["chapter_id", "chapter_name"], dtype={"chapter_id": "str"})
-        hs_2012 = pd.read_excel(path.join(params["datasets"],"anexos", "hs6_2012.xlsx"), sheet_name="hs6", usecols="A,D,E", names=["id", "hs6_name_large", "hs6_name"], dtype={"id": "str"})
+        hs_codes = pd.read_excel(path.join(params["datasets"], "anexos", "DataExport_11_2_2019__2_56_41.xlsx"), sheet_name="Aplicados_NMF", header=4, usecols="B,C,E,R", names=["year", "hs_level", "id", "hs_name"], dtype={"hs_level": "int", "id": "str", "hs_name": "str"})
+        chapter = pd.read_csv(path.join(params["datasets"], "anexos", "hs_2017.csv"), dtype={"Parent.1": "str", "Code.1": "str"})
+        chapter_names = pd.read_excel(path.join(params["datasets"], "anexos", "hs6_2012.xlsx"), sheet_name="chapter", usecols="A,D", names=["chapter_id", "chapter_name"], dtype={"chapter_id": "str"})
+        hs_2012 = pd.read_excel(path.join(params["datasets"], "anexos", "hs6_2012.xlsx"), sheet_name="hs6", usecols="A,D,E", names=["id", "hs6_name_large", "hs6_name"], dtype={"id": "str"})
 
         # Rename columns
         chapter = chapter[chapter["Level"] == 2][["Parent.1", "Code.1"]].rename(columns={"Parent.1": "chapter_id", "Code.1": "hs2_id"})

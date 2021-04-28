@@ -10,12 +10,12 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
         range_ = list(range(0, 4)) + list(range(6,39))
-        df1 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.3.xlsx"), usecols = "B:J", skiprows = range_)
-        df2 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.4.xlsx"), usecols = "B:J", skiprows = range_)
-        df3 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.5.xlsx"), usecols = "B:T", skiprows = range_)
-        df4 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.6.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_)
-        df5 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.7.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_)
-        df6 = pd.read_excel(path.join(params["datasets"],"20200318",  "A. Economía","A.8.xlsx"), usecols = "A,F", skiprows = range(0,6))
+        df1 = pd.read_excel(path.join(params["datasets"],  "A_Economia","A.3.xlsx"), usecols = "B:J", skiprows = range_)
+        df2 = pd.read_excel(path.join(params["datasets"],  "A_Economia","A.4.xlsx"), usecols = "B:J", skiprows = range_)
+        df3 = pd.read_excel(path.join(params["datasets"],  "A_Economia","A.5.xlsx"), usecols = "B:T", skiprows = range_)
+        df4 = pd.read_excel(path.join(params["datasets"],  "A_Economia","A.6.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_)
+        df5 = pd.read_excel(path.join(params["datasets"],  "A_Economia","A.7.xlsx"), usecols = "B:C,E:F,H,J,K", skiprows = range_)
+        df6 = pd.read_excel(path.join(params["datasets"],  "A_Economia","A.8.xlsx"), usecols = "A,F", skiprows = range(0,6))
 
         df1 = df1.reset_index(drop=True)
         df2 = df2.reset_index(drop=True)
@@ -139,7 +139,7 @@ class itp_ind_quarter_n_nat_pipeline(EasyPipeline):
         agg_step = AggregatorStep("itp_indicators_q_n_nat", measures=["producto_bruto_interno_2007", "gasto_consumo_final_privado_2007", "gasto_consumo_gobierno_2007", "formacion_bruta_capital_2007", "formacion_bruta_capital_fijo_2007", "exportaciones_2007", "importaciones_2007", "producto_bruto_interno_nominal", "gasto_consumo_final_privado_nominal", "gasto_consumo_gobierno_nominal", "formacion_bruta_capital_nominal", "formacion_bruta_capital_fijo_nominal", "exportaciones_nominal", "importaciones_nominal", "producto_interno_bruto", "derechos_importacion_otros_impuestos", "valor_agregado_bruto_total", "agricultura_ganaderia_caza_silvicultura", "pesca_acuicultura", "extraccion_petroleo_gas_minerales_servicios_conexos", "manufactura", "construccion", "electricidad_gas_agua", "comercio_mantenimiento_reparacion_vehiculos", "transporte_almacenamiento_correo_mensajeria", "alojamiento_restaurantes", "telecomunicaciones_otros_servicios_informacion", "servicios_financieros_seguros_pensiones", "servicios_prestados_empresas", "administracion_publica_defensa", "otros_servicios", "formacion_bruta_cap_fijo_publico_2007", "formacion_bruta_cap_fijo_privado_2007", "formacion_bruta_cap_fijo_construccion_2007", "formacion_bruta_cap_fijo_maq_nac_2007", "formacion_bruta_cap_fijo_maq_imp_2007", "formacion_bruta_cap_fijo_publico_nom", "formacion_bruta_cap_fijo_privado_nom", "formacion_bruta_cap_fijo_construccion_nom", "formacion_bruta_cap_fijo_maq_nac_nom", "formacion_bruta_cap_fijo_maq_imp_nom", "poblacion_anual"])
         load_step = LoadStep("itp_indicators_q_n_nat", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype, nullable_list=["poblacion_anual"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = itp_ind_quarter_n_nat_pipeline()

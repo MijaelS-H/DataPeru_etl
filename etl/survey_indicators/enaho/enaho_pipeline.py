@@ -13,7 +13,7 @@ from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        data = pd.ExcelFile(os.path.join(params['datasets'], '20201007', '03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))', '03 Encuesta Nacional de Hogares (ENAHO) (07-10-2020)', '071020 ENAHO_Indicadores.xlsx'))
+        data = pd.ExcelFile(os.path.join(params['datasets'], '03_Indicadores_estimados_DSE_Encuestas', '03_Encuesta_Nacional_de_Hogares_(ENAHO)', 'ENAHO_Indicadores.xlsx'))
 
         # sheet names
         nation = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
@@ -86,7 +86,7 @@ class ENAHOPipeline(EasyPipeline):
                              pk=['nation_id', 'department_id', 'year'], dtype=dtype,
                              nullable_list=['coef_var', 'category_id', 'geo_id', 'region_id'])
 
-        return [transform_step, replace_step, format_step, agg_step, load_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 def run_pipeline(params: dict):
     pp = ENAHOPipeline()

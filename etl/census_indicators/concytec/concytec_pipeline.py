@@ -15,8 +15,8 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read modules
         list_name = [
-            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO", "03 BASE DE DATOS", "cap200.dta"),
-            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "04 CENSO NACIONAL DE INVESTIGACIÓN Y DESARROLLO", "03 BASE DE DATOS", "cap300-400.dta"),
+            path.join(params["datasets"], "02_Informacion_Censos", "04_CENSO_NACIONAL_DE_INVESTIGACION_Y_DESARROLLO", "03_BASE_DE_DATOS", "cap200.dta"),
+            path.join(params["datasets"], "02_Informacion_Censos", "04_CENSO_NACIONAL_DE_INVESTIGACION_Y_DESARROLLO", "03_BASE_DE_DATOS", "cap300-400.dta"),
         ]
 
         df = [pd.read_stata(x) for x in list_name]
@@ -125,7 +125,7 @@ class CONCYTECPipeline(EasyPipeline):
                                  'nation_id', 'year'], dtype=DTYPE,
                              nullable_list=LIST_NULL)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 
 def run_pipeline(params: dict):

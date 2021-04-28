@@ -1,4 +1,5 @@
 import os
+import glob
 import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
@@ -15,9 +16,9 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         path = os.path.join(
             params["datasets"],
-            "20201001",
-            "02. Información Censos (01-10-2020)",
-            "02  RENAMU - CENTROS POBLADOS",
+            "02_Informacion_Censos",
+            "02 _RENAMU_CENTROS_POBLADOS",
+            "*"
         )
 
         # Open all RENAMU files and creates a DataFrame
@@ -25,12 +26,12 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame()
         renamu_versions = {}
 
-        for folder in os.listdir(path):
+        for folder in glob.glob(path):
             _df = pd.DataFrame()
-            for subfolder in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder))):
-                for filename in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder), '{}'.format(subfolder))):
+            for subfolder in glob.glob(os.path.join(folder, '*')):
+                for filename in glob.glob(os.path.join(subfolder, '*')):
                      if filename.endswith('.sav'):
-                        temp = pd.read_spss(os.path.join('{}'.format(path), '{}'.format(folder), '{}'.format(subfolder), '{}'.format(filename)))
+                        temp = pd.read_spss(filename)
                         temp = temp.replace('', np.nan).dropna(how='all')
                         temp.rename(
                             columns = {
@@ -522,7 +523,7 @@ class RENAMUCCPPPipeline(EasyPipeline):
 
         if level == "fact_table":
 
-            return [transform_step, agg_step, load_step]
+            return [transform_step, load_step]
 
         else:
 

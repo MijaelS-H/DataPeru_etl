@@ -13,48 +13,48 @@ columns_ = [["Departamento", "Inmi-", "Emi-"], ["Departamento", "Inmi-.1", "Emi-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data from: population and housing
-        df1 =  pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.18.xlsx"), skiprows = (0,1))[3:30]
-        df2 =  pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.21.xlsx"), skiprows = (0,1))[3:30]
-        df3 =  pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.24.xls"), skiprows = (0,1,2,3), usecols = "A:U")[3:27]
+        df1 =  pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.18.xlsx"), skiprows = (0,1))[3:30]
+        df2 =  pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.21.xlsx"), skiprows = (0,1))[3:30]
+        df3 =  pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.24.xls"), skiprows = (0,1,2,3), usecols = "A:U")[3:27]
         # Loading data from: employment
-        df4 =  pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.15.xlsx"), skiprows = (0,1,2,3))[14:41]
+        df4 =  pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.15.xlsx"), skiprows = (0,1,2,3))[14:41]
         # Loading data from: socials
-        df5 =  pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.4.xlsx"), skiprows = (0,1,2), usecols = "A:K")[5:32]
-        df6 =  pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.8.xlsx"), skiprows = (0,1,2,3))[11:38]
-        df7 =  pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.9.xlsx"), skiprows = (0,1,2,3))[11:38]
-        df8 =  pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.11.xlsx"), skiprows = (0,1,2,3), usecols = "A:K")[3:28]
-        df9 =  pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.12.xlsx"), skiprows = (0,1,2,3), usecols = "A,J:R")[3:28]
-        df10 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.14.xlsx"), skiprows = (0,1), usecols = "A,E:N")[3:30]
-        df11 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.15.xlsx"), skiprows = (0,1,2), usecols = "A,F:N")[3:30]
-        df12 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.16.xlsx"), skiprows = (0,1,2,3), usecols = "A,G:J")[3:30]
-        df13 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.18.xlsx"), skiprows = range(0,4), usecols = "A,K:V")[3:30]
-        df14 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.55.xlsx"), skiprows = range(0,6), usecols = "A:L")[12:39]
+        df5 =  pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.4.xlsx"), skiprows = (0,1,2), usecols = "A:K")[5:32]
+        df6 =  pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.8.xlsx"), skiprows = (0,1,2,3))[11:38]
+        df7 =  pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.9.xlsx"), skiprows = (0,1,2,3))[11:38]
+        df8 =  pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.11.xlsx"), skiprows = (0,1,2,3), usecols = "A:K")[3:28]
+        df9 =  pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.12.xlsx"), skiprows = (0,1,2,3), usecols = "A,J:R")[3:28]
+        df10 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.14.xlsx"), skiprows = (0,1), usecols = "A,E:N")[3:30]
+        df11 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.15.xlsx"), skiprows = (0,1,2), usecols = "A,F:N")[3:30]
+        df12 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.16.xlsx"), skiprows = (0,1,2,3), usecols = "A,G:J")[3:30]
+        df13 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.18.xlsx"), skiprows = range(0,4), usecols = "A,K:V")[3:30]
+        df14 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.55.xlsx"), skiprows = range(0,6), usecols = "A:L")[12:39]
         # Loading data from: environment
-        df15 = pd.read_excel(path.join(params["datasets"],"20200318", "E. Medio Ambiente", "E.12.xlsx"), skiprows = range(0,6), usecols = "A,C,D,G,H")[9:33]
-        df16 = pd.read_excel(path.join(params["datasets"],"20200318", "E. Medio Ambiente", "E.13.xlsx"), skiprows = (0,1,2,3), usecols = "A,C:F,I:L")[8:32]
-        df17 = pd.read_excel(path.join(params["datasets"],"20200318", "E. Medio Ambiente", "E.22.xlsx"), skiprows = (0,1,2))[3:18]
+        df15 = pd.read_excel(path.join(params["datasets"], "E_Medio_Ambiente", "E.12.xlsx"), skiprows = range(0,6), usecols = "A,C,D,G,H")[9:33]
+        df16 = pd.read_excel(path.join(params["datasets"], "E_Medio_Ambiente", "E.13.xlsx"), skiprows = (0,1,2,3), usecols = "A,C:F,I:L")[8:32]
+        df17 = pd.read_excel(path.join(params["datasets"], "E_Medio_Ambiente", "E.22.xlsx"), skiprows = (0,1,2))[3:18]
         # Loading data from: information and communication technology
-        df18 = pd.read_excel(path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.1.xlsx"), skiprows = range(0,6))[17:44]
-        df19 = pd.read_excel(path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.2.xlsx"), skiprows = range(0,4))[17:44]
-        df20 = pd.read_excel(path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.3.xlsx"), skiprows = range(0,4))[16:43]
-        df21 = pd.read_excel(path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.4.xlsx"), skiprows = range(0,4))[17:44]
-        df22 = pd.read_excel(path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.5.xlsx"), skiprows = range(0,4))[17:44]
-        df23 = pd.read_excel(path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.6.xlsx"), skiprows = range(0,4))[17:44]
-        df24 = pd.read_excel(path.join(params["datasets"],"20200318", "F. Tecnología de la Información y Comunicación", "F.7.xlsx"), skiprows = range(0,4))[17:44]
+        df18 = pd.read_excel(path.join(params["datasets"], "F_Tecnologia_de_la_Informacion_y_Comunicacion", "F.1.xlsx"), skiprows = range(0,6))[17:44]
+        df19 = pd.read_excel(path.join(params["datasets"], "F_Tecnologia_de_la_Informacion_y_Comunicacion", "F.2.xlsx"), skiprows = range(0,4))[17:44]
+        df20 = pd.read_excel(path.join(params["datasets"], "F_Tecnologia_de_la_Informacion_y_Comunicacion", "F.3.xlsx"), skiprows = range(0,4))[16:43]
+        df21 = pd.read_excel(path.join(params["datasets"], "F_Tecnologia_de_la_Informacion_y_Comunicacion", "F.4.xlsx"), skiprows = range(0,4))[17:44]
+        df22 = pd.read_excel(path.join(params["datasets"], "F_Tecnologia_de_la_Informacion_y_Comunicacion", "F.5.xlsx"), skiprows = range(0,4))[17:44]
+        df23 = pd.read_excel(path.join(params["datasets"], "F_Tecnologia_de_la_Informacion_y_Comunicacion", "F.6.xlsx"), skiprows = range(0,4))[17:44]
+        df24 = pd.read_excel(path.join(params["datasets"], "F_Tecnologia_de_la_Informacion_y_Comunicacion", "F.7.xlsx"), skiprows = range(0,4))[17:44]
         # Loading data from: public safety
-        df25 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.2.xlsx"), skiprows = (0,1,2))[3:28]
-        df26 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.4.xlsx"), skiprows = (0,1,2), usecols = "A,C:I")[3:30]
-        df27 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.7.xlsx"), skiprows = (0,1,2))[3:28]
-        df28 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.8.xlsx"), skiprows = (0,1,2))[3:28]
-        df29 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.9.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,D:G")[3:30]
-        df30 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.10.xlsx"), skiprows = (0,1,2))[4:29]
-        df31 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.11.xlsx"), skiprows = (0,1,2))[4:29]
-        df32 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.12.xlsx"), skiprows = (0,1,2,3,4))[3:28]
+        df25 = pd.read_excel(path.join(params["datasets"], "G_Seguridad_Ciudadana", "G.2.xlsx"), skiprows = (0,1,2))[3:28]
+        df26 = pd.read_excel(path.join(params["datasets"], "G_Seguridad_Ciudadana", "G.4.xlsx"), skiprows = (0,1,2), usecols = "A,C:I")[3:30]
+        df27 = pd.read_excel(path.join(params["datasets"], "G_Seguridad_Ciudadana", "G.7.xlsx"), skiprows = (0,1,2))[3:28]
+        df28 = pd.read_excel(path.join(params["datasets"], "G_Seguridad_Ciudadana", "G.8.xlsx"), skiprows = (0,1,2))[3:28]
+        df29 = pd.read_excel(path.join(params["datasets"], "G_Seguridad_Ciudadana", "G.9.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,D:G")[3:30]
+        df30 = pd.read_excel(path.join(params["datasets"], "G_Seguridad_Ciudadana", "G.10.xlsx"), skiprows = (0,1,2))[4:29]
+        df31 = pd.read_excel(path.join(params["datasets"], "G_Seguridad_Ciudadana", "G.11.xlsx"), skiprows = (0,1,2))[4:29]
+        df32 = pd.read_excel(path.join(params["datasets"], "G_Seguridad_Ciudadana", "G.12.xlsx"), skiprows = (0,1,2,3,4))[3:28]
 
         # Added new datasets
-        df33 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.19.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,J:U")[4:31]
-        df34 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.152.xls"), sheet_name = "19.13 (a)", skiprows = range(0,34))[2:27]
-        df35 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.155.xls"), skiprows = (0,1,2,3,4))[1:23]
+        df33 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.19.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,J:U")[4:31]
+        df34 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.152.xls"), sheet_name = "19.13 (a)", skiprows = range(0,34))[2:27]
+        df35 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.155.xls"), skiprows = (0,1,2,3,4))[1:23]
 
         # Special steps for some datasets: census survey migration data (20017-2017)
         df_3 = pd.DataFrame(columns = ["ubigeo", "inmigrantes", "emigrantes", "year"])
@@ -291,7 +291,7 @@ class inei_population_y_n_dep(EasyPipeline):
                     "n_denuncias_violencia_familiar_fisica", "n_denuncias_violencia_familiar_sicolo", "n_denuncias_robo_vehiculos", "enfer_diarreicas_5yrs",
                     "huespedes_nacionales", "huespedes_extranjeros", "visitantes_nacionales_museos_arqueologia", "visitantes_extranjeros_museos_arqueologia"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = inei_population_y_n_dep()

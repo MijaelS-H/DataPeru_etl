@@ -9,8 +9,8 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
         years_ = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018]
-        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.14.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9))
-        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.21.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9))
+        df1 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.14.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9))
+        df2 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.21.xlsx"), skiprows = (0,1,2,4,5,6,7,8,9))
 
         df1 = df1.reset_index(drop=True)
         df2 = df2.reset_index(drop=True)
@@ -71,7 +71,7 @@ class itp_indicators_y_n_nat_54(EasyPipeline):
         agg_step = AggregatorStep("itp_indicators_y_n_nat_54", measures=["pib_54_2007", "pib_54_cte"])
         load_step = LoadStep("itp_indicators_y_n_nat_54", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = itp_indicators_y_n_nat_54()

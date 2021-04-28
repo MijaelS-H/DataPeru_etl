@@ -16,10 +16,9 @@ class TransformStep(PipelineStep):
         data = pd.ExcelFile(
             os.path.join(
                 params["datasets"], 
-                '20201007', 
-                '03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))', 
-                '06 Encuesta Económica Anual  (EEA) (07-10-2020)',
-                '071020 EEA_Indicadores.xlsx'))
+                '03_Indicadores_estimados_DSE_Encuestas', 
+                '06_Encuesta_Economica_Anual_(EEA)',
+                'EEA_Indicadores.xlsx'))
 
         # sheet names
         geo = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
@@ -81,7 +80,7 @@ class EEAPipeline(EasyPipeline):
         load_step = LoadStep('inei_eea', db_connector, if_exists='drop', 
                              pk=['nation_id', 'industry_id', 'year'], dtype=dtype)
 
-        return [transform_step, replace_step, format_step, agg_step, load_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 def run_pipeline(params: dict):
     pp = EEAPipeline()

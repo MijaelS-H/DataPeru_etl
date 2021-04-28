@@ -8,9 +8,9 @@ from etl.consistency import AggregatorStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.95.xlsx"), skiprows = (0,1,2))[2:74]
-        df2 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.96.xlsx"), skiprows = (0,1,2,3))[2:83]
-        df3 = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.99.xlsx"), skiprows = (0,1,2,3))[2:40]
+        df1 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.95.xlsx"), skiprows = (0,1,2))[2:74]
+        df2 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.96.xlsx"), skiprows = (0,1,2,3))[2:83]
+        df3 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.99.xlsx"), skiprows = (0,1,2,3))[2:40]
 
         ciiu = pd.read_csv(path.join(params["datasets"],"anexos", "CIIU_yearly_production.tsv"), sep="\t")
 
@@ -68,7 +68,7 @@ class itp_indicators_y_n_prod_ciiu_group_pipeline(EasyPipeline):
         agg_step = AggregatorStep("itp_indicators_y_n_prod_ciiu_group", measures=["produccion_industrial_anual"])
         load_step = LoadStep("itp_indicators_y_n_prod_ciiu_group", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype, nullable_list=["produccion_industrial_anual"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = itp_indicators_y_n_prod_ciiu_group_pipeline()

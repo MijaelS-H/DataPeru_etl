@@ -9,7 +9,7 @@ from etl.consistency import AggregatorStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.153.xls"), skiprows = (0,1,2,3), usecols = "A,C,D,G,H,K,L,N,O")[0:108]
+        df = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.153.xls"), skiprows = (0,1,2,3), usecols = "A,C,D,G,H,K,L,N,O")[0:108]
         df.columns = ["categoria", "n_arribos_nacionales", "n_arribos_extranjeros", "n_pernoctaciones_nacionales", "n_pernoctaciones_extranjeros", "permanencia_prom_nacionales", "permanencia_prom_extranjeros", "tasa_ocupacion_hab", "tasa_ocupacion_camas"]
         df["categoria"] = df["categoria"].astype(str)
 
@@ -56,7 +56,7 @@ class itp_indicators_y_n_tourism_capacity_pipeline(EasyPipeline):
         agg_step = AggregatorStep("itp_indicators_y_n_tourism_capacity", measures=["n_arribos_nacionales", "n_arribos_extranjeros", "n_pernoctaciones_nacionales", "n_pernoctaciones_extranjeros", "permanencia_prom_nacionales", "permanencia_prom_extranjeros", "tasa_ocupacion_hab", "tasa_ocupacion_camas"])
         load_step = LoadStep("itp_indicators_y_n_tourism_capacity", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = itp_indicators_y_n_tourism_capacity_pipeline()

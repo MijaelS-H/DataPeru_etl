@@ -15,7 +15,7 @@ from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "04 PROYECTOS DE INVERSIÓN PÚBLICA", "TABLA_04_N02.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "04_PROYECTOS_DE_INVERSION_PUBLICA", "TABLA_04_N02.csv"))
 
         df['aspecto'] = df['aspecto'].str.strip()
 
@@ -59,7 +59,7 @@ class CiteAspectoPipeline(EasyPipeline):
         agg_step = AggregatorStep('itp_cite_clientes_aspecto', measures=['cantidad_cite'])
         load_step = LoadStep('itp_cite_clientes_aspecto', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 
 def run_pipeline(params: dict):

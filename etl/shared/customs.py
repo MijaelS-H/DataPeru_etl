@@ -13,7 +13,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Read customs file
-        df = pd.read_excel(path.join(params["datasets"],"anexos", "codigos_aduana.xls"), header=2)
+        df = pd.read_excel(path.join(params["datasets"], "anexos", "codigos_aduana.xls"), header=2)
         df.rename(columns={
             '    N°': 'aduana_id',
             '                      DESCRIPCIÓN': 'aduana'

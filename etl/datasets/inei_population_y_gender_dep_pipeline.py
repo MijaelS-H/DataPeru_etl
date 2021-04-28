@@ -16,7 +16,7 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame(columns = ["Unnamed: 0", "Hombre", "Mujer", "year"])
 
         # First reading step
-        xls = pd.ExcelFile(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.12.xls"))
+        xls = pd.ExcelFile(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.12.xls"))
 
         # For each sheet, adding year columns and corrections to dataframe
         for i in list(range(0,6)):
@@ -45,13 +45,13 @@ class TransformStep(PipelineStep):
         df["ubigeo"] = df["ubigeo"].astype("str").str.zfill(2)
 
         # Second reading step
-        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
-        df3 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
-        df4 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df5 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df6 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df7 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:41]
-        df8 = pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df2 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df3 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df4 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df5 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df6 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df7 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df8 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:41]
 
         for item in [df2, df3, df4, df5, df6 ,df7, df8]:
             item.rename(columns = {"Ámbito geográfico": "ubigeo"}, inplace = True)
@@ -128,7 +128,7 @@ class inei_population_y_gender_dep_Pipeline(EasyPipeline):
                     nullable_list=["pea_total_masculina", "pea_total_femenina", "pea_ocupada_masculina", "pea_ocupada_femenina",
                     "ingreso_promedio_mensual_soles_nom", "ingreso_promedio_m_mensual_soles_nom", "ingreso_promedio_f_mensual_soles_nom"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = inei_population_y_gender_dep_Pipeline()

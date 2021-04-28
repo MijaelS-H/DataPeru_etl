@@ -12,7 +12,7 @@ ids_dict = {"area_residencia": 1, "region_natural": 2, "dominio_region": 3, "urb
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.3.xlsx"), skiprows = (0,1,2), usecols = "A:K")[6:20]
+        df = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.3.xlsx"), skiprows = (0,1,2), usecols = "A:K")[6:20]
 
         df.rename(columns={"Ámbito geográfico": "sub_ambito_geografico"}, inplace = True )
 
@@ -57,7 +57,7 @@ class inei_population_y_nat_nbi(EasyPipeline):
         agg_step = AggregatorStep("inei_population_y_nat_nbi", measures=["at_less_1_nbi_perc"])
         load_step = LoadStep("inei_population_y_nat_nbi", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = inei_population_y_nat_nbi()

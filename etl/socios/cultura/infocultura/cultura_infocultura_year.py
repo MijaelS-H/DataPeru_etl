@@ -344,7 +344,7 @@ class InfoculturaYearPipeline(EasyPipeline):
         load_step = LoadStep('cultura_infocultura_year', db_connector, if_exists='drop', 
                             pk=['department_id'], dtype=dtype, nullable_list = ['subcategory_id', 'response'])
 
-        return [transform_step, replace_step, format_step, agg_step, load_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 
 def run_pipeline(params: dict):

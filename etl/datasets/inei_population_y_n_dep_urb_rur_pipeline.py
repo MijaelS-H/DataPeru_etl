@@ -15,10 +15,10 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Data load
-        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.4.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
-        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.5.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
-        df3 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.43.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Rural
-        df4 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.42.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Urbano
+        df1 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.4.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
+        df2 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.5.xls"), usecols = "A:H", skiprows = range(0,7), header = None)[0:25]
+        df3 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.43.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Rural
+        df4 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.42.xlsx"), skiprows = (0,1,2,3,5,6,7))[0:26] # Urbano
 
         # Renaming columns from datasets
         df1.columns = header_pop
@@ -85,7 +85,7 @@ class inei_population_y_n_dep_urb_rur_pipeline(EasyPipeline):
         agg_step = AggregatorStep("inei_population_y_n_dep_urb_rur", measures=["poblacion"])
         load_step = LoadStep("inei_population_y_n_dep_urb_rur", db_connector, if_exists="drop", pk=["ubigeo"], dtype=dtype, nullable_list=["poblacion"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = inei_population_y_n_dep_urb_rur_pipeline()

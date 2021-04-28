@@ -22,7 +22,7 @@ class TransformStep(PipelineStep):
         # | Unnamed: 0 | Unnamed: 1 | Unnamed: 2 | Unnamed: 3 | Unnamed: 4 | Unnamed: 5 | Unnamed: 6 | Unnamed: 7 | Unnamed: 8 | Unnamed: 9 | Unnamed: 10 | Unnamed: 11 | Unnamed: 12 |	Unnamed: 13 | Unnamed: 14 | Unnamed: 15 | Unnamed: 16 | Unnamed: 17 | Unnamed: 18 | Unnamed: 19 |
         # Dada la estructura del archivo, no existe una columna única que permita establecer un header válido para el presente archivo, por lo que todas las columnas poseen un nombre undefinido.
             
-        df = pd.read_excel(path.join(params["datasets"], "20200318", "A. Economía", "A.72.xlsx"), header=8)
+        df = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.72.xlsx"), header=8)
 
         # Definición de diccionario.
         # Dada la estructura del archivo base presentado, se establece un diccionario que permitirá renombrar las columnas presentes en el DataFrame con el objetivo de facilitar su comprensión.

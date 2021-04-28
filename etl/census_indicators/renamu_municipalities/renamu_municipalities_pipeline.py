@@ -1,4 +1,5 @@
 import os
+import glob
 import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
@@ -13,9 +14,9 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         path = os.path.join(
             params["datasets"],
-            "20201001",
-            "02. Información Censos (01-10-2020)",
-            "01 RENAMU - MUNICIPALIDADES",
+            "02_Informacion_Censos",
+            "01_RENAMU_MUNICIPALIDADES",
+            "*"
         )
 
         # Open all RENAMU files and creates a DataFrame
@@ -23,14 +24,14 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame()
         renamu_versions = {}
 
-        for folder in os.listdir(path):
+        for folder in glob.glob(path):
             if int(folder[-4:]) <= 2019:
                 print('Current year: {}'.format(int(folder[-4:])))
                 _df = pd.DataFrame()
-                for subfolder in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder))):
-                    for filename in os.listdir(os.path.join('{}'.format(path), '{}'.format(folder),'{}'.format(subfolder))):
+                for subfolder in glob.glob(os.path.join(folder, '*')):
+                    for filename in glob.glob(os.path.join(subfolder, '*')):
                         if filename.endswith('.sav') and filename not in ['C115.sav', 'C116.sav']:
-                            temp = pd.read_spss(os.path.join('{}'.format(path), '{}'.format(folder),'{}'.format(subfolder), '{}'.format(filename)))
+                            temp = pd.read_spss(filename)
                             temp = temp.replace('', np.nan).dropna(how='all')
                             temp.rename(
                                 columns = {
@@ -1160,7 +1161,7 @@ class RENAMUPipeline(EasyPipeline):
                                 'RENAMU_172', 'RENAMU_173', 'RENAMU_174', 'RENAMU_175', 'RENAMU_176', 'RENAMU_177', 'RENAMU_178', 'RENAMU_179', 'RENAMU_180', 'RENAMU_181', 
                                 'RENAMU_182', 'RENAMU_183', 'RENAMU_184', 'RENAMU_185', 'RENAMU_186', 'RENAMU_187', 'RENAMU_188', 'RENAMU_189', 'RENAMU_190'])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 
 def run_pipeline(params: dict):

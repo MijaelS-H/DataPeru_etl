@@ -8,38 +8,38 @@ from etl.consistency import AggregatorStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 =  pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.24.xlsx"), skiprows = (0,1,2,4,17,18), usecols = "A:I")
-        df2 =  pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.165.xlsx"), skiprows = (0,1,2,3,5,6,7), usecols = "A:K")[0:19]
-        df3 =  pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.175.xlsx"), skiprows = (0,1,2,3,5,6,7,8), usecols = "A:G")[0:36]
-        df4 =  pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.186.xlsx"), skiprows = (0,1,2), usecols = "A:R")[0:17]
-        df5 =  pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.1.xls"), skiprows = (0,1,2,3,4,6,7), usecols = "A:F")[0:8]
-        df6 =  pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.13.xlsx"), skiprows = (0,1,2,4,5), usecols = "A:M")[0:41]
-        df7 =  pd.read_excel(path.join(params["datasets"],"20200318", "C. Empleo", "C.14.xlsx"), skiprows = (0,1,2,3), usecols = "A:M")[3:5]
-        df8 =  pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.5.xlsx"), skiprows = (0,1), usecols = "A:K")[3:12]
-        df9 =  pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.6.xlsx"), skiprows = (0,1,2,4,6), usecols = "A:K")[0:7]
-        df10 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.36.xlsx"), skiprows = range(0,7), usecols = "A:D")[0:25]
-        df11 = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.57.xlsx"), skiprows = (0,1,2,3,5,6,7,8,9), usecols = "A:O")[0:32]
-        df12 = pd.read_excel(path.join(params["datasets"],"20200318", "E. Medio Ambiente", "E.39.xlsx"), skiprows = (0,1,2), usecols = "A:B")[0:21]
-        df13 = pd.read_excel(path.join(params["datasets"],"20200318", "G. Seguridad Ciudadana", "G.3.xlsx"), skiprows = (0,1,2,3,4,6,7,8,9), usecols = "A,C:I")[0:20]
-        df14 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.182.xlsx"), skiprows = (0,1,2,3), usecols = "A,E:J,M,N")[8:20]
-        df15 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.164.xlsx"), skiprows = (0,1,2,3,5,6), usecols = "A,I:L,T:W")[0:8]
+        df1 =  pd.read_excel(path.join(params["datasets"], "A_Economia", "A.24.xlsx"), skiprows = (0,1,2,4,17,18), usecols = "A:I")
+        df2 =  pd.read_excel(path.join(params["datasets"], "A_Economia", "A.165.xlsx"), skiprows = (0,1,2,3,5,6,7), usecols = "A:K")[0:19]
+        df3 =  pd.read_excel(path.join(params["datasets"], "A_Economia", "A.175.xlsx"), skiprows = (0,1,2,3,5,6,7,8), usecols = "A:G")[0:36]
+        df4 =  pd.read_excel(path.join(params["datasets"], "A_Economia", "A.186.xlsx"), skiprows = (0,1,2), usecols = "A:R")[0:17]
+        df5 =  pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.1.xls"), skiprows = (0,1,2,3,4,6,7), usecols = "A:F")[0:8]
+        df6 =  pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.13.xlsx"), skiprows = (0,1,2,4,5), usecols = "A:M")[0:41]
+        df7 =  pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.14.xlsx"), skiprows = (0,1,2,3), usecols = "A:M")[3:5]
+        df8 =  pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.5.xlsx"), skiprows = (0,1), usecols = "A:K")[3:12]
+        df9 =  pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.6.xlsx"), skiprows = (0,1,2,4,6), usecols = "A:K")[0:7]
+        df10 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.36.xlsx"), skiprows = range(0,7), usecols = "A:D")[0:25]
+        df11 = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.57.xlsx"), skiprows = (0,1,2,3,5,6,7,8,9), usecols = "A:O")[0:32]
+        df12 = pd.read_excel(path.join(params["datasets"], "E_Medio_Ambiente", "E.39.xlsx"), skiprows = (0,1,2), usecols = "A:B")[0:21]
+        df13 = pd.read_excel(path.join(params["datasets"], "G_Seguridad_Ciudadana", "G.3.xlsx"), skiprows = (0,1,2,3,4,6,7,8,9), usecols = "A,C:I")[0:20]
+        df14 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.182.xlsx"), skiprows = (0,1,2,3), usecols = "A,E:J,M,N")[8:20]
+        df15 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.164.xlsx"), skiprows = (0,1,2,3,5,6), usecols = "A,I:L,T:W")[0:8]
 
-        df16 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.71.xlsx"), skiprows = range(0,7), usecols = "A:D,F:H,L,M")[11:23]
-        df17 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.72.xlsx"), skiprows = range(0,8), usecols = "A,G:J,M,N,Q:S")[12:24]
-        df18 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.74.xlsx"), skiprows = (0,1,2,4,5,6), usecols = "A,I:T")[0:50]
-        df19 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.75.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,J:U")[2:13]
-        df20 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.76.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,K:V")[2:10]
-        df21 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.77.xlsx"), skiprows = (0,1,2,3), usecols = "A,K:V")[2:12]
-        df22 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.80.xlsx"), skiprows = (0,1,2,3), usecols = "A,J:U")[1:14]
+        df16 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.71.xlsx"), skiprows = range(0,7), usecols = "A:D,F:H,L,M")[11:23]
+        df17 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.72.xlsx"), skiprows = range(0,8), usecols = "A,G:J,M,N,Q:S")[12:24]
+        df18 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.74.xlsx"), skiprows = (0,1,2,4,5,6), usecols = "A,I:T")[0:50]
+        df19 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.75.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,J:U")[2:13]
+        df20 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.76.xlsx"), skiprows = (0,1,2,3,4), usecols = "A,K:V")[2:10]
+        df21 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.77.xlsx"), skiprows = (0,1,2,3), usecols = "A,K:V")[2:12]
+        df22 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.80.xlsx"), skiprows = (0,1,2,3), usecols = "A,J:U")[1:14]
 
-        df23 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.146.xls"), skiprows = range(0,6), usecols = "A:C,E,F,H,I")[14:26]
-        df24 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.148.xls"), skiprows = (0,1), usecols = "A,F:Q")[1:4]
-        df25 = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.151.xls"), skiprows = (0,1,2,3), usecols = "A,D:O")[3:14]
+        df23 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.146.xls"), skiprows = range(0,6), usecols = "A:C,E,F,H,I")[14:26]
+        df24 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.148.xls"), skiprows = (0,1), usecols = "A,F:Q")[1:4]
+        df25 = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.151.xls"), skiprows = (0,1,2,3), usecols = "A,D:O")[3:14]
 
         df1 = df1.reset_index(drop=True)
         df2 = df2.reset_index(drop=True)
 
-        # Starts transforming step for each table, given thepath.join(params["datasets"],"20200318"      # df1
+        # Starts transforming step for each table, given thepath.join(params["datasets"]     # df1
         df1.rename(columns= {"Años": "year", "Producto Bruto Interno ": "producto_interno_bruto_mill_n_soles", "Remune-\nraciones": "remuneraciones_mill_n_soles", "Derechos \nde \nImportación": "derechos_importacion_mill_n_soles", "Impuestos \na los \nProductos": "impuestos_productos_mill_n_soles", "Otros Impuestos": "otros_impuestos_mill_n_soles", " Ingreso de explotación": "ingreso_explotacion_mill_n_soles", " Excedente de explotación bruto": "excedente_explotacion_bruto_mill_n_soles", " Ingreso mixto": "ingreso_mixto_mill_n_soles"}, inplace = True)
         df1["year"].replace({"2016P/": 2016, "2017P/": 2017, "2018E/": 2018}, inplace = True)
 
@@ -594,7 +594,7 @@ class itp_indicators_y_n_nat_pipeline(EasyPipeline):
 
             ])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = itp_indicators_y_n_nat_pipeline()

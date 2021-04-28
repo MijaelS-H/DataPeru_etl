@@ -12,7 +12,7 @@ from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import grab_connector
 from etl.consistency import AggregatorStep
 
-CARPETAS_DICT = {1: "01 INFORMACIÓN INSTITUCIONAL", 2: "02 CLIENTES ATENDIDOS", 3: "03 SERVICIOS BRINDADOS", 4: "04 PROYECTOS DE INVERSIÓN PÚBLICA", 5: "05 EJECUCIÓN PRESUPUESTAL", 6: "06 RECURSOS HUMANOS", 7: "07 PARTIDAS ARANCELARIAS"}
+CARPETAS_DICT = {1: "01_INFORMACION_INSTITUCIONAL", 2: "02_CLIENTES_ATENDIDOS", 3: "03_SERVICIOS_BRINDADOS", 4: "04_PROYECTOS_DE_INVERSION_PUBLICA", 5: "05_EJECUCION_PRESUPUESTAL", 6: "06_RECURSOS_HUMANOS", 7: "07_PARTIDAS_ARANCELARIAS"}
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
         df = {}
         for i in range(2,2 +1):
             for j in range(4, 4 + 1 ):
-                file_dir = path.join(params["datasets"], "20201001", "01. Información ITP red CITE  (01-10-2020)", "{}".format(CARPETAS_DICT[i]),"TABLA_0{}_N0{}.csv".format(i,j))
+                file_dir = path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "{}".format(CARPETAS_DICT[i]),"TABLA_0{}_N0{}.csv".format(i,j))
                 df = pd.read_csv(file_dir)
                 k = k + 1
 
@@ -53,7 +53,7 @@ class CiteEmpresas2Pipeline(EasyPipeline):
         agg_step = AggregatorStep('itp_cite_empresas_ciiu_agg', measures=['empresas'])
         load_step = LoadStep('itp_cite_empresas_ciiu_agg', connector=db_connector, if_exists='drop', pk=['class_id'], dtype=dtypes, nullable_list=['empresas'])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 
 def run_pipeline(params: dict):

@@ -27,8 +27,8 @@ class TransformStep(PipelineStep):
         df = pd.DataFrame(columns = ["year", "continente", "inmigration_flow", "hombre", "mujer"])
 
         # Loading data
-        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda","B.25.xls"), skiprows = (0,1,3,4,5))[0:31]
-        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda","B.26.xls"), skiprows = (0,1,3,4,5))[0:31]
+        df1 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda","B.25.xls"), skiprows = (0,1,3,4,5))[0:31]
+        df2 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda","B.26.xls"), skiprows = (0,1,3,4,5))[0:31]
 
         # Transpose dataframes and deleting NaN columns
         df_1 = df1.T
@@ -92,7 +92,7 @@ class inei_population_y_gender_nat_travel_Pipeline(EasyPipeline):
         agg_step = AggregatorStep("inei_population_y_gender_nat_travel", measures=["poblacion"])
         load_step = LoadStep("inei_population_y_gender_nat_travel", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = inei_population_y_gender_nat_travel_Pipeline()

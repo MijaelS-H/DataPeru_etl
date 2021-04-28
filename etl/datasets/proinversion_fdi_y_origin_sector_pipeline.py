@@ -28,7 +28,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Loading data
-        df = pd.read_excel(path.join(params["datasets"],"20200318", "A. Economía", "A.187.xlsx"), skiprows = (0,1,2,4))[0:15]
+        df = pd.read_excel(path.join(params["datasets"], "A_Economia", "A.187.xlsx"), skiprows = (0,1,2,4))[0:15]
 
         df.dropna(axis=1, how="all", inplace = True)
 
@@ -68,7 +68,7 @@ class proinversion_fdi_y_origin_sector_pipeline(EasyPipeline):
         agg_step = AggregatorStep("proinversion_fdi_y_origin_sector", measures=["ied_millones_USD"])
         load_step = LoadStep("proinversion_fdi_y_origin_sector", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = proinversion_fdi_y_origin_sector_pipeline()

@@ -13,7 +13,7 @@ depto_dict = {"Amazonas": 1, "Áncash": 2, "Apurímac": 3, "Arequipa": 4, "Ayacu
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df = pd.read_excel(path.join(params["datasets"],"20200318", "D. Sociales", "D.56.xlsx"), skiprows = range(0,6), usecols = "A:N")[3:37]
+        df = pd.read_excel(path.join(params["datasets"], "D_Sociales", "D.56.xlsx"), skiprows = range(0,6), usecols = "A:N")[3:37]
 
         df.drop(df.loc[df["Ámbito geográfico"].str.contains("Provincia ")].index, inplace=True)
 
@@ -73,7 +73,7 @@ class inei_population_y_n_illiteracy(EasyPipeline):
         load_step = LoadStep("inei_population_y_n_illiteracy", db_connector, if_exists="drop", pk=["id"], dtype=dtype,
                             nullable_list = ["ubigeo", "ambito_geografico", "sub_ambito_geografico"])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = inei_population_y_n_illiteracy()

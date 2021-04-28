@@ -14,7 +14,7 @@ from bamboo_lib.helpers import grab_connector
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_excel(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "07 PARTIDAS ARANCELARIAS", "TABLA_07_N01.xlsx"))
+        df = pd.read_excel(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "07_PARTIDAS_ARANCELARIAS", "TABLA_07_N01.xlsx"))
 
         df = df[df['cadena_productiva'].notna()]
 

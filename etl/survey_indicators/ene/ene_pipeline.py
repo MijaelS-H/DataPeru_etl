@@ -14,14 +14,14 @@ from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        data = pd.ExcelFile(os.path.join(params['datasets'], '20201007', '03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))', '05 Encuestas Nacional de Empresas (ENE) (07-10-2020)', '071020 ENE_Indicadores.xlsx'))
+        data = pd.ExcelFile(os.path.join(params['datasets'], '03_Indicadores_estimados_DSE_Encuestas', '05_Encuestas_Nacional_de_Empresas_(ENE)', 'ENE_Indicadores.xlsx'))
 
         # sheet names
         geo = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
         industry = [x for x in data.sheet_names if re.findall('IND_.*_B', x) != []]
 
-        df = join_files(data, geo, 'nivel_desagregación', 'nation_id')
-        df = df.append(join_files(data, industry, 'nivel_desagregación', 'industry_id'), sort=False)
+        df = join_files(data, geo, 'nivel de desagregación', 'nation_id')
+        df = df.append(join_files(data, industry, 'nivel de desagregación', 'industry_id'), sort=False)
 
         # pre-processing
         for text_exception in [['ù', 'ú'], ['è', 'é'], ['.', '' ]]:
@@ -79,7 +79,7 @@ class ENEPipeline(EasyPipeline):
                              pk=['nation_id', 'industry_id', 'year'], dtype=dtype,
                              nullable_list=['coef_var'])
 
-        return [transform_step, replace_step, format_step, agg_step, load_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 def run_pipeline(params: dict):
     pp = ENEPipeline()

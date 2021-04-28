@@ -13,8 +13,8 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_excel(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "07 PARTIDAS ARANCELARIAS", "TABLA_07_N01.xlsx"))
-        df2 = pd.read_excel(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "07 PARTIDAS ARANCELARIAS", "TABLA_08_N01 (18-10-2020).xlsx"))
+        df = pd.read_excel(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "07_PARTIDAS_ARANCELARIAS", "TABLA_07_N01.xlsx"))
+        df2 = pd.read_excel(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "07_PARTIDAS_ARANCELARIAS", "TABLA_08_N01.xlsx"))
 
         df = df[df['cadena_productiva'].notna()]
         df['hs6_id'] = df['partida_arancelaria'].astype(str).str[:-6].str.zfill(6)

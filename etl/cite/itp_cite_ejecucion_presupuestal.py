@@ -17,7 +17,7 @@ MONTHS_DICT = {'mes_01' :'1',  'mes_02' :'2',  'mes_03' :'3',  'mes_04' :'4', 'm
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"], "20201001", "01. Información ITP red CITE  (01-10-2020)", "05 EJECUCIÓN PRESUPUESTAL", "TABLA_05_N02.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "05_EJECUCION_PRESUPUESTAL", "TABLA_05_N02.csv"))
 
         ## rows 78 and foward are only ",,,,,,"
         df = df[0:77]
@@ -61,7 +61,7 @@ class CitePimPipeline(EasyPipeline):
         agg_step = AggregatorStep('itp_cite_ejecucion_presupuestal', measures=['ejecucion_presupuestal'])
         load_step = LoadStep('itp_cite_ejecucion_presupuestal', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['ejecucion_presupuestal'])
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = CitePimPipeline()

@@ -12,7 +12,7 @@ from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        data = pd.ExcelFile(os.path.join(params['datasets'], '20201007', '03. Indicadores estimados DSE - Encuestas (06-10-2020-07-10-2020))', '02 Encuesta Nacional de Innovación en las Empresas Manufactureras (06-10-2020)', '061020 ENIMA_Indicadores.xlsx'))
+        data = pd.ExcelFile(os.path.join(params['datasets'], '03_Indicadores_estimados_DSE_Encuestas', '02_Encuesta_Nacional_de_Innovacion_en_las_Empresas_Manufactureras', 'ENIMA_Indicadores.xlsx'))
 
         # sheet names
         geo = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
@@ -79,7 +79,7 @@ class ENIMAPipeline(EasyPipeline):
                              pk=['nation_id', 'industry_id', 'year_start', 'year_end'], dtype=dtype,
                              nullable_list=['coef_var'])
 
-        return [transform_step, replace_step, format_step, agg_step, load_step]
+        return [transform_step, replace_step, format_step, load_step]
 
 def run_pipeline(params: dict):
     pp = ENIMAPipeline()

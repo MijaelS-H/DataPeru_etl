@@ -14,7 +14,7 @@ from bamboo_lib.steps import DownloadStep, LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        # Array de combinaciones de datos existentes en archivo de Variables Framework "A. Economía/A.72.xlsx".
+        # Array de combinaciones de datos existentes en archivo de Variables Framework "A_Economia/A.72.xlsx".
         # Cada elemento corresponde a la combinación entre el tipo de pesca, tipo de consumo y tipo de utilización reportada.
         # Dada la estructura del libro de datos, la forma más factible de construir una tabla de dimensiones es a través de un array de datos inicial.
         # En caso de necesitar agregar más columnas, insertar en array siguiente una fila de datos con la estructura siguiente:

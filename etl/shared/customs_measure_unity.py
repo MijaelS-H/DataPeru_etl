@@ -24,7 +24,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Read Customs unities file
-        df = pd.read_csv(path.join(params["datasets"],"anexos", "UnidMedida.txt"),  sep='\t')
+        df = pd.read_csv(path.join(params["datasets"], "anexos", "UnidMedida.txt"),  sep='\t')
 
         # Rename file columns
         df = df.reset_index()

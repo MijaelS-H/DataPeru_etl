@@ -29,8 +29,8 @@ age_dict = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.10.xlsx"), skiprows = (0,1,2,3))[20:57]
-        df2 = pd.read_excel(path.join(params["datasets"],"20200318", "B. Población y Vivienda", "B.11.xlsx"), skiprows = (0,1,2,3))[20:57]
+        df1 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.10.xlsx"), skiprows = (0,1,2,3))[20:57]
+        df2 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.11.xlsx"), skiprows = (0,1,2,3))[20:57]
 
         # Creating datasets by selecting specific columns related to gender, for both datasets, adding migration flow
         for item in [df1, df2]:
@@ -85,7 +85,7 @@ class inei_population_y_n_gender_age_urb_rur_pipeline(EasyPipeline):
         agg_step = AggregatorStep("inei_population_y_n_gender_age_urb_rur", measures=["poblacion"])
         load_step = LoadStep("inei_population_y_n_gender_age_urb_rur", db_connector, if_exists="drop", pk=["nation_id"], dtype=dtype)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 def run_pipeline(params: dict):
     pp = inei_population_y_n_gender_age_urb_rur_pipeline()

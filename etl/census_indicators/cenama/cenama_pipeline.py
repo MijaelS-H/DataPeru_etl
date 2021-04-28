@@ -23,10 +23,10 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         #read modules
         list_name = [
-            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "03 CENSO NACIONAL DE MERCADOS DE ABASTO", "03 MÓDULO 1118_ Características del Mercado", "Capítulo_IV_NACIONAL.dta"),
-            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "03 CENSO NACIONAL DE MERCADOS DE ABASTO", "04 MÓDULO 1119_ Infraestructura, Instalaciones, Equipamiento y Otros", "Capítulo_V_NACIONAL.sav"),
-            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "03 CENSO NACIONAL DE MERCADOS DE ABASTO", "05 MÓDULO 1120_ Gestión Administrativa y Financiera", "Capítulo_VI_NACIONAL.sav"),
-            path.join(params["datasets"], "20201001", "02. Información Censos (01-10-2020)", "03 CENSO NACIONAL DE MERCADOS DE ABASTO", "01 MÓDULO 1116_ Localización del Mercado", "Capítulo_I_NACIONAL.sav"),
+            path.join(params["datasets"], "02_Informacion_Censos", "03_CENSO_NACIONAL_DE_MERCADOS_DE_ABASTO", "03_MODULO_1118_Caracteristicas_del_Mercado", "Capitulo_IV_NACIONAL.dta"),
+            path.join(params["datasets"], "02_Informacion_Censos", "03_CENSO_NACIONAL_DE_MERCADOS_DE_ABASTO", "04_MODULO_1119_Infraestructura_Instalaciones_Equipamiento_y_Otros", "Capitulo_V_NACIONAL.sav"),
+            path.join(params["datasets"], "02_Informacion_Censos", "03_CENSO_NACIONAL_DE_MERCADOS_DE_ABASTO", "05_MODULO_1120_Gestion_Administrativa_y_Financiera", "Capitulo_VI_NACIONAL.sav"),
+            path.join(params["datasets"], "02_Informacion_Censos", "03_CENSO_NACIONAL_DE_MERCADOS_DE_ABASTO", "01_MODULO_1116_Localizacion_del_Mercado", "Capitulo_I_NACIONAL.sav"),
         ]
 
         df = [pd.read_spss(x) if x != list_name[0] else pd.read_stata(x) for x in list_name]
@@ -166,7 +166,7 @@ class CENAMAPipeline(EasyPipeline):
                                  'nation_id', 'market_id', 'year'], dtype=DTYPE,
                              nullable_list=LIST_NULL)
 
-        return [transform_step, agg_step, load_step]
+        return [transform_step, load_step]
 
 
 def run_pipeline(params: dict):

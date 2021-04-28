@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
+import glob
 from os import path
 from functools import reduce
 from unidecode import unidecode
@@ -20,20 +21,20 @@ class TransformStep(PipelineStep):
         k = 1
         df = {}
         for i in range(1,1 +1):
-            _a,_b,files = next(os.walk(path.join(params["datasets"],"20201001", "01. Información ITP red CITE  (01-10-2020)", "01 INFORMACIÓN INSTITUCIONAL")))
-            file_count = len(files)
 
-            for j in range(1, file_count + 1 ):
-                file_dir = path.join(params["datasets"], "20201001", "01. Información ITP red CITE  (01-10-2020)", "01 INFORMACIÓN INSTITUCIONAL","TABLA_01_N0{}.csv".format(j))
-                df[k] = pd.read_csv(file_dir)
-                k = k + 1
+            file_list = glob.glob(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "01_INFORMACION_INSTITUCIONAL", '*'))
 
-        df_list = [df[i] for i in range(1, file_count + 1)]
-        df = reduce(lambda df1,df2: pd.merge(df1,df2,on=['cite'],how='outer'), df_list)
+            for item in file_list:
+                df[k] = pd.read_csv(item)
+                k += 1
+
+        df_list = [df[i] for i in range(1, len(file_list) + 1)]
+
+        df = reduce(lambda df1, df2: pd.merge(df1, df2, on=['cite'], how='outer'), df_list)
         
         df = df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_x', 
-            'fecha', 'lista_miembros', 'resolucion_mod','fecha_mod', 'nota', 'ambito', 'resolucion_y', 'resolucion_calificacion', 
-            'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip','cadena_resolucion','cadena_privados', 
+            'fecha', 'lista_miembros', 'resolucion_mod', 'fecha_mod', 'nota', 'ambito', 'resolucion_y', 'resolucion_calificacion', 
+            'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip', 'cadena_resolucion', 'cadena_privados', 
             'ubigeo', 'direccion', 'latitud', 'longitud', 'descriptivo']]
 
         df['tipo'] = df['tipo'].replace(TIPO_CITE_DICT)
@@ -119,7 +120,7 @@ class CiteInfoPipeline(EasyPipeline):
         load_step = LoadStep('dim_shared_cite', connector=db_connector, if_exists='drop', pk=['cite_id'], dtype=dtypes, nullable_list=['estado', 'patrocinador',
         'resolucion_director', 'fecha_director', 'lista_miembros', 'resolucion_mod', 'fecha_mod', 'nota', 'resolucion_ambito', 'resolucion_calificacion',
         'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip', 'cadena_resolucion', 'cadena_privados', 'direccion', 'latitud',
-        'longitud'])
+        'longitud', 'director', 'ambito', 'descriptivo'])
 
         return [transform_step, format_step, load_step]
 
