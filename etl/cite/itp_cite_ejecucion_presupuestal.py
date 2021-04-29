@@ -19,8 +19,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "05_EJECUCION_PRESUPUESTAL", "TABLA_05_N02.csv"))
 
-        ## rows 78 and foward are only ",,,,,,"
-        df = df[0:77]
+        df = df.dropna(how='all')
 
         df = df.drop(columns=['fuente','fecha'])
         df = pd.melt(df, id_vars=['cite','anio'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
