@@ -21,7 +21,7 @@ class TransformStep(PipelineStep):
         empresas_list = list(df["tipo"].unique())
         empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(1, len(empresas_list) +1)))}
 
-        df = pd.melt(df, id_vars=['anio','tipo'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
+        df = pd.melt(df, id_vars=['anio','tipo','fecha'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
                'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
                'mes_12'])
         df = df.rename(columns={'variable':'month_id','anio':'year','value':'empresas','tipo':'empresa_tipo'})
@@ -33,7 +33,11 @@ class TransformStep(PipelineStep):
 
         df[['time','empresa_id']] = df[['time','empresa_id']].astype(int)
         df[['empresas']] = df[['empresas']].astype(float)
-        df = df[['time','empresa_id','empresas']]
+
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
+
+        df = df[['time','empresa_id','empresas', 'fecha_actualizacion']]
 
         return df
 
@@ -49,7 +53,8 @@ class CiteEmpresasPipeline(EasyPipeline):
         dtypes = {
             'empresa_id':            'UInt8',
             'time':                  'UInt32',
-            'empresas':              'Float32'
+            'empresas':              'Float32',
+            'fecha_actualizacion':   'UInt32'
         }
 
         transform_step = TransformStep()

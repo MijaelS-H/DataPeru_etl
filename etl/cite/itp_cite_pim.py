@@ -17,7 +17,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "05_EJECUCION_PRESUPUESTAL", "TABLA_05_N01.csv"))
 
-        df = df[['cite','anio','pim']]
+        df = df[['cite','anio','pim','fecha']].copy()
         
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
@@ -27,7 +27,10 @@ class TransformStep(PipelineStep):
         
         df['pim'] = df['pim'].replace(',','', regex=True).astype(float)
 
-        df = df[['cite_id','anio','pim']]
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
+
+        df = df[['cite_id','anio','pim','fecha_actualizacion']]
         
         return df
 
@@ -43,7 +46,8 @@ class CitePimPipeline(EasyPipeline):
         dtypes = {
             'cite_id':              'UInt8',
             'anio':                 'UInt16',
-            'pim':                  'Float32'
+            'pim':                  'Float32',
+            'fecha_actualizacion':  'UInt32'
         }
 
         transform_step = TransformStep(connector=db_connector)

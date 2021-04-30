@@ -30,7 +30,10 @@ class TransformStep(PipelineStep):
         df['inversion'] = df['inversion'].replace(',','', regex=True).astype(float)
         df['ejecucion'] = df['ejecucion'].replace(',','', regex=True).astype(float)
 
-        df = df[['cite_id', 'componente_id', 'inversion', 'ejecucion']]
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
+
+        df = df[['cite_id', 'componente_id', 'inversion', 'ejecucion', 'fecha_actualizacion']]
 
         return df
 
@@ -47,7 +50,8 @@ class CiteEjecucionPipeline(EasyPipeline):
             'cite_id':                 'UInt8',
             'componente_id':           'UInt8',
             'inversion':               'Float32',
-            'ejecucion':               'Float32'
+            'ejecucion':               'Float32',
+            'fecha_actualizacion':     'UInt32'
         }
 
         transform_step = TransformStep(connector=db_connector)

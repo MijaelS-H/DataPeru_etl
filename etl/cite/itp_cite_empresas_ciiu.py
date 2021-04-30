@@ -20,15 +20,22 @@ class TransformStep(PipelineStep):
         
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)
+
         df = df.merge(dim_cite, on="cite")
         
-        df = df[['cite_id','cod_ciiu','anio','empresas']]
+        df = df[['cite_id','cod_ciiu','anio','empresas','fecha']]
 
         df = df.rename(columns={'cod_ciiu' :'class_id'})
 
         df['anio'] = df['anio'].astype(int)
         df['empresas'] = df['empresas'].astype(float)
-        df['class_id'] = df['class_id'].str[:-1].replace({"No determinado" : "0000"}).astype(str)
+        
+        df['class_id'] = df['class_id'].replace({"NO DETERMINADO" : "00000"})
+
+        df['class_id'] = df['class_id'].str[:-1].astype(str)
+
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
 
         return df
 
@@ -45,7 +52,8 @@ class CiteEmpresas2Pipeline(EasyPipeline):
             'cite_id':               'UInt8',
             'class_id':              'String',
             'anio':                  'UInt16',
-            'empresas':              'Float32'
+            'empresas':              'Float32',
+            'fecha_actualizacion':   'UInt32'
          }
 
         transform_step = TransformStep(connector=db_connector)

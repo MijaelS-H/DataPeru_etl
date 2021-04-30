@@ -22,10 +22,13 @@ class TransformStep(PipelineStep):
         dim_contribuyente = query_to_df(self.connector, raw_query=dim_contribuyente_query)
         df = df.merge(dim_contribuyente, on="contribuyente")
         
-        df = df[['contribuyente_id', 'anio', 'empresas']]
+        df = df[['contribuyente_id', 'anio', 'empresas', 'fecha']].copy()
 
         df['anio'] = df['anio'].astype(int)
-        df['empresas'] = df['empresas'].astype(float) 
+        df['empresas'] = df['empresas'].astype(float)
+
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
 
         return df
 
@@ -42,6 +45,7 @@ class CiteContribuyentePipelineAgg(EasyPipeline):
             'contribuyente_id':       'UInt8',
             'anio':                   'UInt16',
             'empresas':               'Float32',
+            'fecha_actualizacion':    'UInt32'
         }
 
         transform_step = TransformStep(connector=db_connector)

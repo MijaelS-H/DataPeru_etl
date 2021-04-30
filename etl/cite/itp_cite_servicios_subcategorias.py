@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "03_SERVICIOS_BRINDADOS", "TABLA_03_N01.csv"))
 
-        df = pd.melt(df, id_vars=['cite','anio','subcategoria'], value_vars=['mes_01','mes_02', 'mes_03', 'mes_04',
+        df = pd.melt(df, id_vars=['cite','anio','subcategoria','fecha'], value_vars=['mes_01','mes_02', 'mes_03', 'mes_04',
                 'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
                 'mes_12'])
 
@@ -41,7 +41,10 @@ class TransformStep(PipelineStep):
         df[['cite_id', 'subcategoria_id', 'time']] = df[['cite_id', 'subcategoria_id', 'time']].astype(int)
         df['servicios'] =  df['servicios'].astype(float)
 
-        df = df[['cite_id', 'subcategoria_id', 'time', 'servicios']]
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
+
+        df = df[['cite_id', 'subcategoria_id', 'time', 'servicios', 'fecha_actualizacion']]
 
         return df
 
@@ -58,7 +61,8 @@ class CiteSubcategoryPipeline(EasyPipeline):
             'cite_id':                'UInt8',
             'subcategoria_id':        'UInt8',
             'time':                   'UInt32',
-            'servicios':              'Float32'
+            'servicios':              'Float32',
+            'fecha_actualizacion':    'UInt32'
          }
 
         transform_step = TransformStep(connector=db_connector)

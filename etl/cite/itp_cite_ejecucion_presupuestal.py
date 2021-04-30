@@ -21,8 +21,8 @@ class TransformStep(PipelineStep):
 
         df = df.dropna(how='all')
 
-        df = df.drop(columns=['fuente','fecha'])
-        df = pd.melt(df, id_vars=['cite','anio'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
+        df = df.drop(columns=['fuente'])
+        df = pd.melt(df, id_vars=['cite', 'anio', 'fecha'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
                'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
                'mes_12'])
         df = df.rename(columns={'variable':'month_id','value':'ejecucion_presupuestal'})
@@ -37,7 +37,11 @@ class TransformStep(PipelineStep):
         
         df['time'] = df['time_id'].astype(int)
         df['ejecucion_presupuestal'] = df['ejecucion_presupuestal'].astype(float)
-        df = df[['cite_id', 'time', 'ejecucion_presupuestal']]
+
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
+
+        df = df[['cite_id', 'time', 'ejecucion_presupuestal', 'fecha_actualizacion']]
 
         return df
 
@@ -54,6 +58,7 @@ class CitePimPipeline(EasyPipeline):
             'cite_id':                             'UInt8',
             'time':                                'UInt32',
             'ejecucion_presupuestal':              'Float32',
+            'fecha_actualizacion':                 'UInt32'
         }
 
         transform_step = TransformStep(connector=db_connector)

@@ -24,13 +24,18 @@ class TransformStep(PipelineStep):
                 df = pd.read_csv(file_dir)
                 k = k + 1
 
-        df= df[['cod_ciiu', 'anio', 'empresas']]
+        df= df[['cod_ciiu', 'anio', 'empresas', 'fecha']]
 
         df = df.rename(columns={'cod_ciiu' : 'class_id'})
 
-        df['class_id'] = df['class_id'].str[:-1].replace({"No determinado" : "0000"}).astype(str)
+        df['class_id'] = df['class_id'].replace({"NO DETERMINADO" : "00000"})
+
+        df['class_id'] = df['class_id'].str[:-1].astype(str)
 
         df['empresas'] = df['empresas'].astype(float)
+
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
 
         return df
 
@@ -47,6 +52,7 @@ class CiteEmpresas2Pipeline(EasyPipeline):
             'class_id':              'String',
             'anio':                  'UInt16',
             'empresas':              'Float32',
+            'fecha_actualizacion':   'UInt32'
          }
 
         transform_step = TransformStep()

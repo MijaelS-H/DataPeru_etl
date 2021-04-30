@@ -34,8 +34,11 @@ class TransformStep(PipelineStep):
         df['aspecto_id'] = df['aspecto'].map(aspecto_map).astype(int)
 
         df['cantidad_cite'] = 1
-        
-        df = df[['cite_id','aspecto_id','estado_id','cantidad_cite']]
+
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
+
+        df = df[['cite_id','aspecto_id','estado_id','cantidad_cite', 'fecha_actualizacion']]
 
         return df
 
@@ -52,7 +55,8 @@ class CiteAspectoPipeline(EasyPipeline):
             'cite_id':                'UInt8',
             'aspecto_id':             'UInt8',
             'estado_id':              'UInt16',
-            'cantidad_cite':          'UInt8'
+            'cantidad_cite':          'UInt8',
+            'fecha_actualizacion':    'UInt32'
         }
 
         transform_step = TransformStep(connector=db_connector)

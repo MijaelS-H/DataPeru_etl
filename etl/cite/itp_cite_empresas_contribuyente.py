@@ -38,7 +38,10 @@ class TransformStep(PipelineStep):
         
         df['anio'] = df['anio'].astype(int)
         df['empresas'] = df['empresas'].astype(float)
-        df = df[['cite_id', 'contribuyente_id', 'anio', 'empresas']]
+        df = df[['cite_id', 'contribuyente_id', 'anio', 'empresas', 'fecha']].copy()
+
+        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
 
         return df
 
@@ -56,6 +59,7 @@ class CiteContribuyentePipeline(EasyPipeline):
             'contribuyente_id':       'UInt8',
             'anio':                   'UInt16',
             'empresas':               'Float32',
+            'fecha_actualizacion':    'UInt32'
          }
 
         transform_step = TransformStep(connector=db_connector)
