@@ -57,6 +57,9 @@ class TransformStep(PipelineStep):
         # pliego
         df["pliego"] = df["pliego"].astype("str")
 
+        # departamento
+        df["departamento_meta"] = df["departamento_meta"].astype("str")
+
         df.drop(columns=["ano_eje", "mes_eje", "departamento_ejecutora",
                          "provincia_ejecutora", "distrito_ejecutora"], inplace=True)
 
