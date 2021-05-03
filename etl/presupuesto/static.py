@@ -65,7 +65,7 @@ GASTO_DTYPES_COLS = {
     "producto_proyecto_nombre":      "String",
     "funcion":                       "UInt8",
     "funcion_nombre":                "String",
-    "departamento_meta":             "UInt8",
+    "departamento_meta":             "String",
     "departamento_meta_nombre":      "String",
     "monto_pia":                     "Float64",
     "monto_pim":                     "Float64",
