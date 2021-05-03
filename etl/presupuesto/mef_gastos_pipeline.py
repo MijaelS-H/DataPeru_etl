@@ -48,7 +48,7 @@ class ReadStep(PipelineStep):
         last_period = query_to_df(self.connector, raw_query=query_last_period).iloc[0].to_list()[0]
         print("Max current period:", last_period)
 
-        df['departamento_meta'] = df['departamento_meta'].astype(str).str.zfill(2)
+        df['departamento_meta'] = df['departamento_meta'].astype(int).astype(str).str.zfill(2)
         df['year'] =  df['month_id'].map(lambda x: str(x)[:4])
         df['month_id'] = df['month_id'].map(lambda x: 0 if str(x)[4:] == '00' else x)
         df['latest'] = 0
@@ -83,7 +83,7 @@ class IngresosPipeline(EasyPipeline):
             "division_funcional":            "UInt8",
             "pliego":                        "String",
             "ejecutora":                     "UInt32",
-            "departamento_meta":             "UInt8",
+            "departamento_meta":             "String",
             "monto_pia":                     "Float64",
             "monto_pim":                     "Float64",
             "monto_devengado":               "Float64",
