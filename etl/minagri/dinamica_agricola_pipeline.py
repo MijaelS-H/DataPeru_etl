@@ -17,7 +17,7 @@ class TransformStep(PipelineStep):
 
         # Reads 01. DINAMICA AGRICOLA file
         df = pd.read_excel(
-            path.join(params["datasets"], "07_Socios_Estrategicos_Ministerio_de_Agricultura", "01_DINAMICA_AGRICOLA.xlsx"),
+            path.join(params["datasets"], "07_Socios_Estrategicos_Ministerio_de_Agricultura", "MIDAGRI_DINAMICA_AGRICOLA_12_2020.xlsx"),
             dtype='str'
         )
 
@@ -47,6 +47,13 @@ class TransformStep(PipelineStep):
         df['produccion'] = df['produccion'].str.replace(',', '.').astype(float)
         df['rendimiento'] = df['rendimiento'].str.replace(',', '.').astype(float)
         df['precio'] = df['precio'].str.replace(',', '.').astype(float)
+
+        # Fill nan values with 0
+        df['superficie_sembrada'] = df['superficie_sembrada'].fillna(0)
+        df['superficie_cosechada'] = df['superficie_cosechada'].fillna(0)
+        df['produccion'] = df['produccion'].fillna(0)
+        df['rendimiento'] = df['rendimiento'].fillna(0)
+        df['precio'] = df['precio'].fillna(0)
 
         # Replace values in each column
         for item in REPLACE_VALUES:

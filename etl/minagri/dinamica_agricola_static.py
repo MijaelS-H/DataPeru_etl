@@ -30,7 +30,7 @@ RENAME_COLUMNS = {
     'COD_CULTIVO': 'cultivo_id',
     'CULTIVO': 'cultivo_name',
     'TIPO': 'tipo',
-    'AÑO': 'year',
+    'ANIO': 'year',
     'MES': 'month',
     'UBIGEO': 'district_id',
     'SUPERFICIE_SEMBRADA': 'superficie_sembrada',
@@ -40,9 +40,9 @@ RENAME_COLUMNS = {
     'PRODUCCION': 'produccion',
     'UNIDAD.2': 'produccion_unidad',
     'RENDIMIENTO': 'rendimiento',
-    'UNIDAD.3': 'rendimiento_unidad',
+    'UNIDAD_4': 'rendimiento_unidad',
     'PRECIO_CHACRA': 'precio',
-    'UNIDAD_4': 'precio_unidad'
+    'UNIDAD.3': 'precio_unidad'
 }
 
 REPLACE_VALUES = {
