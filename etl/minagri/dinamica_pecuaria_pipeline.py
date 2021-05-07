@@ -44,7 +44,8 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Reads 02. DINAMICA PECUARIA file
-        df = pd.read_excel(path.join(params.get("datasets"), "downloads", params.get("url")), dtype='str')
+        # df = pd.read_excel(path.join(params.get("datasets"), "downloads", params.get("url")), dtype='str')
+        df = pd.read_excel(path.join(params.get("datasets"), "07_Socios_Estrategicos_Ministerio_de_Agricultura", "MIDAGRI_DINAMICA_PECUARIA_02_2021.xlsx"), dtype='str')
 
         # Rename columns to unique name
         df.rename(columns=RENAME_COLUMNS, inplace=True)
@@ -113,7 +114,8 @@ def run_pipeline(params: dict):
     clean_tables("dim_shared_dinamica_pecuaria", params.get("connector"))
     clean_tables("minagri_dinamica_pecuaria", params.get("connector"))
 
-    download_pp = DownloadPipeline()
+    # Descomentar paso de descarga en caso de requerir descargar el archivo desde el portal de Datos Abiertos
+    # download_pp = DownloadPipeline()
     pp = MINAGRIPecuariaPipeline()
 
     levels = {
@@ -123,9 +125,9 @@ def run_pipeline(params: dict):
 
     for url in URL_PECUARIA:
         for k, v in levels.items():
-            download_params = pp_params = {"url": url, "force_download": True}
-            download_params.update(params)
-            download_pp.run(download_params)
+            # download_params = pp_params = {"url": url, "force_download": True}
+            # download_params.update(params)
+            # download_pp.run(download_params)
 
             pp_params = {"level": k, "table_name": v, "url": url}
             pp_params.update(params)
