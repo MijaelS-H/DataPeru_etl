@@ -2296,7 +2296,8 @@ VARIABLES_DICT = {
         },
         'P52': {
             'Sí': 1,
-            'No contó': 0
+            'No contó': 0,
+            'No Tiene': 0
         },
         '_RENAMU_138': {
             'Sí': 1,
