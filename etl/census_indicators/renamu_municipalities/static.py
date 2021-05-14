@@ -923,7 +923,8 @@ VARIABLES_DICT = {
         },
         'P57': {
             'Tiene': 1,
-            'No tiene': 0
+            'No tiene': 0,
+            'No Tiene'; 0
         },
         'P62': {
             'Si dispone': 1,
@@ -1221,7 +1222,8 @@ VARIABLES_DICT = {
         },
         'P57': {
             'Tiene': 1,
-            'No tiene': 0
+            'No tiene': 0,
+            'No Tiene': 0
         },
         'P62': {
             'Tiene': 1,
@@ -1578,7 +1580,8 @@ VARIABLES_DICT = {
         },
         'P57': {
             'Tiene': 1,
-            'No tiene': 0
+            'No tiene': 0,
+            'No Tiene': 0
         },
         '_RENAMU_138': {
             'Brinda': 1,
