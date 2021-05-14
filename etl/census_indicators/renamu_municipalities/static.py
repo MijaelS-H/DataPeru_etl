@@ -977,7 +977,8 @@ VARIABLES_DICT = {
         'P81': {
             'Tiene': 1,
             'No Tiene': 0,
-            'No Brindó': 0
+            'No Brindó': 0,
+            'No tiene': 0
         }
     },
     2016: {
@@ -1268,7 +1269,8 @@ VARIABLES_DICT = {
         'P74': {
             'Si': 1,
             'No': 0,
-            'No Brindó': 0
+            'No Brindó': 0,
+            'No tiene': 0
         },
         'P80': {
             'Conformó': 1,
@@ -1634,7 +1636,8 @@ VARIABLES_DICT = {
         'P74_2': {
             'Brindó': 1,
             'No brindó': 0,
-            'No Brindó': 0
+            'No Brindó': 0,
+            'No tiene': 0
         },
         'P80': {
             'Conformó': 1,
@@ -1870,7 +1873,8 @@ VARIABLES_DICT = {
         },
         'P71_2': {
             'Brindó': 1,
-            'No Brindó': 0
+            'No Brindó': 0,
+            'No tiene': 0
         },
         'P77': {
             'Sí': 1,
