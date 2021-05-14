@@ -924,7 +924,7 @@ VARIABLES_DICT = {
         'P57': {
             'Tiene': 1,
             'No tiene': 0,
-            'No Tiene'; 0
+            'No Tiene': 0
         },
         'P62': {
             'Si dispone': 1,
