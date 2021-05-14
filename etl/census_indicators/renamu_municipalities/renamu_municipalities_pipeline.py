@@ -288,7 +288,7 @@ class TransformStep(PipelineStep):
         df['count'] = 1
         df = df.fillna(0)
 
-        print(df['P52'].unique())
+        print(df['P69_2'].unique())
 
         # Creates auxiliar columns to aggregate special values
 
