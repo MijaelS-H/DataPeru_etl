@@ -16,10 +16,14 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         # Reads 01. DINAMICA AGRICOLA file
-        df = pd.read_excel(
+        _df = pd.read_excel(
             path.join(params["datasets"], "07_Socios_Estrategicos_Ministerio_de_Agricultura", "MIDAGRI_DINAMICA_AGRICOLA_12_2020.xlsx"),
-            dtype='str'
+            dtype='str',
+            sheet_name=["AGRICOLA", "AGRICOLA_1"]
         )
+
+        df = _df["AGRICOLA"].append(_df["AGRICOLA_1"])
+        df = df.drop_duplicates()
 
         # Rename columns to unique name
         df.rename(columns=RENAME_COLUMNS, inplace=True)
