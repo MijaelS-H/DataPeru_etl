@@ -16,7 +16,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         
         df_1 = pd.DataFrame()
-        for year in [2018, 2019, 2020]: 
+        for year in [2018, 2019, 2020, 2021]: 
             df_1_query = query(parameters[3],year)
 
             for i in range(0, len(df_1_query)):
@@ -35,7 +35,7 @@ class TransformStep(PipelineStep):
 
         k = 1
         df_2 = {}
-        for year in [2018,2019,2020]:
+        for year in [2018, 2019, 2020, 2021]:
             df_2[k] = query(parameters[5],year)
             df_2[k] = pd.melt(df_2[k], id_vars=['MES','anio'], value_vars=['CERTIFICADO_EMITIDO', 'ARQUEOLOGICA_VERIFICADA',
                'HISTORICA_VERIFICADA', 'PALEONTOLOGICA_VERIFICADA', 'TOTAL', 'ARQUEOLOGICA_DENEGADA', 'HISTORICA_DENEGADA',
@@ -46,7 +46,7 @@ class TransformStep(PipelineStep):
             df_2[k]['nation_id'] = 'per'
             k = k + 1
 
-        df_2_list = [df_2[i] for i in range(1,3 + 1)]
+        df_2_list = [df_2[i] for i in range(1, 4 + 1)]
         df_2 = reduce(lambda df_21,df_22: df_21.append(df_22), df_2_list)
         df_2.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
         df_2['MES'] = df_2['MES'].str.capitalize()
@@ -54,7 +54,7 @@ class TransformStep(PipelineStep):
         df_2 = df_2[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
 
         df_3 = pd.DataFrame()
-        for year in [2018, 2019, 2020]: 
+        for year in [2018, 2019, 2020, 2021]: 
             df_3_query = query(parameters[6],year)
 
             for i in range(0, len(df_3_query)):
@@ -74,11 +74,11 @@ class TransformStep(PipelineStep):
 
         k = 1
         df_4 = {}
-        for year in [2018, 2019, 2020]: 
+        for year in [2018, 2019, 2020, 2021]: 
             df_4[k] = query(parameters[7],year)
             df_4[k] = pd.melt(df_4[k], id_vars=['anio','MES'], value_vars=['ARQUEOLOGICO', 'HISTORICO', 'PALEONTOLOGICO', 'TOTAL'])
             k = k + 1
-        df_4_list = [df_4[i] for i in range(1,3 + 1)]
+        df_4_list = [df_4[i] for i in range(1, 4 + 1)]
         df_4 = reduce(lambda df_41,df_42: df_41.append(df_42), df_4_list)
         df_4.rename(columns={'value':'response', 'variable' : 'category_id'}, inplace=True)
         df_4['indicator_id'] = 'Alertas de atentados en Lima'
@@ -109,7 +109,7 @@ class TransformStep(PipelineStep):
         df_5['response'].fillna(0, inplace = True)
 
         df_6 = pd.DataFrame()
-        for year in [2018, 2019, 2020]: 
+        for year in [2018, 2019, 2020, 2021]: 
             df_6_query = query(parameters[13],year)
 
             for i in range(0, len(df_6_query)):
@@ -127,7 +127,7 @@ class TransformStep(PipelineStep):
         df_6 = df_6[['time', 'indicator_id', 'category_id', 'subcategory_id', 'department_id','nation_id','response']]
 
         df_7 = pd.DataFrame()
-        for year in [2018, 2019, 2020]: 
+        for year in [2018, 2019, 2020, 2021]: 
             df_7_query = query(parameters[14],year)
 
             for i in range(0, len(df_7_query)):

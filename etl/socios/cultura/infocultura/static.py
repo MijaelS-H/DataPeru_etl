@@ -62,5 +62,5 @@ def query(indicador, year):
 
 parameters = ['expresiones','preservacion','sitiosArqVis','vistCompArq','vistTipoPub',
             'certiBienPatri','alertaNacio','alertaLima','musVist','salasVist','vistMusMua',
-            'vistMusTip','vistSalTip','vistMus','vistSala','puntCult','asisPreEle','porPreEsp','',
+            'vistMusTip','vistSalTip','vistMus','vistSala','puntCult','asisPreEle','porPreEsp', '',
             'preEspMes','benTallInd','puebInd','locPueb','locDep','alerRac']
