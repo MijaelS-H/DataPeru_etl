@@ -124,6 +124,7 @@ def run_pipeline(params: dict):
                 print("Removing {}".format(data))
 
                 os.remove(data)
+                remaining_download_tries= 0
                 break
 
             except Exception as e:
@@ -131,9 +132,6 @@ def run_pipeline(params: dict):
                 print("Error: {}".format(e))
                 remaining_download_tries = remaining_download_tries - 1
                 continue
-
-            else:
-                break
 
     # force download on the last 2 files
     for url in URL_INGRESO[-2::]:
@@ -158,6 +156,7 @@ def run_pipeline(params: dict):
                 print("Removing {}".format(data))
 
                 os.remove(data)
+                remaining_download_tries = 0
                 break
 
             except Exception as e:
@@ -165,10 +164,6 @@ def run_pipeline(params: dict):
                 print("Error: {}".format(e))
                 remaining_download_tries = remaining_download_tries - 1
                 continue
-
-            else:
-                break
-
 
 if __name__ == "__main__":
     import sys
