@@ -17,7 +17,7 @@ URL_GASTO = [
     "2017-Gasto.zip",
     "2018-Gasto.zip",
     "2019-Gasto.zip",
-    "2020.zip",
+    "2020-Gasto.zip",
     "2021.zip"
 ]
 
