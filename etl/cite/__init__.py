@@ -30,8 +30,8 @@ def run_pipeline(params: dict):
     itp_pipeline_emp_contribuyentes_agg(params)
     itp_pipeline_emp_contribuyentes(params)
 
-    itp_pipeline_emp_tipo_agg(params)
     itp_pipeline_emp_tipo(params)
+    itp_pipeline_emp_tipo_agg(params)
     itp_pipeline_inversion(params)
     itp_pipeline_partidas_atendidas(params)
     itp_pipeline_partidas(params)
