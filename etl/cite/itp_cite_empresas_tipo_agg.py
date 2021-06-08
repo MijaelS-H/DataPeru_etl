@@ -1,71 +1,93 @@
-import numpy as np
-import pandas as pd
-import os
+from numpy.core.records import array
 from os import path
-from functools import reduce
+import pandas as pd
 from bamboo_lib.connectors.models import Connector
-from bamboo_lib.models import EasyPipeline
-from bamboo_lib.models import Parameter
-from bamboo_lib.models import PipelineStep
-from bamboo_lib.steps import DownloadStep
+from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import LoadStep
-from bamboo_lib.helpers import grab_connector
-from etl.consistency import AggregatorStep
-
-MONTHS_DICT = {'mes_01' :'1', 'mes_02' :'2', 'mes_03' :'3', 'mes_04' :'4','mes_05' :'5', 'mes_06' :'6', 'mes_07' :'7', 'mes_08' :'8', 'mes_09' :'9', 'mes_10' :'10', 'mes_11' :'11','mes_12':'12'}
+from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "TABLA_02_N02.csv"))
+        # Lectura de documento en ruta definida
+        df = pd.read_excel(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "20210605", "TABLA_02_N02.xlsx"))
 
-        empresas_list = list(df["tipo"].unique())
-        empresas_map = {k:v for (k,v) in zip(sorted(empresas_list), list(range(1, len(empresas_list) +1)))}
+        # Eliminación de columna fuente
+        df = df.drop(columns=['fuente'])
 
-        df = pd.melt(df, id_vars=['anio','tipo','fecha'], value_vars=['mes_01', 'mes_02', 'mes_03', 'mes_04',
-               'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
-               'mes_12'])
-        df = df.rename(columns={'variable':'month_id','anio':'year','value':'empresas','tipo':'empresa_tipo'})
+        # Pivoteo de tabla, transformando cada columna en una fila asociada a cada cite, anio, tipo y fecha definida
+        df = pd.melt(df, 
+            id_vars=[
+                'anio','tipo','fecha'
+            ], 
+            value_vars=[
+                'mes_01', 'mes_02', 'mes_03', 'mes_04',
+                'mes_05', 'mes_06', 'mes_07', 'mes_08', 
+                'mes_09', 'mes_10', 'mes_11','mes_12'])
 
-        df['month_id'] = df['month_id'].map(MONTHS_DICT)
-        df['time'] = df['year'].astype(str) + df['month_id'].str.zfill(2)
-        df['empresa_id'] = df['empresa_tipo'].map(empresas_map)
-        df['empresas'] = df.apply(lambda x: int(x.empresas.replace(',', '')) if type(x.empresas) is str else x.empresas, axis=1)
+        # Renombre de columnas
+        df = df.rename(columns={'variable':'month_id', 'anio':'year', 'value':'empresas', 'tipo':'tipo_cliente_name'})
 
-        df[['time','empresa_id']] = df[['time','empresa_id']].astype(int)
-        df[['empresas']] = df[['empresas']].astype(float)
+        # Transformación de columna month_id (mes_01 --> 01)
+        df['month_id'] = df['month_id'].str[-2:]
 
-        df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
+        # Creación de columna de tiempo
+        df['time'] = df['year'].astype(str) + df['month_id']
+        df['time'] = df['time'].astype(int)
+
+        # Modificación de formato de fecha de actualización
+        df['fecha_actualizacion'] = df['fecha'].astype(str).str[0:4] + df['fecha'].astype(str).str[5:7]
         df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
 
-        df = df[['time','empresa_id','empresas', 'fecha_actualizacion']]
+        # Consulta y agregación de ID según tipo de cliente
+        dim_tipo_query = 'SELECT tipo_cliente_name, tipo_cliente_id FROM dim_shared_cite_tipo_cliente'
+        dim_tipo = query_to_df(self.connector, raw_query=dim_tipo_query)
+        df = df.merge(dim_tipo, on="tipo_cliente_name")
+
+        df = df[['tipo_cliente_id', 'time', 'empresas', 'fecha_actualizacion']]
 
         return df
 
 class CiteEmpresasPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
-        return []
+        return [
+            Parameter(name='level', dtype=str),
+            Parameter(name='table_name', dtype=str),
+            Parameter(name='pk', dtype=array),
+            Parameter(name='dtypes', dtype=object),
+            Parameter(name='nullable_list', dtype=array)
+        ]
 
     @staticmethod
     def steps(params):
         db_connector = Connector.fetch('clickhouse-database', open(params["connector"]))
 
-        dtypes = {
-            'empresa_id':            'UInt8',
-            'time':                  'UInt32',
-            'empresas':              'Float32',
-            'fecha_actualizacion':   'UInt32'
-        }
+        dtypes = params['dtypes']
 
-        transform_step = TransformStep()
-        agg_step = AggregatorStep('itp_cite_empresas_tipo_agg', measures=['empresas'])
-        load_step = LoadStep('itp_cite_empresas_tipo_agg', connector=db_connector, if_exists='drop', pk=['empresa_id'], dtype=dtypes, nullable_list=['empresas'])
+        transform_step = TransformStep(connector=db_connector)
+        load_step = LoadStep(params['table_name'], connector=db_connector, if_exists='drop', pk=params['pk'], dtype=dtypes, nullable_list=params['nullable_list'])
 
         return [transform_step, load_step]
 
 def run_pipeline(params: dict):
+    PARAMS = {
+        'level': 'fact',
+        'table_name': 'itp_cite_empresas_tipo_agg',
+        'pk': ['tipo_cliente_id', 'time'],
+        'dtypes': {
+            'tipo_cliente_id':       'UInt8',
+            'time':                  'UInt32',
+            'empresas':              'Float32',
+            'fecha_actualizacion':   'UInt32'
+        },
+        'nullable_list': []
+    }
+    
     pp = CiteEmpresasPipeline()
-    pp.run(params)
+
+    pp_params = {'level': PARAMS['level'], 'table_name': PARAMS['table_name'], 'pk': PARAMS['pk'], 'dtypes': PARAMS['dtypes'], 'nullable_list': PARAMS['nullable_list']}
+    pp_params.update(params)
+    pp.run(pp_params)
 
 if __name__ == "__main__":
     import sys

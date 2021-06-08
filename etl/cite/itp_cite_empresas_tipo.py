@@ -6,8 +6,6 @@ from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import query_to_df
 
-MONTHS_DICT = {'mes_01' :'1', 'mes_02' :'2', 'mes_03' :'3', 'mes_04' :'4','mes_05' :'5', 'mes_06' :'6', 'mes_07' :'7', 'mes_08' :'8', 'mes_09' :'9', 'mes_10' :'10', 'mes_11' :'11','mes_12':'12'}
-
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Lectura de documento en ruta definida
