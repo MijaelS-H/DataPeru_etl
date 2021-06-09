@@ -6,6 +6,7 @@ from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import LoadStep
 from bamboo_lib.helpers import query_to_df
 
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Lectura de documento en ruta definida
