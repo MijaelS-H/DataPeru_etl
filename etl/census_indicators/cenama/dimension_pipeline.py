@@ -1,11 +1,11 @@
 from os import path
-
+import nltk
 import numpy as np
 import pandas as pd
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep
 from bamboo_lib.steps import LoadStep
-
+from etl.helpers import format_text
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
@@ -17,7 +17,13 @@ class TransformStep(PipelineStep):
         df.columns = df.columns.str.lower()
         df = df[['id', 'nombre_mercado']].copy()
         
-        df['nombre_mercado'] = df['nombre_mercado'].str.capitalize()
+        text_cols = ["nombre_mercado"]
+
+        nltk.download('stopwords')
+        stopwords_es = nltk.corpus.stopwords.words('spanish')
+        df = format_text(df, text_cols, stopwords=stopwords_es)
+
+        #df['nombre_mercado'] = df['nombre_mercado'].str.capitalize()
 
         df.rename(columns = {
             'id': 'market_id',
