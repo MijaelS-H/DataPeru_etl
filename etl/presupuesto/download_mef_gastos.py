@@ -7,7 +7,7 @@ from io import StringIO
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
-from .static import URL_GASTO, GASTO_DTYPES_COLS
+from .static import URL_GASTO, GASTO_DTYPES_COLS, DICT_FILENAMES_GASTO
 from etl.helpers import clean_tables
 
 class UnzipStep(PipelineStep):
@@ -19,7 +19,12 @@ class UnzipStep(PipelineStep):
 
         with ZipFile(prev, "r") as data:
             print("Extracting {}".format(params.get("url")))
-            data.extractall(os.path.join(params.get("datasets"), "downloads"), params.get("url"))
+            data.extractall(os.path.join(params.get("datasets"), "downloads"))
+
+        try:
+            os.rename(os.path.join(params.get("datasets"), "downloads", DICT_FILENAMES_GASTO[params.get("url")]), os.path.join(params.get("datasets"), "downloads", "{}.csv".format(params.get("url")[:-4])))
+        except:
+            print("No rename required")
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
