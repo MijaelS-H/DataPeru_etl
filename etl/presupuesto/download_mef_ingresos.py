@@ -17,7 +17,7 @@ class UnzipStep(PipelineStep):
 
         with ZipFile(prev, "r") as data:
             print("Extracting {}".format(params.get("url")))
-            data.extractall(os.path.join(params.get("datasets"), "downloads"))
+            data.extractall(os.path.join(params.get("datasets"), "downloads"), params.get("url"))
 
             if params.get("url") == "2014-Ingreso.zip":
                 os.rename(os.path.join(params.get("datasets"), "downloads", "2015-Ingreso.csv"), os.path.join(params.get("datasets"), "downloads", "2014-Ingreso.csv"))

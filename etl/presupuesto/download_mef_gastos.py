@@ -19,7 +19,7 @@ class UnzipStep(PipelineStep):
 
         with ZipFile(prev, "r") as data:
             print("Extracting {}".format(params.get("url")))
-            data.extractall(os.path.join(params.get("datasets"), "downloads"))
+            data.extractall(os.path.join(params.get("datasets"), "downloads"), params.get("url"))
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
