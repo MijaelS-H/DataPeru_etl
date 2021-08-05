@@ -61,12 +61,12 @@ class TransformStep(PipelineStep):
         df['lista_miembros'] = df['lista_miembros'].str.strip().replace('\n•',',')
         df['lista_miembros'] = df['lista_miembros'].str.strip().replace('• ','')
 
-        #df['cadena_atencion'] = df['cadena_atencion'].str.replace('\n',',')
-        #df['cadena_atencion'] = df['cadena_atencion'].str.strip().replace('\n•',',')
+        df['cadena_atencion'] = df['cadena_atencion'].str.replace('"\u0095"','•')
+        df['cadena_atencion'] = df['cadena_atencion'].str.replace('\n','•').str.strip()
         #df['cadena_atencion'] = df['cadena_atencion'].str.strip().replace('• ','')
 
-        #df['cadena_pip'] = df['cadena_pip'].str.replace('\n',',')
-        #df['cadena_pip'] = df['cadena_pip'].str.strip().replace('\n•',',')
+        df['cadena_pip'] = df['cadena_pip'].str.replace('"\u0095"','•')
+        df['cadena_pip'] = df['cadena_pip'].str.replace('\n','•').str.strip()
         #df['cadena_pip'] = df['cadena_pip'].str.strip().replace('• ','')
 
         #df['cadena_resolucion'] = df['cadena_resolucion'].str.replace('\n',',')
