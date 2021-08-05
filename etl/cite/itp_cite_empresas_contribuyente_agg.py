@@ -15,7 +15,7 @@ from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "TABLA_02_N06.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "TABLA_02_N06.csv"), encoding="latin1")
         
         df["contribuyente"] = df["tipo_contribuyente"].str.capitalize() 
         dim_contribuyente_query = 'SELECT contribuyente, contribuyente_id FROM dim_shared_cite_contribuyente'

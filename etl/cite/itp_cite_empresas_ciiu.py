@@ -16,7 +16,7 @@ from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "TABLA_02_N03.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "TABLA_02_N03.csv"), encoding="latin1")
         
         dim_cite_query = 'SELECT cite, cite_id FROM dim_shared_cite'
         dim_cite = query_to_df(self.connector, raw_query=dim_cite_query)

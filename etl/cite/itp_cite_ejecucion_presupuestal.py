@@ -17,7 +17,7 @@ MONTHS_DICT = {'mes_01' :'1',  'mes_02' :'2',  'mes_03' :'3',  'mes_04' :'4', 'm
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "05_EJECUCION_PRESUPUESTAL", "TABLA_05_N02.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "05_EJECUCION_PRESUPUESTAL", "TABLA_05_N02.csv"), encoding="latin1")
 
         df = df.dropna(how='all')
 

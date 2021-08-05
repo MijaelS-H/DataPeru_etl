@@ -15,7 +15,7 @@ from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "05_EJECUCION_PRESUPUESTAL", "TABLA_05_N01.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "05_EJECUCION_PRESUPUESTAL", "TABLA_05_N01.csv"), encoding="latin1")
 
         df = df[['cite','anio','pim','fecha']].copy()
         

@@ -25,7 +25,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
         file_dir = path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "TABLA_02_N05.csv")
-        df = pd.read_csv(file_dir)
+        df = pd.read_csv(file_dir, encoding="latin1")
 
         df["tipo_contribuyente"] = df["tipo_contribuyente"].str.capitalize() 
         contribuyente_list = list(df["tipo_contribuyente"].unique())

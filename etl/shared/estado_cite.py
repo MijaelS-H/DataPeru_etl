@@ -13,7 +13,7 @@ from bamboo_lib.steps import LoadStep
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "04_PROYECTOS_DE_INVERSION_PUBLICA", "TABLA_04_N02.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "04_PROYECTOS_DE_INVERSION_PUBLICA", "TABLA_04_N02.csv"), encoding="latin1")
 
         estado_list = list(df['estado'].dropna().unique())
         estado_map = {k:v for (k,v) in zip(sorted(estado_list), list(range(1, len(estado_list) +1)))}
