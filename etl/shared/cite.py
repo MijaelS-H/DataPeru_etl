@@ -26,10 +26,16 @@ class TransformStep(PipelineStep):
             file_list = glob.glob(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "01_INFORMACION_INSTITUCIONAL", '*'))
 
             for item in file_list:
+
+                print(item)
+
                 if item == "../datasets/01_Informacion_ITP_red_CITE/01_INFORMACION_INSTITUCIONAL/TABLA_01_N01.csv":
                     df[k] = pd.read_csv(item, encoding='utf-8')
                 else:
                     df[k] = pd.read_csv(item, encoding='latin1')
+
+                print(df[k].head(5))
+
                 k += 1
 
         df_list = [df[i] for i in range(1, len(file_list) + 1)]
@@ -54,8 +60,22 @@ class TransformStep(PipelineStep):
         df['cite_slug'] = df['cite_slug'].str.replace(" ", "_")
 
         df['director'] = df['director'].str.title()
-        df['lista_miembros'] = df['lista_miembros'].str.replace('\n•',',')
-        df['lista_miembros'] = df['lista_miembros'].str.replace('• ','')
+
+        df['lista_miembros'] = df['lista_miembros'].str.replace('\n',',')
+        df['lista_miembros'] = df['lista_miembros'].str.strip().replace('\n•',',')
+        df['lista_miembros'] = df['lista_miembros'].str.strip().replace('• ','')
+
+        df['cadena_atencion'] = df['cadena_atencion'].str.replace('\n',',')
+        df['cadena_atencion'] = df['cadena_atencion'].str.strip().replace('\n•',',')
+        df['cadena_atencion'] = df['cadena_atencion'].str.strip().replace('• ','')
+
+        df['cadena_pip'] = df['cadena_pip'].str.replace('\n',',')
+        df['cadena_pip'] = df['cadena_pip'].str.strip().replace('\n•',',')
+        df['cadena_pip'] = df['cadena_pip'].str.strip().replace('• ','')
+
+        df['cadena_resolucion'] = df['cadena_resolucion'].str.replace('\n',',')
+        df['cadena_resolucion'] = df['cadena_resolucion'].str.strip().replace('\n•',',')
+        df['cadena_resolucion'] = df['cadena_resolucion'].str.strip().replace('• ','')
 
         df.rename(columns={'ubigeo' : 'district_id', 'resolucion_x' : 'resolucion_director', 'fecha' : 'fecha_director', 'resolucion_y' : 'resolucion_ambito'}, inplace = True)
 
