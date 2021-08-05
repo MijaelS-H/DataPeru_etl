@@ -29,6 +29,8 @@ class TransformStep(PipelineStep):
 
                 if item == "../datasets/01_Informacion_ITP_red_CITE/01_INFORMACION_INSTITUCIONAL/TABLA_01_N01.csv":
                     df[k] = pd.read_csv(item, encoding='utf-8')
+                if item == "../datasets/01_Informacion_ITP_red_CITE/01_INFORMACION_INSTITUCIONAL/TABLA_01_N05.csv":
+                    df[k] = pd.read_csv(item, encoding='utf-8')
                 else:
                     df[k] = pd.read_csv(item, encoding='latin1')
 
