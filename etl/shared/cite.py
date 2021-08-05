@@ -64,18 +64,22 @@ class TransformStep(PipelineStep):
         df['lista_miembros'] = df['lista_miembros'].str.replace('\n',',')
         df['lista_miembros'] = df['lista_miembros'].str.strip().replace('\n•',',')
         df['lista_miembros'] = df['lista_miembros'].str.strip().replace('• ','')
+        df['lista_miembros'] = df['lista_miembros'].str.strip().replace('  ','')
 
         df['cadena_atencion'] = df['cadena_atencion'].str.replace('\n',',')
         df['cadena_atencion'] = df['cadena_atencion'].str.strip().replace('\n•',',')
         df['cadena_atencion'] = df['cadena_atencion'].str.strip().replace('• ','')
+        df['cadena_atencion'] = df['cadena_atencion'].str.strip().replace('  ','')
 
         df['cadena_pip'] = df['cadena_pip'].str.replace('\n',',')
         df['cadena_pip'] = df['cadena_pip'].str.strip().replace('\n•',',')
         df['cadena_pip'] = df['cadena_pip'].str.strip().replace('• ','')
+        df['cadena_pip'] = df['cadena_pip'].str.strip().replace('  ','')
 
         df['cadena_resolucion'] = df['cadena_resolucion'].str.replace('\n',',')
         df['cadena_resolucion'] = df['cadena_resolucion'].str.strip().replace('\n•',',')
         df['cadena_resolucion'] = df['cadena_resolucion'].str.strip().replace('• ','')
+        df['cadena_resolucion'] = df['cadena_resolucion'].str.strip().replace('  ','')
 
         df.rename(columns={'ubigeo' : 'district_id', 'resolucion_x' : 'resolucion_director', 'fecha' : 'fecha_director', 'resolucion_y' : 'resolucion_ambito'}, inplace = True)
 
