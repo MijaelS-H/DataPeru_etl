@@ -5,7 +5,7 @@ from zipfile import ZipFile
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, Parameter, PipelineStep
 from bamboo_lib.steps import DownloadStep, LoadStep
-from .static import URL_INGRESO, INGRESO_DTYPES_COLS
+from .static import URL_INGRESO, INGRESO_DTYPES_COLS, DICT_FILENAMES_INGRESO
 from etl.helpers import clean_tables
 
 class UnzipStep(PipelineStep):
@@ -21,6 +21,11 @@ class UnzipStep(PipelineStep):
 
             if params.get("url") == "2014-Ingreso.zip":
                 os.rename(os.path.join(params.get("datasets"), "downloads", "2015-Ingreso.csv"), os.path.join(params.get("datasets"), "downloads", "2014-Ingreso.csv"))
+
+            try:
+                os.rename(os.path.join(params.get("datasets"), "downloads", DICT_FILENAMES_INGRESO[params.get("url")]), os.path.join(params.get("datasets"), "downloads", "{}.csv".format(params.get("url")[:-4])))
+            except:
+                print("No rename required")
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
