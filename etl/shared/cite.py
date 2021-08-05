@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 import pandas as pd
 import os
@@ -25,7 +26,10 @@ class TransformStep(PipelineStep):
             file_list = glob.glob(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "01_INFORMACION_INSTITUCIONAL", '*'))
 
             for item in file_list:
-                df[k] = pd.read_csv(item)
+                if item == "../datasets/01_Informacion_ITP_red_CITE/01_INFORMACION_INSTITUCIONAL/TABLA_01_N01.csv":
+                    df[k] = pd.read_csv(item, encoding='utf-8')
+                else:
+                    df[k] = pd.read_csv(item, encoding='latin1')
                 k += 1
 
         df_list = [df[i] for i in range(1, len(file_list) + 1)]

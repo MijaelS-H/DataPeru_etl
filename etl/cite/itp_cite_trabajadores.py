@@ -15,7 +15,7 @@ from bamboo_lib.helpers import query_to_df
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "06_RECURSOS_HUMANOS", "TABLA_06_N01.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "06_RECURSOS_HUMANOS", "TABLA_06_N01.csv"), encoding="latin1")
 
         df = pd.melt(df, id_vars=['cite','anio','modalidad','fecha'], value_vars=['directivo', 'tecnico', 'operativo', 'administrativo', 'practicante'])
         df = df.rename(columns={'variable':'tipo_trabajador','value':'cantidad'})

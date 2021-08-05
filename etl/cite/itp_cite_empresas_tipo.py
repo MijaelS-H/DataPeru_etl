@@ -10,7 +10,7 @@ from bamboo_lib.helpers import query_to_df
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Lectura de documento en ruta definida
-        df = pd.read_excel(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "20210605", "TABLA_02_N06.xlsx"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "02_CLIENTES_ATENDIDOS", "TABLA_02_N01.csv"), encoding="latin1")
 
         if params['level'] == 'dim':
             # Elimina filas repetidas en el set de datos
@@ -51,7 +51,7 @@ class TransformStep(PipelineStep):
             df['time'] = df['time'].astype(int)
 
             # Modificación de formato de fecha de actualización
-            df['fecha_actualizacion'] = df['fecha'].astype(str).str[0:4] + df['fecha'].astype(str).str[5:7]
+            df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
             df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
 
             # Consulta y agregación de ID según CITE correspondiente

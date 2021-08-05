@@ -21,7 +21,7 @@ class TransformStep(PipelineStep):
         for i in range(2,2 +1):
             for j in range(4, 4 + 1 ):
                 file_dir = path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "{}".format(CARPETAS_DICT[i]),"TABLA_0{}_N0{}.csv".format(i,j))
-                df = pd.read_csv(file_dir)
+                df = pd.read_csv(file_dir, encoding="latin1")
                 k = k + 1
 
         df= df[['cod_ciiu', 'anio', 'empresas', 'fecha']]

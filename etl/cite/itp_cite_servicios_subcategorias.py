@@ -18,7 +18,7 @@ MONTHS_DICT = {'mes_01' :'1', 'mes_02' :'2', 'mes_03' :'3', 'mes_04' :'4','mes_0
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "03_SERVICIOS_BRINDADOS", "TABLA_03_N01.csv"))
+        df = pd.read_csv(path.join(params["datasets"], "01_Informacion_ITP_red_CITE", "03_SERVICIOS_BRINDADOS", "TABLA_03_N01.csv"), encoding="latin1")
 
         df = pd.melt(df, id_vars=['cite','anio','subcategoria','fecha'], value_vars=['mes_01','mes_02', 'mes_03', 'mes_04',
                 'mes_05', 'mes_06', 'mes_07', 'mes_08', 'mes_09', 'mes_10', 'mes_11',
