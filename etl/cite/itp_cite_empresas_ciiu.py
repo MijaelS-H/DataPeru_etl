@@ -29,6 +29,8 @@ class TransformStep(PipelineStep):
 
         df['anio'] = df['anio'].astype(int)
         df['empresas'] = df['empresas'].astype(float)
+
+        df['empresas'].fillna(0, inplace=True)
         
         df['class_id'] = df['class_id'].replace({"NO DETERMINADO" : "00000"})
 

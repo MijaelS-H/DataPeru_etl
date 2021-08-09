@@ -27,6 +27,8 @@ class TransformStep(PipelineStep):
         df['anio'] = df['anio'].astype(int)
         df['empresas'] = df['empresas'].astype(float)
 
+        df['empresas'].fillna(0, inplace=True)
+
         df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
         df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
 

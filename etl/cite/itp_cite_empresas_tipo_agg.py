@@ -43,6 +43,8 @@ class TransformStep(PipelineStep):
         dim_tipo = query_to_df(self.connector, raw_query=dim_tipo_query)
         df = df.merge(dim_tipo, on="tipo_cliente_name")
 
+        df['empresas'].fillna(0, inplace=True)
+
         df = df[['tipo_cliente_id', 'time', 'empresas', 'fecha_actualizacion']]
 
         return df

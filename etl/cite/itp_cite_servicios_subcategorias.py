@@ -44,6 +44,8 @@ class TransformStep(PipelineStep):
         df['fecha_actualizacion'] = df['fecha'].str[-4:] + df['fecha'].str[3:5]
         df['fecha_actualizacion'] = df['fecha_actualizacion'].astype(int)
 
+        df['servicios'].fillna(0, inplace=True)
+
         df = df[['cite_id', 'subcategoria_id', 'time', 'servicios', 'fecha_actualizacion']]
 
         return df
