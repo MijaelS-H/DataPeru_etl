@@ -16,6 +16,7 @@ class TransformStep(PipelineStep):
             # Elimina filas repetidas en el set de datos
             df = df[['tipo']].drop_duplicates() 
 
+            df = df.reset_index(drop=True)
             # Genera id único para cada tipo de cliente detectado, con base en su posición en el DataFrame correspondiente
             df['tipo_cliente_id'] = df.index + 1
 
