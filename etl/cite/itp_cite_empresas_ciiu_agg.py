@@ -53,7 +53,7 @@ class CiteEmpresas2Pipeline(EasyPipeline):
         dtypes = {
             'class_id':              'String',
             'anio':                  'UInt16',
-            'empresas':              'Float32',
+            'empresas':              'UInt32',
             'fecha_actualizacion':   'UInt32'
          }
 

@@ -79,7 +79,7 @@ def run_pipeline(params: dict):
         'dtypes': {
             'tipo_cliente_id':       'UInt8',
             'time':                  'UInt32',
-            'empresas':              'Float32',
+            'empresas':              'UInt32',
             'fecha_actualizacion':   'UInt32'
         },
         'nullable_list': []

@@ -54,7 +54,7 @@ class CiteEmpresas2Pipeline(EasyPipeline):
             'cite_id':               'UInt8',
             'class_id':              'String',
             'anio':                  'UInt16',
-            'empresas':              'Float32',
+            'empresas':              'UInt32',
             'fecha_actualizacion':   'UInt32'
          }
 

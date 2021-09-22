@@ -46,7 +46,7 @@ class CiteContribuyentePipelineAgg(EasyPipeline):
         dtypes = {
             'contribuyente_id':       'UInt8',
             'anio':                   'UInt16',
-            'empresas':               'Float32',
+            'empresas':               'UInt32',
             'fecha_actualizacion':    'UInt32'
         }
 

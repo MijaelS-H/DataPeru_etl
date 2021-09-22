@@ -63,7 +63,7 @@ class CiteSubcategoryPipeline(EasyPipeline):
             'cite_id':                'UInt8',
             'subcategoria_id':        'UInt8',
             'time':                   'UInt32',
-            'servicios':              'Float32',
+            'servicios':              'UInt32',
             'fecha_actualizacion':    'UInt32'
          }
 

@@ -54,7 +54,7 @@ class CiteSubcategoryPipelineAgg(EasyPipeline):
         dtypes = {
             'subcategoria_id':        'UInt8',
             'time':                   'UInt32',
-            'servicios':              'Float32',
+            'servicios':              'UInt32',
             'fecha_actualizacion':    'UInt32'
          }
 
