@@ -13,7 +13,7 @@ from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        data = pd.ExcelFile(os.path.join(params['datasets'], '03_Indicadores_estimados_DSE_Encuestas', '07_Encuesta_Nacional_de_Programas_Presupuestales_(ENAPRES)', 'ENAPRES _Indicadores.xlsx'))
+        data = pd.ExcelFile(os.path.join(params['datasets'], '03_Indicadores_estimados_DSE_Encuestas', '07_Encuesta_Nacional_de_Programas_Presupuestales_(ENAPRES)', 'ENAPRES_Indicadores.xlsx'))
 
         # sheet names
         geo = [x for x in data.sheet_names if re.findall('IND_.*_A', x) != []]
