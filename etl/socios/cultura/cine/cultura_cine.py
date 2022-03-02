@@ -19,7 +19,7 @@ class TransformStep(PipelineStep):
         df = df[0:1267]
         df = df[['AÑO INSCRIPCIÓN',
        'TIPO DE CONSTITUCIÓN', 'RAZON SOCIAL ',
-       'Actividad_1', 'Actividad_2', 'Actividad_3', 'Actividad_4',
+       'Actividad_1', 'Actividad_2', 'Actividad_3', 'Actividad_4', 'Actividad_5',
        'DISTRITO']].copy()
 
         for column in ['DISTRITO','TIPO DE CONSTITUCIÓN']:
@@ -28,7 +28,7 @@ class TransformStep(PipelineStep):
 
         df = df.rename(columns={'AÑO INSCRIPCIÓN' : "year","TIPO DE CONSTITUCIÓN" : "tipo_constitucion_id","RAZON SOCIAL " : "razon_social_id",
             "Actividad_1" : "actividad_1_id","Actividad_2":"actividad_2_id", "Actividad_3":"actividad_3_id",
-            "Actividad_4":"actividad_4_id","DISTRITO":"district_id"})
+            "Actividad_4":"actividad_4_id","Actividad_5":"actividad_5_id","DISTRITO":"district_id"})
 
         df['cantidad_org'] = 1
 
@@ -43,18 +43,18 @@ class FormatStep(PipelineStep):
         df = prev[0]
 
         df = df[['year','tipo_constitucion_id','razon_social_id','actividad_1_id',	
-        'actividad_2_id','actividad_3_id','actividad_4_id',	'district_id', 'cantidad_org']].copy()
+        'actividad_2_id','actividad_3_id','actividad_4_id','actividad_5_id','district_id', 'cantidad_org']].copy()
 
         # column types
         df['year'] = df['year'].astype(float).fillna(0)
 
         df[['actividad_1_id',	
-        'actividad_2_id','actividad_3_id','actividad_4_id']] = df[['actividad_1_id',	
-        'actividad_2_id','actividad_3_id','actividad_4_id']].fillna(0)
+        'actividad_2_id','actividad_3_id','actividad_4_id','actividad_5_id']] = df[['actividad_1_id',	
+        'actividad_2_id','actividad_3_id','actividad_4_id','actividad_5_id']].fillna(0)
 
         df[['actividad_1_id',	
-        'actividad_2_id','actividad_3_id','actividad_4_id']] = df[['actividad_1_id',	
-        'actividad_2_id','actividad_3_id','actividad_4_id']].astype(int).astype(str)
+        'actividad_2_id','actividad_3_id','actividad_4_id','actividad_5_id']] = df[['actividad_1_id',	
+        'actividad_2_id','actividad_3_id','actividad_4_id','actividad_5_id']].astype(int).astype(str)
 
         return df
 
@@ -72,6 +72,7 @@ class CinePipeline(EasyPipeline):
             'actividad_2_id':                 'UInt8',
             'actividad_3_id':                 'UInt8',
             'actividad_4_id':                 'UInt8',
+            'actividad_5_id':                 'UInt8',
             'district_id':                    'String',
             'cantidad_org':                   'UInt8',
         }

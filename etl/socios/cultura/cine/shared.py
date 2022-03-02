@@ -35,4 +35,8 @@ class ReplaceStep(PipelineStep):
         actividad_4_dim['No reportado'] = 0
         df['actividad_4_id'].replace(actividad_4_dim, inplace=True)
 
-        return df, tipo_constitucion_dim, razon_social_dim, actividad_1_dim, actividad_2_dim, actividad_3_dim,actividad_4_dim
+        actividad_5_dim = dict(zip(df['actividad_5_id'].dropna().unique(), range(1, len(df['actividad_5_id'].dropna().unique()) + 1 )))
+        actividad_5_dim['No reportado'] = 0
+        df['actividad_5_id'].replace(actividad_5_dim, inplace=True)
+
+        return df, tipo_constitucion_dim, razon_social_dim, actividad_1_dim, actividad_2_dim, actividad_3_dim,actividad_4_dim,actividad_5_dim
