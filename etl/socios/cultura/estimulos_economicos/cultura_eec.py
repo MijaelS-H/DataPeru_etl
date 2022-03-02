@@ -17,7 +17,8 @@ COUNTRY_DICT = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
 
-        data = pd.ExcelFile(path.join(params["datasets"], "05_Socios_Estrategicos_Ministerio_de_Cultura", "01_Informacion_Direccion_de_Industrias_Culturales", "03_EEC_2019_DATAPERU.xlsx"))
+        #data = pd.ExcelFile(path.join(params["datasets"], "05_Socios_Estrategicos_Ministerio_de_Cultura", "01_Informacion_Direccion_de_Industrias_Culturales", "03_EEC_2019_DATAPERU.xlsx"))
+        data = pd.ExcelFile(path.join(params["datasets"], "05_Socios_Estrategicos_Ministerio_de_Cultura", "01_Informacion_Direccion_de_Industrias_Culturales", "03_EEC_2020_DATAPERU.xlsx"))
         sheet = data.sheet_names[1]
         df = pd.read_excel(data, data.sheet_names[1])
 
