@@ -7,7 +7,7 @@ from etl.socios.cultura.cine.shared import ReplaceStep
 
 class ProcessingStep(PipelineStep):
     def run_step(self, prev, params):
-        df, tipo_constitucion_dim, razon_social_dim, actividad_1_dim, actividad_2_dim, actividad_3_dim,actividad_4_dim = prev
+        df, tipo_constitucion_dim, razon_social_dim, actividad_1_dim, actividad_2_dim, actividad_3_dim,actividad_4_dim,actividad_5_dim = prev
 
         if params.get('pk') == 'razon_social_id':
             df = pd.DataFrame.from_dict(razon_social_dim, orient='index').reset_index()
