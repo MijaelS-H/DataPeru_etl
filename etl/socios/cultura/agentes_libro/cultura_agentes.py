@@ -9,7 +9,8 @@ from etl.consistency import AggregatorStep
 
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
-        data = pd.ExcelFile(path.join(params["datasets"], "05_Socios_Estrategicos_Ministerio_de_Cultura", "01_Informacion_Direccion_de_Industrias_Culturales", "04_Agentes_del_libro_2020_PNYPJ_DATAPERU.xlsx"))
+        #data = pd.ExcelFile(path.join(params["datasets"], "05_Socios_Estrategicos_Ministerio_de_Cultura", "01_Informacion_Direccion_de_Industrias_Culturales", "04_Agentes_del_libro_2020_PNYPJ_DATAPERU.xlsx"))
+        data = pd.ExcelFile(path.join(params["datasets"], "05_Socios_Estrategicos_Ministerio_de_Cultura", "01_Informacion_Direccion_de_Industrias_Culturales", "04_Agentes_del_libro_2021_PNYPJ_DATAPERU.xlsx"))
 
         sheet = data.sheet_names[1]
         df = pd.read_excel(data, data.sheet_names[1])

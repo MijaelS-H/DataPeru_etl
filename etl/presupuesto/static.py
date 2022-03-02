@@ -7,7 +7,8 @@ URL_INGRESO = [
     "2018-Ingreso.zip",
     "2019-Ingreso.zip",
     "2020-Ingreso.zip",
-    "2021-Ingreso.zip"
+    "2021-Ingreso.zip",
+    "2022-Ingreso.zip"
 ]
 
 DICT_FILENAMES_INGRESO = {
@@ -18,7 +19,8 @@ DICT_FILENAMES_INGRESO = {
     "2018-Ingreso.csv": "2018.csv",
     "2019-Ingreso.csv": "2019.csv",
     "2020-Ingreso.csv": "2020.csv",
-    "2021-Ingreso.csv": "2021.csv"
+    "2021-Ingreso.csv": "2021.csv",
+    "2022-Ingreso.csv": "2022.csv"
 }
 
 URL_GASTO = [
@@ -29,7 +31,8 @@ URL_GASTO = [
     "2018-Gasto.zip",
     "2019-Gasto.zip",
     "2020.zip",
-    "2021.zip"
+    "2021.zip",
+    "2022.zip"
 ]
 
 DICT_FILENAMES_GASTO = {
@@ -40,7 +43,8 @@ DICT_FILENAMES_GASTO = {
     "2018-Gasto.zip": "2018.csv",
     "2019-Gasto.zip": "2019.csv",
     "2020.zip": "2020.csv",
-    "2021.zip": "2021.csv"
+    "2021.zip": "2021.csv",
+    "2022.zip": "2022.csv"
 }
 
 INGRESO_DIMENSIONS_COLS = ["tipo_gobierno", "sector", "pliego", "fuente_financ", "rubro", "ejecutora"]
