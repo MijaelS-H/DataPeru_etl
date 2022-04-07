@@ -50,9 +50,10 @@ class TransformStep(PipelineStep):
         cite_list = list(df['cite'].unique())
 
         #cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
-        cite_map = {k:v for (k,v) in zip(cite_list, list(range(1, len(cite_list) +1)))}
+        #cite_map = {k:v for (k,v) in zip(cite_list, list(range(1, len(cite_list) +1)))}
 
-        df['cite_id'] = df['cite'].map(cite_map)
+        #df['cite_id'] = df['cite'].map(cite_map)
+        df['cite_id'] = df['CITE_ID']
  
         df['cite_slug'] = df['cite'].str.lower()
         df['cite_slug'] = df['cite_slug'].apply(unidecode)
