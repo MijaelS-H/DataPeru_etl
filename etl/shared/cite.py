@@ -38,7 +38,7 @@ class TransformStep(PipelineStep):
 
         df = reduce(lambda df1, df2: pd.merge(df1, df2, on=['cite'], how='outer'), df_list)
         
-        df = df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_x', 
+        df = df[['cite', 'categoria', 'tipo', 'CITEID', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_x', 
             'fecha', 'lista_miembros', 'resolucion_mod', 'fecha_mod', 'nota', 'ambito', 'resolucion_y', 'resolucion_calificacion', 
             'resolucion_adecuacion', 'resolucion_cambio_nombre', 'cadena_atencion', 'cadena_pip', 'cadena_resolucion', 'cadena_privados', 
             'ubigeo', 'direccion', 'latitud', 'longitud', 'descriptivo']]
