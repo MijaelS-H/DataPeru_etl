@@ -36,7 +36,7 @@ class TransformStep(PipelineStep):
 
         df_list = [df[i] for i in range(1, len(file_list) + 1)]
 
-        print df_list
+        print (df_list)
 
         df = reduce(lambda df1, df2: pd.merge(df1, df2, on=['cite'], how='outer'), df_list)
         
