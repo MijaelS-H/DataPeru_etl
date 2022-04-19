@@ -36,6 +36,8 @@ class TransformStep(PipelineStep):
 
         df_list = [df[i] for i in range(1, len(file_list) + 1)]
 
+        print df_list
+
         df = reduce(lambda df1, df2: pd.merge(df1, df2, on=['cite'], how='outer'), df_list)
         
         df = df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_x', 
@@ -52,7 +54,7 @@ class TransformStep(PipelineStep):
         #cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
         #cite_map = {k:v for (k,v) in zip(cite_list, list(range(1, len(cite_list) +1)))}
 
-        df['cite_id'] = df['correlativo']
+        df['cite_id'] = int(df['correlativo'])
         #df['cite_id'] = df['cite'].map(cite_map)
  
         df['cite_slug'] = df['cite'].str.lower()
