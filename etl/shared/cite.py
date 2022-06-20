@@ -5,6 +5,7 @@ import os
 import glob
 from os import path
 from functools import reduce
+from etl.helpers import clickhouse_table
 from unidecode import unidecode
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline
@@ -36,8 +37,6 @@ class TransformStep(PipelineStep):
 
         df_list = [df[i] for i in range(1, len(file_list) + 1)]
 
-        print (df_list)
-
         df = reduce(lambda df1, df2: pd.merge(df1, df2, on=['cite'], how='outer'), df_list)
         
         df = df[['cite', 'categoria', 'tipo', 'estado', 'patrocinador', 'director', 'coordinador_ut', 'resolucion_x', 
@@ -49,14 +48,23 @@ class TransformStep(PipelineStep):
         df['coordinador_ut'] = df['coordinador_ut'].fillna("No disponible")
         df['descriptivo'] = df['descriptivo'].str.lstrip()
 
-        cite_list = list(df['cite'].unique())
+        _cite_list = df[['cite']]
 
-        #cite_map = {k:v for (k,v) in zip(sorted(cite_list), list(range(1, len(cite_list) +1)))}
-        cite_map = {k:v for (k,v) in zip(cite_list, list(range(1, len(cite_list) +1)))}
+        previous_table_query = 'SELECT cite FROM dim_shared_cite'
 
-        df['cite_id'] = int(df['correlativo'])
-        #df['cite_id'] = df['cite'].map(cite_map)
- 
+        previous_table_df = clickhouse_table(Connector.fetch('clickhouse-database', open('../conns.yaml')), previous_table_query)
+
+        cite_list = previous_table_df.append(_cite_list).drop_duplicates(subset=['cite'], keep='first').reset_index(drop=True).reset_index()
+
+        cite_list['index'] = cite_list['index'] + 1
+
+        cite_list.rename(columns={'index': 'cite_id'}, inplace=True)
+
+        if previous_table_df.shape[0] != cite_list.shape[0]:
+            print('¡Nuevo(s) CITE(s) encontrado(s)!\nAgrengando {} CITE(s) a la lista de dimensiones compartidas: \n{}'.format(_cite_list.shape[0] - previous_table_df.shape[0], pd.concat([cite_list, previous_table_df]).drop_duplicates(subset=['cite'], keep=False)))
+
+        df = df.merge(cite_list, on=['cite'], how='left')
+
         df['cite_slug'] = df['cite'].str.lower()
         df['cite_slug'] = df['cite_slug'].apply(unidecode)
         df['cite_slug'] = df['cite_slug'].str.replace(" ", "_")
