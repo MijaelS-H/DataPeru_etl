@@ -18,8 +18,6 @@ class TransformStep(PipelineStep):
 
             df = df.reset_index(drop=True)
 
-            print(df.head())
-
             # Genera id único para cada tipo de cliente detectado, con base en su posición en el DataFrame correspondiente
             df['tipo_cliente_id'] = df.index + 1
 
