@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 import time
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.helpers import query_to_df
@@ -28,3 +29,11 @@ def wait_for_downloads(folder_path):
     while any([filename.endswith(".crdownload") for filename in os.listdir(folder_path)]):
         time.sleep(10)
         print(".", end="")
+
+def clickhouse_table(db_connector, dim_query):
+    try:
+        table = query_to_df(db_connector, raw_query=dim_query)
+    except:
+        table = pd.DataFrame()
+    
+    return table
