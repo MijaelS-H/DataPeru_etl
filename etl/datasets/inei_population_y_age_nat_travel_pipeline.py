@@ -20,8 +20,8 @@ CONTINENT_DICT = {
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         # Loading data
-        df1 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.27.xls"), skiprows = (0,1,2))[2:171]
-        df2 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.28.xls"), skiprows = (0,1,2))[2:171]
+        df1 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.27.xls"), skiprows = (0,1,2))[2:192]
+        df2 = pd.read_excel(path.join(params["datasets"], "B_Poblacion_y_Vivienda", "B.28.xls"), skiprows = (0,1,2))[2:192]
 
         # For each dataframe
         for item in [df1, df2]:
