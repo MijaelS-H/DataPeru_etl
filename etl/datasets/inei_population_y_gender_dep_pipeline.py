@@ -45,13 +45,13 @@ class TransformStep(PipelineStep):
         df["ubigeo"] = df["ubigeo"].astype("str").str.zfill(2)
 
         # Second reading step
-        df2 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:44]
-        df3 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:44]
-        df4 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:46]
-        df5 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:46]
-        df6 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:46]
-        df7 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:46]
-        df8 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:46]
+        df2 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.8.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df3 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.9.xlsx"), skiprows = (0,1,2,3))[12:40]
+        df4 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.11.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df5 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.12.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df6 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.22.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df7 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.23.xlsx"), skiprows = (0,1,2,3,4))[14:41]
+        df8 = pd.read_excel(path.join(params["datasets"], "C_Empleo", "C.24.xlsx"), skiprows = (0,1,2,3,4))[14:41]
 
         for item in [df2, df3, df4, df5, df6 ,df7, df8]:
             item.rename(columns = {"Ámbito geográfico": "ubigeo"}, inplace = True)
