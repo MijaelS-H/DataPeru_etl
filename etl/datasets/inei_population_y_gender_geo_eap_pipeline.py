@@ -39,8 +39,8 @@ class TransformStep(PipelineStep):
             item["nation_id"] = "per"
 
         # Steps to merge dataframes
-        df1 = pd.melt(df1, id_vars = ["nation_id", "ambito_geografico", "sub_ambito_geografico"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name = "year", value_name = "peac_masculina")
-        df2 = pd.melt(df2, id_vars = ["nation_id", "ambito_geografico", "sub_ambito_geografico"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name = "year", value_name = "peac_femenina")
+        df1 = pd.melt(df1, id_vars = ["nation_id", "ambito_geografico", "sub_ambito_geografico"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "peac_masculina")
+        df2 = pd.melt(df2, id_vars = ["nation_id", "ambito_geografico", "sub_ambito_geografico"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "peac_femenina")
 
         df1["peac_masculina"] = df1["peac_masculina"] * 1000
         df2["peac_femenina"]  = df2["peac_femenina"] * 1000
