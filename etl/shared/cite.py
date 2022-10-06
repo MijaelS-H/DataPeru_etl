@@ -52,7 +52,7 @@ class TransformStep(PipelineStep):
 
         previous_table_query = 'SELECT cite FROM dim_shared_cite'
 
-        previous_table_df = clickhouse_table(Connector.fetch('clickhouse-database', open('../conns.yaml')), previous_table_query)
+        previous_table_df = clickhouse_table(Connector.fetch('clickhouse-database', open('etl/conns.yaml')), previous_table_query)
 
         cite_list = previous_table_df.append(_cite_list).drop_duplicates(subset=['cite'], keep='first').reset_index(drop=True).reset_index()
 
