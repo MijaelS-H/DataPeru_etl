@@ -57,20 +57,20 @@ class TransformStep(PipelineStep):
             item.rename(columns = {"Ámbito geográfico": "ubigeo"}, inplace = True)
             item.drop(item.loc[item["ubigeo"].str.contains("Provincia|Regi|Departamento")].index, inplace=True)
 
-        df2 = pd.melt(df2, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "pea_total_masculina")
-        df3 = pd.melt(df3, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "pea_total_femenina")
+        df2 = pd.melt(df2, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name = "year", value_name = "pea_total_masculina")
+        df3 = pd.melt(df3, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name = "year", value_name = "pea_total_femenina")
         df2["pea_total_masculina"] = df2["pea_total_masculina"]*1000
         df3["pea_total_femenina"]  = df3["pea_total_femenina"]*1000
 
-        df4 = pd.melt(df4, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "pea_ocupada_masculina")
-        df5 = pd.melt(df5, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "pea_ocupada_femenina")
+        df4 = pd.melt(df4, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name = "year", value_name = "pea_ocupada_masculina")
+        df5 = pd.melt(df5, id_vars = ["ubigeo"], value_vars = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name = "year", value_name = "pea_ocupada_femenina")
         df4["pea_ocupada_masculina"] = df4["pea_ocupada_masculina"]*1000
         df5["pea_ocupada_femenina"]  = df5["pea_ocupada_femenina"]*1000
 
 
-        df6 = pd.melt(df6, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "ingreso_promedio_mensual_soles_nom")
-        df7 = pd.melt(df7, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "ingreso_promedio_m_mensual_soles_nom")
-        df8 = pd.melt(df8, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018], var_name = "year", value_name = "ingreso_promedio_f_mensual_soles_nom")
+        df6 = pd.melt(df6, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name = "year", value_name = "ingreso_promedio_mensual_soles_nom")
+        df7 = pd.melt(df7, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name = "year", value_name = "ingreso_promedio_m_mensual_soles_nom")
+        df8 = pd.melt(df8, id_vars = ["ubigeo"], value_vars = [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name = "year", value_name = "ingreso_promedio_f_mensual_soles_nom")
 
         df["code"] = df["ubigeo"].astype(str) + df["year"].astype(str)
 
